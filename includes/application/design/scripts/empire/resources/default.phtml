@@ -1,0 +1,5 @@
+<?php if ($this->getData('overload')) :?>
+<span class="overload"><?php echo $this->renderNumber($this->getData('stock'))?></span>
+<?php else:?>
+<?php echo $this->renderNumber($this->getData('stock'))?>
+<?php endif?>

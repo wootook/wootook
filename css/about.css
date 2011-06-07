@@ -1,0 +1,85 @@
+/**
+ * Tis file is part of XNova:Legacies
+ *
+ * @license http://www.gnu.org/licenses/gpl-3.0.txt
+ * @see http://www.xnova-ng.org/
+ *
+ * Copyright (c) 2009-Present, XNova Support Team <http://www.xnova-ng.org>
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *                                --> NOTICE <--
+ *  This file is part of the core development branch, changing its contents will
+ * make you unable to use the automatic updates manager. Please refer to the
+ * documentation for further information about customizing XNova.
+ *
+ */
+
+.aboutParagraphHead{
+  text-align:left;
+  font-weight:bold;
+  font-size:14px;
+}
+.storyParagraphHead{
+  text-align:left;
+  font-weight:bold;
+    font-size:14px;
+}
+
+.storyLink{
+    font-size:12px;
+    color:#878787;
+    text-align:center;
+    display:block;
+}
+
+.storyLink:hover{
+    color:#FFFFFF;
+}
+
+.joinLink{
+font-weight:bold;
+font-size:14px;
+color:#497ec7;
+text-align:center;
+  display:block;
+}
+
+.joinLink:hover{
+  display:block;
+font-weight:bold;
+color:#FFFFFF;
+}
+
+.imageLeft{
+float:left;
+margin-right:10px;
+margin-left:5px;
+margin-bottom:10px;
+}
+
+.imageRight{
+float:right;
+margin-left:10px;
+}
+.imageFirst{
+float:right;
+margin-left:10px;
+margin-top:20px;
+}
+
+.bigImage{
+margin-left:8px;
+}
