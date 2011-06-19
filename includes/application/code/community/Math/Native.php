@@ -2,6 +2,10 @@
 
 class Math_Native
 {
+    public function setPrecision($precision)
+    {
+    }
+
     public function add($a, $b)
     {
         return $a + $b;

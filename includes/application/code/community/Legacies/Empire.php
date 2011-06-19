@@ -131,12 +131,12 @@ class Legacies_Empire
 
     public static function getFieldName($id)
     {
-        global $resource;
+        $fieldsAlias = Legacies_Empire_Model_Game_FieldsAlias::getSingleton();
 
-        if (!isset($resource[$id])) {
+        if (!isset($fieldsAlias[$id])) {
             return null;
         }
 
-        return $resource[$id];
+        return $fieldsAlias[$id];
     }
 }

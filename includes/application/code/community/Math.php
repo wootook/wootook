@@ -2,7 +2,18 @@
 
 class Math
 {
+    const DEFAULT_PRECISTION = 0;
+
     protected static $_singleton = null;
+
+    public static function setPrecision($precision = null)
+    {
+        if ($precision === null) {
+            $precision = self::DEFAULT_PRECISTION;
+        }
+
+        self::getSingleton()->setPrecision($precision);
+    }
 
     public static function getSingleton()
     {

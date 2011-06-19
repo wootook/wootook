@@ -58,7 +58,7 @@ define('MAX_FLEET_OR_DEFS_PER_ROW', 100000000);
 
 // Taux de depassement possible dans l'espace de stockage des hangars ...
 // 1.0 pour 100% - 1.1 pour 110% etc ...
-define('MAX_OVERFLOW', 1.1);
+define('MAX_OVERFLOW', 1);
 
 define('SHOW_ADMIN_IN_RECORDS', false);
 

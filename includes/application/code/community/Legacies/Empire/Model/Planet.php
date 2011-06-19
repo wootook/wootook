@@ -61,9 +61,33 @@ class Legacies_Empire_Model_Planet
         return $this->_now;
     }
 
+    public function updateStorages($time = null)
+    {
+        Math::setPrecision(10);
+        $resources = Legacies_Empire_Model_Game_Resources::getSingleton();
+        foreach ($resources->getAllDatas() as $resource => $resourceData) {
+            if (!isset($resourceData['storage_field']) || $resourceData['storage_field'] === null && $this['rpg_stockeur'] === null) {
+                continue;
+            }
+
+            Math::setPrecision(1);
+            $officerEnhancement = Math::add(Math::mul(.5, $this->getData('rpg_stockeur'), 50), 1, 10, 50);
+
+            Math::setPrecision(0);
+            $storageEnhancementFactor = Math::pow(1.6, $this[Legacies_Empire::getFieldName($resourceData['storage'])]);
+            $storageEnhancement = Math::mul(BASE_STORAGE_SIZE / 2, $storageEnhancementFactor);
+
+            $value = Math::mul(MAX_OVERFLOW, Math::mul($officerEnhancement, Math::add(BASE_STORAGE_SIZE, $storageEnhancement)));
+            $this->setData($resourceData['storage_field'], $value);
+        }
+        Math::setPrecision();
+    }
+
     public function updateResources($time = null)
     {
         $types = Legacies_Empire_Model_Game_Types::getSingleton();
+        $resources = Legacies_Empire_Model_Game_Resources::getSingleton();
+        $production = Legacies_Empire_Model_Game_Production::getSingleton();
 
         if ($time === null) {
             $time = $this->_now();
@@ -74,15 +98,7 @@ class Legacies_Empire_Model_Planet
         }
 
         $resourcesProductions = array();
-        foreach (self::$_productionConfig as $resource => $resourceData) {
-            if ($resourceData['storage_field'] !== null && $resourceData['storage_field'] !== null) {
-                $officerEnhancement = Math::add(Math::mul(.5, $this->getData('rpg_stockeur')), 1);
-                $storageCapacity = Math::pow(1.5, $this->getData(Legacies_Empire::getFieldName($resourceData['storage'])));
-
-                $value = Math::mul(MAX_OVERFLOW, Math::mul($officerEnhancement, Math::add(BASE_STORAGE_SIZE, $storageCapacity)));
-                $this->setData($resourceData['storage_field'], $value);
-            }
-
+        foreach ($resources->getAllDatas() as $resource => $resourceData) {
             foreach ($resourceData['production'] as $productionUnit => $ratioField) {
                 if (!in_array($productionUnit, $types['prod'])) {
                     continue;
@@ -101,20 +117,21 @@ class Legacies_Empire_Model_Planet
                 }
             }
         }
+        var_dump($resourcesProductions);
 
         $timeDiff = ($time - $this->getData('last_update')) / 3600;
         foreach ($resourcesProductions as $resource => $productionPerHour) {
-            if (!isset(self::$_productionConfig[$resource])) {
+            if (!isset($resources[$resource])) {
                 continue;
             }
-            $this->setData(self::$_productionConfig[$resource]['production_field'], $productionPerHour);
+            $this->setData($resources[$resource]['production_field'], $productionPerHour);
 
-            $production = Math::add($this->getData(self::$_productionConfig[$resource]['field']), Math::mul($timeDiff, $productionPerHour));
+            $production = Math::add($this->getData($resources[$resource]['field']), Math::mul($timeDiff, $productionPerHour));
 
-            if (Math::comp($production, $this->getData(self::$_productionConfig[$resource]['storage_field'])) > 0) {
-                $production = $this->getData(self::$_productionConfig[$resource]['storage_field']);
+            if (Math::comp($production, $this->getData($resources[$resource]['storage_field'])) > 0) {
+                $production = $this->getData($resources[$resource]['storage_field']);
             }
-            $this->setData(self::$_productionConfig[$resource]['field'], $production);
+            $this->setData($resources[$resource]['field'], $production);
         }
 
         return $this;
@@ -446,7 +463,7 @@ class Legacies_Empire_Model_Planet
                 $time = time();
             }
 
-            if ($planet === null || !$planet instanceof Legacies_Empire_Model_Planet || !$planet->getId()) {
+            if ($planet === null || !$planet instanceof Legacies_Empire_Model_Planet) {
                 return;
             }
 
@@ -458,9 +475,9 @@ class Legacies_Empire_Model_Planet
 
                     if ($partialTime < $time) {
                         $planet->updateResources($partialTime);
-                        if (CheckPlanetBuildingQueue($planet, $user)) {
+                        /*if (CheckPlanetBuildingQueue($planet, $user)) {
                             SetNextQueueElementOnTop($planet, $user);
-                        }
+                        }*/
                     } else {
                         $planet->updateResources($time);
                         break;

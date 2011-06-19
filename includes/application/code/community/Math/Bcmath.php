@@ -2,6 +2,11 @@
 
 class Math_Bcmath
 {
+    public function setPrecision($precision)
+    {
+        bcscale($precision);
+    }
+
     public function add($a, $b)
     {
         return bcadd($a, $b);

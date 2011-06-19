@@ -116,7 +116,8 @@
         Legacies_Empire::ID_BUILDING_DEUTERIUM_SYNTHETISER,
         Legacies_Empire::ID_BUILDING_SOLAR_PLANT,
         Legacies_Empire::ID_BUILDING_FUSION_REACTOR,
-        Legacies_Empire::ID_SHIP_SOLAR_SATELLITE
+        Legacies_Empire::ID_SHIP_SOLAR_SATELLITE,
+        Legacies_Empire::ID_SHIP_SUPERNOVA
         )
 // }}}
     );
