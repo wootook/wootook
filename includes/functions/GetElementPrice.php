@@ -36,7 +36,7 @@
  * @param unknown_type $Element
  * @param unknown_type $userfactor
  */
-function GetElementPrice ($user, $planet, $Element, $userfactor = true) {
+function GetElementPrice($user, $planet, $Element, $userfactor = true) {
 	global $pricelist, $resource, $lang;
 
 	if ($userfactor) {

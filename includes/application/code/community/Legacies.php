@@ -35,8 +35,9 @@ class Legacies
             return;
         }
 
+        $eventObject = new Legacies_Core_Event($params);
         foreach (self::$_listeners[$event] as $listener) {
-            call_user_func($listener, $params);
+            call_user_func($listener, $eventObject);
         }
     }
 

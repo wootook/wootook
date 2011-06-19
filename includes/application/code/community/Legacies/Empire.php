@@ -46,11 +46,13 @@ class Legacies_Empire
     const TYPE_PRODUCTION = 'prod';
 
     const RESOURCE_METAL      = 'metal';
-    const RESOURCE_CRISTAL    = 'crystal';
+    const RESOURCE_CRISTAL    = 'cristal';
     const RESOURCE_DEUTERIUM  = 'deuterium';
     const RESOURCE_ENERGY     = 'energy';
+
     const RESOURCE_MULTIPLIER = 'factor';
     const RESOURCE_FORMULA    = 'formule';
+    const RESOURCE_CLASS      = 'class';
 
     const SHIPS_CONSUMPTION_PRIMARY   = 'consumption';
     const SHIPS_CELERITY_PRIMARY      = 'speed';

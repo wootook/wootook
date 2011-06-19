@@ -75,7 +75,7 @@ class Legacies_Empire_Model_Planet_Building_Shipyard
         Legacies_Empire::RESOURCE_METAL,
         Legacies_Empire::RESOURCE_CRISTAL,
         Legacies_Empire::RESOURCE_DEUTERIUM,
-        //Legacies_Empire::RESOURCE_ENERGY
+        Legacies_Empire::RESOURCE_ENERGY
         );
 
     /**
@@ -95,7 +95,7 @@ class Legacies_Empire_Model_Planet_Building_Shipyard
     public static function factory($currentPlanet, $currentUser)
     {
         if ($currentPlanet->getId()) {
-            return false;
+            return null;
         }
 
         if (!isset(self::$_instances[$currentPlanet->getId()])) {
@@ -117,10 +117,7 @@ class Legacies_Empire_Model_Planet_Building_Shipyard
         $this->_currentPlanet = $currentPlanet;
         $this->_currentUser = $currentUser;
 
-        $this->_queue = unserialize($this->_currentPlanet->getData('b_hangar_id'));
-        if (!is_array($this->_queue)) {
-            $this->_queue = array();
-        }
+        $this->_queue = new Legacies_Empire_Model_Planet_Building_Shipyard_Builder($currentPlanet, $currentUser);
 
         $this->_now = time();
     }
@@ -187,12 +184,7 @@ class Legacies_Empire_Model_Planet_Building_Shipyard
         $resourcesNeeded = $this->_getResourcesNeeded($shipId, $qty);
         $buildTime = $this->getBuildTime($shipId, $qty);
 
-        $this->_queue[] = new Legacies_Empire_Model_Planet_Building_Shipyard_Item(array(
-            'ship_id'    => $shipId,
-            'qty'        => $qty,
-            'created_at' => $this->_now(),
-            'updated_at' => $this->_now()
-            ));
+        $this->_queue->enqueue($shipId, $qty);
 
         foreach ($this->_resourcesTypes as $resourceType) {
             $this->_currentPlanet[$resourceType] = Math::sub($this->_currentPlanet[$resourceType], $resourcesNeeded[$resourceType]);

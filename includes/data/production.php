@@ -13,7 +13,8 @@
             Legacies_Empire::RESOURCE_CRISTAL   => 'return "0";',
             Legacies_Empire::RESOURCE_DEUTERIUM => 'return "0";',
             Legacies_Empire::RESOURCE_ENERGY    => 'return -(10 * $BuildLevel * pow((1.1), $BuildLevel)) * (0.1 * $BuildLevelFactor);'
-            )
+            ),
+        Legacies_Empire::RESOURCE_CLASS      => 'Legacies_Empire_Model_Planet_Building_MetalMine'
         ),
 
     Legacies_Empire::ID_BUILDING_CRISTAL_MINE => array(
@@ -27,7 +28,8 @@
             Legacies_Empire::RESOURCE_CRISTAL   => 'return (20 * $BuildLevel * pow((1.1), $BuildLevel)) * (0.1 * $BuildLevelFactor);',
             Legacies_Empire::RESOURCE_DEUTERIUM => 'return "0";',
             Legacies_Empire::RESOURCE_ENERGY    => 'return -(10 * $BuildLevel * pow((1.1), $BuildLevel)) * (0.1 * $BuildLevelFactor);'
-            )
+            ),
+        Legacies_Empire::RESOURCE_CLASS      => 'Legacies_Empire_Model_Planet_Building_CristalMine'
         ),
 
     Legacies_Empire::ID_BUILDING_DEUTERIUM_SYNTHETISER => array(
@@ -41,7 +43,8 @@
             Legacies_Empire::RESOURCE_CRISTAL   => 'return "0";',
             Legacies_Empire::RESOURCE_DEUTERIUM => 'return ((10 * $BuildLevel * pow((1.1), $BuildLevel)) * (-0.002 * $BuildTemp + 1.28)) * (0.1 * $BuildLevelFactor);',
             Legacies_Empire::RESOURCE_ENERGY    => 'return -(30 * $BuildLevel * pow((1.1), $BuildLevel)) * (0.1 * $BuildLevelFactor);'
-            )
+            ),
+        Legacies_Empire::RESOURCE_CLASS      => 'Legacies_Empire_Model_Planet_Building_DeuteriumSynthetiser'
         ),
 
     Legacies_Empire::ID_BUILDING_SOLAR_PLANT => array(
@@ -55,7 +58,8 @@
             Legacies_Empire::RESOURCE_CRISTAL   => 'return "0";',
             Legacies_Empire::RESOURCE_DEUTERIUM => 'return "0";',
             Legacies_Empire::RESOURCE_ENERGY    => 'return (20 * $BuildLevel * pow((1.1), $BuildLevel)) * (0.1 * $BuildLevelFactor);'
-            )
+            ),
+        Legacies_Empire::RESOURCE_CLASS      => 'Legacies_Empire_Model_Planet_Building_SolarPlant'
         ),
 
     Legacies_Empire::ID_BUILDING_FUSION_REACTOR => array(
@@ -69,7 +73,8 @@
             Legacies_Empire::RESOURCE_CRISTAL   => 'return "0";',
             Legacies_Empire::RESOURCE_DEUTERIUM => 'return -(10 * $BuildLevel * pow((1.1), $BuildLevel)) * (0.1 * $BuildLevelFactor);',
             Legacies_Empire::RESOURCE_ENERGY    => 'return (50 * $BuildLevel * pow((1.1), $BuildLevel)) * (0.1 * $BuildLevelFactor);'
-            )
+            ),
+        Legacies_Empire::RESOURCE_CLASS      => 'Legacies_Empire_Model_Planet_Building_FusionReactor'
         ),
 // }}}
 
@@ -87,7 +92,8 @@
             Legacies_Empire::RESOURCE_CRISTAL   => 'return "0";',
             Legacies_Empire::RESOURCE_DEUTERIUM => 'return "0";',
             Legacies_Empire::RESOURCE_ENERGY    => 'return (($BuildTemp / 4) + 20) * $BuildLevel * (0.1 * $BuildLevelFactor);'
-            )
+            ),
+        Legacies_Empire::RESOURCE_CLASS      => 'Legacies_Empire_Model_Planet_Ship_SolarSatellite'
         ),
     Legacies_Empire::ID_SHIP_SUPERNOVA => array(
         Legacies_Empire::RESOURCE_METAL      => 0,
@@ -100,7 +106,8 @@
             Legacies_Empire::RESOURCE_CRISTAL   => 'return "0";',
             Legacies_Empire::RESOURCE_DEUTERIUM => 'return "0";',
             Legacies_Empire::RESOURCE_ENERGY    => 'return -(12500 * ($BuildTemp / 4) + 20) * $BuildLevel * (0.1 * $BuildLevelFactor);'
-            )
+            ),
+        Legacies_Empire::RESOURCE_CLASS      => 'Legacies_Empire_Model_Planet_Ship_Supernova'
         )
 // }}}
     );

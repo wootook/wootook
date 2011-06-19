@@ -62,6 +62,12 @@ if (0 === filesize(ROOT_PATH . 'config.php')) {
     die();
 }
 
+foreach (include ROOT_PATH . 'includes/data/events.php' as $event => $listenerList) {
+    foreach ($listenerList as $listener) {
+        Legacies::registerListener($event, $listener);
+    }
+}
+
 $lang = array();
 
 define('DEFAULT_SKINPATH', 'skins/xnova/');
@@ -99,41 +105,22 @@ if (!defined('DISABLE_IDENTITY_CHECK')) {
 includeLang('system');
 includeLang('tech');
 
-$now = time();
-$sql =<<<SQL_EOF
-SELECT
-  fleet_start_galaxy AS galaxy,
-  fleet_start_system AS system,
-  fleet_start_planet AS planet,
-  fleet_start_type AS planet_type
-    FROM {{table}}
-    WHERE `fleet_start_time` <= {$now}
-UNION
-SELECT
-  fleet_end_galaxy AS galaxy,
-  fleet_end_system AS system,
-  fleet_end_planet AS planet,
-  fleet_end_type AS planet_type
-    FROM {{table}}
-    WHERE `fleet_end_time` <= {$now}
-SQL_EOF;
-
-$fleets = doquery($sql, 'fleets');
-while ($row = mysql_fetch_array($fleets)) {
-    FlyingFleetHandler($row);
-}
-
-unset($fleets);
-
 include(ROOT_PATH . 'rak.php');
-if (!defined('IN_ADMIN')) {
-    $dpath = (isset($user['dpath']) && !empty($user["dpath"])) ? $user['dpath'] : DEFAULT_SKINPATH;
-} else {
-    $dpath = '../' . DEFAULT_SKINPATH;
-}
 
+$dpath = DEFAULT_SKINPATH;
 if (($user !== null && $user->getId())) {
+    $dpath = $user->getSkinPath();
+    if (empty($dpath)) {
+        $dpath = DEFAULT_SKINPATH;
+    }
+    if (defined('IN_ADMIN')) {
+        $dpath = '../' . $dpath;
+    }
     SetSelectedPlanet($user); // FIXME
+
+    foreach ($user->getVisibleFleets() as $fleet) {
+        FlyingFleetHandler($fleet); // FIXME
+    }
 
     $planetrow = $user->getCurrentPlanet();
     $galaxyrow = doquery("SELECT * FROM {{table}} WHERE `id_planet` = '".$planetrow['id']."';", 'galaxy', true);

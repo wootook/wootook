@@ -4,7 +4,6 @@ abstract class Legacies_Core_Model
     extends Legacies_Object
 {
     protected $_originalData = array();
-    protected $_data = array();
 
     public function __construct(Array $data = array())
     {

@@ -205,7 +205,7 @@ class Legacies_Empire_Model_User
         $planetCollection = new Legacies_Core_Collection(array('planet' => 'planets'), 'Legacies_Empire_Model_Planet');
         $planetCollection->where('id_owner=:user');
 
-        $order = ($user['planet_sort_order'] == 1) ? 'DESC' : 'ASC';
+        $order = ($this->getData('planet_sort_order') == 1) ? 'DESC' : 'ASC';
 
         switch ($this->getData('planet_sort')) {
         case self::PLANET_SORT_POSITION:
@@ -297,5 +297,20 @@ class Legacies_Empire_Model_User
         $fields = Legacies_Empire_Model_Game_FieldsAlias::getSingleton();
 
         return $this->hasData($fields[$elementId]) && Math::comp($this->getElement($elementId), $levelRequired) > 0;
+    }
+
+    public function getSkinPath($default = null)
+    {
+        if ($path = $this->getData('dpath')) {
+            return $path;
+        }
+        return $default;
+    }
+
+    public function setSkinPath($path)
+    {
+        $this->setData('dpath', $path);
+
+        return $this;
     }
 }
