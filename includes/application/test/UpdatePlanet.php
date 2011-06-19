@@ -9,7 +9,18 @@ if (!extension_loaded('xdebug')) {
 $planet = new Legacies_Empire_Model_Planet(array(
     'last_update'       => 0,
     'planet_type'       => 1,
-    'b_building'        => (3600 * 10000),
+
+    'b_hangar_id'       => serialize(array(array(
+            'ship_id'    => Legacies_Empire::ID_SHIP_LIGHT_TRANSPORT,
+            'qty'        => 1,
+            'created_at' => 0,
+            'updated_at' => 0
+        ), array(
+            'ship_id'    => Legacies_Empire::ID_SHIP_LARGE_TRANSPORT,
+            'qty'        => 100,
+            'created_at' => 600,
+            'updated_at' => 600
+        ))),
 
     'metal'             => 0,
     'metal_perhour'     => 20,
@@ -34,7 +45,7 @@ $planet = new Legacies_Empire_Model_Planet(array(
     'fusion_plant'         => 0,
     'robot_factory'        => 0,
     'nano_factory'         => 0,
-    'hangar'               => 0,
+    'hangar'               => 6,
     'metal_store'          => 5,
     'crystal_store'        => 5,
     'deuterium_store'      => 5,
@@ -46,11 +57,11 @@ var_dump($planet->getAllDatas());
 
 $planet->updateStorages(3600);
 
-var_dump($planet->getAllDatas());
+//var_dump($planet->getAllDatas());
 
 $planet->updateResourceProduction(3600);
 
-var_dump($planet->getAllDatas());
+//var_dump($planet->getAllDatas());
 
 Legacies::dispatchEvent('planet.update', array(
     'planet' => $planet,
@@ -59,7 +70,6 @@ Legacies::dispatchEvent('planet.update', array(
 
 var_dump($planet->getAllDatas());
 
-var_dump((3600 + (3600 * 200)));
 Legacies::dispatchEvent('planet.update', array(
     'planet' => $planet,
     'time'   => (3600 + (3600 * 200))

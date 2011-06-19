@@ -15,7 +15,9 @@ class Legacies_Empire_Model_Planet
 
     protected $_user = null;
     protected $_moon = null;
-    protected $_now = null;
+
+    protected $_builder = null;
+    protected $_shipyard = null;
 
     protected static $_instances = array();
 
@@ -48,17 +50,19 @@ class Legacies_Empire_Model_Planet
 
     public function _init()
     {
-        $this->_now = time();
         $this->_tableName = 'planets';
         $this->_idFieldName = 'id';
+
+        $this->_builder = new Legacies_Empire_Model_Planet_Builder($this, $this->getUser());
     }
 
-    /**
-     * @deprecated
-     */
-    protected function _now()
+    public function _afterLoad()
     {
-        return $this->_now;
+        parent::_afterLoad();
+
+        $this->_builder->init();
+
+        return $this;
     }
 
     public function getLastUpdate()
@@ -73,22 +77,20 @@ class Legacies_Empire_Model_Planet
 
     public function updateStorages($time = null)
     {
-        Math::setPrecision(10);
+        Math::setPrecision(50);
         $resources = Legacies_Empire_Model_Game_Resources::getSingleton();
         foreach ($resources->getAllDatas() as $resource => $resourceData) {
             if (!isset($resourceData['storage_field']) || $resourceData['storage_field'] === null && $this['rpg_stockeur'] === null) {
                 continue;
             }
 
-            Math::setPrecision(1);
-            $officerEnhancement = Math::add(Math::mul(.5, $this->getData('rpg_stockeur'), 50), 1, 10, 50);
+            $officerEnhancement = (.5 * $this->getData('rpg_stockeur')) + 1;
 
-            Math::setPrecision(0);
-            $storageEnhancementFactor = Math::pow(1.6, $this[Legacies_Empire::getFieldName($resourceData['storage'])]);
+            $storageEnhancementFactor = Math::floor(Math::pow(1.6, $this[Legacies_Empire::getFieldName($resourceData['storage'])]));
             $storageEnhancement = Math::mul(BASE_STORAGE_SIZE / 2, $storageEnhancementFactor);
 
             $value = Math::mul(MAX_OVERFLOW, Math::mul($officerEnhancement, Math::add(BASE_STORAGE_SIZE, $storageEnhancement)));
-            $this->setData($resourceData['storage_field'], $value);
+            $this->setData($resourceData['storage_field'], Math::floor($value));
         }
         Math::setPrecision();
 
@@ -102,7 +104,7 @@ class Legacies_Empire_Model_Planet
         $production = Legacies_Empire_Model_Game_Production::getSingleton();
 
         if ($time === null) {
-            $time = $this->_now();
+            $time = Legacies::now();
         }
 
         if (!$this->isPlanet()) {
@@ -207,11 +209,10 @@ class Legacies_Empire_Model_Planet
         $resources = Legacies_Empire_Model_Game_Resources::getSingleton();
 
         if ($time === null) {
-            $time = $this->_now();
+            $time = Legacies::now();
         }
 
         $timeDiff = ($time - $this->getLastUpdate()) / 3600;
-        var_dump($time, $this->getLastUpdate(), $timeDiff);
         foreach ($resources->getAllDatas() as $resourceId => $resourceConfig) {
             $production = Math::mul($this->getData($resourceConfig['production_field']), $timeDiff);
             $this->setData($resourceConfig['field'], Math::min($production, $this->getData($resourceConfig['storage_field'])));
@@ -242,6 +243,28 @@ class Legacies_Empire_Model_Planet
             $this->_user = Legacies_Empire_Model_User::factory($this->getData('id_owner'));
         }
         return $this->_user;
+    }
+
+    public function setUser(Legacies_Empire_Model_User $user)
+    {
+        $this->_user = $user;
+
+        return $this;
+    }
+
+    public function getShipyard()
+    {
+        if ($this->_shipyard === null) {
+            $this->_shipyard = new Legacies_Empire_Model_Planet_Building_Shipyard($this, $this->getUser());
+        }
+        return $this->_shipyard;
+    }
+
+    public function setShipyard(Legacies_Empire_Model_Planet_Building_Shipyard $shipyard)
+    {
+        $this->_shipyard = $shipyard;
+
+        return $this;
     }
 
     public function isPlanet()
@@ -357,38 +380,44 @@ class Legacies_Empire_Model_Planet
         return $this->hasData($fields[$elementId]) && Math::comp($this->getElement($elementId), $levelRequired) > 0;
     }
 
-    public function appendQueue($buildingId)
+    public function appendQueue($buildingId, $time = null, $destroy = false)
     {
         $types = Legacies_Empire_Model_Game_Types::getSingleton();
+        $prices = Legacies_Empire_Model_Game_Prices::getSingleton();
 
         if (!$types->is($buildingId, Legacies_Empire::TYPE_BUILDING)) {
             return $this;
         }
 
-        if (!$this->checkAvailability($buildingId)) {
+        if ($destroy === false && !$this->checkAvailability($buildingId)) {
             return $this;
         }
 
-        // Dispatch event
+        // Dispatch 'planet.building.append-queue.before' event
         Legacies::dispatchEvent('planet.building.append-queue.before', array(
-            'ship_id'  => $shipId,
-            'qty'      => $qty,
-            'shipyard' => $this,
-            'planet'   => $this->_currentPlanet,
-            'user'     => $this->_currentUser
+            'bulding_id' => $buildingId,
+            'level'      => $this->getElement($buildingId),
+            'planet'     => $this,
+            'user'       => $this->getUser(),
+            'destroy'    => $destroy
             ));
 
+        $this->_builder->enqueue($buildingId, $level, $time);
+
+        //$elementBasePrice = $prices;
+        /*
         foreach ($this->_resourcesTypes as $resourceType) {
             $this->setData($resourceType, Math::sub($this->getData($resourceType), $resourcesNeeded[$resourceType]));
         }
+        */
 
-        // Dispatch event
+        // Dispatch 'planet.shipyard.append-queue.after' event
         Legacies::dispatchEvent('planet.shipyard.append-queue.after', array(
-            'ship_id'  => $shipId,
-            'qty'      => $qty,
-            'shipyard' => $this,
-            'planet'   => $this->_currentPlanet,
-            'user'     => $this->_currentUser
+            'bulding_id' => $buildingId,
+            'level'      => $this->getElement($buildingId),
+            'planet'     => $this,
+            'user'       => $this->getUser(),
+            'destroy'    => $destroy
             ));
 
         return $this;
@@ -551,6 +580,7 @@ class Legacies_Empire_Model_Planet
             }
 
             $user = $planet->getUser();
+            /*
             if (($queue = $planet->getData('b_building_id')) != '0') { //FIXME: refactor buildings construciton list
                 $explodedQueue = explode(';', $queue);
                 foreach ($explodedQueue as $item) {
@@ -558,9 +588,9 @@ class Legacies_Empire_Model_Planet
 
                     if ($partialTime < $time) {
                         $planet->updateResources($partialTime);
-                        /*if (CheckPlanetBuildingQueue($planet, $user)) {
+                        if (CheckPlanetBuildingQueue($planet, $user)) {
                             SetNextQueueElementOnTop($planet, $user);
-                        }*/
+                        }
                     } else {
                         $planet->updateResources($time);
                         break;
@@ -568,7 +598,9 @@ class Legacies_Empire_Model_Planet
                 }
             } else {
                 $planet->updateResources($time);
-            }
+            }*/
+            $planet->updateResources($time);
+            $planet->getShipyard()->updateQueue($time);
             $planet->setLastUpdate($time);
         }
     }

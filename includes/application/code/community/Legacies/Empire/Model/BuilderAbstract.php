@@ -42,7 +42,11 @@ abstract class Legacies_Empire_Model_BuilderAbstract
     {
         $this->_currentPlanet = $currentPlanet;
         $this->_currentUser = $currentUser;
+
+        $this->init();
     }
+
+    abstract public function init();
 
     abstract protected function _initItem();
 
@@ -51,14 +55,14 @@ abstract class Legacies_Empire_Model_BuilderAbstract
         $params = func_get_args();
         $item = call_user_func_array(array($this, '_initItem'), $params);
         $item->setIndex($this->_index);
-        $queue[$this->_index++] = $item;
+        $this->_queue[$this->_index++] = $item;
 
         return $this;
     }
 
     public function dequeue($itemIndex)
     {
-        unset($itemIndex);
+        unset($this->_queue[$itemIndex]);
 
         return $this;
     }
@@ -84,12 +88,17 @@ abstract class Legacies_Empire_Model_BuilderAbstract
     protected function _unserializeQueue($serialized)
     {
         $this->clearQueue();
-        $reflection = new ReflectionClass($this->_itemClass);
 
         $unserialized = unserialize($serialized);
-        foreach ($unserialized as $itemData) {
-            $this->_enqueue($reflection->newInstance($itemData));
+        if ($unserialized === false) {
+            $this->_queue = array();
+            return $this;
         }
+
+        foreach ($unserialized as $itemData) {
+            call_user_func_array(array($this, 'enqueue'), $itemData);
+        }
+
         return $this;
     }
 
@@ -102,9 +111,6 @@ abstract class Legacies_Empire_Model_BuilderAbstract
     {
         return $this->_queue;
     }
-
-    abstract public function enqueue($item);
-    abstract public function dequeue($item);
 
     public function clearQueue()
     {
@@ -158,4 +164,48 @@ abstract class Legacies_Empire_Model_BuilderAbstract
 
     abstract public function getResourcesNeeded($typeId, $level);
     abstract public function getBuildingTime($typeId, $level);
+
+    public function serialize()
+    {
+        return $this->_serializeQueue();
+    }
+
+    public function unserialize($serialized)
+    {
+        $this->_unserializeQueue($serialized);
+    }
+
+    public function count()
+    {
+        return count($this->_queue);
+    }
+
+    public function current()
+    {
+        return current($this->_queue);
+    }
+
+    public function next()
+    {
+        $element = next($this->_queue);
+        $this->_index = key($this->_queue);
+
+        return $element;
+    }
+
+    public function key()
+    {
+        return $this->_index;
+    }
+
+    public function valid()
+    {
+        return $this->current() !== false;
+    }
+
+    public function rewind()
+    {
+        reset($this->_queue);
+        $this->_index = 0;
+    }
 }

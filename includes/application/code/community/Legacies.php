@@ -9,6 +9,8 @@ class Legacies
     public static $request = null;
     public static $response = null;
 
+    protected static $_now = null;
+
     public static function registerListener($event, $listener)
     {
         if (!isset(self::$_listeners[$event])) {
@@ -71,5 +73,13 @@ class Legacies
     public static function getLocale()
     {
         return 'fr_FR';
+    }
+
+    public static function now()
+    {
+        if (self::$_now === null) {
+            self::$_now = time();
+        }
+        return self::$_now;
     }
 }
