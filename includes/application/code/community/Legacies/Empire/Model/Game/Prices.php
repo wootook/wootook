@@ -8,7 +8,7 @@
  * @uses Legacies_Empire
  */
 class Legacies_Empire_Model_Game_Prices
-    extends Legacies_Core_Model
+    extends Legacies_Empire_Model_Game_Abstract
     implements Legacies_Core_Singleton
 {
     private static $_singleton = null;

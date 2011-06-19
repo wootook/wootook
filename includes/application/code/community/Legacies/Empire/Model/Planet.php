@@ -80,11 +80,11 @@ class Legacies_Empire_Model_Planet
         Math::setPrecision(50);
         $resources = Legacies_Empire_Model_Game_Resources::getSingleton();
         foreach ($resources->getAllDatas() as $resource => $resourceData) {
-            if (!isset($resourceData['storage_field']) || $resourceData['storage_field'] === null && $this['rpg_stockeur'] === null) {
+            if (!isset($resourceData['storage_field']) || $resourceData['storage_field'] === null) {
                 continue;
             }
 
-            $officerEnhancement = (.5 * $this->getData('rpg_stockeur')) + 1;
+            $officerEnhancement = (.5 * $this->getUser()->getData('rpg_stockeur')) + 1;
 
             $storageEnhancementFactor = Math::floor(Math::pow(1.6, $this[Legacies_Empire::getFieldName($resourceData['storage'])]));
             $storageEnhancement = Math::mul(BASE_STORAGE_SIZE / 2, $storageEnhancementFactor);

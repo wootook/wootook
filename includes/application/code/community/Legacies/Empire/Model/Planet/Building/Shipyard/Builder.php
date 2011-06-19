@@ -37,36 +37,12 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
     public function checkAvailability($shipId)
     {
         $types = Legacies_Empire_Model_Game_Types::getSingleton();
-        $requirements = Legacies_Empire_Model_Game_Requirements::getSingleton();
 
-        if (!isset($requirements[$shipId]) || empty($requirements[$shipId])) {
-            return true;
-        }
-
-        foreach ($requirements[$shipId] as $requirement => $level) {
-            if ($types->is($requirement, Legacies_Empire::TYPE_BUILDING) && $this->_currentPlanet->hasElement($requirement, $level)) {
-                continue;
-            } else if ($types->is($requirement, Legacies_Empire::TYPE_RESEARCH) && $this->_currentUser->hasElement($requirement, $level)) {
-                continue;
-            } else if ($types->is($requirement, Legacies_Empire::TYPE_DEFENSE) && $this->_currentPlanet->hasElement($requirement, $level)) {
-                continue;
-            } else if ($types->is($requirement, Legacies_Empire::TYPE_SHIP) && $this->_currentPlanet->hasElement($requirement, $level)) {
-                continue;
-            }
+        if (!$types->is($shipId, Legacies_Empire::TYPE_SHIP) && !$types->is($shipId, Legacies_Empire::TYPE_DEFENSE)) {
             return false;
         }
 
-        try {
-            // Dispatch event. Throw an exception to break the avaliability.
-            Legacies::dispatchEvent('planet.shipyard.check-availability', array(
-                'ship_id'  => $shipId,
-                'shipyard' => $this,
-                'planet'   => $this->_currentPlanet,
-                'user'     => $this->_currentUser
-                ));
-        } catch (Exception $e) {
-            return false;
-        }
+        parent::checkAvailability($shipId);
 
         return true;
     }
@@ -202,15 +178,35 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
     public function getResourcesNeeded($shipId, $qty)
     {
         $prices = Legacies_Empire_Model_Game_Prices::getSingleton();
+        $resources = Legacies_Empire_Model_Game_Resources::getSingleton();
 
         $resourcesNeeded = array();
-        foreach ($this->_resourcesTypes as $resourceId) {
-            if (isset($prices[$shipId]) && isset($prices[$shipId][$resourceId]) && $prices[$shipId][$resourceId] > 0) {
+        foreach ($resources as $resourceId => $resourceConfig) {
+            if (!isset($prices[$shipId])) {
+                continue;
+            }
+            if (!isset($prices[$shipId][$resourceId])) {
+                continue;
+            }
+            if (Math::isPositive($prices[$shipId][$resourceId])) {
                 $resourcesNeeded[$resourceId] = Math::mul($prices[$shipId][$resourceId], $qty);
             }
         }
 
         return $resourcesNeeded;
+    }
+
+    /**
+     * Returns the quantity set in parameter or the maximum buildable elements
+     * if the quantity requested exeeds this number.
+     *
+     * @param int $shipId
+     * @param int|string $qty
+     * @return int|stirng
+     */
+    protected function _checkMaximumQuantity($shipId, $qty)
+    {
+        return Math::min($qty, $this->getMaximumBuildableElementsCount($shipId));
     }
 
     /**
@@ -227,15 +223,7 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
         }
         $elapsedTime = $time - $this->_currentPlanet->getLastUpdate();
 
-        // Dispatch event
-        Legacies::dispatchEvent('planet.shipyard.update-queue.before', array(
-            'shipyard' => $this,
-            'planet'   => $this->_currentPlanet,
-            'user'     => $this->_currentUser
-            ));
-
-
-        foreach ($this as $element) {
+        foreach ($this->getQueue() as $element) {
             $shipId = $element->getData('ship_id');
             $qty = $element->getData('qty');
             $buildTime = $this->getBuildingTime($shipId, $qty);
@@ -243,7 +231,7 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
             if ($elapsedTime >= $buildTime) {
                 $this->_currentPlanet[$fields[$shipId]] = Math::add($this->_currentPlanet[$fields[$shipId]], $qty);
                 $elapsedTime -= $buildTime;
-                $this->dequeue($element->getIndex());
+                $this->dequeue($element);
                 continue;
             }
 
@@ -258,12 +246,48 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
 
         $this->_currentPlanet->setData('b_hangar_id', $this->serialize());
 
-        // Dispatch event
-        Legacies::dispatchEvent('planet.shipyard.update-queue.after', array(
-            'shipyard' => $this,
-            'planet'   => $this->_currentPlanet,
-            'user'     => $this->_currentUser
-            ));
+        return $this;
+    }
+
+    /**
+     * Append items to build to the construction list
+     *
+     * @param int $shipId
+     * @param int|string $qty
+     * @return Legacies_Empire_Model_Planet_Building_Shipyard
+     */
+    public function appendQueue($shipId, $qty, $time)
+    {
+        $types = Legacies_Empire_Model_Game_Types::getSingleton();
+        $resources = Legacies_Empire_Model_Game_Resources::getSingleton();
+
+        if (!Math::isPositive($qty)) {
+            return $this;
+        }
+
+        if (!$types->is($shipId, Legacies_Empire::TYPE_SHIP) && !$types->is($shipId, Legacies_Empire::TYPE_DEFENSE)) {
+            return $this;
+        }
+
+        if (!$this->checkAvailability($shipId)) {
+            return $this;
+        }
+
+        $qty = Math::min($this->_checkMaximumQuantity($shipId, $qty), MAX_FLEET_OR_DEFS_PER_ROW);
+
+        $resourcesNeeded = $this->getResourcesNeeded($shipId, $qty);
+        $buildTime = $this->getBuildingTime($shipId, $qty);
+
+        $this->enqueue($shipId, $qty, $time);
+
+        foreach ($resources as $resourceId => $resourceConfig) {
+            if (!isset($resourcesNeeded[$resourceId])) {
+                continue;
+            }
+            $this->_currentPlanet[$resourceId] = Math::sub($this->_currentPlanet[$resourceId], $resourcesNeeded[$resourceId]);
+        }
+
+        $this->_currentPlanet->setData('b_hangar_id', $this->serialize());
 
         return $this;
     }

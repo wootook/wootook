@@ -40,6 +40,8 @@
 class Legacies_Empire_Model_Planet_Building_Shipyard
     implements Legacies_Empire_Model_Planet_BuildingInterface
 {
+    private $_eventPrefix = 'planet.shipyard.';
+
     /**
      * Planet instance
      * @var Legacies_Empire_Model_Planet
@@ -140,50 +142,29 @@ class Legacies_Empire_Model_Planet_Building_Shipyard
      * @param int|string $qty
      * @return Legacies_Empire_Model_Planet_Building_Shipyard
      */
-    public function appendQueue($shipId, $qty)
+    public function appendQueue($shipId, $qty, $time = null)
     {
-        $types = Legacies_Empire_Model_Game_Types::getSingleton();
-
-        if (Math::isPositive($qty)) {
-            return $this;
-        }
-
-        if (!$types->is($shipId, Legacies_Empire::TYPE_SHIP) && !$types->is($shipId, Legacies_Empire::TYPE_DEFENSE)) {
-            return $this;
-        }
-
-        if (!$this->checkAvailability($shipId)) {
-            return $this;
-        }
-
-        $qty = $this->_checkMaximumQuantity($shipId, $qty);
-
-        if (MAX_FLEET_OR_DEFS_PER_ROW > 0 && Math::comp($qty, MAX_FLEET_OR_DEFS_PER_ROW) > 0) {
-            $qty = MAX_FLEET_OR_DEFS_PER_ROW;
+        if ($time === null) {
+            $time = Legacies::now();
         }
 
         // Dispatch event
-        Legacies::dispatchEvent('planet.shipyard.append-queue.before', array(
+        Legacies::dispatchEvent($this->_eventPrefix . 'append-queue.before', array(
             'ship_id'  => $shipId,
-            'qty'      => $qty,
+            'qty'      => &$qty,
+            'time'     => &$time,
             'shipyard' => $this,
             'planet'   => $this->_currentPlanet,
             'user'     => $this->_currentUser
             ));
 
-        $resourcesNeeded = $this->getResourcesNeeded($shipId, $qty);
-        $buildTime = $this->getBuildTime($shipId, $qty);
-
-        $this->_queue->enqueue($shipId, $qty, now());
-
-        foreach ($this->_resourcesTypes as $resourceType) {
-            $this->_currentPlanet[$resourceType] = Math::sub($this->_currentPlanet[$resourceType], $resourcesNeeded[$resourceType]);
-        }
+        $this->_builder->appendQueue($shipId, $qty, $time);
 
         // Dispatch event
-        Legacies::dispatchEvent('planet.shipyard.append-queue.after', array(
+        Legacies::dispatchEvent($this->_eventPrefix . 'append-queue.before', array(
             'ship_id'  => $shipId,
             'qty'      => $qty,
+            'time'     => $time,
             'shipyard' => $this,
             'planet'   => $this->_currentPlanet,
             'user'     => $this->_currentUser
@@ -199,7 +180,23 @@ class Legacies_Empire_Model_Planet_Building_Shipyard
      */
     public function updateQueue($time = null)
     {
+        // Dispatch event
+        Legacies::dispatchEvent($this->_eventPrefix . 'update-queue.before', array(
+            'time'     => &$time,
+            'shipyard' => $this,
+            'planet'   => $this->_currentPlanet,
+            'user'     => $this->_currentUser
+            ));
+
         $this->_builder->updateQueue($time);
+
+        // Dispatch event
+        Legacies::dispatchEvent($this->_eventPrefix . 'update-queue.after', array(
+            'time'     => $time,
+            'shipyard' => $this,
+            'planet'   => $this->_currentPlanet,
+            'user'     => $this->_currentUser
+            ));
 
         return $this;
     }
@@ -224,20 +221,19 @@ class Legacies_Empire_Model_Planet_Building_Shipyard
      */
     public function checkAvailability($shipId)
     {
-        return $this->_builder->checkAvailability($shipId);
-    }
+        try {
+            // Dispatch event
+            Legacies::dispatchEvent($this->_eventPrefix . 'check-availability', array(
+                'ship_id'  => $shipId,
+                'shipyard' => $this,
+                'planet'   => $this->_currentPlanet,
+                'user'     => $this->_currentUser
+                ));
+        } catch (Legacies_Core_Event_Break $e) {
+            return false;
+        }
 
-    /**
-     * Returns the quantity set in parameter or the maximum buildable elements
-     * if the quantity requested exeeds this number.
-     *
-     * @param int $shipId
-     * @param int|string $qty
-     * @return int|stirng
-     */
-    protected function _checkMaximumQuantity($shipId, $qty)
-    {
-        return Math::min($qty, $this->getMaximumBuildableElementsCount($shipId));
+        return $this->_builder->checkAvailability($shipId);
     }
 
     /**
@@ -254,12 +250,12 @@ class Legacies_Empire_Model_Planet_Building_Shipyard
 
     public function getResourcesNeeded($shipId, $qty)
     {
-        return $this->_builder->getResourcesNeeded();
+        return $this->_builder->getResourcesNeeded($shipId, $qty);
     }
 
-    public function getBuildTime($shipId, $qty)
+    public function getBuildingTime($shipId, $qty)
     {
-        $this->_builder->getBuildTime($shipId, $qty);
+        $this->_builder->getBuildingTime($shipId, $qty);
     }
 
     public static function planetUpdateListener($eventData)

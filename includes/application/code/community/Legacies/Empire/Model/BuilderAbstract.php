@@ -60,9 +60,9 @@ abstract class Legacies_Empire_Model_BuilderAbstract
         return $this;
     }
 
-    public function dequeue($itemIndex)
+    public function dequeue($item)
     {
-        unset($this->_queue[$itemIndex]);
+        unset($this->_queue[(int) $item->getIndex()]);
 
         return $this;
     }
@@ -117,6 +117,8 @@ abstract class Legacies_Empire_Model_BuilderAbstract
         $this->_queue = array();
     }
 
+    abstract public function updateQueue($time = null);
+    abstract public function appendQueue($typeId, $qty, $time);
 
     /**
      * Check if an item type is actually buildable on the current
@@ -144,18 +146,6 @@ abstract class Legacies_Empire_Model_BuilderAbstract
             } else if ($types->is($requirement, Legacies_Empire::TYPE_SHIP) && $this->_currentPlanet->hasElement($requirement, $level)) {
                 continue;
             }
-            return false;
-        }
-
-        try {
-            // Dispatch event. Throw an exception to break the avaliability.
-            Legacies::dispatchEvent('builder.check-availability', array(
-                'type_id' => $typeId,
-                'builder' => $this,
-                'planet'  => $this->_currentPlanet,
-                'user'    => $this->_currentUser
-                ));
-        } catch (Legacies_Empire_Model_Builder_Break $e) {
             return false;
         }
 
@@ -187,25 +177,21 @@ abstract class Legacies_Empire_Model_BuilderAbstract
 
     public function next()
     {
-        $element = next($this->_queue);
-        $this->_index = key($this->_queue);
-
-        return $element;
+        return next($this->_queue);
     }
 
     public function key()
     {
-        return $this->_index;
+        return key($this->_queue);
     }
 
     public function valid()
     {
-        return $this->current() !== false;
+        return current($this->_queue) !== false;
     }
 
     public function rewind()
     {
         reset($this->_queue);
-        $this->_index = 0;
     }
 }
