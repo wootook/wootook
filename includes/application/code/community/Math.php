@@ -81,4 +81,50 @@ class Math
     {
         return self::getSingleton()->render($a);
     }
+
+    public static function isNegative($a)
+    {
+        return (bool) (self::getSingleton()->comp($a, 0) < 0);
+    }
+
+    public static function isPositive($a)
+    {
+        return (bool) (self::getSingleton()->comp($a, 0) > 0);
+    }
+
+    public static function isNegativeOrZero($a)
+    {
+        return (bool) (self::getSingleton()->comp($a, 0) <= 0);
+    }
+
+    public static function isPositiveOrZero($a)
+    {
+        return (bool) (self::getSingleton()->comp($a, 0) >= 0);
+    }
+
+    public static function isZero($a)
+    {
+        return (bool) (self::getSingleton()->comp($a, 0) == 0);
+    }
+
+    public static function isNotZero($a)
+    {
+        return (bool) (self::getSingleton()->comp($a, 0) != 0);
+    }
+
+    public static function min($a, $b)
+    {
+        if (self::getSingleton()->comp($a, $b) > 0) {
+            return $b;
+        }
+        return $a;
+    }
+
+    public static function max($a, $b)
+    {
+        if (self::getSingleton()->comp($a, $b) < 0) {
+            return $b;
+        }
+        return $a;
+    }
 }

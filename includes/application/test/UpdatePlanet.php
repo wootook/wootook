@@ -9,6 +9,7 @@ if (!extension_loaded('xdebug')) {
 $planet = new Legacies_Empire_Model_Planet(array(
     'last_update'       => 0,
     'planet_type'       => 1,
+    'b_building'        => (3600 * 10000),
 
     'metal'             => 0,
     'metal_perhour'     => 20,
@@ -26,10 +27,10 @@ $planet = new Legacies_Empire_Model_Planet(array(
     'solar_satelit_porcent'        => 10,
     'deuterium_sintetizer_porcent' => 10,
 
-    'metal_mine'           => 10,
+    'metal_mine'           => 20,
     'crystal_mine'         => 0,
     'deuterium_sintetizer' => 0,
-    'solar_plant'          => 0,
+    'solar_plant'          => 20,
     'fusion_plant'         => 0,
     'robot_factory'        => 0,
     'nano_factory'         => 0,
@@ -47,9 +48,21 @@ $planet->updateStorages(3600);
 
 var_dump($planet->getAllDatas());
 
+$planet->updateResourceProduction(3600);
+
+var_dump($planet->getAllDatas());
+
 Legacies::dispatchEvent('planet.update', array(
     'planet' => $planet,
     'time'   => 3600
+    ));
+
+var_dump($planet->getAllDatas());
+
+var_dump((3600 + (3600 * 200)));
+Legacies::dispatchEvent('planet.update', array(
+    'planet' => $planet,
+    'time'   => (3600 + (3600 * 200))
     ));
 
 var_dump($planet->getAllDatas());

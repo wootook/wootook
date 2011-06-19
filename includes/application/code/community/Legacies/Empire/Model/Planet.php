@@ -61,6 +61,16 @@ class Legacies_Empire_Model_Planet
         return $this->_now;
     }
 
+    public function getLastUpdate()
+    {
+        return $this->getData('last_update');
+    }
+
+    public function setLastUpdate($time)
+    {
+        return $this->setData('last_update', $time);
+    }
+
     public function updateStorages($time = null)
     {
         Math::setPrecision(10);
@@ -81,9 +91,11 @@ class Legacies_Empire_Model_Planet
             $this->setData($resourceData['storage_field'], $value);
         }
         Math::setPrecision();
+
+        return $this;
     }
 
-    public function updateResources($time = null)
+    public function updateResourceProduction($time = null)
     {
         $types = Legacies_Empire_Model_Game_Types::getSingleton();
         $resources = Legacies_Empire_Model_Game_Resources::getSingleton();
@@ -93,11 +105,19 @@ class Legacies_Empire_Model_Planet
             $time = $this->_now();
         }
 
-        if ($this->getData('planet_type') != 1) {
+        if (!$this->isPlanet()) {
             return $this;
         }
 
-        $resourcesProductions = array();
+        /*
+         * Compute resources consumers and resources producers
+         */
+        $resourcesTotals = array();
+        $resourcesProductionTotals = array();
+        $resourcesConsumptionTotals = array();
+        $resourcesProducers = array();
+        $resourcesConsumers = array();
+        $productionRatios = array();
         foreach ($resources->getAllDatas() as $resource => $resourceData) {
             foreach ($resourceData['production'] as $productionUnit => $ratioField) {
                 if (!in_array($productionUnit, $types['prod'])) {
@@ -108,30 +128,93 @@ class Legacies_Empire_Model_Planet
                 $ratio = $this->getData($ratioField);
                 $element = self::getProducitonElementInstance($productionUnit);
 
-                foreach ($element->getProductionRatios($level, $ratio, $this, $this->getUser()) as $resourceId => $resourceProduction) {
-                    if (!isset($resourcesProductions[$resourceId])) {
-                        $resourcesProductions[$resourceId] = $resourceProduction;
-                    } else {
-                        $resourcesProductions[$resourceId] = Math::add($resourcesProductions[$resourceId], $resourceProduction);
+                $productionRatios[$productionUnit] = $element->getProductionRatios($level, $ratio, $this, $this->getUser());
+                foreach ($productionRatios[$productionUnit] as $resourceId => $resourceProduction) {
+
+                    $comp = Math::comp($resourceProduction, 0);
+                    if ($comp < 0) {
+                        if (!isset($resourcesConsumers[$resourceId])) {
+                            $resourcesConsumers[$resourceId] = array();
+                        }
+                        $resourcesConsumers[$resourceId][] = $productionUnit;
+
+                        if (!isset($resourcesConsumptionTotals[$resourceId])) {
+                            $resourcesConsumptionTotals[$resourceId] = 0;
+                        }
+                        $resourcesConsumptionTotals[$resourceId] = Math::add($resourcesConsumptionTotals[$resourceId], $resourceProduction);
+
+                        if (!isset($resourcesTotals[$resourceId])) {
+                            $resourcesTotals[$resourceId] = 0;
+                        }
+                        $resourcesTotals[$resourceId] = Math::add($resourcesTotals[$resourceId], $resourceProduction);
+                    } else if ($comp > 0) {
+                        if (!isset($resourcesProducers[$resourceId])) {
+                            $resourcesProducers[$resourceId] = array();
+                        }
+                        $resourcesProducers[$resourceId][] = $productionUnit;
+
+                        if (!isset($resourcesProductionTotals[$resourceId])) {
+                            $resourcesProductionTotals[$resourceId] = 0;
+                        }
+                        $resourcesProductionTotals[$resourceId] = Math::add($resourcesProductionTotals[$resourceId], $resourceProduction);
+
+                        if (!isset($resourcesTotals[$resourceId])) {
+                            $resourcesTotals[$resourceId] = 0;
+                        }
+                        $resourcesTotals[$resourceId] = Math::add($resourcesTotals[$resourceId], $resourceProduction);
                     }
                 }
             }
         }
-        var_dump($resourcesProductions);
 
-        $timeDiff = ($time - $this->getData('last_update')) / 3600;
-        foreach ($resourcesProductions as $resource => $productionPerHour) {
-            if (!isset($resources[$resource])) {
+        /*
+         * Compute resource consumption
+         */
+        $actualProduction = $resourcesTotals;
+        foreach ($resourcesTotals as $resource => $total) {
+            if (Math::isPositiveOrZero($total, 0)) {
                 continue;
             }
-            $this->setData($resources[$resource]['production_field'], $productionPerHour);
 
-            $production = Math::add($this->getData($resources[$resource]['field']), Math::mul($timeDiff, $productionPerHour));
-
-            if (Math::comp($production, $this->getData($resources[$resource]['storage_field'])) > 0) {
-                $production = $this->getData($resources[$resource]['storage_field']);
+            $productionRatio = 0;
+            if (isset($resourcesProductionTotals[$resource]) && Math::isPositive($resourcesProductionTotals[$resource])) {
+                $consumptions = Math::mul(-1, $resourcesConsumptionTotals[$resource]);
+                Math::setPrecision(50);
+                $productionRatio = Math::div($resourcesProductionTotals[$resource], $consumptions);
+                Math::setPrecision();
             }
-            $this->setData($resources[$resource]['field'], $production);
+
+            foreach ($resourcesConsumers[$resource] as $consumer) {
+                foreach ($productionRatios[$consumer] as $resourceId => $ratio) {
+                    Math::setPrecision(50);
+                    $productionOverhead = Math::mul(Math::sub(1, $productionRatio), $ratio);
+                    Math::setPrecision();
+
+                    $actualProduction[$resourceId] = Math::sub($actualProduction[$resourceId], $productionOverhead);
+                }
+            }
+        }
+
+        foreach ($actualProduction as $resource => $production) {
+            $this->setData($resources[$resource]['production_field'], $production);
+        }
+
+        return $this;
+    }
+
+    public function updateResources($time = null)
+    {
+        $resources = Legacies_Empire_Model_Game_Resources::getSingleton();
+
+        if ($time === null) {
+            $time = $this->_now();
+        }
+
+        $timeDiff = ($time - $this->getLastUpdate()) / 3600;
+        var_dump($time, $this->getLastUpdate(), $timeDiff);
+        foreach ($resources->getAllDatas() as $resourceId => $resourceConfig) {
+            $production = Math::mul($this->getData($resourceConfig['production_field']), $timeDiff);
+            $this->setData($resourceConfig['field'], Math::min($production, $this->getData($resourceConfig['storage_field'])));
         }
 
         return $this;
@@ -486,7 +569,7 @@ class Legacies_Empire_Model_Planet
             } else {
                 $planet->updateResources($time);
             }
-            $planet->setData('last_update', $time);
+            $planet->setLastUpdate($time);
         }
     }
 }
