@@ -58,16 +58,10 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
     {
         $prices = Legacies_Empire_Model_Game_Prices::getSingleton();
         $fields = Legacies_Empire_Model_Game_FieldsAlias::getSingleton();
-
-        $resources = array(
-            Legacies_Empire::RESOURCE_METAL,
-            Legacies_Empire::RESOURCE_CRISTAL,
-            Legacies_Empire::RESOURCE_DEUTERIUM,
-            Legacies_Empire::RESOURCE_ENERGY
-            );
+        $resources = Legacies_Empire_Model_Game_Resources::getSingleton();
 
         $qty = 0;
-        foreach ($resources as $resourceId) {
+        foreach ($resources as $resourceId => $_) {
             if (isset($prices[$shipId]) && isset($prices[$shipId][$resourceId]) && Math::comp($prices[$shipId][$resourceId], 0) > 0) {
                 $maxQty = Math::floor(Math::div($this->_currentPlanet->getData($resourceId), $prices[$shipId][$resourceId]));
 
@@ -180,11 +174,11 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
         $prices = Legacies_Empire_Model_Game_Prices::getSingleton();
         $resources = Legacies_Empire_Model_Game_Resources::getSingleton();
 
+        if (!isset($prices[$shipId])) {
+            return array();
+        }
         $resourcesNeeded = array();
         foreach ($resources as $resourceId => $resourceConfig) {
-            if (!isset($prices[$shipId])) {
-                continue;
-            }
             if (!isset($prices[$shipId][$resourceId])) {
                 continue;
             }
@@ -214,14 +208,11 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
      *
      * @return Legacies_Empire_Model_Planet_Building_Shipyard
      */
-    public function updateQueue($time = null)
+    public function updateQueue($time)
     {
         $fields = Legacies_Empire_Model_Game_FieldsAlias::getSingleton();
 
-        if ($time === null) {
-            $time = Legacies::now();
-        }
-        $elapsedTime = $time - $this->_currentPlanet->getLastUpdate();
+        $elapsedTime = $time - $this->_currentPlanet->getData('b_hangar');
 
         foreach ($this->getQueue() as $element) {
             $shipId = $element->getData('ship_id');
@@ -245,6 +236,7 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
         }
 
         $this->_currentPlanet->setData('b_hangar_id', $this->serialize());
+        $this->_currentPlanet->setData('b_hangar', $time);
 
         return $this;
     }
@@ -273,7 +265,15 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
             return $this;
         }
 
-        $qty = Math::min($this->_checkMaximumQuantity($shipId, $qty), MAX_FLEET_OR_DEFS_PER_ROW);
+        if (MAX_FLEET_OR_DEFS_PER_ROW > 0) {
+            $qty = Math::min($this->_checkMaximumQuantity($shipId, $qty), MAX_FLEET_OR_DEFS_PER_ROW);
+        } else {
+            $qty = $this->_checkMaximumQuantity($shipId, $qty);
+        }
+
+        if (!Math::isPositive($qty)) {
+            return $this;
+        }
 
         $resourcesNeeded = $this->getResourcesNeeded($shipId, $qty);
         $buildTime = $this->getBuildingTime($shipId, $qty);

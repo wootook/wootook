@@ -13,6 +13,8 @@ class Legacies_Empire_Model_Planet
     const TYPE_DEBRIS = 2;
     const TYPE_MOON   = 3;
 
+    protected $_eventPrefix = 'planet.';
+
     protected $_user = null;
     protected $_moon = null;
 
@@ -20,15 +22,6 @@ class Legacies_Empire_Model_Planet
     protected $_shipyard = null;
 
     protected static $_instances = array();
-
-    protected static $_productionCodes = array(
-        Legacies_Empire::ID_BUILDING_METAL_MINE            => 'metal_mine',
-        Legacies_Empire::ID_BUILDING_CRISTAL_MINE          => 'cristal_mine',
-        Legacies_Empire::ID_BUILDING_DEUTERIUM_SYNTHETISER => 'deuterium_synthetiser',
-        Legacies_Empire::ID_BUILDING_SOLAR_PLANT           => 'solar_plant',
-        Legacies_Empire::ID_BUILDING_FUSION_REACTOR        => 'fusion_reactor',
-        Legacies_Empire::ID_SHIP_SOLAR_SATELLITE           => 'solar_satelite'
-        );
 
     protected static $_productionInstances = array();
 
@@ -215,8 +208,10 @@ class Legacies_Empire_Model_Planet
         $timeDiff = ($time - $this->getLastUpdate()) / 3600;
         foreach ($resources->getAllDatas() as $resourceId => $resourceConfig) {
             $production = Math::mul($this->getData($resourceConfig['production_field']), $timeDiff);
-            $this->setData($resourceConfig['field'], Math::min($production, $this->getData($resourceConfig['storage_field'])));
+            $resourceValue = Math::add($this->getData($resourceConfig['field']), $production);
+            $this->setData($resourceConfig['field'], Math::min($resourceValue, $this->getData($resourceConfig['storage_field'])));
         }
+        $this->setLastUpdate($time);
 
         return $this;
     }
@@ -380,10 +375,14 @@ class Legacies_Empire_Model_Planet
         return $this->hasData($fields[$elementId]) && Math::comp($this->getElement($elementId), $levelRequired) > 0;
     }
 
-    public function appendQueue($buildingId, $time = null, $destroy = false)
+    public function appendBuildingQueue($buildingId, $destroy = false, $time = null)
     {
         $types = Legacies_Empire_Model_Game_Types::getSingleton();
         $prices = Legacies_Empire_Model_Game_Prices::getSingleton();
+
+        if ($time === null) {
+            $time = Legacies::now();
+        }
 
         if (!$types->is($buildingId, Legacies_Empire::TYPE_BUILDING)) {
             return $this;
@@ -394,7 +393,7 @@ class Legacies_Empire_Model_Planet
         }
 
         // Dispatch 'planet.building.append-queue.before' event
-        Legacies::dispatchEvent('planet.building.append-queue.before', array(
+        Legacies::dispatchEvent($this->_eventPrefix . 'building.append-queue.before', array(
             'bulding_id' => $buildingId,
             'level'      => $this->getElement($buildingId),
             'planet'     => $this,
@@ -402,17 +401,16 @@ class Legacies_Empire_Model_Planet
             'destroy'    => $destroy
             ));
 
-        $this->_builder->enqueue($buildingId, $level, $time);
-
-        //$elementBasePrice = $prices;
-        /*
-        foreach ($this->_resourcesTypes as $resourceType) {
-            $this->setData($resourceType, Math::sub($this->getData($resourceType), $resourcesNeeded[$resourceType]));
+        if ($destroy === false) {
+            $level = $this->getElement($buildingId) + 1;
+        } else {
+            $level = max($this->getElement($buildingId) - 1, 0);
         }
-        */
+
+        $this->_builder->appendQueue($buildingId, $level, $time);
 
         // Dispatch 'planet.shipyard.append-queue.after' event
-        Legacies::dispatchEvent('planet.shipyard.append-queue.after', array(
+        Legacies::dispatchEvent($this->_eventPrefix . 'building.append-queue.after', array(
             'bulding_id' => $buildingId,
             'level'      => $this->getElement($buildingId),
             'planet'     => $this,
@@ -421,6 +419,30 @@ class Legacies_Empire_Model_Planet
             ));
 
         return $this;
+    }
+
+    public function updateBuildingQueue($time = null)
+    {
+        if ($time === null) {
+            $time = Legacies::now();
+        }
+
+        // Dispatch event
+        Legacies::dispatchEvent($this->_eventPrefix . 'update-queue.before', array(
+            'time'     => &$time,
+            'planet'   => $this->_currentPlanet,
+            'user'     => $this->_currentUser
+            ));
+
+        $this->_builder->updateQueue();
+
+        // Dispatch event
+        Legacies::dispatchEvent($this->_eventPrefix . 'update-queue.after', array(
+            'time'     => $time,
+            'shipyard' => $this,
+            'planet'   => $this->_currentPlanet,
+            'user'     => $this->_currentUser
+            ));
     }
 
     /**
@@ -432,29 +454,11 @@ class Legacies_Empire_Model_Planet
      */
     public function checkAvailability($buildingId)
     {
-        $types = Legacies_Empire_Model_Game_Types::getSingleton();
-        $requirements = Legacies_Empire_Model_Game_Requirements::getSingleton();
-
-        if (!isset($requirements[$buildingId]) || empty($requirements[$buildingId])) {
-            return true;
-        }
-
-        foreach ($requirements[$buildingId] as $requirement => $level) {
-            if ($types->is($requirement, Legacies_Empire::TYPE_BUILDING) && $this->_currentPlanet->hasElement($requirement, $level)) {
-                continue;
-            } else if ($types->is($requirement, Legacies_Empire::TYPE_RESEARCH) && $this->_currentUser->hasElement($requirement, $level)) {
-                continue;
-            } else if ($types->is($requirement, Legacies_Empire::TYPE_DEFENSE) && $this->_currentPlanet->hasElement($requirement, $level)) {
-                continue;
-            } else if ($types->is($requirement, Legacies_Empire::TYPE_SHIP) && $this->_currentPlanet->hasElement($requirement, $level)) {
-                continue;
-            }
-            return false;
-        }
+        $this->_builder->checkAvailability($buildingId);
 
         try {
             // Dispatch event. Throw an exception to break the avaliability.
-            Legacies::dispatchEvent('planet.shipyard.check-availability', array(
+            Legacies::dispatchEvent($this->_eventPrefix . 'check-availability', array(
                 'ship_id'  => $buildingId,
                 'shipyard' => $this,
                 'planet'   => $this->_currentPlanet,
@@ -579,26 +583,7 @@ class Legacies_Empire_Model_Planet
                 return;
             }
 
-            $user = $planet->getUser();
-            /*
-            if (($queue = $planet->getData('b_building_id')) != '0') { //FIXME: refactor buildings construciton list
-                $explodedQueue = explode(';', $queue);
-                foreach ($explodedQueue as $item) {
-                    $partialTime = $planet->getData('b_building');
-
-                    if ($partialTime < $time) {
-                        $planet->updateResources($partialTime);
-                        if (CheckPlanetBuildingQueue($planet, $user)) {
-                            SetNextQueueElementOnTop($planet, $user);
-                        }
-                    } else {
-                        $planet->updateResources($time);
-                        break;
-                    }
-                }
-            } else {
-                $planet->updateResources($time);
-            }*/
+            $planet->updateBuildingQueue($time);
             $planet->updateResources($time);
             $planet->getShipyard()->updateQueue($time);
             $planet->setLastUpdate($time);

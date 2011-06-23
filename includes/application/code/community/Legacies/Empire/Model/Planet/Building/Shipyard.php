@@ -180,6 +180,10 @@ class Legacies_Empire_Model_Planet_Building_Shipyard
      */
     public function updateQueue($time = null)
     {
+        if ($time === null) {
+            $time = Legacies::now();
+        }
+
         // Dispatch event
         Legacies::dispatchEvent($this->_eventPrefix . 'update-queue.before', array(
             'time'     => &$time,

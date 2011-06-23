@@ -16,10 +16,10 @@
         'renderer' => 'Legacies_Empire_Block_Resource_Default',
 
         'field'            => Legacies_Empire::RESOURCE_CRISTAL,
-        'production_field' => 'crystal_perhour',
-        'storage_field'    => 'crystal_max',
+        'production_field' => 'cristal_perhour',
+        'storage_field'    => 'cristal_max',
         'production'       => array(
-            Legacies_Empire::ID_BUILDING_CRISTAL_MINE => 'crystal_mine_porcent'
+            Legacies_Empire::ID_BUILDING_CRISTAL_MINE => 'cristal_mine_porcent'
             ),
         'storage'          => Legacies_Empire::ID_BUILDING_CRISTAL_STORAGE
         ),

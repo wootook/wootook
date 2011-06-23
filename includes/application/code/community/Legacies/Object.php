@@ -87,7 +87,7 @@ class Legacies_Object
 
     public function __get($key)
     {
-        return $this->getData($key, $value);
+        return $this->getData($key);
     }
 
     public function __unset($key)

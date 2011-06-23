@@ -117,7 +117,7 @@ abstract class Legacies_Empire_Model_BuilderAbstract
         $this->_queue = array();
     }
 
-    abstract public function updateQueue($time = null);
+    abstract public function updateQueue($time);
     abstract public function appendQueue($typeId, $qty, $time);
 
     /**
@@ -193,5 +193,29 @@ abstract class Legacies_Empire_Model_BuilderAbstract
     public function rewind()
     {
         reset($this->_queue);
+    }
+
+    public function getCurrentPlanet()
+    {
+        return $this->_currentPlanet;
+    }
+
+    public function getCurrentUser()
+    {
+        return $this->_currentUser;
+    }
+
+    public function setCurrentPlanet(Legacies_Empire_Model_Planet $planet)
+    {
+        $this->_currentPlanet = $planet;
+
+        return $this;
+    }
+
+    public function setCurrentUser(Legacies_Empire_Model_User $user)
+    {
+        $this->_currentUser = $user;
+
+        return $this;
     }
 }

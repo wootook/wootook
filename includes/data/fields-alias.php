@@ -3,7 +3,7 @@
 // Buildings
 // {{{
     Legacies_Empire::ID_BUILDING_METAL_MINE            => "metal_mine",
-    Legacies_Empire::ID_BUILDING_CRISTAL_MINE          => "crystal_mine",
+    Legacies_Empire::ID_BUILDING_CRISTAL_MINE          => "cristal_mine",
     Legacies_Empire::ID_BUILDING_DEUTERIUM_SYNTHETISER => "deuterium_sintetizer",
     Legacies_Empire::ID_BUILDING_SOLAR_PLANT           => "solar_plant",
     Legacies_Empire::ID_BUILDING_FUSION_REACTOR        => "fusion_plant",
@@ -11,7 +11,7 @@
     Legacies_Empire::ID_BUILDING_NANITE_FACTORY        => "nano_factory",
     Legacies_Empire::ID_BUILDING_SHIPYARD              => "hangar",
     Legacies_Empire::ID_BUILDING_METAL_STORAGE         => "metal_store",
-    Legacies_Empire::ID_BUILDING_CRISTAL_STORAGE       => "crystal_store",
+    Legacies_Empire::ID_BUILDING_CRISTAL_STORAGE       => "cristal_store",
     Legacies_Empire::ID_BUILDING_DEUTERIUM_TANK        => "deuterium_store",
     Legacies_Empire::ID_BUILDING_RESEARCH_LAB          => "laboratory",
     Legacies_Empire::ID_BUILDING_TERRAFORMER           => "terraformer",
