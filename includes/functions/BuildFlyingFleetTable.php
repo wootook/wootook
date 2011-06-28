@@ -33,6 +33,7 @@
  * @deprecated
  */
 function BuildFlyingFleetTable () {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	global $lang;
 
 	$TableTPL     = gettemplate('admin/fleet_rows');

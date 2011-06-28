@@ -50,7 +50,7 @@ require_once dirname(__FILE__) .'/common.php';
 //Remise des mines au retour du mod vacance
 
           $query = doquery("SELECT * FROM {{table}} WHERE id_owner = '{$user['id']}'", 'planets');
-          while($id = mysql_fetch_array($query)){
+          while ($id = $query->fetch(PDO::FETCH_BOTH)){
              doquery("UPDATE {{table}} SET
                    energy_used = '10',
                    energy_max = '10',
@@ -188,7 +188,7 @@ require_once dirname(__FILE__) .'/common.php';
              }
 
           $query = doquery("SELECT * FROM {{table}} WHERE id_owner = '{$user['id']}'", 'planets');
-          while($id = mysql_fetch_array($query)){
+          while ($id = $query->fetch(PDO::FETCH_BOTH)){
              doquery("UPDATE {{table}} SET
                    metal_perhour = '".$gameConfig['metal_basic_income']."',
                    crystal_perhour = '".$gameConfig['metal_basic_income']."',

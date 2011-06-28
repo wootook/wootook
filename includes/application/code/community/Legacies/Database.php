@@ -16,7 +16,9 @@ class Legacies_Database
             $password = $config['global']['database']['options']['password'];
             $database = $config['global']['database']['options']['database'];
 
-            self::$_singleton = new self("mysql:dbname={$database};host={$hostname}", $username, $password);
+            self::$_singleton = new self("mysql:dbname={$database};host={$hostname}", $username, $password, array(
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+                ));
         }
         return self::$_singleton;
     }

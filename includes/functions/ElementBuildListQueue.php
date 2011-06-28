@@ -37,6 +37,7 @@
 function ElementBuildListQueue ( $CurrentUser, $CurrentPlanet ) {
 // Jamais appelé pour le moment donc totalement modifiable !
 
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 /*
 alter table `ogame`.`game_planets`
 change `name` `name` varchar (255) NULL COLLATE latin1_general_ci,

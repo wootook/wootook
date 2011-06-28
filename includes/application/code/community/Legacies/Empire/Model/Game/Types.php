@@ -49,6 +49,9 @@ class Legacies_Empire_Model_Game_Types
 
     public function is($element, $type)
     {
+        if (!is_array($this->getData($type))) {
+            return false;
+        }
         return in_array($element, $this->getData($type));
     }
 }

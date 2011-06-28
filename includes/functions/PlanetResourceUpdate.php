@@ -37,6 +37,7 @@
  */
 function PlanetResourceUpdate($CurrentUser, &$CurrentPlanet, $UpdateTime)
 {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
     $planet = Legacies_Empire_Model_User::factory($CurrentPlanet['id']);
 
     /*

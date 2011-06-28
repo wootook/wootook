@@ -33,14 +33,9 @@
  * @deprecated
  * @param unknown_type $String
  */
-function CheckInputStrings ( $String ) {
-	global $ListCensure;
+function CheckInputStrings($string)
+{
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-	$ValidString = $String;
-	for ($Mot = 0; $Mot < count($ListCensure); $Mot++) {
-		$ValidString = eregi_replace( "$ListCensure[$Mot]", "*", $ValidString );
-	}
-	return ($ValidString);
+    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
-
-?>

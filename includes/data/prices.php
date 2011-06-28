@@ -468,7 +468,7 @@
         Legacies_Empire::RESOURCE_MULTIPLIER         => 1,
         Legacies_Empire::SHIPS_CONSUMPTION_PRIMARY   => 100000,
         Legacies_Empire::SHIPS_CONSUMPTION_SECONDARY => 100000,
-        Legacies_Empire::SHIPS_CELERITY_PRIMARY      => 1000,
+        Legacies_Empire::SHIPS_CELERITY_PRIMARY      => 500,
         Legacies_Empire::SHIPS_CELERITY_SECONDARY    => 1000,
         Legacies_Empire::SHIPS_CAPACITY              => 1000000
         ),

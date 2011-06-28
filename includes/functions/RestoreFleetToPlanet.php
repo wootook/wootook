@@ -36,6 +36,7 @@
  */
 function RestoreFleetToPlanet ( $FleetRow, $Start = true ) {
 	global $resource;
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	$FleetRecord         = explode(";", $FleetRow['fleet_array']);
 	$QryUpdFleet         = "";

@@ -37,13 +37,16 @@
 
 class Legacies_Empire
 {
-    const TYPE_BUILDING   = 'build';
-    const TYPE_RESEARCH   = 'tech';
-    const TYPE_SHIP       = 'fleet';
-    const TYPE_DEFENSE    = 'defense';
-    const TYPE_SPECIAL    = 'special';
-    const TYPE_OFFICER    = 'officier';
-    const TYPE_PRODUCTION = 'prod';
+    const TYPE_BUILDING        = 'build';
+    const TYPE_BUILDING_MOON   = 'build_moon';
+    const TYPE_BUILDING_PLANET = 'build_planet';
+    const TYPE_RESEARCH        = 'tech';
+    const TYPE_SHIP            = 'fleet';
+    const TYPE_DEFENSE         = 'defense';
+    const TYPE_SPECIAL         = 'special';
+    const TYPE_OFFICER         = 'officier';
+    const TYPE_PRODUCTION      = 'prod';
+    const TYPE_FLEET_MISSION   = 'mission';
 
     const RESOURCE_METAL      = 'metal';
     const RESOURCE_CRISTAL    = 'cristal';
@@ -128,6 +131,18 @@ class Legacies_Empire
     const ID_COMBAT_SHIELDS    = 'shield';
     const ID_COMBAT_FIREPOWER  = 'attack';
     const ID_COMBAT_RAPID_FIRE = 'sd';
+
+    const ID_MISSION_ATTACK        = 1;
+    const ID_MISSION_GROUP_ATTACK  = 2;
+    const ID_MISSION_TRANSPORT     = 3;
+    const ID_MISSION_STATION       = 4;
+    const ID_MISSION_STATION_ALLY  = 5;
+    const ID_MISSION_SPY           = 6;
+    const ID_MISSION_SETTLE_COLONY = 7;
+    const ID_MISSION_RECYCLE       = 8;
+    const ID_MISSION_DESTROY       = 9;
+    const ID_MISSION_MISSILES      = 10;
+    const ID_MISSION_EXPEDITION    = 15;
 
     public static function getFieldName($id)
     {

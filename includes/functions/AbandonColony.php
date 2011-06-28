@@ -34,7 +34,8 @@
  * @param unknown_type $user
  * @param unknown_type $planetrow
  */
-    function AbandonColony($user,$planetrow) {
+function AbandonColony($user,$planetrow) {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
        $destruyed = time() + 3600; //Temps avant la suppression dans la galaxie
        $DeleteMoon = false;
        if ($planetrow["planet_type"]==1){

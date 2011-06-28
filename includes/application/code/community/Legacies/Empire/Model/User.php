@@ -22,6 +22,13 @@ class Legacies_Empire_Model_User
     const PLANET_SORT_POSITION = 1;
     const PLANET_SORT_NAME     = 2;
 
+    protected static $_cookieName = self::COOKIE_NAME;
+
+    public static function setCookieName($name)
+    {
+        self::$_cookieName = $name;
+    }
+
     public static function factory($id)
     {
         if ($id === null) {
@@ -44,7 +51,7 @@ class Legacies_Empire_Model_User
             $session = Legacies::getSession(self::SESSION_KEY);
             if ($session->hasData('user_id')) {
                 $id = intval($session->getData('user_id'));
-            } else if (Legacies::$request !== null && ($cookie = Legacies::$request->getCookie(self::COOKIE_NAME)) !== null) {
+            } else if (Legacies::$request !== null && ($cookie = Legacies::$request->getCookie(self::$_cookieName)) !== null) {
                 $cookieData = unserialize(stripslashes($cookie));
                 if (is_array($cookieData)) {
                     $collection = new Legacies_Core_Collection(array('user' => 'users'));
@@ -92,8 +99,8 @@ class Legacies_Empire_Model_User
     protected function _updateActivity()
     {
         $this
-            ->setData('request_uri', $_SERVER['REQUEST_URI'])
-            ->setData('remote_addr', $_SERVER['REMOTE_ADDR'])
+            ->setData('current_page', $_SERVER['REQUEST_URI'])
+            ->setData('user_lastip', $_SERVER['REMOTE_ADDR'])
             ->setData('user_agent', $_SERVER['HTTP_USER_AGENT'])
             ->setData('onlinetime', time())
             ->save()
@@ -104,7 +111,7 @@ class Legacies_Empire_Model_User
     public function logout()
     {
         if (Legacies::$response !== null) {
-            Legacies::$response->unsetCookie(self::COOKIE_NAME);
+            Legacies::$response->unsetCookie(self::$_cookieName);
         }
         Legacies_Core_Model_Session::destroy();
     }
@@ -150,7 +157,7 @@ class Legacies_Empire_Model_User
             }
 
             if (isset($_POST["rememberme"]) && Legacies::$request !== null) {
-                Legacies::$response->setCookie(self::COOKIE_NAME, array('id' => $login['id'], 'key' => $login['login_rememberme']), self::COOKIE_LIFETIME);
+                Legacies::$response->setCookie(self::$_cookieName, array('id' => $login['id'], 'key' => $login['login_rememberme']), self::COOKIE_LIFETIME);
             }
 
             self::$_singleton = self::factory($login['id']);
@@ -190,6 +197,25 @@ class Legacies_Empire_Model_User
         return $user;
     }
 
+    public function updateCurrentPlanet($planetId)
+    {
+        $planetColelction = $this->_preparePlanetCollection()->where('id=:id');
+
+        $planetCollection->load(array(
+            'id'    => $planetId,
+            'user' => $this->getId()
+            ));
+
+        if ($planetCollection->count() !== 1) {
+            return false;
+        }
+
+        $planet = $planetCollection->current();
+        $this->setData('current_planet', $planet->getId());
+
+        return true;
+    }
+
     public function getCurrentPlanet()
     {
         $planetId = $this->getData('current_planet');
@@ -200,7 +226,7 @@ class Legacies_Empire_Model_User
         return Legacies_Empire_Model_Planet::factory($planetId);
     }
 
-    public function getPlanetCollection()
+    protected function _preparePlanetCollection()
     {
         $planetCollection = new Legacies_Core_Collection(array('planet' => 'planets'), 'Legacies_Empire_Model_Planet');
         $planetCollection->where('id_owner=:user');
@@ -226,6 +252,12 @@ class Legacies_Empire_Model_User
             $planetCollection->order('planet.id', $order);
             break;
         }
+        return $planetCollection;
+    }
+
+    public function getPlanetCollection()
+    {
+        $planetCollection = $this->_preparePlanetCollection();
 
         $planetCollection->load(array(
             'user' => $this->getId()

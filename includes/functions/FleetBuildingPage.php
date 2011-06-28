@@ -36,6 +36,7 @@
  */
 function FleetBuildingPage(&$currentPlanet, &$currentUser)
 {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
     global $lang, $resource, $dpath;
 
     // S'il n'y a pas de Chantier

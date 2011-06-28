@@ -172,7 +172,7 @@ require_once dirname(__FILE__) .'/common.php';
 	$fq = doquery("SELECT * FROM {{table}} WHERE fleet_owner={$user[id]}", 'fleets');
 
 	$i = 0;
-	while ($f = mysql_fetch_array($fq)) {
+	while ($f = $fq->fetch(PDO::FETCH_BOTH)) {
 		$i++;
 
 		$page .= "<tr height=20><th>$i</th><th>";

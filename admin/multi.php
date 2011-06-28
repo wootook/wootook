@@ -45,7 +45,7 @@ require_once dirname(dirname(__FILE__)) .'/common.php';
 		$RowsTPL = gettemplate('admin/multi_rows');
 		$PageTPL = gettemplate('admin/multi_body');
 
-		while ($infos = mysql_fetch_assoc($query)) {
+		while ($infos = $query->fetch(PDO::FETCH_ASSOC)) {
 			$Bloc['player'] = $infos['player'];
 			$Bloc['text']   = $infos['text'];
 

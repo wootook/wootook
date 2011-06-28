@@ -36,6 +36,7 @@
  */
 function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet ) {
 	global $lang, $_GET;
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 //	debug_print_backtrace();
 
@@ -56,7 +57,7 @@ function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet ) {
 		// Genearation de la combo des planetes du joueur
 		$parse['planetlist'] = '';
 		$ThisUsersPlanets    = SortUserPlanets ( $CurrentUser );
-		while ($CurPlanet = mysql_fetch_array($ThisUsersPlanets)) {
+		while ($CurPlanet = $ThisUsersPlanets->fetch(PDO::FETCH_BOTH)) {
 			if ($CurPlanet["destruyed"] == 0) {
 				$parse['planetlist'] .= "\n<option ";
 				if ($CurPlanet['id'] == $CurrentUser['current_planet']) {

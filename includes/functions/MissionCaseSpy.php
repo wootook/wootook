@@ -35,6 +35,7 @@
  */
 function MissionCaseSpy($FleetRow)
 {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
     global $lang;
 
     $resource = Legacies_Empire_Model_Game_FieldsAlias::getSingleton();

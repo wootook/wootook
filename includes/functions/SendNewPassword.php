@@ -34,6 +34,7 @@
  * @param unknown_type $mail
  */
   function sendnewpassword($mail){
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
   	$ExistMail = doquery("SELECT `email` FROM {{table}} WHERE `email` = '". $mail ."' LIMIT 1;", 'users', true);
 

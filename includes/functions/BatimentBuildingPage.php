@@ -35,6 +35,7 @@
  * @param unknown_type $CurrentUser
  */
 function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser) {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	global $lang, $resource, $reslist, $dpath, $gameConfig, $_GET;
 
 	CheckPlanetUsedFields ( $CurrentPlanet );

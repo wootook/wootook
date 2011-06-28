@@ -33,6 +33,7 @@
  * @deprecated
  */
 function GalaxyLegendPopup () {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	global $lang;
 
 	$Result  = "<a href=# style=\"cursor: pointer;\"";

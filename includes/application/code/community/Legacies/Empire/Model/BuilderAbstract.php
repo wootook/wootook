@@ -89,7 +89,7 @@ abstract class Legacies_Empire_Model_BuilderAbstract
     {
         $this->clearQueue();
 
-        $unserialized = unserialize($serialized);
+        $unserialized = @unserialize($serialized);
         if ($unserialized === false) {
             $this->_queue = array();
             return $this;

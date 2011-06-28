@@ -35,6 +35,7 @@
  * @param unknown_type $CurrentUser
  */
 function CancelBuildingFromQueue ( &$CurrentPlanet, &$CurrentUser ) {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	$CurrentQueue  = $CurrentPlanet['b_building_id'];
 	if ($CurrentQueue != 0) {

@@ -37,6 +37,7 @@
  */
 function IsTechnologieAccessible($user, $planet, $element)
 {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	global $requirements, $resource;
 
 	if (isset($requirements[$element])) {

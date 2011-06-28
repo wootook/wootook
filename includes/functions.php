@@ -171,15 +171,3 @@ function StdFooter() {
 	$parse['TranslationBy'] = isset($lang['TranslationBy']) ? $lang['TranslationBy'] : '';
 	return parsetemplate(gettemplate('overall_footer'), $parse);
 }
-
-// ----------------------------------------------------------------------------------------------------------------
-//
-// Calcul de la place disponible sur une planete
-//
-function CalculateMaxPlanetFields (&$planet) {
-	global $resource;
-
-	return $planet["field_max"] + ($planet[ $resource[33] ] * 5);
-}
-
-?>

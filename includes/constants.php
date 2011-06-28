@@ -28,6 +28,8 @@
  *
  */
 
+defined('E_USER_DEPRECATED') || define('E_USER_DEPRECATED', E_USER_WARNING); // Defined in PHP 5.3 core
+
 define('ADMINEMAIL', "admin@xnova-ng.org");
 define('GAMEURL', "http://".$_SERVER['HTTP_HOST']."/");
 

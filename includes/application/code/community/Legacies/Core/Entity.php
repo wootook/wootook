@@ -45,22 +45,17 @@ abstract class Legacies_Core_Entity
 
     protected function _load()
     {
-        static $statement = null;
-
         $id = func_get_arg(0);
 
-        if ($statement === null) {
-            $idFieldName = self::getIdFieldName();
-            $database = Legacies_Database::getSingleton();
+        $idFieldName = self::getIdFieldName();
+        $database = Legacies_Database::getSingleton();
 
-            $sql =<<<SQL_EOF
+        $sql =<<<SQL_EOF
 SELECT * FROM {$database->getTable(self::getTableName())}
     WHERE {$idFieldName}=:id
     LIMIT 1
 SQL_EOF;
-            $statement = $database->prepare($sql);
-        }
-
+        $statement = $database->prepare($sql);
         $statement->execute(array(
             'id' => $id
             ));
@@ -135,25 +130,21 @@ SQL_EOF;
 
     protected function _delete()
     {
-        static $statement = null;
-
-        if ($statement == null) {
-            $fields = array();
-            foreach ($this->getAllDatas() as $field => $value) {
-                if ($field == self::getIdFieldName()) {
-                    continue;
-                }
-                $fields[] = "{$field}=:{$field}";
+        $fields = array();
+        foreach ($this->getAllDatas() as $field => $value) {
+            if ($field == self::getIdFieldName()) {
+                continue;
             }
+            $fields[] = "{$field}=:{$field}";
+        }
 
-            $fieldsImploded = implod(', ', $fields);
-            $idFieldName = self::getIdFieldName();
-            $database = Legacies_Database::getSingleton();
-            $sql =<<<SQL_EOF
+        $fieldsImploded = implod(', ', $fields);
+        $idFieldName = self::getIdFieldName();
+        $database = Legacies_Database::getSingleton();
+        $sql =<<<SQL_EOF
 DELETE {$database->getTable(self::getTableName())}
     WHERE {$idFieldName}=:{$idFieldName}
 SQL_EOF;
-        }
 
         $statement->execute($this->getAllDatas());
 

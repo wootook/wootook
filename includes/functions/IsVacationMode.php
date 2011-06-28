@@ -35,10 +35,11 @@
  */
     function IsVacationMode($CurrentUser){
        global $gameConfig;
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
        if($CurrentUser['urlaubs_modus'] == 1){
        $query = doquery("SELECT * FROM {{table}} WHERE id_owner = '{$CurrentUser['id']}'", 'planets');
-       while($id = mysql_fetch_array($query)){
+       while ($id = $query->fetch(PDO::FETCH_BOTH)){
           doquery("UPDATE {{table}} SET
                    metal_perhour = '".$gameConfig['metal_basic_income']."',
                    crystal_perhour = '".$gameConfig['crystal_basic_income']."',

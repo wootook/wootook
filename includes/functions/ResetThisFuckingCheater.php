@@ -34,6 +34,7 @@
  * @param unknown_type $UserID
  */
 function ResetThisFuckingCheater ( $UserID ) {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	$TheUser        = doquery ("SELECT * FROM {{table}} WHERE `id` = '". $UserID ."';", 'users', true);
 	$UserPlanet     = doquery ("SELECT `name` FROM {{table}} WHERE `id` = '". $TheUser['id_planet']."';", 'planets', true);
 	DeleteSelectedUser ( $UserID );

@@ -35,6 +35,7 @@
  */
 function SetSelectedPlanet ( &$CurrentUser )
 {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
     if (!isset($_GET['cp']) || !isset($_GET['re'])) {
         return;
     }

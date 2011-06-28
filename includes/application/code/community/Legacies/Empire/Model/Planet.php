@@ -90,6 +90,28 @@ class Legacies_Empire_Model_Planet
         return $this;
     }
 
+    public function updateBuildingFields()
+    {
+        $types = Legacies_Empire_Model_Game_Types::getSingleton();
+
+        if ($this->isPlanet()) {
+            $filter = Legacies_Empire::TYPE_BUILDING_PLANET;
+        } else if ($this->isMoon()) {
+            $filter = Legacies_Empire::TYPE_BUILDING_MOON;
+        } else {
+            return $this;
+        }
+
+        $usedFields = 0;
+        foreach ($types[$filter] as $buildingId) {
+            $usedFields += $this->getElement($buildingId);
+        }
+
+        $this->setData('field_current', $usedFields);
+
+        return $this;
+    }
+
     public function updateResourceProduction($time = null)
     {
         $types = Legacies_Empire_Model_Game_Types::getSingleton();
@@ -121,7 +143,7 @@ class Legacies_Empire_Model_Planet
 
                 $level = $this->getData(Legacies_Empire::getFieldName($productionUnit));
                 $ratio = $this->getData($ratioField);
-                $element = self::getProducitonElementInstance($productionUnit);
+                $element = self::getProductionElementInstance($productionUnit);
 
                 $productionRatios[$productionUnit] = $element->getProductionRatios($level, $ratio, $this, $this->getUser());
                 foreach ($productionRatios[$productionUnit] as $resourceId => $resourceProduction) {
@@ -216,7 +238,7 @@ class Legacies_Empire_Model_Planet
         return $this;
     }
 
-    public static function getProducitonElementInstance($buildingId)
+    public static function getProductionElementInstance($buildingId)
     {
         $production = Legacies_Empire_Model_Game_Production::getSingleton();
 
@@ -230,6 +252,49 @@ class Legacies_Empire_Model_Planet
         }
 
         return self::$_productionInstances[$buildingId];
+    }
+
+    public function getFleetCollection($time = null)
+    {
+        $firstCollection = new Legacies_Core_Collection(array('fleet' => 'fleets'));
+        $firstCollection
+            ->column('*')
+            ->where('fleet.fleet_start_galaxy = :galaxy')
+            ->where('fleet.fleet_start_system = :system')
+            ->where('fleet.fleet_start_planet = :position')
+            ->where('fleet.fleet_start_type   = :planet_type')
+        ;
+        $backCollection = new Legacies_Core_Collection(array('fleet' => 'fleets'));
+        $backCollection
+            ->column('*')
+            ->where('fleet.fleet_end_galaxy = :galaxy')
+            ->where('fleet.fleet_end_system = :system')
+            ->where('fleet.fleet_end_planet = :position')
+            ->where('fleet.fleet_end_type   = :planet_type')
+        ;
+
+        $options = array(
+            'galaxy'      => $this->getSystem(),
+            'system'      => $this->getSystem(),
+            'position'    => $this->getPosition(),
+            'planet_type' => $this->getType()
+            );
+
+        if ($time !== null) {
+            $options['now'] = $time;
+            $firstCollection->where('fleet_start_time <= :now');
+            $backCollection->where('fleet_end_time <= :now');
+        }
+
+        $collection = new Legacies_Core_Collection();
+        $collection
+            ->setEntityClassName('Legacies_Empire_Model_Fleet')
+            ->union($firstCollection)
+            ->union($backCollection)
+            ->load($options)
+        ;
+
+        return $collection;
     }
 
     public function getUser()
@@ -434,7 +499,7 @@ class Legacies_Empire_Model_Planet
             'user'     => $this->_currentUser
             ));
 
-        $this->_builder->updateQueue();
+        $this->_builder->updateQueue($time);
 
         // Dispatch event
         Legacies::dispatchEvent($this->_eventPrefix . 'update-queue.after', array(
@@ -443,6 +508,13 @@ class Legacies_Empire_Model_Planet
             'planet'   => $this->_currentPlanet,
             'user'     => $this->_currentUser
             ));
+
+        return $this;
+    }
+
+    public function getBuildingQueue()
+    {
+        return $this->_builder;
     }
 
     /**
@@ -469,6 +541,28 @@ class Legacies_Empire_Model_Planet
         }
 
         return true;
+    }
+
+    /**
+     * Get the resources needed to build a specific building
+     *
+     * @param int $buildingId
+     * @return bool
+     */
+    public function getResourcesNeeded($buildingId, $level)
+    {
+        return $this->_builder->getResourcesNeeded($buildingId, $level);
+    }
+
+    /**
+     * Get the time needed to build a specific building
+     *
+     * @param int $buildingId
+     * @return bool
+     */
+    public function getBuildingTime($buildingId, $level)
+    {
+        return $this->_builder->getBuildingTime($buildingId, $level);
     }
 
     public static function registrationListener($eventData)

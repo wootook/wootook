@@ -28,52 +28,40 @@
  *
  */
 
-define('INSIDE' , true);
 define('INSTALL' , false);
 require_once dirname(__FILE__) .'/common.php';
 
-$lunarow = doquery("SELECT * FROM {{table}} WHERE `id_owner` = '" . $planetrow['id_owner'] . "' AND `galaxy` = '" . $planetrow['galaxy'] . "' AND `system` = '" . $planetrow['system'] . "' AND `lunapos` = '" . $planetrow['planet'] . "';", 'lunas', true);
-//CheckPlanetUsedFields ($lunarow);
+$user   = Legacies_Empire_Model_User::getSingleton();
+$planet = $user->getCurrentPlanet();
+$moon   = $planet->getMoon();
 
-$mode = isset($_GET['mode']) ? $_GET['mode'] : '';
-$_POST['deleteid'] = intval($_POST['deleteid']);
-$pl = mysql_real_escape_string(isset($_GET['pl']) ? $_GET['pl'] : 0);
+$mode = isset($_GET['mode']) ? $_GET['mode'] : null;
 
 includeLang('resources');
 includeLang('overview');
 
 switch ($mode) {
     case 'renameplanet':
-        // -----------------------------------------------------------------------------------------------
-        if ($_POST['action'] == $lang['namer']) {
+        $action = isset($_POST['action']) && !empty($_POST['action']) ? $_POST['action'] : null;
+        if ($action == $lang['namer']) {
             // Reponse au changement de nom de la planete
-            $UserPlanet = addslashes(CheckInputStrings ($_POST['newname']));
-            $newname = mysql_escape_string(trim($UserPlanet));
-            if ($newname != "") {
-                // Deja on met jour la planete qu'on garde en memoire (pour le nom)
-                $planetrow['name'] = $newname;
-                // Ensuite, on enregistre dans la base de données
-                doquery("UPDATE {{table}} SET `name` = '" . $newname . "' WHERE `id` = '" . $user['current_planet'] . "' LIMIT 1;", "planets");
-                // Est ce qu'il sagit d'une lune ??
-                if ($planetrow['planet_type'] == 3) {
-                    // Oui ... alors y a plus qu'a changer son nom dans la table des lunes aussi !!!
-                    doquery("UPDATE {{table}} SET `name` = '" . $newname . "' WHERE `galaxy` = '" . $planetrow['galaxy'] . "' AND `system` = '" . $planetrow['system'] . "' AND `lunapos` = '" . $planetrow['planet'] . "' LIMIT 1;", "lunas");
-                }
+            $name = CheckInputStrings($_POST['newname']);
+            if (!empty($name)) {
+                $planet->setData('name', $name)->save();
             }
-        } elseif ($_POST['action'] == $lang['colony_abandon']) {
+        } else if ($action == $lang['colony_abandon']) {
             // Cas d'abandon d'une colonie
             // Affichage de la forme d'abandon de colonie
             $parse = $lang;
-            $parse['planet_id'] = $planetrow['id'];
+            $parse['planet_id']     = $planetrow['id'];
             $parse['galaxy_galaxy'] = $planetrow['galaxy'];
             $parse['galaxy_system'] = $planetrow['system'];
             $parse['galaxy_planet'] = $planetrow['planet'];
-            $parse['planet_name'] = $planetrow['name'];
+            $parse['planet_name']   = $planetrow['name'];
 
             $page .= parsetemplate(gettemplate('overview_deleteplanet'), $parse);
-            // On affiche la forme pour l'abandon de la colonie
             display($page, $lang['rename_and_abandon_planet']);
-        } elseif ($_POST['kolonieloeschen'] == 1 && $_POST['deleteid'] == $user['current_planet']) {
+        } else if ($_POST['kolonieloeschen'] == 1 && $_POST['deleteid'] == $user['current_planet']) {
                 // Controle du mot de passe pour abandon de colonie
                 if (md5($_POST['pw']) == $user["password"] && $user['id_planet'] != $user['current_planet']) {
 
@@ -172,7 +160,7 @@ switch ($mode) {
             // Toutes de vert vetues
             $OwnFleets = doquery("SELECT * FROM {{table}} WHERE `fleet_owner` = '" . $user['id'] . "';", 'fleets');
             $Record = 0;
-            while ($FleetRow = mysql_fetch_array($OwnFleets)) {
+            while ($FleetRow = $OwnFleets->fetch(PDO::FETCH_BOTH)) {
                 $Record++;
 
                 $StartTime = $FleetRow['fleet_start_time'];
@@ -203,7 +191,7 @@ switch ($mode) {
             $OtherFleets = doquery("SELECT * FROM {{table}} WHERE `fleet_target_owner` = '" . $user['id'] . "';", 'fleets');
 
             $Record = 2000;
-            while ($FleetRow = mysql_fetch_array($OtherFleets)) {
+            while ($FleetRow = $OtherFleets->fetch(PDO::FETCH_BOTH)) {
                 if ($FleetRow['fleet_owner'] != $user['id']) {
                     if ($FleetRow['fleet_mission'] != 8) {
                         $Record++;
@@ -287,7 +275,7 @@ switch ($mode) {
             // --- Gestion des attaques missiles -------------------------------------------------------------
             $iraks_query = doquery("SELECT * FROM {{table}} WHERE owner = '" . $user['id'] . "'", 'iraks');
             $Record = 4000;
-            while ($irak = mysql_fetch_array ($iraks_query)) {
+            while ($irak = $iraks_query->fetch(PDO::FETCH_ASSOC)) {
                 $Record++;
                 $fpage[$irak['zeit']] = '';
 
@@ -343,7 +331,7 @@ switch ($mode) {
                 $parse['bannerframe'] = "<th colspan=\"4\"><img src=\"scripts/createbanner.php?id=".$user['id']."\"><br>".$lang['InfoBanner']."<br><input name=\"bannerlink\" type=\"text\" id=\"bannerlink\" value=\"[img]".$BannerURL."[/img]\" size=\"62\"></th></tr>";
             }
             // --- Gestion de l'affichage d'une lune ---------------------------------------------------------
-            if ($lunarow['id'] <> 0) {
+            if ($moon['id'] <> 0) {
                 if ($planetrow['planet_type'] == 1) {
                     $lune = doquery ("SELECT * FROM {{table}} WHERE `galaxy` = '" . $planetrow['galaxy'] . "' AND `system` = '" . $planetrow['system'] . "' AND `planet` = '" . $planetrow['planet'] . "' AND `planet_type` = '3'", 'planets', true);
                     $parse['moon_img'] = "<a href=\"?cp=" . $lune['id'] . "&re=0\" title=\"" . $lune['name'] . "\"><img src=\"" . $dpath . "planeten/" . $lune['image'] . ".jpg\" height=\"50\" width=\"50\"></a>";
@@ -445,7 +433,7 @@ switch ($mode) {
             $parse['users_amount'] = $gameConfig['users_amount'];
             // Rajout d'une barre pourcentage
             // Calcul du pourcentage de remplissage
-            $parse['case_pourcentage'] = floor($planetrow["field_current"] / CalculateMaxPlanetFields($planetrow) * 100) . $lang['o/o'];
+            $parse['case_pourcentage'] = floor($planetrow["field_current"] / (1 + CalculateMaxPlanetFields($planetrow)) * 100) . $lang['o/o'];
             // Barre de remplissage
             $parse['case_barre'] = floor($planetrow["field_current"] / CalculateMaxPlanetFields($planetrow) * 100) * 4.0;
             // Couleur de la barre de remplissage
@@ -488,4 +476,3 @@ switch ($mode) {
         }
 }
 
-?>

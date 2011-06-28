@@ -35,6 +35,7 @@
  * @param unknown_type $IDAversaire
  */
 function MipAttack ($NbreMip, $IDAversaire) {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
     $TechnoArme = doquery("SELECT * FROM {{table}} WHERE `id`='" . $user['id'] . "'", "users");
     $InfoAdversaire = doquery("SELECT * FROM {{table}} WHERE `id`='" . $IDAversaire . "'", "planets", true);
 

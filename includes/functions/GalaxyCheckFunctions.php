@@ -34,6 +34,7 @@
  * @param unknown_type $lunarow
  */
 function CheckAbandonMoonState ($lunarow) {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	if (($lunarow['destruyed'] + 172800) <= time() && $lunarow['destruyed'] != 0) {
 		$query = doquery("DELETE FROM {{table}} WHERE id = '" . $lunarow['id'] . "'", "lunas");
 	}
@@ -45,6 +46,7 @@ function CheckAbandonMoonState ($lunarow) {
  * @deprecated
  */
 function CheckAbandonPlanetState (&$planet) {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	if ($planet['destruyed'] <= time()) {
 		$id = $planet['id'];
 		doquery("DELETE FROM {{table}} WHERE id={$id}", 'planets');

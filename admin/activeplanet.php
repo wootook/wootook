@@ -44,7 +44,7 @@ require_once dirname(dirname(__FILE__)) .'/common.php';
 		$AllActivPlanet = doquery("SELECT * FROM {{table}} WHERE `last_update` >= '". (time()-15 * 60) ."' ORDER BY `id` ASC", 'planets');
 		$Count          = 0;
 
-		while ($ActivPlanet = mysql_fetch_array($AllActivPlanet)) {
+		while ($ActivPlanet = $AllActivPlanet->fetch(PDO::FETCH_BOTH)) {
 			$parse['online_list'] .= "<tr>";
 			$parse['online_list'] .= "<td class=b><center><b>". $ActivPlanet['name'] ."</b></center></td>";
 			$parse['online_list'] .= "<td class=b><center><b>[". $ActivPlanet['galaxy'] .":". $ActivPlanet['system'] .":". $ActivPlanet['planet'] ."]</b></center></td>";

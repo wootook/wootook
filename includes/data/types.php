@@ -22,6 +22,38 @@
         Legacies_Empire::ID_BUILDING_JUMP_GATE,
         Legacies_Empire::ID_BUILDING_MISSILE_SILO
         ),
+
+    Legacies_Empire::TYPE_BUILDING_PLANET => array(
+        Legacies_Empire::ID_BUILDING_METAL_MINE,
+        Legacies_Empire::ID_BUILDING_CRISTAL_MINE,
+        Legacies_Empire::ID_BUILDING_DEUTERIUM_SYNTHETISER,
+        Legacies_Empire::ID_BUILDING_SOLAR_PLANT,
+        Legacies_Empire::ID_BUILDING_FUSION_REACTOR,
+        Legacies_Empire::ID_BUILDING_ROBOTIC_FACTORY,
+        Legacies_Empire::ID_BUILDING_NANITE_FACTORY,
+        Legacies_Empire::ID_BUILDING_SHIPYARD,
+        Legacies_Empire::ID_BUILDING_METAL_STORAGE,
+        Legacies_Empire::ID_BUILDING_CRISTAL_STORAGE,
+        Legacies_Empire::ID_BUILDING_DEUTERIUM_TANK,
+        Legacies_Empire::ID_BUILDING_RESEARCH_LAB,
+        Legacies_Empire::ID_BUILDING_TERRAFORMER,
+        Legacies_Empire::ID_BUILDING_ALLIANCE_DEPOT,
+        Legacies_Empire::ID_BUILDING_MISSILE_SILO
+        ),
+
+    Legacies_Empire::TYPE_BUILDING_MOON => array(
+        Legacies_Empire::ID_BUILDING_ROBOTIC_FACTORY,
+        Legacies_Empire::ID_BUILDING_NANITE_FACTORY,
+        Legacies_Empire::ID_BUILDING_SHIPYARD,
+        Legacies_Empire::ID_BUILDING_METAL_STORAGE,
+        Legacies_Empire::ID_BUILDING_CRISTAL_STORAGE,
+        Legacies_Empire::ID_BUILDING_DEUTERIUM_TANK,
+        Legacies_Empire::ID_BUILDING_ALLIANCE_DEPOT,
+        Legacies_Empire::ID_BUILDING_LUNAR_BASE,
+        Legacies_Empire::ID_BUILDING_SENSOR_PHALANX,
+        Legacies_Empire::ID_BUILDING_JUMP_GATE,
+        Legacies_Empire::ID_BUILDING_MISSILE_SILO
+        ),
 // }}}
 
 //
@@ -118,6 +150,24 @@
         Legacies_Empire::ID_BUILDING_FUSION_REACTOR,
         Legacies_Empire::ID_SHIP_SOLAR_SATELLITE,
         Legacies_Empire::ID_SHIP_SUPERNOVA
+        ),
+// }}}
+
+//
+// Mission types
+// {{{
+    Legacies_Empire::TYPE_FLEET_MISSION => array(
+        Legacies_Empire::ID_MISSION_ATTACK,
+        Legacies_Empire::ID_MISSION_GROUP_ATTACK,
+        Legacies_Empire::ID_MISSION_TRANSPORT,
+        Legacies_Empire::ID_MISSION_STATION,
+        Legacies_Empire::ID_MISSION_STATION_ALLY,
+        Legacies_Empire::ID_MISSION_SPY,
+        Legacies_Empire::ID_MISSION_SETTLE_COLONY,
+        Legacies_Empire::ID_MISSION_RECYCLE,
+        Legacies_Empire::ID_MISSION_DESTROY,
+        Legacies_Empire::ID_MISSION_MISSILES,
+        Legacies_Empire::ID_MISSION_EXPEDITION,
         )
 // }}}
     );

@@ -36,6 +36,7 @@
  */
 function SetNextQueueElementOnTop ( &$CurrentPlanet, $CurrentUser ) {
 	global $lang, $resource;
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	// Garde fou ... Si le temps de construction n'est pas 0 on ne fait rien !!!
 	if ($CurrentPlanet['b_building'] == 0) {

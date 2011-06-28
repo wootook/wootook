@@ -44,18 +44,20 @@ defined('APPLICATION_PATH') || define('APPLICATION_PATH', ROOT_PATH . 'includes'
 
 defined('PHPEXT') || define('PHPEXT', require 'extension.inc');
 
-defined('VERSION') || define('VERSION', '2009.5');
+defined('VERSION') || define('VERSION', '2011.1');
 
 set_include_path(implode(PATH_SEPARATOR, array(
-    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'core',
-    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'community',
     APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'local',
+    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'community',
+    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'core',
     get_include_path()
     )));
 
 function __autoload($class) {
     include_once str_replace('_', '/', $class) . '.php';
 }
+
+Legacies_Core_Error::register();
 
 if (0 === filesize(ROOT_PATH . 'config.php')) {
     header('Location: install/');
@@ -84,10 +86,13 @@ include(ROOT_PATH . 'includes/unlocalised.' . PHPEXT);
 include(ROOT_PATH . 'includes/todofleetcontrol.' . PHPEXT);
 include(ROOT_PATH . 'language/' . DEFAULT_LANG . '/lang_info.cfg');
 include(ROOT_PATH . 'includes/vars.' . PHPEXT);
-include(ROOT_PATH . 'includes/db.' . PHPEXT);
+include(ROOT_PATH . 'db/mysql.' . PHPEXT);
 include(ROOT_PATH . 'includes/strings.' . PHPEXT);
 
 $gameConfig = Legacies_Core_Model_Config::getSingleton();
+if (isset($gameConfig['cookie_name']) && !empty($gameConfig['cookie_name'])) {
+    Legacies_Empire_Model_User::setCookieName($gameConfig['cookie_name']);
+}
 $user = Legacies_Empire_Model_User::getSingleton();
 
 if (!defined('DISABLE_IDENTITY_CHECK')) {
@@ -110,31 +115,30 @@ include(ROOT_PATH . 'rak.php');
 $dpath = DEFAULT_SKINPATH;
 if (($user !== null && $user->getId())) {
     $dpath = $user->getSkinPath();
+
     if (empty($dpath)) {
         $dpath = DEFAULT_SKINPATH;
     }
+
     if (defined('IN_ADMIN')) {
         $dpath = '../' . $dpath;
     }
-    SetSelectedPlanet($user); // FIXME
 
-    foreach ($user->getVisibleFleets() as $fleet) {
-        FlyingFleetHandler($fleet); // FIXME
+    if (isset($_GET['cp']) && !empty($_GET['cp'])) {
+        $user->updateCurrentPlanet((int) $_GET['cp']);
     }
 
-    $planetrow = $user->getCurrentPlanet();
-    $galaxyrow = doquery("SELECT * FROM {{table}} WHERE `id_planet` = '".$planetrow['id']."';", 'galaxy', true);
+    foreach ($user->getPlanetCollection() as $planet) {
+        FlyingFleetHandler($planet); // TODO: implement logic into a refactored model
+    }
 
-    CheckPlanetUsedFields($planetrow); // FIXME
+    $planet = $user->getCurrentPlanet();
 
     /*
      * Update planet resources and constructions
      */
     Legacies::dispatchEvent('planet.update', array(
-        'planet' => $planetrow
+        'planet' => $planet
         ));
-    $planetrow->save();
-} else {
-    $planetrow = array();
-    $galaxyrow = array();
+    $planet->save();
 }

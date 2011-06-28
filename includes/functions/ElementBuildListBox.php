@@ -37,6 +37,7 @@
 function ElementBuildListBox ( $CurrentUser, $CurrentPlanet ) {
 	global $lang, $pricelist;
 
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 //	// Array del b_hangar_id
 //	$ElementQueue = explode(';', $CurrentPlanet['b_hangar_id']);
 //	$NbrePerType  = "";

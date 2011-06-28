@@ -35,6 +35,7 @@
  * @param unknown_type $CurrentUser
  */
 function UpdatePlanetBatimentQueueList ( &$CurrentPlanet, &$CurrentUser ) {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	$RetValue = false;
 	if ( $CurrentPlanet['b_building_id'] != 0 ) {
 		while ( $CurrentPlanet['b_building_id'] != 0 ) {

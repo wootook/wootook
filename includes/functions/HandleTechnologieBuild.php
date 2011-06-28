@@ -36,6 +36,7 @@
  */
 function HandleTechnologieBuild ( &$CurrentPlanet, &$CurrentUser ) {
 	global $resource;
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	if ($CurrentUser['b_tech_planet'] != 0) {
 		// Y a une technologie en cours sur une de mes colonies

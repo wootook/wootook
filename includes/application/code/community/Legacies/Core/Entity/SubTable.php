@@ -96,8 +96,10 @@ SQL_EOF;
         $database = Legacies_Database::getSingleton();
 
         $idFields = array();
+        $idValues = array();
         foreach ($this->_idFieldNames as $field) {
             $idFields[] = "{$field}=:{$field}";
+            $idValues[$field] = $this->getData($field);
         }
         $idFields = '(' . implode(') AND (', $idFields) . ')';
 

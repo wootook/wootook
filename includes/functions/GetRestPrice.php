@@ -38,6 +38,7 @@
  */
 function GetRestPrice ($user, $planet, $Element, $userfactor = true) {
 	global $pricelist, $resource, $lang;
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	if ($userfactor) {
 		$level = ($planet[$resource[$Element]]) ? $planet[$resource[$Element]] : $user[$resource[$Element]];

@@ -157,7 +157,7 @@ class Legacies_Core_Collection
         return $this;
     }
 
-    public function _prepareSql()
+    protected function _prepareSql()
     {
         if (empty($this->_union)) {
             $database = Legacies_Database::getSingleton();
@@ -172,8 +172,16 @@ class Legacies_Core_Collection
                     $fields[] = $fieldName;
                 }
             }
-            $fields = implode(", ", $fields);
-            $where = implode(" AND ", $this->_where);
+            if (!empty($fields)) {
+                $fields = implode(", ", $fields);
+            } else {
+                $fields = '*';
+            }
+            if (!empty($where)) {
+                $where = 'WHERE ' . implode(" AND ", $this->_where);
+            } else {
+                $where = '';
+            }
             $joinedTables = implode("\n ", $this->_join);
 
             $order = '';
@@ -201,7 +209,7 @@ class Legacies_Core_Collection
 SELECT {$fields}
     FROM {$database->getTable($this->getTableName())}{$alias}
     {$joinedTables}
-    WHERE $where
+    {$where}
     {$group}
     {$order}
     {$limit}
@@ -213,6 +221,11 @@ SQL_EOF;
             }
 
             $statements = '(' . implode(') UNION (', $statements) . ')';
+            if (!empty($where)) {
+                $where = 'WHERE ' . implode(" AND ", $this->_where);
+            } else {
+                $where = '';
+            }
             $where = implode(" AND ", $this->_where);
 
             $limit = '';
@@ -226,10 +239,15 @@ SQL_EOF;
 
             return <<<SQL_EOF
 $statements
-    WHERE $where
+    {$where}
     {$limit}
 SQL_EOF;
         }
+    }
+
+    public function __toString()
+    {
+        return $this->_prepareSql();
     }
 
     protected function _load()
@@ -245,8 +263,8 @@ SQL_EOF;
         $this->_items = array();
         $reflection = new ReflectionClass($this->getEntityClassName());
         while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-            $args = array($row) + $args;
-            $this->_items[] = $reflection->newInstanceArgs($args);
+            $params = array_merge(array($row), $args);
+            $this->_items[] = $reflection->newInstanceArgs($params);
         }
 
         return $this;
@@ -282,12 +300,16 @@ SQL_EOF;
 
     public function next()
     {
-        return next($this->_items);
+        next($this->_items);
+
+        return $this;
     }
 
     public function rewind()
     {
-        return reset($this->_items);
+        reset($this->_items);
+
+        return $this;
     }
 
     public function key()
@@ -297,6 +319,6 @@ SQL_EOF;
 
     public function valid()
     {
-        return (key($this->_items) < (current($this->_items)));
+        return current($this->_items) !== false;
     }
 }

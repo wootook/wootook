@@ -1,6 +1,6 @@
 <?php
 /**
- * Tis file is part of XNova:Legacies
+ * This file is part of XNova:Legacies
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  * @see http://www.xnova-ng.org/
@@ -28,38 +28,37 @@
  *
  */
 
-class Database
-{
-    static $dbHandle = NULL;
-    static $config = NULL;
-}
-
+/**
+ *
+ * Enter description here ...
+ * @deprecated
+ * @param string $query
+ * @param string $table
+ * @param bool $fetch
+ */
 function doquery($query, $table, $fetch = false)
 {
-    if (!isset(Database::$config)) {
-        $config = require dirname(dirname(__FILE__)) . '/config.php';
+    /**
+     * @var Legacies_Database $database
+     */
+    $database = Legacies_Database::getSingleton();
+
+    $sql = str_replace("{{table}}", $database->getTable($table), $query);
+
+    /**
+     * @var PDOStatement $statement
+     */
+    try {
+        $statement = $database->prepare($sql);
+
+        $statement->execute(array());
+    } catch (PDOException $e) {
+        trigger_error($e->getMessage() . PHP_EOL . "<br /><pre></code>$sql<code></pre><br />" . PHP_EOL, E_USER_WARNING);
     }
 
-    if(!isset(Database::$dbHandle))
-    {
-        Database::$dbHandle = mysql_connect(
-            $config['global']['database']['options']['hostname'],
-            $config['global']['database']['options']['username'],
-            $config['global']['database']['options']['password'])
-                or trigger_error(mysql_error() . "$query<br />" . PHP_EOL, E_USER_WARNING);
-
-        mysql_select_db($config['global']['database']['options']['database'], Database::$dbHandle)
-            or trigger_error(mysql_error()."$query<br />" . PHP_EOL, E_USER_WARNING);
-    }
-    $sql = str_replace("{{table}}", "{$config['global']['database']['table_prefix']}{$table}", $query);
-
-    if (false === ($sqlQuery = mysql_query($sql, Database::$dbHandle))) {
-        trigger_error(mysql_error() . PHP_EOL . "<br /><pre></code>$sql<code></pre><br />" . PHP_EOL, E_USER_WARNING);
-    }
-
-    if($fetch) {
-        return mysql_fetch_array($sqlQuery);
-    }else{
-        return $sqlQuery;
+    if ($fetch) {
+        return $statement->fetch(PDO::FETCH_BOTH);
+    } else {
+        return $statement;
     }
 }

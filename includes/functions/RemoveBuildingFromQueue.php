@@ -37,6 +37,7 @@
  */
 function RemoveBuildingFromQueue ( &$CurrentPlanet, $CurrentUser, $QueueID ) {
 
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	if ($QueueID > 1) {
 		$CurrentQueue  = $CurrentPlanet['b_building_id'];
 		if ($CurrentQueue != 0) {

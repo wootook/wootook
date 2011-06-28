@@ -37,6 +37,7 @@
  */
 function SpyTarget ( $TargetPlanet, $Mode, $TitleString ) {
 	global $lang, $resource;
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	$LookAtLoop = true;
 	if       ($Mode == 0) {

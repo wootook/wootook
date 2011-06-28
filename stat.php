@@ -109,7 +109,7 @@ require_once dirname(__FILE__) .'/common.php';
 		$start++;
 		$parse['stat_date']   = $gameConfig['stats'];
 		$parse['stat_values'] = "";
-		while ($StatRow = mysql_fetch_assoc($query)) {
+		while ($StatRow = $query->fetch(PDO::FETCH_ASSOC)) {
 			$parse['ally_rank']       = $start;
 
 			$AllyRow                  = doquery("SELECT * FROM {{table}} WHERE `id` = '". $StatRow['id_owner'] ."';", 'alliance',true);
@@ -162,7 +162,7 @@ require_once dirname(__FILE__) .'/common.php';
 		$start++;
 		$parse['stat_date']   = $gameConfig['stats'];
 		$parse['stat_values'] = "";
-		while ($StatRow = mysql_fetch_assoc($query)) {
+		while ($StatRow = $query->fetch(PDO::FETCH_ASSOC)) {
 			$parse['stat_date']       = date("d M Y - H:i:s", $StatRow['stat_date']);
 			$parse['player_rank']     = $start;
 

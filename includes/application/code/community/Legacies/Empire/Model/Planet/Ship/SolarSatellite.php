@@ -9,4 +9,14 @@ class Legacies_Empire_Model_Planet_Ship_SolarSatellite
             Legacies_Empire::RESOURCE_ENERGY => ((floatval($planet->getData('temp_max')) / 4) + 20) * (0.1 * $produtionRatio) * floatval($quantity)
             );
     }
+
+    public function getMaximumSpeed(Legacies_Empire_Model_User $user)
+    {
+        return 0;
+    }
+
+    public function getActualMaximumSpeed(Legacies_Empire_Model_User $user)
+    {
+        return 0;
+    }
 }

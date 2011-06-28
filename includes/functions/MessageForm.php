@@ -38,6 +38,7 @@
  * @param unknown_type $TwoLines
  */
 function MessageForm ($Title, $Message, $Goto = '', $Button = ' ok ', $TwoLines = false) {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	$Form  = "<center>";
 	$Form .= "<form action=\"". $Goto ."\" method=\"post\">";
 	$Form .= "<table width=\"519\">";

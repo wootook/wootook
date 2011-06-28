@@ -28,10 +28,6 @@
  *
  */
 
-if (!defined('INSIDE')) {
-	die("Hacking attempt");
-}
-
 if (file_exists(ROOT_PATH . "includes/raketenangriff.php")) {
 	include(ROOT_PATH . "includes/raketenangriff.php");
 } elseif (file_exists("includes/raketenangriff.php")) {
@@ -44,7 +40,7 @@ if (file_exists(ROOT_PATH . "includes/raketenangriff.php")) {
 if (isset($resource) && !empty($resource[401])) {
 	$iraks = doquery("SELECT * FROM {{table}} WHERE zeit <= '" . time() . "'", 'iraks');
 
-	while ($selected_row = mysql_fetch_array($iraks)) {
+	while ($selected_row = $iraks->fetch(PDO::FETCH_BOTH)) {
 		if ($selected_row['zeit'] != '' && $selected_row['galaxy'] != '' && $selected_row['system'] != '' && $selected_row['planet'] != '' && is_numeric($selected_row['owner']) && is_numeric($selected_row['zielid']) && is_numeric($selected_row['anzahl']) && !empty($selected_row['anzahl'])) {
 			$planetrow = doquery("SELECT * FROM {{table}} WHERE
 								galaxy = '" . $selected_row['galaxy'] . "' AND

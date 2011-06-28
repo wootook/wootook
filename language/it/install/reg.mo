@@ -29,10 +29,6 @@
  */
 
 
-if (!defined('INSIDE')) {
-	die("attemp hacking");
-}
-
 // Registration form
 $lang['registry']          = 'Registrazione';
 $lang['form']              = 'Modulo registrazione';

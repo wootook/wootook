@@ -78,13 +78,10 @@ class Legacies_Empire_Model_Planet_Builder
      *
      * @return Legacies_Empire_Model_Planet_Building_Shipyard
      */
-    public function updateQueue($time = null)
+    public function updateQueue($time)
     {
         $fields = Legacies_Empire_Model_Game_FieldsAlias::getSingleton();
 
-        if ($time === null) {
-            $time = Legacies::now();
-        }
         $elapsedTime = $time - $this->_currentPlanet->getData('b_building');
 
         foreach ($this->getQueue() as $element) {
@@ -97,6 +94,7 @@ class Legacies_Empire_Model_Planet_Builder
                 $this->_currentPlanet->setElement($buildingId, $level);
                 $this->_currentPlanet->updateResourceProduction($time - $elapsedTime);
                 $this->_currentPlanet->updateStorages($time - $elapsedTime);
+                $this->_currentPlanet->updateBuildingFields();
                 $this->dequeue($element);
 
                 Legacies::dispatchEvent('planet.building.level-update', array(

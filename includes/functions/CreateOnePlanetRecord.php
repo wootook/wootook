@@ -36,6 +36,7 @@
  */
 function PlanetSizeRandomiser ($Position, $HomeWorld = false) {
 	global $gameConfig;
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	if (!$HomeWorld) {
 		$ClassicBase      = 163;

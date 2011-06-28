@@ -39,6 +39,7 @@
  */
 function ShowGalaxyMISelector ( $Galaxy, $System, $Planet, $Current, $MICount ) {
 	global $lang;
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	$Result  = "<form action=\"raketenangriff.php?c=".$Current."&mode=2&galaxy=".$Galaxy."&system=".$System."&planet=".$Planet."\" method=\"POST\">";
 	$Result .= "<tr>";

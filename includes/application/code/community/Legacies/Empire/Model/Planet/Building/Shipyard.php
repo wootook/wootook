@@ -207,13 +207,13 @@ class Legacies_Empire_Model_Planet_Building_Shipyard
 
     /**
      * Return the construction queue
-     * @see Legacies_Empire_Model_Planet_Building_Shipyard_Item
+     * @see Legacies_Empire_Model_Planet_Building_Shipyard_Builder
      *
      * @return array
      */
-    public function getQueue()
+    public function getBuilder()
     {
-        return $this->_queue;
+        return $this->_builder;
     }
 
     /**

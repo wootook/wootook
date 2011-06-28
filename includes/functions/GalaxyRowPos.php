@@ -35,6 +35,7 @@
  * @param unknown_type $GalaxyRow
  */
 function GalaxyRowPos ( $Planet, $GalaxyRow ) {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	// Pos
 	$Result  = "<th width=30>";
 	$Result .= "<a href=\"#\"";

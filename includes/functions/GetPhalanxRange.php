@@ -34,6 +34,7 @@
  * @param unknown_type $PhalanxLevel
  */
 function GetPhalanxRange ( $PhalanxLevel ) {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	// Niveau                       1  2  3  4  5  6  7  = lvl
 	// Portée ajouté                0  3  5  7  9 11 13  = (lvl * 2) - 1
 	// Phalanx en nbre de systemes  0  3  8 15 24 35 48  =

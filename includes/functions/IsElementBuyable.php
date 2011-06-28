@@ -39,6 +39,7 @@
  */
 function IsElementBuyable ($CurrentUser, $CurrentPlanet, $Element, $Incremental = true, $ForDestroy = false) {
     global $pricelist, $resource;
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
     if (IsVacationMode($CurrentUser)) {
         return false;

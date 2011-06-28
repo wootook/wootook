@@ -33,90 +33,79 @@
  * @deprecated
  * @param unknown_type $planet
  */
-function FlyingFleetHandler (&$planet) {
-	global $resource;
+function FlyingFleetHandler($planet) {
+    global $resource;
 
-	doquery("LOCK TABLE {{table}}lunas WRITE, {{table}}rw WRITE, {{table}}errors WRITE, {{table}}messages WRITE, {{table}}fleets WRITE, {{table}}planets WRITE, {{table}}galaxy WRITE ,{{table}}users WRITE", "");
+    //trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    $sql =<<<SQL_EOF
+LOCK TABLE
+     {{table}}lunas WRITE,
+     {{table}}rw WRITE,
+     {{table}}errors WRITE,
+     {{table}}messages WRITE,
+     {{table}}fleets WRITE,
+     {{table}}planets WRITE,
+     {{table}}galaxy WRITE,
+     {{table}}users WRITE
+SQL_EOF;
+    //doquery($sql, ''); // FIXME: use transactions
 
-	$QryFleet   = "SELECT * FROM {{table}} ";
-	$QryFleet  .= "WHERE (";
-	$QryFleet  .= "( ";
-	$QryFleet  .= "`fleet_start_galaxy` = ". $planet['galaxy']      ." AND ";
-	$QryFleet  .= "`fleet_start_system` = ". $planet['system']      ." AND ";
-	$QryFleet  .= "`fleet_start_planet` = ". $planet['planet']      ." AND ";
-	$QryFleet  .= "`fleet_start_type` = ".   $planet['planet_type'] ." ";
-	$QryFleet  .= ") OR ( ";
-	$QryFleet  .= "`fleet_end_galaxy` = ".   $planet['galaxy']      ." AND ";
-	$QryFleet  .= "`fleet_end_system` = ".   $planet['system']      ." AND ";
-	$QryFleet  .= "`fleet_end_planet` = ".   $planet['planet']      ." ) AND ";
-	$QryFleet  .= "`fleet_end_type`= ".      $planet['planet_type'] ." ) AND ";
-	$QryFleet  .= "( `fleet_start_time` < '". time() ."' OR `fleet_end_time` < '". time() ."' );";
-	$fleetquery = doquery( $QryFleet, 'fleets' );
+    if (!$planet instanceof Legacies_Empire_Model_Planet) {var_dump($planet);}
+    foreach ($planet->getFleetCollection(Legacies::now()) as $CurrentFleet) {
+        var_dump($CurrentFleet);
+        switch ($CurrentFleet["fleet_mission"]) {
+            case Legacies_Empire::ID_MISSION_ATTACK:
+                // Attaquer
+                MissionCaseAttack ( $CurrentFleet );
+                break;
 
-	while ($CurrentFleet = mysql_fetch_array($fleetquery)) {
-		switch ($CurrentFleet["fleet_mission"]) {
-			case 1:
-				// Attaquer
-				MissionCaseAttack ( $CurrentFleet );
-				break;
+            case Legacies_Empire::ID_MISSION_TRANSPORT:
+                // Transporter
+                MissionCaseTransport ( $CurrentFleet );
+                break;
 
-			case 2:
-				// Attaque groupée
-				doquery ("DELETE FROM {{table}} WHERE `fleet_id` = '". $CurrentFleet['fleet_id'] ."';", 'fleets');
-				break;
+            case Legacies_Empire::ID_MISSION_STATION:
+                // Stationner
+                MissionCaseStay ( $CurrentFleet );
+                break;
 
-			case 3:
-				// Transporter
-				MissionCaseTransport ( $CurrentFleet );
-				break;
+            case Legacies_Empire::ID_MISSION_STATION_ALLY:
+                // Stationner chez un Allié
+                MissionCaseStayAlly ( $CurrentFleet );
+                break;
 
-			case 4:
-				// Stationner
-				MissionCaseStay ( $CurrentFleet );
-				break;
+            case Legacies_Empire::ID_MISSION_SPY:
+                // Flotte d'espionnage
+                MissionCaseSpy ( $CurrentFleet );
+                break;
 
-			case 5:
-				// Stationner chez un Allié
-			MissionCaseStayAlly ( $CurrentFleet );
-				break;
+            case Legacies_Empire::ID_MISSION_SETTLE_COLONY:
+                // Coloniser
+                MissionCaseColonisation ( $CurrentFleet );
+                break;
 
-			case 6:
-				// Flotte d'espionnage
-				MissionCaseSpy ( $CurrentFleet );
-				break;
+            case Legacies_Empire::ID_MISSION_RECYCLE:
+                // Recyclage
+                MissionCaseRecycling ( $CurrentFleet );
+                break;
 
-			case 7:
-				// Coloniser
-				MissionCaseColonisation ( $CurrentFleet );
-				break;
+            case Legacies_Empire::ID_MISSION_DESTROY:
+                // Detruire ??? dans le code ogame c'est 9 !!
+                MissionCaseDestruction ( $CurrentFleet );
+                break;
 
-			case 8:
-				// Recyclage
-				MissionCaseRecycling ( $CurrentFleet );
-				break;
+            case Legacies_Empire::ID_MISSION_EXPEDITION:
+                // Expeditions
+                MissionCaseExpedition ( $CurrentFleet );
+                break;
 
-			case 9:
-				// Detruire ??? dans le code ogame c'est 9 !!
-				MissionCaseDestruction ( $CurrentFleet );
-				break;
+            case Legacies_Empire::ID_MISSION_GROUP_ATTACK: // TODO: implement mission type
+            case Legacies_Empire::ID_MISSION_MISSILES:     // TODO: implement mission type
+            default:
+                $CurrentFleet->delete();
+                break;
+        }
+    }
 
-			case 10:
-				// Missiles !!
-
-				break;
-
-			case 15:
-				// Expeditions
-				MissionCaseExpedition ( $CurrentFleet );
-				break;
-
-			default: {
-				doquery("DELETE FROM {{table}} WHERE `fleet_id` = '". $CurrentFleet['fleet_id'] ."';", 'fleets');
-			}
-		}
-	}
-
-	doquery("UNLOCK TABLES", "");
+    //doquery("UNLOCK TABLES", ""); // FIXME: use transactions
 }
-
-?>

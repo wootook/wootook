@@ -40,6 +40,7 @@
  * @param unknown_type $PlanetType
  */
 function GalaxyRowActions ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowPlayer, $Galaxy, $System, $Planet, $PlanetType ) {
+    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	global $lang, $user, $dpath, $CurrentMIP, $CurrentSystem, $CurrentGalaxy;
 	// Icones action
 	$Result  = "<th style=\"white-space: nowrap;\" width=125>";
