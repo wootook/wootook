@@ -34,11 +34,9 @@
  * @param unknown_type $CurrentPlanet
  * @param unknown_type $CurrentUser
  */
-function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser) {
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
-	global $lang, $resource, $reslist, $dpath, $gameConfig, $_GET;
-
-	CheckPlanetUsedFields ( $CurrentPlanet );
+function BatimentBuildingPage($CurrentPlanet, $CurrentUser)
+{
+	global $lang, $resource, $reslist, $dpath, $gameConfig;
 
 	// Tables des batiments possibles par type de planete
 	$Allowed['1'] = array(  1,  2,  3,  4, 12, 14, 15, 21, 22, 23, 24, 31, 33, 34, 44);
@@ -100,14 +98,7 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser) {
 		}
 	}
 
-	SetNextQueueElementOnTop ( $CurrentPlanet, $CurrentUser );
-
 	$Queue = ShowBuildingQueue ( $CurrentPlanet, $CurrentUser );
-
-	// On enregistre ce que l'on a modifi� dans planet !
-	BuildingSavePlanetRecord ( $CurrentPlanet );
-	// On enregistre ce que l'on a eventuellement modifi� dans users
-	BuildingSaveUserRecord ( $CurrentUser );
 
 	if ($Queue['lenght'] < MAX_BUILDING_QUEUE_SIZE) {
 		$CanBuildElement = true;
@@ -206,4 +197,3 @@ function BatimentBuildingPage (&$CurrentPlanet, $CurrentUser) {
 
 	display($page, $lang['Builds']);
 }
-?>

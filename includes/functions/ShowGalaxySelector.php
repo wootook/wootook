@@ -36,7 +36,6 @@
  */
 function ShowGalaxySelector ( $Galaxy, $System ) {
 	global $lang;
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	if ($Galaxy > MAX_GALAXY_IN_WORLD) {
 		$Galaxy = MAX_GALAXY_IN_WORLD;

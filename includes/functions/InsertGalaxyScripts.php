@@ -34,7 +34,7 @@
  */
 function InsertGalaxyScripts ( $CurrentPlanet ) {
 	global $lang;
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+
 	$Script  = "<div style=\"top: 10px;\" id=\"content\">";
 	$Script .= "<script language=\"JavaScript\">\n";
 	$Script .= "function galaxy_submit(value) {\n";

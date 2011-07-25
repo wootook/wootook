@@ -36,7 +36,6 @@
  */
 function ShowGalaxyTitles ( $Galaxy, $System ) {
 	global $lang;
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	$Result  = "\n";
 	$Result .= "<tr>";

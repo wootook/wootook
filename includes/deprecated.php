@@ -426,3 +426,101 @@ function CalculateMaxPlanetFields($currentPlanet)
 
     return max(1, $currentPlanet['field_max'] + ($currentPlanet->getElement(Legacies_Empire::ID_BUILDING_TERRAFORMER) * 5));
 }
+
+
+/**
+ *
+ * @deprecated
+ * @param Legacies_Empire_Model_User|array $currentUser
+ * @param Legacies_Empire_Model_Planet|array $currentPlanet
+ */
+function AbandonColony($currentUser, $currentPlanet)
+{
+    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+
+    if (!$currentPlanet instanceof Legacies_Empire_Model_Planet) {
+        trigger_error('$currentPlanet should be an instance of Legacies_Empire_Model_Planet', E_USER_WARNING);
+        $currentPlanet = Legacies_Empire_Model_Planet::factory($currentPlanet['id']);
+    }
+
+    try {
+        $currentPlanet->destroy();
+    } catch (Legacies_Core_Model_Exception $e) {
+        Legacies_Core_Model_Session::factory('empire')->addCritical($e->getMessage());
+    } catch (Legacies_Empire_Model_Planet_Exception $e) {
+        Legacies_Core_Model_Session::factory('empire')->addError($e->getMessage());
+    }
+}
+
+/**
+ *
+ * @deprecated
+ * @param Legacies_Empire_Model_Planet|array $currentPlanet
+ */
+function CheckFleets($currentPlanet)
+{
+    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+
+    if (!$currentPlanet instanceof Legacies_Empire_Model_Planet) {
+        trigger_error('$currentPlanet should be an instance of Legacies_Empire_Model_Planet', E_USER_WARNING);
+        $currentPlanet = Legacies_Empire_Model_Planet::factory($currentPlanet['id']);
+    }
+
+    return (bool) ($currentPlanet->getFleetCollection()->count() > 0);
+}
+
+/**
+ *
+ * @deprecated
+ * @param Legacies_Empire_Model_User|array $currentUser
+ * @param Legacies_Empire_Model_Planet|array $currentPlanet
+ */
+function CancelBuildingFromQueue($currentPlanet, $currentUser)
+{
+    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+
+    if (!$currentPlanet instanceof Legacies_Empire_Model_Planet) {
+        trigger_error('$currentPlanet should be an instance of Legacies_Empire_Model_Planet', E_USER_WARNING);
+        $currentPlanet = Legacies_Empire_Model_Planet::factory($currentPlanet['id']);
+    }
+
+    if ($currentPlanet->getBuildingQueue()->count() <= 0) {
+        return false;
+    }
+
+    $currentPlanet->dequeueBuilding();
+
+    return true;
+}
+
+/**
+ *
+ * @deprecated
+ * @param string $page The page content
+ * @param string $title The page title
+ * @param bool $topnav Wether we show the top navigation or not
+ * @param null $metatags Extra meta tags
+ * @param bool $AdminPage unused
+ */
+function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false)
+{
+    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+
+    // TODO: implement extra meta tags
+    $layout = new Legacies_Core_Layout();
+    $layout->load('1column');
+    $content = $layout->getBlock('content');
+
+    if ($topnav) {
+        $topnav = $layout->createBlock('empire/topnav', 'topnav');
+        $topnav->setTemplate('empire/topnav.phtml');
+        $content->topnav = $topnav;
+    }
+
+    $pageContent = $layout->createBlock('core/text', 'content');
+    $pageContent->setContent($page);
+    $content->page = $pageContent;
+
+    echo $layout->render();
+    exit(0);
+}

@@ -206,8 +206,18 @@ function saveToFile($filename, $content) {
     $content = file_put_contents($filename, $content);
 }
 
-function parsetemplate($template, $array) {
-    return preg_replace('#\{([a-z0-9\-_]*?)\}#Ssie', '( ( isset($array[\'\1\']) ) ? $array[\'\1\'] : \'\' );', $template);
+function parsetemplate($template, $array)
+{
+    static $baseUrl = null;
+    if ($baseUrl === null) {
+        $user = Legacies_Empire_Model_User::getSingleton();
+        if ($user !== null && $user->getId() && ($baseUrl = $user->getSkinPath()) == '') {
+            $baseUrl = DEFAULT_SKINPATH;
+        }
+    }
+    $array['dpath'] = $baseUrl;
+
+    return preg_replace('#\{([a-z0-9\-_]*?)\}#Ssie', 'isset($array["\1"]) ? $array["\1"] : "";', $template);
 }
 
 function getTemplate($templateName) {
@@ -224,26 +234,30 @@ function getTemplate($templateName) {
  * @param string $extension
  * @return void
  */
-function includeLang($filename, $extension = '.mo')
+function includeLang($filename, $extension = 'mo')
 {
     global $lang, $user;
 
-    $pathPattern = ROOT_PATH . "language/%s/{$filename}%s";
+    $pathPattern = ROOT_PATH . "language/%s/{$filename}.%s";
     if (isset($user['lang']) && !empty($user['lang'])) {
-        if($fp = @fopen($filename = sprintf($pathPattern, $user['lang'], '.csv'), 'r', true)) {
+        if (($fp = @fopen($filename = sprintf($pathPattern, $user['lang'], $extension), 'r', false)) !== false) {
             fclose($fp);
 
             require_once $filename;
             return;
-        } else if ($fp = @fopen($filename = sprintf($pathPattern, $user['lang'], $extension), 'r', true)) {
+        } else if (($fp = @fopen($filename = sprintf($pathPattern, $user['lang'], 'csv'), 'r', false)) !== false) {
+            while (!feof($fp)) {
+                $line = fgetcsv($fp);
+                if (count($line) == 2 && !empty($line[0])) {
+                    $lang[$line[0]] = $line[1];
+                }
+            }
             fclose($fp);
-
-            require_once $filename;
             return;
         }
     }
 
-    require_once sprintf($pathPattern, DEFAULT_LANG, '.mo');
+    require_once sprintf($pathPattern, DEFAULT_LANG, 'mo');
     return;
 }
 

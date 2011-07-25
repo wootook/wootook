@@ -35,7 +35,6 @@
  */
 function MissionCaseExpedition ( $FleetRow ) {
 	global $lang, $resource, $pricelist;
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	$FleetOwner = $FleetRow['fleet_owner'];
 	$MessSender = $lang['sys_mess_qg'];

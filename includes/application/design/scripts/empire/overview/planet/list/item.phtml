@@ -1,0 +1,10 @@
+<th>
+  <h1><?php echo $this->escape($this['planet']->getData('name'))?></h1>
+  <p><a href="<?php echo $this->getUrl('overview.php', array('cp' => $this['planet']->getId()))?>" title="<?php echo $this->escape($this['planet']->getData('name'))?>">
+    <img src="<?php echo $this->getUrl('planeten/small/s_' . $this['planet']->getData('image') . '.jpg')?>" height="50" width="50" />
+  </a></p>
+  <?php if ($this['queue']->count() > 0):?>
+  <p><?php echo $this->escape($this['queue_item']->getData('building_id'))?></p>
+  <?php else:?>
+  <p><?php echo $this->__('Idle.')?></p>
+  <?php endif?>

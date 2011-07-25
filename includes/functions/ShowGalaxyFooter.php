@@ -39,7 +39,6 @@
  */
 function ShowGalaxyFooter ( $Galaxy, $System,  $CurrentMIP, $CurrentRC, $CurrentSP) {
 	global $lang, $maxfleet_count, $fleetmax, $planetcount;
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	$Result  = "";
 	if ($planetcount == 1) {

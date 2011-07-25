@@ -40,7 +40,6 @@
  * @param unknown_type $PlanetType
  */
 function GalaxyRowPlanet ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $Galaxy, $System, $Planet, $PlanetType ) {
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	global $lang, $dpath, $user, $HavePhalanx, $CurrentSystem, $CurrentGalaxy;
 
 	// Planete (Image)

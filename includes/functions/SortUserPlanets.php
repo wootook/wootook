@@ -36,7 +36,6 @@
 function SortUserPlanets ( $CurrentUser ) {
 	$Order = ( $CurrentUser['planet_sort_order'] == 1 ) ? "DESC" : "ASC" ;
 	$Sort  = $CurrentUser['planet_sort'];
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	$QryPlanets  = "SELECT `id`, `name`, `galaxy`, `system`, `planet`, `planet_type` FROM {{table}} WHERE `id_owner` = '". $CurrentUser['id'] ."' ORDER BY ";
 	if       ( $Sort == 0 ) {

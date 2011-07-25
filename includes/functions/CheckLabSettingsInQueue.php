@@ -34,7 +34,6 @@
  * @param unknown_type $CurrentPlanet
  */
 function CheckLabSettingsInQueue ( $CurrentPlanet ) {
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	global $lang, $gameConfig;
 
 	if ($CurrentPlanet['b_building_id'] != "0") {

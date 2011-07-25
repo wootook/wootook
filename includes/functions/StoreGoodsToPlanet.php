@@ -36,7 +36,6 @@
  */
 function StoreGoodsToPlanet ( $FleetRow, $Start = false ) {
 	global $resource;
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 
 	$QryUpdatePlanet   = "UPDATE {{table}} SET ";

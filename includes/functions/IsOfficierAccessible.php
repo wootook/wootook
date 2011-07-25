@@ -37,7 +37,6 @@
 function IsOfficierAccessible ($CurrentUser, $Officier) {
 	global $requirements, $resource, $pricelist;
 
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	if (isset($requirements[$Officier])) {
 		$enabled = true;
 		foreach($requirements[$Officier] as $ReqOfficier => $OfficierLevel) {

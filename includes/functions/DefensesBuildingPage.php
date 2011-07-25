@@ -36,7 +36,6 @@
  */
 function DefensesBuildingPage ( &$currentPlanet, $currentUser ) {
     global $lang, $resource, $dpath;
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
     // S'il n'y a pas de Chantier
     if (!isset($currentPlanet[$resource[Legacies_Empire::ID_BUILDING_SHIPYARD]]) || $currentPlanet[$resource[Legacies_Empire::ID_BUILDING_SHIPYARD]] == 0) {

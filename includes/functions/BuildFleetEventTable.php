@@ -38,7 +38,6 @@
  * @param unknown_type $Record
  */
 function BuildFleetEventTable ( $FleetRow, $Status, $Owner, $Label, $Record ) {
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	global $lang;
 
 	$FleetStyle  = array (

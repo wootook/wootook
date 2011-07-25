@@ -36,7 +36,6 @@
  */
 function ShowTopNavigationBar ( $CurrentUser, $CurrentPlanet ) {
 	global $lang, $_GET;
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 //	debug_print_backtrace();
 

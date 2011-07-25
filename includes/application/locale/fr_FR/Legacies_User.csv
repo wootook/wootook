@@ -2,3 +2,5 @@
 "Your username or credential is invalid, please check your input.","Your username or credential is invalid, please check your input."
 "No such user.","No such user."
 "You were banned, please contact admin for more information.","You were banned, please contact admin for more information."
+"You have 1 unread message.","Vous avez un message non lu."
+"You have %1$d unread messages.","Vous avez %1$d messages non lus."

@@ -32,33 +32,32 @@ define('INSIDE' , true);
 define('INSTALL' , false);
 require_once dirname(__FILE__) .'/common.php';
 
-	includeLang('buildings');
+includeLang('buildings');
 
-	// Mise a jour de la liste de construction si necessaire
-	UpdatePlanetBatimentQueueList ( $planetrow, $user );
-	$IsWorking = HandleTechnologieBuild ( $planetrow, $user );
+$user = Legacies_Empire_Model_User::getSingleton();
+$planet = $user->getCurrentPlanet();
 
-	switch ($_GET['mode']) {
-		case 'fleet':
-			// --------------------------------------------------------------------------------------------------
-			FleetBuildingPage ( $planetrow, $user );
-			break;
+switch ($_GET['mode']) {
+	case 'fleet':
+		// --------------------------------------------------------------------------------------------------
+		FleetBuildingPage($planet, $user);
+		break;
 
-		case 'research':
-			// --------------------------------------------------------------------------------------------------
-			ResearchBuildingPage ( $planetrow, $user, $IsWorking['OnWork'], $IsWorking['WorkOn'] );
-			break;
+	case 'research':
+		// --------------------------------------------------------------------------------------------------
+		ResearchBuildingPage($planet, $user, $IsWorking['OnWork'], $IsWorking['WorkOn'] );
+		break;
 
-		case 'defense':
-			// --------------------------------------------------------------------------------------------------
-			DefensesBuildingPage ( $planetrow, $user );
-			break;
+	case 'defense':
+		// --------------------------------------------------------------------------------------------------
+		DefensesBuildingPage($planet, $user);
+		break;
 
-		default:
-			// --------------------------------------------------------------------------------------------------
-			BatimentBuildingPage ( $planetrow, $user );
-			break;
-	}
+	default:
+		// --------------------------------------------------------------------------------------------------
+		BatimentBuildingPage($planet, $user);
+		break;
+}
 
 // -----------------------------------------------------------------------------------------------------------
 // History version

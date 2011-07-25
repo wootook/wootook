@@ -87,12 +87,24 @@ $data = array(
 $planet = new Legacies_Empire_Model_Planet($data);
 
 $planet->setUser($user);
+var_dump(array('$planet->setUser($user)', array_diff($planet->getAllDatas(), $data)));
+$data = $planet->getAllDatas();
 
 $planet->updateStorages(0);
+var_dump(array('$planet->updateStorages(0)', array_diff($planet->getAllDatas(), $data)));
+$data = $planet->getAllDatas();
+
 $planet->updateResourceProduction(0);
+var_dump(array('$planet->updateResourceProduction(0)', array_diff($planet->getAllDatas(), $data)));
+$data = $planet->getAllDatas();
 
 $planet->getShipyard()->appendQueue(Legacies_Empire::ID_SHIP_LIGHT_FIGHTER, 10, 0);
+var_dump(array('$planet->getShipyard()->appendQueue(Legacies_Empire::ID_SHIP_LIGHT_FIGHTER, 10, 0)', array_diff($planet->getAllDatas(), $data)));
+$data = $planet->getAllDatas();
+
 $planet->appendBuildingQueue(Legacies_Empire::ID_BUILDING_CRISTAL_MINE, false, 0);
+var_dump(array('$planet->appendBuildingQueue(Legacies_Empire::ID_BUILDING_CRISTAL_MINE, false, 0)', array_diff($planet->getAllDatas(), $data)));
+$data = $planet->getAllDatas();
 
 var_dump(array_diff($planet->getAllDatas(), $data));
 $data = $planet->getAllDatas();

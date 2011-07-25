@@ -41,7 +41,6 @@
  */
 function SendSimpleMessage ( $Owner, $Sender, $Time, $Type, $From, $Subject, $Message) {
 	global $messfields;
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	if ($Time == '') {
 		$Time = time();

@@ -36,7 +36,6 @@
  */
 function ShowGalaxyRows ($Galaxy, $System) {
 	global $lang, $planetcount, $CurrentRC, $dpath, $user;
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	$Result = "";
 	for ($Planet = 1; $Planet < 16; $Planet++) {

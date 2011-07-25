@@ -36,7 +36,6 @@
 function FlyingFleetHandler($planet) {
     global $resource;
 
-    //trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
     $sql =<<<SQL_EOF
 LOCK TABLE
      {{table}}lunas WRITE,
@@ -50,9 +49,7 @@ LOCK TABLE
 SQL_EOF;
     //doquery($sql, ''); // FIXME: use transactions
 
-    if (!$planet instanceof Legacies_Empire_Model_Planet) {var_dump($planet);}
     foreach ($planet->getFleetCollection(Legacies::now()) as $CurrentFleet) {
-        var_dump($CurrentFleet);
         switch ($CurrentFleet["fleet_mission"]) {
             case Legacies_Empire::ID_MISSION_ATTACK:
                 // Attaquer

@@ -28,8 +28,12 @@
  *
  */
 
-require_once (ROOT_PATH . 'includes/deprecated.php');
+require_once ROOT_PATH . 'includes/deprecated.php';
 
+/**
+ * @deprecated
+ * {{{
+ */
 include(ROOT_PATH . 'includes/functions/FlyingFleetHandler.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/MissionCaseAttack.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/MissionCaseStay.'.PHPEXT);
@@ -92,7 +96,7 @@ include(ROOT_PATH . 'includes/functions/HandleTechnologieBuild.'.PHPEXT);
 //include(ROOT_PATH . 'includes/functions/BuildingSavePlanetRecord.'.PHPEXT);
 //include(ROOT_PATH . 'includes/functions/BuildingSaveUserRecord.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/RemoveBuildingFromQueue.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/CancelBuildingFromQueue.'.PHPEXT);
+//include(ROOT_PATH . 'includes/functions/CancelBuildingFromQueue.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/SetNextQueueElementOnTop.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/ShowTopNavigationBar.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/SetSelectedPlanet.'.PHPEXT);
@@ -108,4 +112,6 @@ include(ROOT_PATH . 'includes/functions/SortUserPlanets.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/BuildFleetEventTable.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/ResetThisFuckingCheater.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/IsVacationMode.'.PHPEXT);
-
+/**
+ * }}}
+ */

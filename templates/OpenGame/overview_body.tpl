@@ -1,7 +1,7 @@
 <script language="JavaScript" type="text/javascript" src="scripts/time.js"></script>
 <br>
 <table width="519">
-	<tr><td class="c" colspan="4"><a href="overview.php?mode=renameplanet" title="{Planet_menu}">{Planet} "{planet_name}"</a> ({user_username})</td></tr>
+	<tr><td class="c" colspan="4"><a href="overview.php?action=rename" title="{Planet_menu}">{Planet} "{planet_name}"</a> ({user_username})</td></tr>
 	{Have_new_message}
 	{Have_new_level_mineur}
 	{Have_new_level_raid}
@@ -14,12 +14,12 @@
 	</tr>
 	{fleet_list}
 	<tr><th>{moon_img}<br>{moon}</th>
-	<th colspan="2"><img src="{dpath}planeten/{planet_image}.jpg" height="200" width="200"><br>{building}</th>
+	<th colspan="2"><img src="{dpath}graphics/planeten/{planet_image}.jpg" height="200" width="200"><br>{building}</th>
 	<th class="s"><table class="s" align="top" border="0"><tr>{anothers_planets}</tr></table></th></tr>
 	<tr><th>{Diameter}</th>
 	<th colspan="3">{planet_diameter} km (<a title="{Developed_fields}">{planet_field_current}</a> / <a title="{max_eveloped_fields}">{planet_field_max}</a> {fields})</th></tr>
 	<th>{Developed_fields}</th>
-	<th colspan="3" align="center"><div  style="border: 1px solid rgb(153, 153, 255); width: 400px;"><div  id="CaseBarre" style="background-color: {case_barre_barcolor}; width: {case_barre}px;"><font color="#CCF19F">{case_pourcentage}</font></div></th>
+	<th colspan="3" align="center"><div  style="border: 1px solid rgb(153, 153, 255); width: 400px;"><div  id="CaseBarre" style="background-color: {case_barre_barcolor}; width: {case_barre}%;"><font color="#CCF19F">{case_pourcentage}</font></div></th>
 	<tr><tr><th>{ov_off_level}</th><th colspan="3" align="center"><table border="0" width="100%"><tbody><tr>
 		<td align="center" width="50%" style="background-color: transparent;"><b>{ov_off_mines} : {lvl_minier}</b></td>
 		<td align="center" width="50%" style="background-color: transparent;"><b>{ov_off_raids} : {lvl_raid}</b></td></tr></tbody></table></th></tr>

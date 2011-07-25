@@ -34,7 +34,6 @@
  */
 function GetMissileRange () {
 	global $resource, $user;
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	if ($user[$resource[117]] > 0) {
 		$MissileRange = ($user[$resource[117]] * 5) - 1;

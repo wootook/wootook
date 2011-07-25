@@ -69,3 +69,6 @@ define('BASE_STORAGE_SIZE', 100000);
 define('BUILD_METAL', 500);
 define('BUILD_CRISTAL', 500);
 define('BUILD_DEUTERIUM', 0);
+
+// Chemin vers le skin de base
+define('DEFAULT_SKINPATH', 'skin/default/');

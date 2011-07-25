@@ -1,0 +1,10 @@
+<form name="destroy-planet" id="overview:destroy-planet" method="post" action="">
+  <fieldset>
+    <input type="hidden" name="form_key" value="<?php echo $this->getFormKey()?>" />
+    <label for="overview:destroy-planet:password"><?php echo $this->__('Password:')?></label>
+    <input id="overview:destroy-planet:password" type="password" name="password" />
+    <label for="overview:destroy-planet:confirm"><?php echo $this->__('I want to destroy this planet')?></label>
+    <input id="overview:destroy-planet:confirm" type="checkbox" name="confirm" />
+    <input type="submit" />
+  </fieldset>
+</form>

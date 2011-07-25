@@ -35,7 +35,6 @@
  */
 function ShowBuildingQueue ( $CurrentPlanet, $CurrentUser ) {
 	global $lang;
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	$CurrentQueue  = $CurrentPlanet['b_building_id'];
 	$QueueID       = 0;

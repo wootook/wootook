@@ -40,8 +40,6 @@ function ResearchBuildingPage (&$CurrentPlanet, $CurrentUser, $InResearch, $TheP
 {
 	global $lang, $resource, $reslist, $dpath, $gameConfig, $_GET;
 
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
-
 	$NoResearchMessage = "";
 	$bContinue         = true;
 	// Deja est qu'il y a un laboratoire sur la planete ???

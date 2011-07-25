@@ -28,8 +28,25 @@
  *
  */
 
-if (!defined('DEBUG') && in_array(strtolower(getenv('DEBUG')), array('1', 'on', 'true'))) {
+define('DEPRECATION', true);
+define('DEBUG', true);
+
+if (!defined('DEBUG') && ($env = getenv('DEBUG')) !== false && in_array(strtolower($env), array('1', 'on', 'true'))) {
     define('DEBUG', true);
+} else if (!defined('DEBUG') && isset($_SERVER['DEBUG']) && in_array(strtolower($_SERVER['DEBUG']), array('1', 'on', 'true'))) {
+    define('DEBUG', true);
+}
+
+if (!defined('DEPRECATION') && ($env = getenv('DEPRECATION')) !== false && in_array(strtolower($env), array('1', 'on', 'true'))) {
+    define('DEPRECATION', true);
+} else if (!defined('DEPRECATION') && isset($_SERVER['DEPRECATION']) && in_array(strtolower($_SERVER['DEPRECATION']), array('1', 'on', 'true'))) {
+    define('DEPRECATION', true);
+}
+
+if (!defined('BCNUMBERS') && ($env = getenv('BCNUMBERS')) !== false && in_array(strtolower($env), array('1', 'on', 'true'))) {
+    define('BCNUMBERS', true);
+} else if (!defined('BCNUMBERS') && isset($_SERVER['BCNUMBERS']) && in_array(strtolower($_SERVER['BCNUMBERS']), array('1', 'on', 'true'))) {
+    define('BCNUMBERS', true);
 }
 
 if (!defined('DEBUG')) {
@@ -47,6 +64,7 @@ defined('PHPEXT') || define('PHPEXT', require 'extension.inc');
 defined('VERSION') || define('VERSION', '2011.1');
 
 set_include_path(implode(PATH_SEPARATOR, array(
+    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'libraries',
     APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'local',
     APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'community',
     APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'core',
@@ -57,7 +75,8 @@ function __autoload($class) {
     include_once str_replace('_', '/', $class) . '.php';
 }
 
-Legacies_Core_Error::register();
+Legacies_Core_Time::init();
+Legacies_Core_ErrorProfiler::register();
 
 if (0 === filesize(ROOT_PATH . 'config.php')) {
     header('Location: install/');
@@ -72,7 +91,6 @@ foreach (include ROOT_PATH . 'includes/data/events.php' as $event => $listenerLi
 
 $lang = array();
 
-define('DEFAULT_SKINPATH', 'skins/xnova/');
 define('TEMPLATE_DIR', realpath(ROOT_PATH . '/templates/'));
 define('TEMPLATE_NAME', 'OpenGame');
 define('DEFAULT_LANG', 'fr');
@@ -110,29 +128,16 @@ if (!defined('DISABLE_IDENTITY_CHECK')) {
 includeLang('system');
 includeLang('tech');
 
-include(ROOT_PATH . 'rak.php');
-
-$dpath = DEFAULT_SKINPATH;
 if (($user !== null && $user->getId())) {
-    $dpath = $user->getSkinPath();
-
-    if (empty($dpath)) {
-        $dpath = DEFAULT_SKINPATH;
-    }
-
-    if (defined('IN_ADMIN')) {
-        $dpath = '../' . $dpath;
-    }
-
     if (isset($_GET['cp']) && !empty($_GET['cp'])) {
         $user->updateCurrentPlanet((int) $_GET['cp']);
     }
 
+    $planet = $user->getCurrentPlanet();
+
     foreach ($user->getPlanetCollection() as $planet) {
         FlyingFleetHandler($planet); // TODO: implement logic into a refactored model
     }
-
-    $planet = $user->getCurrentPlanet();
 
     /*
      * Update planet resources and constructions

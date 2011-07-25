@@ -37,24 +37,29 @@ require_once dirname(__FILE__) . '/common.php';
 includeLang('login');
 
 if (!empty($_POST) && isset($_POST['username']) && isset($_POST['password'])) {
-    Legacies_Empire_Model_User::login($_POST['username'], $_POST['password'], isset($_POST['rememberme']));
+    $user = Legacies_Empire_Model_User::login($_POST['username'], $_POST['password'], isset($_POST['rememberme']) && !empty($_POST['rememberme']));
 
-    header("Location: frames.php");
+    $session = Legacies::getSession(Legacies_Empire_Model_User::SESSION_KEY);
+    if ($user !== null) {
+        header("Location: frames.php");
+    } else {
+        header("Location: login.php");
+    }
+    Legacies_Core_ErrorProfiler::unregister(true);
     exit(0);
-} else {
-    $parse                 = $lang;
-    $Count                 = doquery('SELECT COUNT(DISTINCT users.id) AS `players` FROM {{table}} AS users WHERE users.authlevel < 3', 'users', true);
-    $LastPlayer            = doquery('SELECT users.`username` FROM {{table}} AS users ORDER BY `register_time` DESC LIMIT 1', 'users', true);
-    $parse['last_user']    = $LastPlayer['username'];
-    $PlayersOnline         = doquery("SELECT COUNT(DISTINCT id) AS `onlinenow` FROM {{table}} AS users WHERE `onlinetime` > (UNIX_TIMESTAMP()-900) AND users.authlevel < 3", 'users', true);
-    $parse['online_users'] = $PlayersOnline['onlinenow'];
-    $parse['users_amount'] = $Count['players'];
-    $parse['servername']   = $gameConfig['game_name'];
-    $parse['forum_url']    = $gameConfig['forum_url'];
-    $parse['PasswordLost'] = $lang['PasswordLost'];
-
-    $page = parsetemplate(gettemplate('login_body'), $parse);
-
-    display($page, $lang['Login'], false);
 }
+$parse                 = $lang;
+$Count                 = doquery('SELECT COUNT(DISTINCT users.id) AS `players` FROM {{table}} AS users WHERE users.authlevel < 3', 'users', true);
+$LastPlayer            = doquery('SELECT users.`username` FROM {{table}} AS users ORDER BY `register_time` DESC LIMIT 1', 'users', true);
+$parse['last_user']    = $LastPlayer['username'];
+$PlayersOnline         = doquery("SELECT COUNT(DISTINCT id) AS `onlinenow` FROM {{table}} AS users WHERE `onlinetime` > (UNIX_TIMESTAMP()-900) AND users.authlevel < 3", 'users', true);
+$parse['online_users'] = $PlayersOnline['onlinenow'];
+$parse['users_amount'] = $Count['players'];
+$parse['servername']   = $gameConfig['game_name'];
+$parse['forum_url']    = $gameConfig['forum_url'];
+$parse['PasswordLost'] = $lang['PasswordLost'];
+
+$page = parsetemplate(gettemplate('login_body'), $parse);
+
+display($page, $lang['Login'], false);
 

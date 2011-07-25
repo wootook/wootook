@@ -37,7 +37,6 @@
  * @param unknown_type $Init
  */
 function InsertJavaScriptChronoApplet ( $Type, $Ref, $Value, $Init ) {
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	if ($Init == true) {
 		$JavaString  = "<script type=\"text/javascript\">\n";
 		$JavaString .= "function t". $Type . $Ref ."() {\n";

@@ -34,7 +34,6 @@
  */
 function MissionCaseRecycling ($FleetRow) {
 	global $pricelist, $lang;
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	if ($FleetRow["fleet_mess"] == "0") {
 		if ($FleetRow['fleet_start_time'] <= time()) {

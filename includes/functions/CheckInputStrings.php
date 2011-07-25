@@ -35,7 +35,5 @@
  */
 function CheckInputStrings($string)
 {
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
-
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }

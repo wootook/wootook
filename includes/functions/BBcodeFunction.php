@@ -34,7 +34,6 @@
  * @param unknown_type $string
  */
 function bbcode($string) {
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
     $pattern = array(
         '/\\n/',
         '/\\r/',
@@ -78,7 +77,6 @@ function bbcode($string) {
 
 function image($string)
         {
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 		//On va pas se casser le fion a lire les accents quand meme !!!!!!!
         $string = str_replace("&#39;", "'", $string);
 
@@ -101,14 +99,12 @@ function image($string)
 
 
 function sCode($string){
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
     $pattern =  '/\<img src=\\\"(.*?)img\/smilies\/(.*?).png\\\" alt=\\\"(.*?)\\\" \/>/s';
     $string = preg_replace($pattern, '\3', $string);
     return '<pre>' . trim($string) . '</pre>';
 }
 
 function sList($string) {
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
     $tmp = explode('[*]', stripslashes($string));
     $out = null;
     foreach($tmp as $list) {
@@ -120,7 +116,6 @@ function sList($string) {
 }
 
 function imagefix($img) {
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
     if(substr($img, 0, 7) != 'http://') {
         $img = './images/' . $img;
     }
@@ -128,7 +123,6 @@ function imagefix($img) {
 }
 
 function urlfix($url, $title) {
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
     $title = stripslashes($title);
     return '<a href="' . $url . '" title="' . $title . '">' . $title . '</a>';
 }

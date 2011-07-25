@@ -1,0 +1,11 @@
+<?php if ($this['count'] > 0):?>
+<tr>
+    <th colspan=4>
+    <?php if ($this['count'] == 1):?>
+        <a href=messages.php><?php echo $this->__('You have 1 unread message.')?></a>
+    <?php else:?>
+        <a href=messages.php><?php echo $this->__('You have %1$d unread messages.', $this['count'])?></a>
+    <?php endif?>
+    </th>
+</tr>
+<?php endif?>

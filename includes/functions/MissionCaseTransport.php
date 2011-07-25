@@ -35,7 +35,6 @@
  */
 function MissionCaseTransport ( $FleetRow ) {
 	global $lang;
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
 	$QryStartPlanet   = "SELECT * FROM {{table}} ";
 	$QryStartPlanet  .= "WHERE ";

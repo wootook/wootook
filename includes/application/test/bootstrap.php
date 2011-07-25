@@ -1,5 +1,7 @@
 <?php
 
+//define('BCNUMBERS', true);
+
 if (!defined('DEBUG') && in_array(strtolower(getenv('DEBUG')), array('1', 'on', 'true'))) {
     define('DEBUG', true);
 }
@@ -22,6 +24,7 @@ set_include_path(implode(PATH_SEPARATOR, array(
     APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'core',
     APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'community',
     APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'local',
+    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'libraries',
     get_include_path()
     )));
 

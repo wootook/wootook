@@ -1,0 +1,21 @@
+<?php return array(
+    'global' => array(
+        'date' => array(
+            'timezone' => 'Europe/Paris'
+            ),
+        'database' => array(
+            'engine' => 'mysql',
+            'options' => array(
+                'hostname' => 'localhost',
+                'username' => 'root',
+                'password' => '',
+                'database' => 'db_xnova'
+                ),
+            'table_prefix' => 'game_',
+            ),
+        'layout' => array(
+            'page'   => 'page.php',
+            'empire' => 'empire.php'
+            )
+        )
+    );

@@ -36,7 +36,6 @@
 function MissionCaseDestruction($FleetRow)
 {
    global $user, $pricelist, $lang, $resource, $CombatCaps, $gameConfig;
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
    includeLang('system');
 

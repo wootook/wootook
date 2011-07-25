@@ -36,7 +36,6 @@
  */
 function GetMaxConstructibleElements ($Element, $Ressources) {
 	global $pricelist;
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 	// On test les 4 Type de ressource pour voir si au moins on sait en construire 1
 	if ($pricelist[$Element]['metal'] != 0) {
 		$ResType_1_Needed = $pricelist[$Element]['metal'];
