@@ -193,39 +193,6 @@ function get_userdata () {
     return '';
 }
 
-// ----------------------------------------------------------------------------------------------------------------
-//
-// Fonction de lecture / ecriture / exploitation de templates
-//
-function ReadFromFile($filename) {
-    $content = @file_get_contents ($filename);
-    return $content;
-}
-
-function saveToFile($filename, $content) {
-    $content = file_put_contents($filename, $content);
-}
-
-function parsetemplate($template, $array)
-{
-    static $baseUrl = null;
-    if ($baseUrl === null) {
-        $user = Legacies_Empire_Model_User::getSingleton();
-        if ($user !== null && $user->getId() && ($baseUrl = $user->getSkinPath()) == '') {
-            $baseUrl = DEFAULT_SKINPATH;
-        }
-    }
-    $array['dpath'] = $baseUrl;
-
-    return preg_replace('#\{([a-z0-9\-_]*?)\}#Ssie', 'isset($array["\1"]) ? $array["\1"] : "";', $template);
-}
-
-function getTemplate($templateName) {
-
-    $filename = TEMPLATE_DIR . '/' . TEMPLATE_NAME . "/{$templateName}.tpl";
-
-    return ReadFromFile($filename);
-}
 
 /**
  * Gestion de la localisation des chaînes
@@ -244,7 +211,7 @@ function includeLang($filename, $extension = 'mo')
             fclose($fp);
 
             require_once $filename;
-            return;
+            return $lang;
         } else if (($fp = @fopen($filename = sprintf($pathPattern, $user['lang'], 'csv'), 'r', false)) !== false) {
             while (!feof($fp)) {
                 $line = fgetcsv($fp);
@@ -253,12 +220,12 @@ function includeLang($filename, $extension = 'mo')
                 }
             }
             fclose($fp);
-            return;
+            return $lang;
         }
     }
 
     require_once sprintf($pathPattern, DEFAULT_LANG, 'mo');
-    return;
+    return $lang;
 }
 
 // ----------------------------------------------------------------------------------------------------------------

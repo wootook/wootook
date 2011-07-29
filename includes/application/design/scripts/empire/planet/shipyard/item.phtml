@@ -1,0 +1,20 @@
+<?php /** @var Legacies_Core_Block_Template $this */?>
+<dt>
+    <h2><a href="<?php echo $this->getItemInfoUrl()?>"><?php echo $this->escape($this->getName())?></a> (<?php echo $this->renderNumber($this->getQty())?>)</h2>
+</dt>
+<dd>
+    <a href="<?php echo $this->getItemInfoUrl()?>" class="image"><img src="<?php echo $this->getItemImageUrl()?>" alt="" width="120" height="120" /></a>
+    <div class="details">
+        <p><?php echo $this->getDescription()?></p>
+        <ul>
+        <?php foreach ($this->getResourcesNeeded() as $resourceId => $resourceValue):?>
+            <li><span class="resource"><?php echo $this->getResourceName($resourceId)?></span><span class="cost"><?php echo $this->renderNumber($resourceValue)?></span></li>
+        <?php endforeach?>
+        </ul>
+    </div>
+    <div class="buy">
+        <p><input type="text" name="ship[<?php echo $this->getItemId()?>]" id="ship:<?php echo $this->getItemId()?>" /></p>
+        <input type="hidden" id="ship:<?php echo $this->getItemId()?>:max" value="<?php echo $this->escape($this->getMaximumBuildableElementsCount())?>" />
+        <p><a class="max" rel="ship:<?php echo $this->getItemId()?>"><?php echo $this->__('Max (%s)', $this->renderNumber($this->getMaximumBuildableElementsCount()))?></a></p>
+    </div>
+</dd>

@@ -9,6 +9,9 @@ if (!extension_loaded('xdebug')) {
 $user = new Legacies_Empire_Model_User(array(
     'rpg_stockeur' => 0,
 
+    'b_laboratory' => 0,
+    'b_laboratory_id' => serialize(array()),
+
     "spy_tech"              => 12,
     "computer_tech"         => 8,
     "military_tech"         => 10,
@@ -54,11 +57,11 @@ $data = array(
             'updated_at' => 700
         )*/)),
 
-    'metal'             => 100000,
+    'metal'             => 500000,
     'metal_perhour'     => 20,
-    'cristal'           => 100000,
+    'cristal'           => 500000,
     'cristal_perhour'   => 10,
-    'deuterium'         => 0,
+    'deuterium'         => 300000,
     'deuterium_perhour' => 0,
     'energy_max'        => 0,
     'energy_used'       => 0,
@@ -87,23 +90,28 @@ $data = array(
 $planet = new Legacies_Empire_Model_Planet($data);
 
 $planet->setUser($user);
-var_dump(array('$planet->setUser($user)', array_diff($planet->getAllDatas(), $data)));
+//var_dump(array('$planet->setUser($user)', array_diff($planet->getAllDatas(), $data)));
 $data = $planet->getAllDatas();
 
 $planet->updateStorages(0);
-var_dump(array('$planet->updateStorages(0)', array_diff($planet->getAllDatas(), $data)));
+//var_dump(array('$planet->updateStorages(0)', array_diff($planet->getAllDatas(), $data)));
 $data = $planet->getAllDatas();
 
 $planet->updateResourceProduction(0);
-var_dump(array('$planet->updateResourceProduction(0)', array_diff($planet->getAllDatas(), $data)));
+//var_dump(array('$planet->updateResourceProduction(0)', array_diff($planet->getAllDatas(), $data)));
 $data = $planet->getAllDatas();
 
 $planet->getShipyard()->appendQueue(Legacies_Empire::ID_SHIP_LIGHT_FIGHTER, 10, 0);
-var_dump(array('$planet->getShipyard()->appendQueue(Legacies_Empire::ID_SHIP_LIGHT_FIGHTER, 10, 0)', array_diff($planet->getAllDatas(), $data)));
+//var_dump(array('$planet->getShipyard()->appendQueue(Legacies_Empire::ID_SHIP_LIGHT_FIGHTER, 10, 0)', array_diff($planet->getAllDatas(), $data)));
 $data = $planet->getAllDatas();
 
 $planet->appendBuildingQueue(Legacies_Empire::ID_BUILDING_CRISTAL_MINE, false, 0);
-var_dump(array('$planet->appendBuildingQueue(Legacies_Empire::ID_BUILDING_CRISTAL_MINE, false, 0)', array_diff($planet->getAllDatas(), $data)));
+//var_dump(array('$planet->appendBuildingQueue(Legacies_Empire::ID_BUILDING_CRISTAL_MINE, false, 0)', array_diff($planet->getAllDatas(), $data)));
+$data = $planet->getAllDatas();
+
+$userData = $user->getAllDatas();
+$planet->getResearchLab()->appendQueue(Legacies_Empire::ID_RESEARCH_ENERGY_TECHNOLOGY, false, 0);
+var_dump(array('$planet->getResearchLab()->appendQueue(Legacies_Empire::ID_RESEARCH_ENERGY_TECHNOLOGY, false, 0)', array_diff($planet->getAllDatas(), $data), array_diff($user->getAllDatas(), $userData)));
 $data = $planet->getAllDatas();
 
 var_dump(array_diff($planet->getAllDatas(), $data));

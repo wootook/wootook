@@ -59,6 +59,4 @@ else
 
 display(parsetemplate(gettemplate('banned_body'), $parse),'Banned',true);
 
-
-// Created by e-Zobar (XNova Team). All rights reversed (C) 2008
 ?>

@@ -42,5 +42,59 @@
                     )
                 )
             )
+        ),
+
+    'planet.buildings' => array(
+        'update' => '1column',
+        'reference' => array(
+            'content' => array(
+                'children' => array(
+                    'topnav' => array(
+                        'type'     => 'empire/topnav',
+                        'template' => 'empire/topnav.phtml',
+                        ),
+                    'queue' => array(
+                        'type' => 'core/template',
+                        'template' => 'empire/planet/buildings/queue.phtml'
+                        ),
+                    'item-list' => array(
+                        'type'     => 'core/template',
+                        'template' => 'empire/planet/buildings.phtml',
+                        'children' => array(
+                            'item-list.items' => array(
+                                'type' => 'core/concat'
+                                ),
+                            )
+                        ),
+                    )
+                )
+            )
+        ),
+
+    'planet.shipyard' => array(
+        'update' => '1column',
+        'reference' => array(
+            'content' => array(
+                'children' => array(
+                    'topnav' => array(
+                        'type'     => 'empire/topnav',
+                        'template' => 'empire/topnav.phtml',
+                        ),
+                    'item-list' => array(
+                        'type'     => 'core/template',
+                        'template' => 'empire/planet/shipyard.phtml',
+                        'children' => array(
+                            'item-list.items' => array(
+                                'type' => 'core/concat'
+                                ),
+                            )
+                        ),
+                    'queue' => array(
+                        'type' => 'core/template',
+                        'template' => 'empire/planet/shipyard/queue.phtml'
+                        ),
+                    )
+                )
+            )
         )
     );

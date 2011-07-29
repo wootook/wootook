@@ -37,7 +37,7 @@ class Legacies_Empire_Model_Planet
     protected $_shipyard = null;
 
     /**
-     * @var Legacies_Empire_Model_Planet_Building_Laboratory
+     * @var Legacies_Empire_Model_Planet_Building_ResearchLab
      */
     protected $_laboratory = null;
 
@@ -393,15 +393,15 @@ class Legacies_Empire_Model_Planet
         return $this;
     }
 
-    public function getLaboratory()
+    public function getResearchLab()
     {
         if ($this->_laboratory === null) {
-            $this->_laboratory = new Legacies_Empire_Model_Planet_Building_Laboratory($this, $this->getUser());
+            $this->_laboratory = new Legacies_Empire_Model_Planet_Building_ResearchLab($this, $this->getUser());
         }
         return $this->_laboratory;
     }
 
-    public function setLaboratory(Legacies_Empire_Model_Planet_Building_Laboratory $laboratory)
+    public function setResearchLab(Legacies_Empire_Model_Planet_Building_ResearchLab $laboratory)
     {
         $this->_laboratory = $laboratory;
 

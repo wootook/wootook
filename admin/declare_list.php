@@ -80,5 +80,4 @@ require_once dirname(dirname(__FILE__)) .'/common.php';
 		message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
 	}
 
-// Created by e-Zobar. All rights reversed (C) XNova Team 2008
 ?>

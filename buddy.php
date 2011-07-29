@@ -169,8 +169,10 @@ while ( $b = mysql_fetch_array( $buddyrow ) ) {
 	if ( $u["ally_id"] != 0 ) { // Alianza
 		// $allyrow = doquery("SELECT id,ally_tag FROM {{table}} WHERE id=".$u["ally_id"],"alliance",true);
 		// if($allyrow){
-		$UserAlly .= "<a href=alliance.php?mode=ainfo&a=" . $u["id"] . ">" . $u["ally_name"] . "</a>";
+		$UserAlly = "<a href=alliance.php?mode=ainfo&a=" . $u["ally_id"] . ">" . $u["ally_name"] . "</a>";
 		// }
+	} else {
+		$UserAlly ="";
 	}
 
 	if ( isset( $a ) ) {
@@ -226,5 +228,4 @@ $page .= "
 	</center>";
 
 display ( $page, $lang['Buddy_list'], false );
-// Created by Perberos. All rights reversed (C) 2006
 ?>

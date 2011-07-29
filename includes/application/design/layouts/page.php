@@ -117,4 +117,18 @@
                 )
             )
         ),
+
+    'message' => array(
+        'update' => 'default',
+        'reference' => array(
+            'content' => array(
+                'children' => array(
+                    'message' => array(
+                        'type'     => 'core/template',
+                        'template' => 'page/html/message.phtml'
+                        ),
+                    )
+                )
+            )
+        )
     );

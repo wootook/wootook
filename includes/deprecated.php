@@ -207,7 +207,7 @@ function GetBuildingTime($currentUser, $currentPlanet, $buildingId)
     if ($types->is($buildingId, Legacies_Empire::TYPE_BUILDING)) {
         return $currentPlanet->getBuildingTime($buildingId, 1);
     } else if ($types->is($buildingId, Legacies_Empire::TYPE_RESEARCH)) {
-        return $currentPlanet->getLaboratory()->getBuildingTime($buildingId, 1);
+        return $currentPlanet->getResearchLab()->getBuildingTime($buildingId, 1);
     } else if ($types->is($buildingId, Legacies_Empire::TYPE_SHIP) || $types->is($buildingId, Legacies_Empire::TYPE_DEFENSE)) {
         return $currentPlanet->getShipyard()->getBuildingTime($buildingId, 1);
     }
@@ -523,4 +523,69 @@ function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage 
 
     echo $layout->render();
     exit(0);
+}
+
+/**
+ *
+ * @deprecated
+ * @param string $template The page template
+ * @param array $array The view data
+ */
+function parsetemplate($template, $array)
+{
+    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+
+    static $baseUrl = null;
+    if ($baseUrl === null) {
+        $user = Legacies_Empire_Model_User::getSingleton();
+        if ($user !== null && $user->getId() && ($baseUrl = $user->getSkinPath()) == '') {
+            $baseUrl = DEFAULT_SKINPATH;
+        }
+    }
+    $array['dpath'] = $baseUrl;
+
+    $view = new Legacies_Core_View($array);
+    $view->setTemplate('deprecated/' .$template . '.tpl');
+
+    return $view->render();
+}
+
+/**
+ *
+ * @deprecated
+ * @param string $filename
+ * @return string
+ */
+function ReadFromFile($filename)
+{
+    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+
+    return file_get_contents($filename);
+}
+
+/**
+ *
+ * @deprecated
+ * @param string $filename
+ * @param string $content
+ * @return void
+ */
+function saveToFile($filename, $content)
+{
+    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+
+    file_put_contents($filename, $content);
+}
+
+/**
+ *
+ * @deprecated
+ * @param string $templateName
+ * @return string
+ */
+function getTemplate($templateName)
+{
+    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+
+    return $templateName;
 }

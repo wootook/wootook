@@ -3,6 +3,11 @@
 class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
     extends Legacies_Empire_Model_BuilderAbstract
 {
+    /**
+     * @var int
+     */
+    protected $_maxLength = 0;
+
     public function init()
     {
         $this->_unserializeQueue($this->_currentPlanet->getData('b_hangar_id'));
@@ -250,13 +255,15 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
      */
     public function appendQueue($shipId, $qty, $time)
     {
-        $types = Legacies_Empire_Model_Game_Types::getSingleton();
-        $resources = Legacies_Empire_Model_Game_Resources::getSingleton();
+        if ($this->_maxLength > 0 && $this->count() >= $this->_maxLength) {
+            return $this;
+        }
 
         if (!Math::isPositive($qty)) {
             return $this;
         }
 
+        $types = Legacies_Empire_Model_Game_Types::getSingleton();
         if (!$types->is($shipId, Legacies_Empire::TYPE_SHIP) && !$types->is($shipId, Legacies_Empire::TYPE_DEFENSE)) {
             return $this;
         }
@@ -276,19 +283,18 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
         }
 
         $resourcesNeeded = $this->getResourcesNeeded($shipId, $qty);
-        $buildTime = $this->getBuildingTime($shipId, $qty);
-
-        $this->enqueue($shipId, $qty, $time);
-
-        foreach ($resources as $resourceId => $resourceConfig) {
-            if (!isset($resourcesNeeded[$resourceId])) {
-                continue;
-            }
-            $this->_currentPlanet[$resourceId] = Math::sub($this->_currentPlanet[$resourceId], $resourcesNeeded[$resourceId]);
+        $remainingAmounts = $this->_calculateResourceRemainingAmounts($resourcesNeeded);
+        if ($remainingAmounts === false) {
+            return $this;
         }
 
+        $this->enqueue($shipId, $qty, $time);
         $this->_currentPlanet->setData('b_hangar_id', $this->serialize());
+
+        foreach ($remainingAmounts as $resourceId => $resourceAmount) {
+            $this->_currentPlanet[$resourceId] = $resourceAmount;
+        }
 
         return $this;
     }
-};
+}

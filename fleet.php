@@ -282,6 +282,4 @@ require_once dirname(__FILE__) .'/common.php';
 
 	display($page, $lang['fl_title']);
 
-// Updated by Chlorel. 16 Jan 2008 (String extraction, bug corrections, code uniformisation
-// Created by Perberos. All rights reversed (C) 2006
 ?>

@@ -53,5 +53,4 @@ $page .= parsetemplate(gettemplate('changelog_body'), $parse);
 
 display($page,"Change Log");
 
-// Created by Perberos. All rights reversed (C) 2006
 ?>

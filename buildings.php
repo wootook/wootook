@@ -36,32 +36,143 @@ includeLang('buildings');
 
 $user = Legacies_Empire_Model_User::getSingleton();
 $planet = $user->getCurrentPlanet();
+$mode = isset($_GET['mode']) ? $_GET['mode']  : null;
 
-switch ($_GET['mode']) {
-	case 'fleet':
-		// --------------------------------------------------------------------------------------------------
-		FleetBuildingPage($planet, $user);
-		break;
+switch ($mode) {
+case 'fleet':
+    if ($planet->getElement(Legacies_Empire::ID_BUILDING_SHIPYARD) === null) {
+        $layout = new Legacies_Core_Layout();
+        $layout->load('message');
 
-	case 'research':
-		// --------------------------------------------------------------------------------------------------
-		ResearchBuildingPage($planet, $user, $IsWorking['OnWork'], $IsWorking['WorkOn'] );
-		break;
+        $block = $layout->getBlock('message');
+        $block['title'] = Legacies::__('Shipyard is required');
+        $block['message'] = Legacies::__('In order to build ships you will need to build a shipyard building.');
 
-	case 'defense':
-		// --------------------------------------------------------------------------------------------------
-		DefensesBuildingPage($planet, $user);
-		break;
+        $layout->render();
+        break;
+    }
 
-	default:
-		// --------------------------------------------------------------------------------------------------
-		BatimentBuildingPage($planet, $user);
-		break;
+    /** @var Legacies_Empire_Model_Planet_Building_Shipyard $shipyard */
+    $shipyard = $planet->getShipyard();
+    if (isset($_POST['ship']) && is_array($_POST['ship'])) {
+        foreach ($_POST['ship'] as $shipId => $count) {
+            $shipId = intval($shipId);
+            $count = intval($count);
+
+            $shipyard->appendQueue($shipId, $count);
+        }
+        $planet->save();
+    }
+
+    $types = Legacies_Empire_Model_Game_Types::getSingleton();
+    $layout = new Legacies_Core_Layout();
+    $layout->load('planet.shipyard');
+
+    /** @var Legacies_Core_Block_Concat $parentBlock */
+    $parentBlock = $layout->getBlock('item-list.items');
+    foreach ($types->getData(Legacies_Empire::TYPE_SHIP) as $shipId) {
+        if (!$shipyard->checkAvailability($shipId)) {
+            continue;
+        }
+
+        $blockName = "ship({$shipId})";
+        $block = $layout->createBlock('empire/planet.shipyard.item', $blockName);
+        $block->setTemplate('empire/planet/shipyard/item.phtml');
+        $block->setPlanet($planet);
+        $block->setItemId($shipId);
+
+        $parentBlock->setPartial($blockName, $block);
+    }
+
+    echo $layout->render();
+    break;
+
+case 'research':
+    // --------------------------------------------------------------------------------------------------
+    ResearchBuildingPage($planet, $user, $IsWorking['OnWork'], $IsWorking['WorkOn'] );
+    break;
+
+case 'defense':
+    if ($planet->getElement(Legacies_Empire::ID_BUILDING_SHIPYARD) === null) {
+        $layout = new Legacies_Core_Layout();
+        $layout->load('message');
+
+        $block = $layout->getBlock('message');
+        $block['title'] = Legacies::__('Shipyard is required');
+        $block['title'] = Legacies::__('In order to build ships you will need to build a shipyard building.');
+
+        $layout->render();
+        break;
+    }
+
+    /** @var Legacies_Empire_Model_Planet_Building_Shipyard $shipyard */
+    $shipyard = $planet->getShipyard();
+    if (isset($_POST['defense']) && is_array($_POST['defense'])) {
+        foreach ($_POST['defense'] as $defenseId => $count) {
+            $defenseId = intval($defenseId);
+            $count = intval($count);
+
+            $shipyard->appendQueue($defenseId, $count);
+        }
+        $planet->save();
+    }
+
+    $types = Legacies_Empire_Model_Game_Types::getSingleton();
+    $layout = new Legacies_Core_Layout();
+    $layout->load('planet.shipyard');
+
+    /** @var Legacies_Core_Block_Concat $parentBlock */
+    $parentBlock = $layout->getBlock('item-list.items');
+    foreach ($types->getData(Legacies_Empire::TYPE_DEFENSE) as $defenseId) {
+        if (!$shipyard->checkAvailability($defenseId)) {
+            continue;
+        }
+
+        $blockName = "defense({$defenseId})";
+        $block = $layout->createBlock('empire/planet.shipyard.item', $blockName);
+        $block->setTemplate('empire/planet/shipyard/item.phtml');
+        $block->setPlanet($planet);
+        $block->setItemId($defenseId);
+
+        $parentBlock->setPartial($blockName, $block);
+    }
+
+    echo $layout->render();
+    break;
+
+default:
+    if (isset($_GET['building']) && !empty($_GET['building'])) {
+        $buildingId = intval($_GET['building']);
+
+        $planet->appendBuildingQueue($shipId, isset($_GET['destroy']));
+        $planet->save();
+    }
+
+    $types = Legacies_Empire_Model_Game_Types::getSingleton();
+    $layout = new Legacies_Core_Layout();
+    $layout->load('planet.buildings');
+
+    /** @var Legacies_Core_Block_Concat $parentBlock */
+    $parentBlock = $layout->getBlock('item-list.items');
+    $type = Legacies_Empire::TYPE_BUILDING_PLANET;
+    if ($planet->isMoon()) {
+        $type = Legacies_Empire::TYPE_BUILDING_MOON;
+    }
+    foreach ($types->getData($type) as $buildingId) {
+        if (!$planet->checkAvailability($buildingId)) {
+            continue;
+        }
+
+        $blockName = "building({$buildingId})";
+        $block = $layout->createBlock('empire/planet.buildings.item', $blockName);
+        $block->setTemplate('empire/planet/buildings/item.phtml');
+        $block->setPlanet($planet);
+        $block->setItemId($buildingId);
+
+        $parentBlock->setPartial($blockName, $block);
+    }
+
+    echo $layout->render();
+    break;
 }
 
-// -----------------------------------------------------------------------------------------------------------
-// History version
-// 1.0 - Nettoyage modularisation
-// 1.1 - Mise au point, mise en fonction pour lin�arisation du fonctionnement
-// 1.2 - Liste de construction batiments
-?>

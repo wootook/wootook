@@ -218,4 +218,16 @@ abstract class Legacies_Empire_Model_BuilderAbstract
 
         return $this;
     }
+
+    protected function _calculateResourceRemainingAmounts($resourceNeeded)
+    {
+        $resourceAmounts = array();
+        foreach ($resourcesNeeded as $resourceId => $resourceAmount) {
+            $resourceAmounts[$resourceId] = Math::sub($this->_currentPlanet[$resourceId], $resourceAmount);
+            if (Math::isNegative($resourceAmounts[$resourceId])) {
+                return false;
+            }
+        }
+        return $resourceAmounts;
+    }
 }

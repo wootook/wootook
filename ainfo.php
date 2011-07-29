@@ -67,5 +67,4 @@ $page .="<table width=519><tr><td class=c colspan=2>Informations sur l'alliance<
 
 	display($page,"Information sur l'alliance [".$allyrow["ally_name"]."]",false);
 
-// Created by Perberos. All rights reversed (C) 2006
 ?>

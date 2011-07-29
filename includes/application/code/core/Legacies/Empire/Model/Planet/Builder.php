@@ -45,6 +45,11 @@ class Legacies_Empire_Model_Planet_Builder
         return $this->checkAvailability($buildingId);
     }
 
+    public function getBuildingTime($buildingId, $level)
+    {
+        return 0;
+    }
+
     public function getResourcesNeeded($buildingId, $level)
     {
         $prices = Legacies_Empire_Model_Game_Prices::getSingleton();
@@ -66,11 +71,6 @@ class Legacies_Empire_Model_Planet_Builder
         }
 
         return $resourcesNeeded;
-    }
-
-    public function getBuildingTime($buildingId, $level)
-    {
-        return 0;
     }
 
     /**
@@ -143,26 +143,17 @@ class Legacies_Empire_Model_Planet_Builder
         }
 
         $resourcesNeeded = $this->getResourcesNeeded($buildingId, $level);
-
-        $amounts = array();
-        foreach ($resourcesNeeded as $resourceId => $resourceCost) {
-            $amount[$resourceId] = Math::sub($this->_currentPlanet[$resourceId], $resourceCost);
-
-            if (Math::isNegative($amount[$resourceId])) {
-                return $this;
-            }
+        $remainingAmounts = $this->_calculateResourceRemainingAmounts($resourcesNeeded);
+        if ($remainingAmounts === false) {
+            return $this;
         }
 
         $this->enqueue($buildingId, $level, $time);
-
-        foreach ($resourcesNeeded as $resourceId => $resourceCost) {
-            if (!isset($resources[$resourceId]) || !Math::isPositive($resourceCost)) {
-                continue;
-            }
-            $this->_currentPlanet->setData($resourceId, $resourceId[$resourceId]);
-        }
-
         $this->_currentPlanet->setData('b_building_id', $this->serialize());
+
+        foreach ($remainingAmounts as $resourceId => $resourceAmount) {
+            $this->_currentPlanet[$resourceId] = $resourceAmount;
+        }
 
         return $this;
     }

@@ -193,12 +193,10 @@ if (isset($_POST) && !empty($_POST)) {
         $messageCollection->where('message_owner=:user');
         $messageCollection->where('message_read_at<=0');
 
-        $newMessages = null;
-        if (($count = $messageCollection->getSize(array('user' => $user->getId()))) > 0) {
-            $newMessages = new Legacies_Core_View();
-            $newMessages->setTemplate('empire/overview/messages.phtml');
-            $newMessages['count'] = (int) $count;
-        }
+        $count = $messageCollection->getSize(array('user' => $user->getId()));
+        $newMessages = new Legacies_Core_View();
+        $newMessages->setTemplate('empire/overview/messages.phtml');
+        $newMessages['count'] = (int) $count;
 
         /**
          * Page display

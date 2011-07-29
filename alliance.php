@@ -774,8 +774,8 @@ elseif ($user['ally_id'] != 0 && $user['ally_request'] == 0) { // Con alianza
 
 		if ($t == 2) {
 			$lang['text'] = $ally['ally_text'];
-			$lang['Texts'] = "Interner Text";
-			$lang['Show_of_request_text'] = "Internet Allianz Text";
+			$lang['Texts'] = "Texte Interne";
+			$lang['Show_of_request_text'] = "Texte Interne d'ALliance";
 		} else {
 			$lang['text'] = $ally['ally_description'];
 		}
