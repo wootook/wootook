@@ -508,7 +508,7 @@ function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage 
 
     // TODO: implement extra meta tags
     $layout = new Legacies_Core_Layout();
-    $layout->load('1column');
+    $layout->load('2columns-left');
     $content = $layout->getBlock('content');
 
     if ($topnav) {

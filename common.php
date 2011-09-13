@@ -28,8 +28,9 @@
  *
  */
 
-define('DEPRECATION', true);
-define('DEBUG', true);
+defined('BCNUMBERS') || define('BCNUMBERS', true);
+defined('DEPRECATION') || define('DEPRECATION', true);
+defined('DEBUG') || define('DEBUG', true);
 
 if (!defined('DEBUG') && ($env = getenv('DEBUG')) !== false && in_array(strtolower($env), array('1', 'on', 'true'))) {
     define('DEBUG', true);
@@ -135,8 +136,8 @@ if (($user !== null && $user->getId())) {
 
     $planet = $user->getCurrentPlanet();
 
-    foreach ($user->getPlanetCollection() as $planet) {
-        FlyingFleetHandler($planet); // TODO: implement logic into a refactored model
+    foreach ($user->getPlanetCollection() as $userPlanet) {
+        FlyingFleetHandler($userPlanet); // TODO: implement logic into a refactored model
     }
 
     /*

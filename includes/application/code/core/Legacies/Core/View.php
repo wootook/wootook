@@ -6,6 +6,7 @@ class Legacies_Core_View
     protected $_template = null;
     protected $_partials = array();
     protected $_layout = null;
+    protected $_nameInLayout = null;
 
     public function __construct(Array $data = array())
     {
@@ -27,6 +28,32 @@ class Legacies_Core_View
         return Math::render($number);
     }
 
+    public function renderTime($time, $unique = false)
+    {
+        if ($time >= 10) {
+            $seconds = $time % 60;
+            $minutes = (int) (($time - $seconds) / 60) % 60;
+            $hours = (int) ((($time - $seconds) / 60) - $minutes) / 60;
+
+            if ($hours > 24) {
+                $dayHours = (int) $hours % 24;
+                $days = (int) ($hours - $dayHours) / 24;
+
+                return $this->__('%1$d day(s) and %2$d hour(s)', $days, $dayHours);
+            } else if ($hours > 0) {
+                return $this->__('%1$d hour(s), %2$d minute(s) and %3$d second(s)', $hours, $minutes, $seconds);
+            } else if ($minutes > 0) {
+                return $this->__('%1$d minute(s) and %2$d second(s)', $minutes, $seconds);
+            } else {
+                return $this->__('%1$d second(s)', $seconds);
+            }
+        } else if (!$unique && $time > 0) {
+            return $this->__('%1$d per minute', 60 / $time);
+        } else {
+            return $this->__('instantaneous');
+        }
+    }
+
     protected function escape($unescaped)
     {
         return htmlspecialchars($unescaped, ENT_QUOTES, 'UTF-8');
@@ -37,7 +64,7 @@ class Legacies_Core_View
         $args = func_get_args();
         array_shift($args);
 
-        return Legacies::translate(Legacies::getLocale(), $message, $args);
+        return Legacies::translate(Legacies::getDefaultLocale(), $message, $args);
     }
 
     public function translate($message, $_ = null)
@@ -104,12 +131,15 @@ class Legacies_Core_View
         static $baseUrl = null;
         if ($baseUrl === null) {
             $user = Legacies_Empire_Model_User::getSingleton();
-            if ($user !== null && $user->getId() && ($baseUrl = $user->getSkinPath()) == '') {
+            if ($user !== null && $user->getId()) {
+                $baseUrl = $user->getSkinPath();
+            }
+            if ($baseUrl == '') {
                 $baseUrl = DEFAULT_SKINPATH;
             }
         }
 
-        return $baseUrl . $uri;
+        return $this->getUrl($baseUrl . $uri);
     }
 
     public function setPartial($name, $content)
@@ -126,6 +156,11 @@ class Legacies_Core_View
     public function getPartial($name)
     {
         return $this->_partials[$name];
+    }
+
+    public function getAllPartials()
+    {
+        return $this->_partials;
     }
 
     public function unsetPartial($name)
@@ -171,6 +206,10 @@ class Legacies_Core_View
         return $this;
     }
 
+    /**
+     *
+     * @return Legacies_Core_Layout
+     */
     public function getLayout()
     {
         return $this->_layout;
@@ -182,5 +221,17 @@ class Legacies_Core_View
 
     public function beforeToHtml()
     {
+    }
+
+    public function setNameInLayout($name)
+    {
+        $this->_nameInLayout = $name;
+
+        return $this;
+    }
+
+    public function getNameInLayout()
+    {
+        return $this->_nameInLayout;
     }
 }

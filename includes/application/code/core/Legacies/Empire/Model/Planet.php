@@ -70,15 +70,6 @@ class Legacies_Empire_Model_Planet
         $this->_idFieldName = 'id';
     }
 
-    public function _afterLoad()
-    {
-        parent::_afterLoad();
-
-        $this->getBuildingQueue()->init();
-
-        return $this;
-    }
-
     public function getLastUpdate()
     {
         return $this->getData('last_update');
@@ -119,10 +110,15 @@ class Legacies_Empire_Model_Planet
             //$officerEnhancement = (.5 * $this->getUser()->getData('rpg_stockeur')) + 1;
             $officerEnhancement = 1;
 
-            $storageEnhancementFactor = Math::floor(Math::pow(1.6, $this[Legacies_Empire::getFieldName($resourceData['storage'])]));
-            $storageEnhancement = Math::mul(BASE_STORAGE_SIZE / 2, $storageEnhancementFactor);
+            if ($this->getElement($resourceData['storage'])) {
+                $storageEnhancementFactor = Math::floor(Math::pow(1.6, $this->getElement($resourceData['storage'])));
+                $storageEnhancement = Math::mul(BASE_STORAGE_SIZE / 2, $storageEnhancementFactor);
+            } else {
+                $storageEnhancement = 0;
+            }
 
             $value = Math::mul(MAX_OVERFLOW, Math::mul($officerEnhancement, Math::add(BASE_STORAGE_SIZE, $storageEnhancement)));
+
             $this->setData($resourceData['storage_field'], Math::floor($value));
         }
         Math::setPrecision();
@@ -619,9 +615,9 @@ class Legacies_Empire_Model_Planet
             ));
 
         if ($destroy === false) {
-            $level = $this->getElement($buildingId) + 1;
+            $level = $this->getBuildingLevelQueued($buildingId) + 1;
         } else {
-            $level = max($this->getElement($buildingId) - 1, 0);
+            $level = max($this->getBuildingLevelQueued($buildingId) - 1, 0);
         }
 
         $this->getBuildingQueue()->appendQueue($buildingId, $level, $time);
@@ -664,6 +660,19 @@ class Legacies_Empire_Model_Planet
         return $this;
     }
 
+    public function getBuildingLevelQueued($buildingId)
+    {
+        $level = $this->getElement($buildingId);
+        foreach ($this->_builder as $item) {
+            if ($item->getData('building_id') != $buildingId) {
+                continue;
+            }
+
+            $level = $item->getData('level');
+        }
+        return $level;
+    }
+
     /**
      *
      * @return Legacies_Empire_Model_Planet_Builder
@@ -687,6 +696,18 @@ class Legacies_Empire_Model_Planet
         $item = $this->getBuildingQueue()->current();
 
         $this->getBuildingQueue()->dequeueFirstItem(Legacies::now());
+
+        return $this;
+    }
+
+    /**
+     *
+     * Enter description here ...
+     * @return Legacies_Empire_Model_Planet
+     */
+    public function dequeueItem($itemId)
+    {
+        $this->getBuildingQueue()->dequeueItem($itemId);
 
         return $this;
     }
@@ -743,60 +764,33 @@ class Legacies_Empire_Model_Planet
     {
         if (isset($eventData['user'])) {
             $user = $eventData['user'];
-            $request = $eventData['request'];
 
-            if ($user === null || !$user instanceof Legacies_Empire_Model_User || $user->getId()) {
-                return;
-            }
-            if ($request === null || !$request instanceof Legacies_Core_Controller_Request) {
+            if ($user === null || !$user instanceof Legacies_Empire_Model_User || !$user->getId()) {
                 return;
             }
 
-            $collection = new Legacies_Core_Collection('planets');
-            $collection
-                ->column(array(
-                    'galaxy' => 'planet.galaxy',
-                    'system' => 'planet.system',
-                    'count'  => 'COUNT(planet.id)'
-                    ))
-                ->group('planet.galaxy')
-                ->group('planet.system')
-                ->where('planet.planet_type=1')
-                ->order('COUNT(planet.id)', 'ASC')
-                ->order('RAND()', 'ASC')
-                ->limit(1)
-            ;
-
-            $params = array();
-            $galaxy = $request->getParam('system');
-            if ($galaxy !== null) {
-                $collection->where('planet.galaxy=:galaxy');
-                $params['galaxy'] = $galaxy;
-
-                $systems = explode(',', $request->getParam('system'));
-                if (is_array($systems) && count($systems) == 2 && is_int($systems[0]) && is_int($systems[1])) {
-                    $collection->where('planet.system IN(' . implode(', ', range($systems[0], $systems[1])) . ')');
-                }
-            }
-            $collection->load($params);
+            $collection = self::_searchMostFreeSystems();
+            $collection->limit(1)->load();
 
             if ($collection->count() == 0) {
-                throw new Exception('No planet to colonize there!'); // FIXME
+                throw new Exception('No more planet to colonize!'); // Oops, no more free place
             }
 
             $systemInfo = $collection->current();
             if ($systemInfo->getData('count') >= MAX_PLANET_IN_SYSTEM) {
-                throw new Exception('No planet to colonize there!'); // FIXME
+                throw new Exception('No more planet to colonize!'); // Oops, no more free place
             }
-            $system = $systemInfo->getData('system');
-            $galaxy = $systemInfo->getData('galaxy');
 
-            $collection = new Legacies_Core_Collection('planets');
+            $collection = new Legacies_Core_Collection(array('planet' => 'planets'));
             $collection
-                ->column(array('position' => 'planet.position'))
+                ->column(array('position' => 'planet.planet'))
                 ->where('planet.planet_type=1')
-                ->where('planet.planet_type=:system')
-                ->load()
+                ->where('planet.galaxy=:galaxy')
+                ->where('planet.system=:system')
+                ->load(array(
+                    'galaxy' => $systemInfo->getData('galaxy'),
+                    'system' => $systemInfo->getData('system'),
+                    ))
             ;
             $positions = range(1, MAX_PLANET_IN_SYSTEM);
             foreach ($collection as $planet) {
@@ -808,14 +802,29 @@ class Legacies_Empire_Model_Planet
             $key = array_rand($positions, 1);
             $finalPosition = $positions[$key];
 
+            $config = Legacies_Core_Model_Config::getSingleton();
             $planet = new self();
             $planet
                 ->setData('id_owner', $user->getId())
-                ->setData('name', $request->getParam('planet'))
-                ->setData('galaxy', $galaxy)
-                ->setData('system', $system)
-                ->setData('position', $finalPosition)
+                ->setData('name', Legacies::getRequest()->getParam('planet'))
+                ->setData('galaxy', $systemInfo->getData('galaxy'))
+                ->setData('system', $systemInfo->getData('system'))
+                ->setData('planet', $finalPosition)
                 ->setData('planet_type', 1)
+                ->setData('field_max', $config->getData('initial_fields'))
+                ->setData('field_current', 0)
+                ->setData('metal', 500) // TODO: use config
+                ->setData('cristal', 500) // TODO: use config
+            ;
+
+            $planet->save();
+
+            $user
+                ->setData('id_planet', $planet->getId())
+                ->setData('current_planet', $planet->getId())
+                ->setData('galaxy', $planet->getGalaxy())
+                ->setData('system', $planet->getSystem())
+                ->setData('planet', $planet->getPosition())
             ;
 
             Legacies::dispatchEvent('planet.init', array(
@@ -823,17 +832,59 @@ class Legacies_Empire_Model_Planet
                 'user'   => $user
                 ));
 
-            $planet
-                ->setData('field_max', 163)
-                ->setData('field_current', 0)
-                ->save()
-            ;
-
-            $user
-                ->setData('id_planet', $planet->getId())
-                ->setData('current_planet', $planet->getId())
-            ;
+            //$planet->save();
         }
+    }
+
+    protected static function _searchMostFreeSystems($galaxyList = null, $systemList = null)
+    {
+        $collection = new Legacies_Core_Collection(array('planet' => 'planets'));
+        $collection
+            ->column(array(
+                'galaxy' => 'planet.galaxy',
+                'system' => 'planet.system',
+                'count'  => 'COUNT(planet.id)'
+                ))
+            ->group('planet.galaxy')
+            ->group('planet.system')
+            ->where('planet.planet_type=1')
+        ;
+
+        $config = Legacies_Core_Model_Config::getSingleton();
+
+        if ($galaxyList === null && $config->hasData('user/registration/galaxy_list')) {
+            $galaxyList = explode(',', $config->getData('user/registration/galaxy_list'));
+        }
+
+        if ($galaxyList !== null) {
+            array_walk($galaxyList, array(__CLASS__, '_cleanItemRanges'));
+            $collection->where('planet.galaxy IN(' . implode(', ', $galaxyList) . ')');
+        }
+
+        if ($systemList === null && $config->hasData('user/registration/system_list')) {
+            $systemList = explode(',', $config->getData('user/registration/system_list'));
+        }
+
+        if ($systemList !== null) {
+            array_walk($systemList, array(__CLASS__, '_cleanItemRanges'));
+            $collection->where('planet.system IN(' . implode(', ', $systemList) . ')');
+        }
+
+        $orders = array(
+            "1.5 / COUNT(planet.id)",
+            "ABS(planet.galaxy - CEIL({$collection->quote(MAX_GALAXY_IN_WORLD)} / 2))",
+            "ABS(planet.system - CEIL({$collection->quote(MAX_SYSTEM_IN_GALAXY)} / 2))"
+            );
+        $collection
+            ->order('((' . implode(') * (', $orders) . '))', 'ASC')
+            ->order('RAND()', 'ASC');
+
+        return $collection;
+    }
+
+    private static function _cleanItemRanges(&$value, $index, $userdata = null)
+    {
+        return intval($value);
     }
 
     public static function planetUpdateListener($eventData)

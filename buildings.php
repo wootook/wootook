@@ -36,7 +36,7 @@ includeLang('buildings');
 
 $user = Legacies_Empire_Model_User::getSingleton();
 $planet = $user->getCurrentPlanet();
-$mode = isset($_GET['mode']) ? $_GET['mode']  : null;
+$mode = isset($_GET['mode']) ? $_GET['mode'] : null;
 
 switch ($mode) {
 case 'fleet':
@@ -64,32 +64,38 @@ case 'fleet':
         $planet->save();
     }
 
-    $types = Legacies_Empire_Model_Game_Types::getSingleton();
     $layout = new Legacies_Core_Layout();
     $layout->load('planet.shipyard');
-
-    /** @var Legacies_Core_Block_Concat $parentBlock */
-    $parentBlock = $layout->getBlock('item-list.items');
-    foreach ($types->getData(Legacies_Empire::TYPE_SHIP) as $shipId) {
-        if (!$shipyard->checkAvailability($shipId)) {
-            continue;
-        }
-
-        $blockName = "ship({$shipId})";
-        $block = $layout->createBlock('empire/planet.shipyard.item', $blockName);
-        $block->setTemplate('empire/planet/shipyard/item.phtml');
-        $block->setPlanet($planet);
-        $block->setItemId($shipId);
-
-        $parentBlock->setPartial($blockName, $block);
-    }
 
     echo $layout->render();
     break;
 
 case 'research':
-    // --------------------------------------------------------------------------------------------------
-    ResearchBuildingPage($planet, $user, $IsWorking['OnWork'], $IsWorking['WorkOn'] );
+    if ($planet->getElement(Legacies_Empire::ID_BUILDING_RESEARCH_LAB) === null) {
+        $layout = new Legacies_Core_Layout();
+        $layout->load('message');
+
+        $block = $layout->getBlock('message');
+        $block['title'] = Legacies::__('Research lab is required');
+        $block['title'] = Legacies::__('In order to do technological researches, you will need to build a research lab building.');
+
+        $layout->render();
+        break;
+    }
+
+    if (isset($_GET['research']) && !empty($_GET['research'])) {
+        $data = $planet->getAllDatas();
+        $planet->appendBuildingQueue(intval($_GET['research']), isset($_GET['destroy']));
+        $planet->save();
+    } else if (isset($_GET['cancel']) && !empty($_GET['cancel'])) {
+        $planet->dequeueItem($_GET['cancel']);
+        $planet->save();
+    }
+
+    $layout = new Legacies_Core_Layout();
+    $layout->load('planet.research-lab');
+
+    echo $layout->render();
     break;
 
 case 'defense':
@@ -117,61 +123,28 @@ case 'defense':
         $planet->save();
     }
 
-    $types = Legacies_Empire_Model_Game_Types::getSingleton();
     $layout = new Legacies_Core_Layout();
-    $layout->load('planet.shipyard');
+    $layout->load('planet.defense');
 
-    /** @var Legacies_Core_Block_Concat $parentBlock */
-    $parentBlock = $layout->getBlock('item-list.items');
-    foreach ($types->getData(Legacies_Empire::TYPE_DEFENSE) as $defenseId) {
-        if (!$shipyard->checkAvailability($defenseId)) {
-            continue;
-        }
-
-        $blockName = "defense({$defenseId})";
-        $block = $layout->createBlock('empire/planet.shipyard.item', $blockName);
-        $block->setTemplate('empire/planet/shipyard/item.phtml');
-        $block->setPlanet($planet);
-        $block->setItemId($defenseId);
-
-        $parentBlock->setPartial($blockName, $block);
-    }
+    /** @var Legacies_Empire_Block_Planet_Shipyard $block */
+    $block = $layout->getBlock('item-list');
+    $block->setType(Legacies_Empire::TYPE_DEFENSE);
 
     echo $layout->render();
     break;
 
 default:
     if (isset($_GET['building']) && !empty($_GET['building'])) {
-        $buildingId = intval($_GET['building']);
-
-        $planet->appendBuildingQueue($shipId, isset($_GET['destroy']));
+        $data = $planet->getAllDatas();
+        $planet->appendBuildingQueue(intval($_GET['building']), isset($_GET['destroy']));
+        $planet->save();
+    } else if (isset($_GET['cancel']) && !empty($_GET['cancel'])) {
+        $planet->dequeueItem($_GET['cancel']);
         $planet->save();
     }
 
-    $types = Legacies_Empire_Model_Game_Types::getSingleton();
     $layout = new Legacies_Core_Layout();
     $layout->load('planet.buildings');
-
-    /** @var Legacies_Core_Block_Concat $parentBlock */
-    $parentBlock = $layout->getBlock('item-list.items');
-    $type = Legacies_Empire::TYPE_BUILDING_PLANET;
-    if ($planet->isMoon()) {
-        $type = Legacies_Empire::TYPE_BUILDING_MOON;
-    }
-    foreach ($types->getData($type) as $buildingId) {
-        if (!$planet->checkAvailability($buildingId)) {
-            continue;
-        }
-
-        $blockName = "building({$buildingId})";
-        $block = $layout->createBlock('empire/planet.buildings.item', $blockName);
-        $block->setTemplate('empire/planet/buildings/item.phtml');
-        $block->setPlanet($planet);
-        $block->setItemId($buildingId);
-
-        $parentBlock->setPartial($blockName, $block);
-    }
-
     echo $layout->render();
     break;
 }

@@ -259,7 +259,7 @@ class Legacies_Empire_Model_Planet_Building_Shipyard
 
     public function getBuildingTime($shipId, $qty)
     {
-        $this->_builder->getBuildingTime($shipId, $qty);
+        return $this->_builder->getBuildingTime($shipId, $qty);
     }
 
     public static function planetUpdateListener($eventData)

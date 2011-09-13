@@ -19,6 +19,9 @@ class Legacies_Empire_Model_User
 
     public static $hashCallback = 'md5';
 
+    protected $_homePlanet = null;
+    protected $_currentPlanet = null;
+
     const SESSION_KEY     = 'user';
     const COOKIE_NAME     = 'legacies';
     const COOKIE_LIFETIME = 2592000;
@@ -56,7 +59,7 @@ class Legacies_Empire_Model_User
             $session = Legacies::getSession(self::SESSION_KEY);
             if ($session->hasData('user_id')) {
                 $id = intval($session->getData('user_id'));
-            } else if (Legacies::$request !== null && ($cookie = Legacies::$request->getCookie(self::$_cookieName)) !== null) {
+            } else if (Legacies::getRequest() !== null && ($cookie = Legacies::getRequest()->getCookie(self::$_cookieName)) !== null) {
                 $cookieData = unserialize(stripslashes($cookie));
                 if (is_array($cookieData)) {
                     $collection = new Legacies_Core_Collection(array('user' => 'users'));
@@ -164,7 +167,7 @@ class Legacies_Empire_Model_User
 
         if (intval($login['login_success']) == 1) {
             if ($login['banaday'] != 0) {
-                if($login['banaday'] <= time() && $login['banaday'] != '0') {
+                if($login['banaday'] <= time()) {
                      $user->setData('banaday', 0)
                          ->setData('bana', 0)
                          ->setData('urlaubs_modus', 0)
@@ -176,7 +179,7 @@ class Legacies_Empire_Model_User
                 }
             }
 
-            if (isset($_POST["rememberme"]) && Legacies::$request !== null) {
+            if (isset($_POST["rememberme"]) && Legacies::getRequest() !== null) {
                 Legacies::$response->setCookie(self::$_cookieName, array('id' => $login['id'], 'key' => $login['login_rememberme']), self::COOKIE_LIFETIME);
             }
 
@@ -195,11 +198,18 @@ class Legacies_Empire_Model_User
     public static function register($username, $email, $password)
     {
         try {
+            $request = Legacies::getRequest();
             $user = new self(array(
                 'username' => $username,
                 'password' => md5($password),
                 'email'    => $email,
-                'email_2'  => $email
+                'email_2'  => $email,
+
+                'register_time' => Legacies::now(),
+                'onlinetime'    => Legacies::now(),
+                'ip_at_reg'     => $request->getServer('REMOTE_ADDR'),
+                'user_lastip'   => $request->getServer('REMOTE_ADDR'),
+                'user_agent'    => $request->getServer('HTTP_USER_AGENT')
                 ));
 
             $user->save();
@@ -210,6 +220,7 @@ class Legacies_Empire_Model_User
 
             $user->save();
         } catch (Legacies_Core_Model_Exception $e) {
+            echo $e->getTraceAsString();
             $session->addError($e->getMessage());
             return null;
         }
@@ -225,7 +236,7 @@ class Legacies_Empire_Model_User
     public function updateCurrentPlanet($planet)
     {
         if (!$planetId instanceof Legacies_Empire_Model_Planet) {
-            $planetColelction = $this->_preparePlanetCollection()->where('id=:id');
+            $planetCollection = $this->_preparePlanetCollection()->where('id=:id');
 
             $planetCollection->load(array(
                 'id'    => $planet,
@@ -253,6 +264,23 @@ class Legacies_Empire_Model_User
      * Enter description here ...
      * @param Legacies_Empire_Model_Planet $planet
      */
+    public function setHomePlanet(Legacies_Empire_Model_Planet $planet)
+    {
+        if ($planet->getUserId() != $this->getId() || $planet->isDestroyed()) {
+            return $this;
+        }
+
+        $this->setData('id_planet', $planet->getId());
+        $this->_homePlanet = $planet;
+
+        return $this;
+    }
+
+    /**
+     *
+     * Enter description here ...
+     * @param Legacies_Empire_Model_Planet $planet
+     */
     public function setCurrentPlanet(Legacies_Empire_Model_Planet $planet)
     {
         if ($planet->getUserId() != $this->getId() || $planet->isDestroyed()) {
@@ -260,6 +288,7 @@ class Legacies_Empire_Model_User
         }
 
         $this->setData('current_planet', $planet->getId());
+        $this->_currentPlanet = $planet;
 
         return $this;
     }
@@ -271,15 +300,19 @@ class Legacies_Empire_Model_User
      */
     public function getHomePlanet()
     {
-        $planetId = $this->getData('id_planet');
-        if (!$planetId) {
-            return null;
-        }
+        if ($this->_homePlanet === null) {
+            $planetId = $this->getData('id_planet');
+            if (!$planetId) {
+                return null;
+            }
 
-        $planet = Legacies_Empire_Model_Planet::factory($planetId);
+            $planet = Legacies_Empire_Model_Planet::factory($planetId);
 
-        if ($planet->getUserId() != $this->getId() || $planet->isDestroyed()) {
-            return null;
+            if ($planet->getUserId() != $this->getId() || $planet->isDestroyed()) {
+                return null;
+            }
+
+            $this->_homePlanet = $planet;
         }
 
         return $planet;
@@ -292,22 +325,29 @@ class Legacies_Empire_Model_User
      */
     public function getCurrentPlanet()
     {
-        $planetId = $this->getData('current_planet');
+        if ($this->_currentPlanet === null) {
+            $planetId = $this->getData('current_planet');
 
-        if (!$planetId) {
-            $planet = $this->getHomePlanet();
-            $this->setData('current_planet', $planet->getId())->save();
+            if (!$planetId) {
+                $this->_currentPlanet = $this->getHomePlanet();
+                $this->setData('current_planet', $this->_currentPlanet->getId())->save();
 
-            return $planet;
+                return $this->_currentPlanet;
+            }
+
+            $planet = Legacies_Empire_Model_Planet::factory($planetId);
+
+            if ($planet->getUserId() != $this->getId() || $planet->isDestroyed()) {
+                $this->_currentPlanet = $this->getHomePlanet();
+                $this->setData('current_planet', $this->_currentPlanet->getId())->save();
+
+                return $this->_currentPlanet;
+            }
+
+            $this->_currentPlanet = $planet;
         }
 
-        $planet = Legacies_Empire_Model_Planet::factory($planetId);
-
-        if ($planet->getUserId() != $this->getId() || $planet->isDestroyed()) {
-            return null;
-        }
-
-        return $planet;
+        return $this->_currentPlanet;
     }
 
     protected function _preparePlanetCollection()

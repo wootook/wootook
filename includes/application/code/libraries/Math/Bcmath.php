@@ -83,6 +83,15 @@ class Math_Bcmath
         if (!$a) {
             return '0';
         }
+        $negative = false;
+        if ($a[0] == '-') {
+            $a = substr($a, 1);
+            $negative = true;
+        }
+        if ($a[0] == '+') {
+            $a = substr($a, 1);
+        }
+
         $a = strval($a);
 
         $pos = strrpos($a, '.');
@@ -90,37 +99,38 @@ class Math_Bcmath
             $a = substr($a, 0, $pos);
         }
 
-        $length = $pos + ((3 - ($pos % 3)) % 3);
-        $a = str_pad($a, $length, ' ', STR_PAD_LEFT);
+        $length = (3 - (strlen($a) % 3)) % 3;
+        $a = str_pad($a, $length + strlen($a), ' ', STR_PAD_LEFT);
         $parts = str_split($a, 3);
+        $parts[0] = ltrim($parts[0]);
         switch ((int) (count($parts) / 3)) {
         case 0:
         case 1:
-            return implode('.', $parts);
+            return ($negative ? '-' : '') . implode('.', $parts);
             break;
 
         case 2:
-            return implode('.', array_slice($parts, 0, 2)) . 'M';
+            return ($negative ? '-' : '') . implode('.', array_slice($parts, 0, 2)) . 'M';
             break;
 
         case 3:
-            return implode('.', array_slice($parts, 0, 2)) . 'G';
+            return ($negative ? '-' : '') . implode('.', array_slice($parts, 0, 2)) . 'G';
             break;
 
         case 4:
-            return implode('.', array_slice($parts, 0, 2)) . 'T';
+            return ($negative ? '-' : '') . implode('.', array_slice($parts, 0, 2)) . 'T';
             break;
 
         case 5:
-            return implode('.', array_slice($parts, 0, 2)) . 'P';
+            return ($negative ? '-' : '') . implode('.', array_slice($parts, 0, 2)) . 'P';
             break;
 
         case 6:
-            return implode('.', array_slice($parts, 0, 2)) . 'Y';
+            return ($negative ? '-' : '') . implode('.', array_slice($parts, 0, 2)) . 'Y';
             break;
 
         default:
-            return implode('.', array_slice($parts, 0, sizeof($parts) - 18)) . 'Z';
+            return ($negative ? '-' : '') . implode('.', array_slice($parts, 0, sizeof($parts) - 18)) . 'Z';
             break;
         }
     }

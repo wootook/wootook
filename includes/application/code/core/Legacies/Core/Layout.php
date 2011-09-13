@@ -19,6 +19,7 @@ class Legacies_Core_Layout
             foreach (include $path . $layoutFile as $layoutId => $layoutConfig) {
                 if ($this->hasData($layoutId)) {
                     $declared = $this->getData($layoutId);
+
                     $layoutConfig = array_merge($declared, $layoutConfig);
                 }
 
@@ -38,7 +39,6 @@ class Legacies_Core_Layout
         }
 
         $layoutConfigs = array($this->getData($layoutId));
-        $layoutUpdates = array();
         if (isset($layoutConfigs[0]['update'])) {
             $parent = $layoutConfigs[0]['update'];
 
@@ -53,6 +53,7 @@ class Legacies_Core_Layout
             }
         }
 
+        $layoutUpdates = array();
         $layoutConfig = array();
         foreach (array_reverse($layoutConfigs) as $config) {
             $layoutConfig = array_merge($layoutConfig, $config);
@@ -72,12 +73,13 @@ class Legacies_Core_Layout
         $type = $layoutConfig['type'];
         $name = isset($layoutConfig['name']) ? $layoutConfig['name'] : 'root';
 
-        $this->_view = $this->createBlock($type, $name, $layoutConfig);
+        $this->_view = $this->_createBlock($type, $name, $layoutConfig);
 
         foreach ($layoutUpdates as $block => $updates) {
             if (!isset($this->_blocks[$block])) {
                 continue;
             }
+
             $parent = $this->_blocks[$block];
             foreach ($updates as $update) {
                 if (isset($update['children'])) {
@@ -85,10 +87,26 @@ class Legacies_Core_Layout
                         $type = $childConfig['type'];
                         $alias = isset($childConfig['alias']) ? $childConfig['alias'] : $childName;
 
-                        $parent->$alias = $this->createBlock($type, $childName, $childConfig);
+                        $parent->$alias = $this->_createBlock($type, $childName, $childConfig);
                     }
                 }
             }
+        }
+
+        foreach ($layoutUpdates as $block => $updates) {
+            if (!isset($this->_blocks[$block])) {
+                continue;
+            }
+
+            foreach ($updates as $update) {
+                if (isset($update['actions'])) {
+                    $this->_callActions($this->_blocks[$block], $update['actions']);
+                }
+            }
+        }
+
+        foreach ($this->_blocks as $block) {
+            $block->prepareLayout();
         }
     }
 
@@ -120,6 +138,15 @@ class Legacies_Core_Layout
 
     public function createBlock($type, $name, $config = array())
     {
+        $instance = $this->_createBlock($type, $name, $config);
+
+        $instance->prepareLayout();
+
+        return $instance;
+    }
+
+    protected function _createBlock($type, $name, $config = array())
+    {
         $className = $this->_resolveBlockClassType($type);
 
         $children = array();
@@ -138,6 +165,9 @@ class Legacies_Core_Layout
 
             $instance = $reflectionClass->newInstance($config);
             $this->_blocks[$name] = $instance;
+            $instance->setNameInLayout($name);
+
+            $instance->setLayout($this);
 
             foreach ($children as $name => $config) {
                 if (isset($config['alias'])) {
@@ -149,14 +179,22 @@ class Legacies_Core_Layout
                 if (!isset($config['type'])) {
                     $instance->$alias = new Legacies_Core_View($config);
                 } else {
-                    $instance->$alias = $this->createBlock($config['type'], $name, $config);
+                    $instance->$alias = $this->_createBlock($config['type'], $name, $config);
                 }
             }
         } catch (ReflectionException $e) {
+            var_dump($e);
             return null;
         }
 
-        $instance->setLayout($this);
+        $this->_callActions($instance, $actions);
+
+        return $instance;
+    }
+
+    protected function _callActions($block, $actions)
+    {
+        $reflectionClass = new ReflectionClass($block);
 
         foreach ($actions as $action) {
             if (!isset($action['method'])) {
@@ -171,6 +209,7 @@ class Legacies_Core_Layout
 
             try {
                 $reflectionMethod = $reflectionClass->getMethod($method);
+                $requiredParameterCount = $reflectionMethod->getNumberOfRequiredParameters();
                 $callParamaters = array();
                 foreach ($reflectionMethod->getParameters() as $parameter) {
                     $paramterName = $parameter->getName();
@@ -180,24 +219,19 @@ class Legacies_Core_Layout
                         $callParamaters[$paramterPosition] = $params[$paramterName];
                     } else if ($parameter->isDefaultValueAvailable()) {
                         $callParamaters[$paramterPosition] = $parameter->getDefaultValue();
-                    } else if ($parameter->isOptionnal()) {
-                        continue;
-                    } else {
-                        throw RuntimeException();
+                    //} else if (!$parameter->isOptionnal()) {
+                    } else if ($paramterPosition <= $requiredParameterCount) {
+                        throw new RuntimeException();
                     }
                 }
 
-                $reflectionMethod->invokeArgs($instance, $callParamaters);
+                $reflectionMethod->invokeArgs($block, $callParamaters);
             } catch (ReflectionException $e) {
                 continue;
             } catch (RuntimeException $e) {
                 continue;
             }
         }
-
-        $instance->prepareLayout();
-
-        return $instance;
     }
 
     public function getBlock($code)

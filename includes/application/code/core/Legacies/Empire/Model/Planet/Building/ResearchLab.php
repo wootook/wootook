@@ -206,12 +206,12 @@ class Legacies_Empire_Model_Planet_Building_ResearchLab
      * @param int $resourceId
      * @return bool
      */
-    public function checkAvailability($resourceId)
+    public function checkAvailability($researchId)
     {
         try {
             // Dispatch event
             Legacies::dispatchEvent($this->_eventPrefix . 'check-availability', array(
-                'research_id'  => $resourceId,
+                'research_id'  => $researchId,
                 'laboratory'   => $this,
                 'planet'       => $this->_currentPlanet,
                 'user'         => $this->_currentUser
@@ -220,17 +220,30 @@ class Legacies_Empire_Model_Planet_Building_ResearchLab
             return false;
         }
 
-        return $this->_builder->checkAvailability($resourceId);
+        return $this->_builder->checkAvailability($researchId);
     }
 
-    public function getResourcesNeeded($resourceId, $level)
+    public function getResourcesNeeded($researchId, $level)
     {
-        return $this->_builder->getResourcesNeeded($resourceId, $level);
+        return $this->_builder->getResourcesNeeded($researchId, $level);
     }
 
-    public function getBuildingTime($resourceId, $level)
+    public function getResearchTime($researchId, $level)
     {
-        $this->_builder->getBuildingTime($resourceId, $level);
+        $this->_builder->getBuildingTime($researchId, $level);
+    }
+
+    public function getResearchLevelQueued($researchId)
+    {
+        $level = $this->_currentUser->getElement($researchId);
+        foreach ($this->_builder as $item) {
+            if ($item->getData('research_id') != $researchId) {
+                continue;
+            }
+
+            $level = $item->getData('level');
+        }
+        return $level;
     }
 
     public static function planetUpdateListener($eventData)

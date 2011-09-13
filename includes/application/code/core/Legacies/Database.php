@@ -15,8 +15,13 @@ class Legacies_Database
             $username = $config['global']['database']['options']['username'];
             $password = $config['global']['database']['options']['password'];
             $database = $config['global']['database']['options']['database'];
+            $port = 3306;
 
-            self::$_singleton = new self("mysql:dbname={$database};host={$hostname}", $username, $password, array(
+            if (isset($config['global']['database']['options']['port'])) {
+                $port = $config['global']['database']['options']['port'];
+            }
+
+            self::$_singleton = new self("mysql:dbname={$database};host={$hostname};port={$port}", $username, $password, array(
                 PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
                 ));
         }

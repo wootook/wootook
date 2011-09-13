@@ -18,17 +18,30 @@ class Legacies_Empire_Model_Planet_Building_ResearchLab_Builder
      * @param int $level
      * @param int $time
      */
-    public function _initItem()
+    protected function _initItem(Array $params)
     {
-        $technologyId = func_get_arg(0);
-        $level = func_get_arg(1);
-        $time = func_get_arg(2);
+        if (!isset($params['technology_id']) || !isset($params['level'])) {
+            return null;
+        }
+
+        $technologyId = $params['technology_id'];
+        $level = $params['level'];
+        if (!isset($params['created_at'])) {
+            $createdAt = time();
+        } else {
+            $createdAt = $params['created_at'];
+        }
+        if (!isset($params['updated_at'])) {
+            $updatedAt = $createdAt;
+        } else {
+            $updatedAt = $params['updated_at'];
+        }
 
         return new Legacies_Empire_Model_Planet_Building_ResearchLab_Item(array(
             'technology_id' => $technologyId,
             'level'         => $level,
-            'created_at'    => $time,
-            'updated_at'    => $time
+            'created_at'    => $createdAt,
+            'updated_at'    => $updatedAt
             ));
     }
 

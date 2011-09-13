@@ -1,0 +1,36 @@
+<form action="reg.php" method="post">
+  <fieldset>
+    <legend><?php echo $this->__('User data:')?></legend>
+    <p>
+      <label for="register:username"><?php echo $this->__('Username:')?></label>
+      <input type="text" name="username" id="register:username" />
+    </p>
+    <p>
+      <label for="register:email"><?php echo $this->__('Email:')?></label>
+      <input type="text" name="email" id="register:email" />
+    </p>
+    <p>
+      <label for="register:email_confirm"><?php echo $this->__('Confirm email:')?></label>
+      <input type="text" name="email_confirm" id="register:email_confirm" />
+    </p>
+  </fieldset>
+  <fieldset>
+    <legend><?php echo $this->__('Password:')?></legend>
+    <p>
+      <label for="register:username"><?php echo $this->__('Password:')?></label>
+      <input type="password" name="password" id="register:password" />
+    </p>
+    <p>
+      <label for="register:username"><?php echo $this->__('Confirm password:')?></label>
+      <input type="password" name="password_confirm" id="register:password_confirm" />
+    </p>
+  </fieldset>
+  <fieldset>
+    <legend><?php echo $this->__('Planet:')?></legend>
+    <p>
+      <label for="register:planet_name"><?php echo $this->__('Planet name:')?></label>
+      <input type="text" name="planet_name" id="register:planet_name" />
+    </p>
+  </fieldset>
+  <input type="submit" value="<?php echo $this->__('Register!')?>" />
+</form>

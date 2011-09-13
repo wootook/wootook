@@ -56,6 +56,7 @@ class Legacies_Empire
     const RESOURCE_MULTIPLIER = 'factor';
     const RESOURCE_FORMULA    = 'formule';
     const RESOURCE_CLASS      = 'class';
+    const BASE_BUILDING_TIME  = 'base_time';
 
     const SHIPS_CONSUMPTION_PRIMARY   = 'consumption';
     const SHIPS_CELERITY_PRIMARY      = 'speed';

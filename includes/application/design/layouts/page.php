@@ -10,8 +10,14 @@
             'root' => array(
                 'children' => array(
                     'left' => array(
-                        'type' => 'core/concat'
-                        ),
+                        'type' => 'core/concat',
+                        'children' => array(
+                            'navigation' => array(
+                                'type' => 'core/html.navigation',
+                                'template' => 'page/html/navigation.phtml'
+                                )
+                            )
+                        )
                     )
                 )
             )
@@ -59,13 +65,19 @@
                     array(
                         'method' => 'addCss',
                         'params' => array(
-                            'stylesheet' => 'css/default.css'
+                            'stylesheet' => 'css/deprecated/default.css'
                             )
                         ),
                     array(
                         'method' => 'addCss',
                         'params' => array(
-                            'stylesheet' => 'css/formate.css'
+                            'stylesheet' => 'css/deprecated/formate.css'
+                            )
+                        ),
+                    array(
+                        'method' => 'addCss',
+                        'params' => array(
+                            'stylesheet' => 'css/legacies.css'
                             )
                         )
                     )
@@ -127,6 +139,66 @@
                         'type'     => 'core/template',
                         'template' => 'page/html/message.phtml'
                         ),
+                    )
+                )
+            )
+        ),
+
+    'login' => array(
+        'update' => '1column',
+        'reference' => array(
+            'content' => array(
+                'children' => array(
+                    'login' => array(
+                        'type'     => 'core/template',
+                        'template' => 'user/login.phtml'
+                        ),
+                    )
+                ),
+            'head' => array(
+                'actions' => array(
+                    array(
+                        'method' => 'addCss',
+                        'params' => array(
+                            'stylesheet' => 'css/deprecated/styles.css'
+                            )
+                        ),
+                    array(
+                        'method' => 'addCss',
+                        'params' => array(
+                            'stylesheet' => 'css/deprecated/about.css'
+                            )
+                        )
+                    )
+                )
+            )
+        ),
+
+    'registration' => array(
+        'update' => '1column',
+        'reference' => array(
+            'content' => array(
+                'children' => array(
+                    'registration' => array(
+                        'type'     => 'core/template',
+                        'template' => 'user/registration.phtml'
+                        ),
+                    )
+                ),
+            'head' => array(
+                'actions' => array(
+                    array(
+                        'method' => 'addCss',
+                        'params' => array(
+                            'stylesheet' => 'css/deprecated/styles.css'
+                            )
+                        ),
+                    array(
+                        'method' => 'addCss',
+                        'params' => array(
+                            'stylesheet' => 'css/deprecated/about.css'
+                            )
+                        )
                     )
                 )
             )

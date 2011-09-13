@@ -9,21 +9,41 @@ class Legacies_Empire_Model_Planet_Builder
     }
 
     /**
-     * @param int $buildingId
-     * @param int $level
-     * @param int $time
+     * @param array $params
      */
-    public function _initItem()
+    protected function _initItem(Array $params)
     {
-        $buildingId = func_get_arg(0);
-        $level = func_get_arg(1);
-        $time = func_get_arg(2);
+        if (!isset($params['building_id']) || !isset($params['level'])) {
+            return null;
+        }
+
+        $buildingId = $params['building_id'];
+        $level = $params['level'];
+
+        if (!isset($params['created_at'])) {
+            $createdAt = time();
+        } else {
+            $createdAt = $params['created_at'];
+        }
+
+        if (!isset($params['started_at'])) {
+            $startedAt = 0;
+        } else {
+            $startedAt = $params['started_at'];
+        }
+
+        if (!isset($params['updated_at'])) {
+            $updatedAt = $createdAt;
+        } else {
+            $updatedAt = $params['updated_at'];
+        }
 
         return new Legacies_Empire_Model_Planet_Builder_Item(array(
             'building_id' => $buildingId,
             'level'       => $level,
-            'created_at'  => $time,
-            'updated_at'  => $time
+            'created_at'  => $createdAt,
+            'started_at'  => $startedAt,
+            'updated_at'  => $updatedAt
             ));
     }
 
@@ -42,12 +62,34 @@ class Legacies_Empire_Model_Planet_Builder
             return true;
         }
 
-        return $this->checkAvailability($buildingId);
+        return false;
     }
 
     public function getBuildingTime($buildingId, $level)
     {
-        return 0;
+        $prices = Legacies_Empire_Model_Game_Prices::getSingleton();
+        $gameConfig = Legacies_Core_Model_Config::getSingleton();
+
+        Math::setPrecision(50);
+        $firstLevelTime = $prices[$buildingId][Legacies_Empire::BASE_BUILDING_TIME];
+        $partialLevelTime = Math::mul($firstLevelTime, Math::pow($prices[$buildingId][Legacies_Empire::RESOURCE_MULTIPLIER], $level));
+        $levelTime = Math::sub($partialLevelTime, $firstLevelTime);
+
+        $speedFactor = $gameConfig->getData('game_speed');
+        $baseTime = $levelTime / $speedFactor * 3600;
+
+        Math::setPrecision();
+
+        $event = Legacies::dispatchEvent('planet.building.building-time', array(
+            'time'        => $baseTime,
+            'base_time'   => $baseTime,
+            'planet'      => $this->_currentPlanet,
+            'user'        => $this->_currentUser,
+            'building_id' => $buildingId,
+            'level'       => $level
+            ));
+
+        return $event->getData('time');
     }
 
     public function getResourcesNeeded($buildingId, $level)
@@ -65,8 +107,7 @@ class Legacies_Empire_Model_Planet_Builder
             }
             if (Math::isPositive($prices[$buildingId][$resourceId])) {
                 $firstLevelCost = $prices[$buildingId][$resourceId];
-                $partialLevelCost = Math::mul($firstLevelCost, Math::pow($prices[$buildingId][Legacies_Empire::RESOURCE_MULTIPLIER], $level));
-                $resourcesNeeded[$resourceId] = Math::sub($partialLevelCost, $firstLevelCost);
+                $resourcesNeeded[$resourceId] = Math::mul($firstLevelCost, Math::pow($prices[$buildingId][Legacies_Empire::RESOURCE_MULTIPLIER], $level));
             }
         }
 
@@ -82,12 +123,20 @@ class Legacies_Empire_Model_Planet_Builder
     {
         $fields = Legacies_Empire_Model_Game_FieldsAlias::getSingleton();
 
-        $elapsedTime = $time - $this->_currentPlanet->getData('b_building');
+        $startingTime = $this->_currentPlanet->getData('b_building');
 
         foreach ($this->getQueue() as $element) {
-            $buildingId = $element->getData('building_id');
+            $elementTime = $element->getData('started_at');
+
+            if ($elementTime == 0) {
+                $element->setData('started_at', $startingTime);
+                $elementTime = $startingTime;
+            }
+
             $level = $element->getData('level');
-            $buildTime = $this->getBuildingTime($buildingId, $level); // FIXME: consider total time, not only the construction time
+            $buildingId = $element->getData('building_id');
+            $buildTime = $this->getBuildingTime($buildingId, $level);
+            $elapsedTime = $time - $elementTime;
 
             if ($elapsedTime >= $buildTime) {
                 $this->_currentPlanet->updateResources($time - $elapsedTime);
@@ -95,6 +144,7 @@ class Legacies_Empire_Model_Planet_Builder
                 $this->_currentPlanet->updateResourceProduction($time - $elapsedTime);
                 $this->_currentPlanet->updateStorages($time - $elapsedTime);
                 $this->_currentPlanet->updateBuildingFields();
+
                 $this->dequeue($element);
 
                 Legacies::dispatchEvent('planet.building.level-update', array(
@@ -105,15 +155,16 @@ class Legacies_Empire_Model_Planet_Builder
                     'level'       => $level
                     ));
 
-                $elapsedTime -= $buildTime;
+                $startingTime = $elementTime + $buildTime;
                 continue;
             }
+
             $element->setData('updated_at', $time);
             break;
         }
 
         $this->_currentPlanet->setData('b_building_id', $this->serialize());
-        $this->_currentPlanet->setData('b_building', $time);
+        $this->_currentPlanet->setData('b_building', $startingTime);
 
         return $this;
     }
@@ -148,7 +199,11 @@ class Legacies_Empire_Model_Planet_Builder
             return $this;
         }
 
-        $this->enqueue($buildingId, $level, $time);
+        $this->enqueue(array(
+            'building_id' => $buildingId,
+            'level'       => $level,
+            'created_at'  => $time
+            ));
         $this->_currentPlanet->setData('b_building_id', $this->serialize());
 
         foreach ($remainingAmounts as $resourceId => $resourceAmount) {
@@ -159,22 +214,52 @@ class Legacies_Empire_Model_Planet_Builder
     }
 
     /**
-     * Append items to build to the construction list
+     * Dequeues the first item to build to the construction list and removes all
+     * its successors of the same type.
      *
-     * @param int $buildingId
-     * @param int|string $level
-     * @return Legacies_Empire_Model_Planet_Building_Shipyard
+     * @return Legacies_Empire_Model_Planet_Builder
      */
-    public function dequeueFirstItem($time)
+    public function dequeueFirstItem()
     {
-        $types = Legacies_Empire_Model_Game_Types::getSingleton();
-        $resources = Legacies_Empire_Model_Game_Resources::getSingleton();
+        $this->rewind();
+        $item = $this->current();
 
-        if (!Math::isPositive($level)) {
+        return $this->dequeueItem($item->getIndex());
+    }
+
+    /**
+     * Dequeues an item to build to the construction list and removes all its
+     * successors of the same type.
+     *
+     * @param string $itemId
+     * @return Legacies_Empire_Model_Planet_Builder
+     */
+    public function dequeueItem($itemId)
+    {
+        $item = $this->getItem($itemId);
+        if (!$item) {
             return $this;
         }
+        $buildingId = $item->getData('building_id');
 
-        // FIXME
+        $keys = array_keys($this->_queue);
+        $size = count($keys);
+        $start = array_search($item->getIndex(), $keys);
+        for ($i = $start; $i < $size; $i++) {
+            $index = $keys[$i];
+            if ($this->_queue[$index]->getData('building_id') != $buildingId) {
+                continue;
+            }
+
+            $resourcesNeeded = $this->getResourcesNeeded($buildingId, $this->_queue[$index]->getData('level'));
+            $reclaimedAmounts = $this->_calculateResourceReclaimedAmounts($resourcesNeeded);
+
+            $this->dequeue($this->_queue[$index]);
+
+            foreach ($reclaimedAmounts as $resourceId => $resourceAmount) {
+                $this->_currentPlanet[$resourceId] = $resourceAmount;
+            }
+        }
 
         $this->_currentPlanet->setData('b_building_id', $this->serialize());
 

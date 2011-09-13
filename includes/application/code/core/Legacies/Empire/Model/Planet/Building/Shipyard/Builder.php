@@ -18,17 +18,30 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
      * @param int $qty
      * @param int $time
      */
-    public function _initItem()
+    protected function _initItem(Array $params)
     {
-        $shipId = func_get_arg(0);
-        $qty = func_get_arg(1);
-        $time = func_get_arg(2);
+        if (!isset($params['ship_id']) || !isset($params['qty'])) {
+            return null;
+        }
+
+        $shipId = $params['ship_id'];
+        $qty = $params['qty'];
+        if (!isset($params['created_at'])) {
+            $createdAt = time();
+        } else {
+            $createdAt = $params['created_at'];
+        }
+        if (!isset($params['updated_at'])) {
+            $updatedAt = $createdAt;
+        } else {
+            $updatedAt = $params['updated_at'];
+        }
 
         return new Legacies_Empire_Model_Planet_Building_Shipyard_Item(array(
             'ship_id'    => $shipId,
             'qty'        => $qty,
-            'created_at' => $time,
-            'updated_at' => $time
+            'created_at' => $createdAt,
+            'updated_at' => $updatedAt
             ));
     }
 
@@ -108,7 +121,7 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
             );
 
         if (in_array($shipId, array_keys($limitedElementsQty))) {
-            foreach ($this->_queue as $element) {
+            foreach ($this->getQueue() as $element) {
                 if ($element['ship_id'] != $shipId) {
                     continue;
                 }
@@ -138,36 +151,26 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
     public function getBuildingTime($shipId, $qty)
     {
         $prices = Legacies_Empire_Model_Game_Prices::getSingleton();
-        $fields = Legacies_Empire_Model_Game_FieldsAlias::getSingleton();
-        $types = Legacies_Empire_Model_Game_Types::getSingleton();
         $gameConfig = Legacies_Core_Model_Config::getSingleton();
 
         Math::setPrecision(50);
+        $buildingTime = Math::mul($prices[$shipId][Legacies_Empire::BASE_BUILDING_TIME], $qty);
 
-         // FIXME: Resource dependency
-        $totalCost = Math::mul(Math::add($prices[$shipId][Legacies_Empire::RESOURCE_METAL], $prices[$shipId][Legacies_Empire::RESOURCE_CRISTAL]), $qty);
         $speedFactor = $gameConfig->getData('game_speed');
-
-        // FIXME: Building dependency
-        $shipyardSpeedup = Math::div(1, Math::add($this->_currentPlanet[$fields[Legacies_Empire::ID_BUILDING_SHIPYARD]], 1));
-        $naniteSpeedup = Math::pow(.5, $this->_currentPlanet[$fields[Legacies_Empire::ID_BUILDING_NANITE_FACTORY]]);
-        $structuresSpeedup = Math::mul($shipyardSpeedup, $naniteSpeedup);
-
-        // FIXME: officers
-        $officerSpeedup = 1;
-        if ($types->is($shipId, Legacies_Empire::TYPE_SHIP)) {
-            $officerSpeedup = 1 - ($this->_currentUser['rpg_technocrate'] * .05);
-        } else if ($types->is($shipId, Legacies_Empire::TYPE_SPECIAL)) {
-            $officerSpeedup = 1 - ($this->_currentUser['rpg_technocrate'] * .05);
-        } else if ($types->is($shipId, Legacies_Empire::TYPE_DEFENSE)) {
-            $officerSpeedup = 1 - ($this->_currentUser['rpg_defenseur'] * .375);
-        }
+        $baseTime = Math::div($buildingTime, $speedFactor);
 
         Math::setPrecision();
 
-        $baseTime = ($totalCost / $speedFactor) * $structuresSpeedup;
+        $event = Legacies::dispatchEvent('planet.shipyard.building-time', array(
+            'time'        => $baseTime,
+            'base_time'   => $baseTime,
+            'planet'      => $this->_currentPlanet,
+            'user'        => $this->_currentUser,
+            'ship_id'     => $shipId,
+            'qty'         => $qty
+            ));
 
-        return (int) Math::floor($baseTime * $officerSpeedup * 3600);
+        return $event->getData('time');
     }
 
     /**

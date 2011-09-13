@@ -21,16 +21,16 @@ class Legacies_Core_Controller_Request_Http
         if (isset($_POST[$key])) {
             return $_POST[$key];
         }
-        if (!isset($_GET[$key])) {
+        if (isset($_GET[$key])) {
             return $_GET[$key];
         }
-        if (!isset($_FILES[$key])) {
+        if (isset($_FILES[$key])) {
             return $_FILES[$key];
         }
-        if (!isset($_COOKIE[$key])) {
+        if (isset($_COOKIE[$key])) {
             return $_COOKIE[$key];
         }
-        if (!isset($_SERVER[$key])) {
+        if (isset($_SERVER[$key])) {
             return $_SERVER[$key];
         }
         return $default;
@@ -74,5 +74,13 @@ class Legacies_Core_Controller_Request_Http
             return $default;
         }
         return $_POST[$key];
+    }
+
+    public function getServer($key, $default = null)
+    {
+        if (!isset($_SERVER[$key])) {
+            return $default;
+        }
+        return $_SERVER[$key];
     }
 }

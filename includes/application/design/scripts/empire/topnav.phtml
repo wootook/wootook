@@ -1,77 +1,65 @@
-<div id="header_top">
-  <table class="header">
-    <tbody>
-      <tr class="header">
-        <td class="header">
-          <center>
-          <table class="header">
-          <tbody>
-          <tr class="header">
-            <td class="header"><img src="<?php echo $this->getSkinUrl($this->getCurrentPlanet()->getSmallImage())?>" height="50" width="50"></td>
-            <td  class="header" valign="middle">
-              <select size="1" onchange="document.location.href=this.options[this.selectedIndex].value;">
-              <?php foreach ($this->getPlanetCollection() as $planet):?>
-                <option value="<?php echo $this->getUrl('', array('cp' => $planet->getId()))?>"<?php if ($planet->getId() == $this->getCurrentPlanet()->getId()):?> selected="selected"<?php endif?>><?php echo $this->escape($planet->getName())?> [<?php echo $this->escape($planet->getCoords())?>]</option>
-              <?php endforeach?>
-              </select>
-            </td>
-          </tr>
-          </tbody>
-          </table>
-          </center>
-        </td>
-        <td class="header">
-          <table style="width: 508px;" class="header" id="resources" padding-right="30" border="0" cellpadding="0" cellspacing="0">
-          <tbody>
-          <tr class="header">
-            <td class="header" align="center" width="140"><img src="<?php echo $this->getSkinUrl('graphics/images/metall.gif')?>" border="0" height="22" width="42"></td>
-            <td class="header" align="center" width="140"><img src="<?php echo $this->getSkinUrl('graphics/images/kristall.gif')?>" border="0" height="22" width="42"></td>
-            <td class="header" align="center" width="140"><img src="<?php echo $this->getSkinUrl('graphics/images/deuterium.gif')?>" border="0" height="22" width="42"></td>
-            <td class="header" align="center" width="140"><img src="<?php echo $this->getSkinUrl('graphics/images/energie.gif')?>" border="0" height="22" width="42"></td>
-            <td class="header" align="center" width="140"><img src="<?php echo $this->getSkinUrl('graphics/images/message.gif')?>" border="0" height="22" width="42"></td>
-          </tr>
-          <tr class="header">
-            <td class="header" align="center" width="140"><i><b><font color="white"><?php echo $this->__('Metal')?></font></b></i></td>
-            <td class="header" align="center" width="140"><i><b><font color="white"><?php echo $this->__('Cristal')?></font></b></i></td>
-            <td class="header" align="center" width="140"><i><b><font color="white"><?php echo $this->__('Deuterium')?></font></b></i></td>
-            <td class="header" align="center" width="140"><i><b><font color="white"><?php echo $this->__('Energy')?></font></b></i></td>
-            <td class="header" align="center" width="140"><i><b><font color="white"><?php echo $this->__('Messages')?></font></b></i></td>
-          </tr>
-          <tr class="header">
-            <td class="header" align="center" width="140">
-            <?php if ($this->getCurrentPlanet()->isResourceCapped(Legacies_Empire::RESOURCE_METAL)):?>
-              <span style="color:red;"><?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_METAL))?></span>
-            <?php else:?>
-              <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_METAL))?>
-            <?php endif?>
-            </td>
-            <td class="header" align="center" width="140">
-            <?php if ($this->getCurrentPlanet()->isResourceCapped(Legacies_Empire::RESOURCE_CRISTAL)):?>
-              <span style="color:red;"><?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_CRISTAL))?></span>
-            <?php else:?>
-              <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_CRISTAL))?>
-            <?php endif?>
-            </td>
-            <td class="header" align="center" width="140">
-            <?php if ($this->getCurrentPlanet()->isResourceCapped(Legacies_Empire::RESOURCE_DEUTERIUM)):?>
-              <span style="color:red;"><?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_DEUTERIUM))?></span>
-            <?php else:?>
-              <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_DEUTERIUM))?>
-            <?php endif?>
-            </td>
-            <td class="header" align="center" width="140">
-            <?php if ($this->getCurrentPlanet()->isResourceCapped(Legacies_Empire::RESOURCE_ENERGY)):?>
-              <span style="color:red;"><?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_ENERGY))?> / <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceCap(Legacies_Empire::RESOURCE_ENERGY))?></span>
-            <?php else:?>
-              <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_ENERGY))?> / <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceCap(Legacies_Empire::RESOURCE_ENERGY))?>
-            <?php endif?>
-            </td>
-            <td class="header" align="center" width="140"><a href="<?php echo $this->getUrl('messages.php')?>"><?php echo $this->getCurrentUser()->getNewMessagesCount()?></a></td>
-          </tr>
-          </tbody>
-          </table>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+<div class="planet-carrousel">
+<?php foreach ($this->getPlanetCollection() as $planet):?>
+  <div class="planet item">
+  <?php if ($planet->getId() != $this->getCurrentPlanet()->getId()):?>
+  <a href="<?php echo $this->getUrl('', array('cp' => $planet->getId()))?>"><?php echo $this->escape($planet->getName())?> [<?php echo $this->escape($planet->getCoords())?>]</a>
+  <?php else:?>
+  <?php echo $this->escape($planet->getName())?> [<?php echo $this->escape($planet->getCoords())?>]
+  <?php endif?>
+  </div>
+<?php endforeach?>
+</div>
+<div class="resources-display">
+  <div class="resource metal">
+    <img src="<?php echo $this->getSkinUrl('graphics/images/metall.gif')?>" border="0" height="22" width="42" alt="<?php echo $this->__('Metal')?>" title="<?php echo $this->__('Metal')?>" />
+    <p>
+    <?php if ($this->getCurrentPlanet()->isResourceCapped(Legacies_Empire::RESOURCE_METAL)):?>
+      <span class="resource-capped"><?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_METAL))?></span>
+    <?php else:?>
+      <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_METAL))?>
+    <?php endif?>
+    </p>
+  </div>
+  <div class="resource cristal">
+    <img src="<?php echo $this->getSkinUrl('graphics/images/kristall.gif')?>" border="0" height="22" width="42" alt="<?php echo $this->__('Cristal')?>" title="<?php echo $this->__('Cristal')?>" />
+    <p>
+    <?php if ($this->getCurrentPlanet()->isResourceCapped(Legacies_Empire::RESOURCE_CRISTAL)):?>
+      <span class="resource-capped"><?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_CRISTAL))?></span>
+    <?php else:?>
+      <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_CRISTAL))?>
+    <?php endif?>
+    </p>
+  </div>
+  <div class="resource deuterium">
+    <img src="<?php echo $this->getSkinUrl('graphics/images/deuterium.gif')?>" border="0" height="22" width="42" alt="<?php echo $this->__('Deuterium')?>" title="<?php echo $this->__('Deuterium')?>" />
+    <p>
+    <?php if ($this->getCurrentPlanet()->isResourceCapped(Legacies_Empire::RESOURCE_DEUTERIUM)):?>
+      <span class="resource-capped"><?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_DEUTERIUM))?></span>
+    <?php else:?>
+      <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_DEUTERIUM))?>
+    <?php endif?>
+    </p>
+  </div>
+  <div class="resource energy">
+    <img src="<?php echo $this->getSkinUrl('graphics/images/energie.gif')?>" border="0" height="22" width="42" alt="<?php echo $this->__('Energy')?>" title="<?php echo $this->__('Energy')?>" />
+    <p>
+    <?php if ($this->getCurrentPlanet()->isResourceCapped(Legacies_Empire::RESOURCE_ENERGY)):?>
+      <span class="resource-capped"><?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_ENERGY))?> / <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceCap(Legacies_Empire::RESOURCE_ENERGY))?></span>
+    <?php else:?>
+      <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_ENERGY))?> / <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceCap(Legacies_Empire::RESOURCE_ENERGY))?>
+    <?php endif?>
+    </p>
+  </div>
+  <div class="messages">
+    <img src="<?php echo $this->getSkinUrl('graphics/images/message.gif')?>" border="0" height="22" width="42" alt="<?php echo $this->__('Messages')?>" title="<?php echo $this->__('Messages')?>" />
+    <p>
+    <?php if (($count = $this->getCurrentUser()->getNewMessagesCount()) > 1):?>
+    <a href="<?php echo $this->getUrl('messages.php')?>" title="<?php echo $this->__('You have %1$d new messages.', $count)?>"><?php echo $this->__('%1$d messages.', $count)?></a>
+    <?php elseif ($count == 1):?>
+    <a href="<?php echo $this->getUrl('messages.php')?>" title="<?php echo $this->__('You have 1 new message.')?>"><?php echo $this->__('1 message.')?></a>
+    <?php else:?>
+    <a href="<?php echo $this->getUrl('messages.php')?>" title="<?php echo $this->__('You have no new message.')?>"><?php echo $this->__('No message.')?></a>
+    <?php endif?>
+    </p>
+  </div>
 </div>

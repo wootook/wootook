@@ -295,7 +295,7 @@ if (isset($_POST) && !empty($_POST)) {
         // Rajout d'une barre pourcentage
         // Calcul du pourcentage de remplissage
         // Barre de remplissage
-        $size = Math::floor(Math::div($planet->getBuildingFields(), $planet->getUsedFields()) * 100);
+        $size = Math::floor(Math::div($planet->getUsedFields(), $planet->getBuildingFields()) * 100);
         // Couleur de la barre de remplissage
         $parse['case_pourcentage'] = $size . $lang['o/o'];
         if (Math::comp($size, 100) > 0) {

@@ -1,0 +1,6 @@
+Your session has expired, please login.
+Your username or credential is invalid, please check your input.
+No such user.
+You were banned, please contact admin for more information.
+You have 1 unread message.
+You have %1$d unread messages.

@@ -19,19 +19,13 @@ abstract class Legacies_Empire_Model_BuilderAbstract
      * construction queue
      * @var array
      */
-    private $_queue = null;
+    protected $_queue = null;
 
     /**
      * construction queue
      * @var array
      */
     protected $_itemClass = 'Legacies_Empire_Model_Builder_Item';
-
-    /**
-     * construction queue
-     * @var array
-     */
-    protected $_index = 0;
 
     /**
      *
@@ -48,23 +42,34 @@ abstract class Legacies_Empire_Model_BuilderAbstract
 
     abstract public function init();
 
-    abstract protected function _initItem();
+    abstract protected function _initItem(Array $params);
 
-    public function enqueue()
+    public function enqueue($params, $index = null)
     {
-        $params = func_get_args();
-        $item = call_user_func_array(array($this, '_initItem'), $params);
-        $item->setIndex($this->_index);
-        $this->_queue[$this->_index++] = $item;
+        $item = $this->_initItem($params);
+        if ($item === null) {
+            return $this;
+        }
+
+        if ($index === null) {
+            $index = $this->_generateIndex();
+        }
+        $item->setIndex($index);
+        $this->_queue[$index] = $item;
 
         return $this;
     }
 
     public function dequeue($item)
     {
-        unset($this->_queue[(int) $item->getIndex()]);
+        unset($this->_queue[$item->getIndex()]);
 
         return $this;
+    }
+
+    protected function _generateIndex()
+    {
+        return uniqid();
     }
 
     public function getItem($itemIndex)
@@ -79,8 +84,8 @@ abstract class Legacies_Empire_Model_BuilderAbstract
     protected function _serializeQueue()
     {
         $serialize = array();
-        foreach ($this->_queue as $item) {
-            $serialize[] = $item->getAllDatas();
+        foreach ($this->_queue as $itemIndex => $itemInstance) {
+            $serialize[$itemIndex] = $itemInstance->getAllDatas();
         }
         return serialize($serialize);
     }
@@ -95,8 +100,8 @@ abstract class Legacies_Empire_Model_BuilderAbstract
             return $this;
         }
 
-        foreach ($unserialized as $itemData) {
-            call_user_func_array(array($this, 'enqueue'), $itemData);
+        foreach ($unserialized as $itemIndex => $itemData) {
+            $this->enqueue($itemData, $itemIndex);
         }
 
         return $this;
@@ -222,11 +227,20 @@ abstract class Legacies_Empire_Model_BuilderAbstract
     protected function _calculateResourceRemainingAmounts($resourceNeeded)
     {
         $resourceAmounts = array();
-        foreach ($resourcesNeeded as $resourceId => $resourceAmount) {
+        foreach ($resourceNeeded as $resourceId => $resourceAmount) {
             $resourceAmounts[$resourceId] = Math::sub($this->_currentPlanet[$resourceId], $resourceAmount);
             if (Math::isNegative($resourceAmounts[$resourceId])) {
                 return false;
             }
+        }
+        return $resourceAmounts;
+    }
+
+    protected function _calculateResourceReclaimedAmounts($resourceNeeded)
+    {
+        $resourceAmounts = array();
+        foreach ($resourceNeeded as $resourceId => $resourceAmount) {
+            $resourceAmounts[$resourceId] = Math::add($this->_currentPlanet[$resourceId], $resourceAmount);
         }
         return $resourceAmounts;
     }

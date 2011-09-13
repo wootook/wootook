@@ -29,9 +29,6 @@ class Legacies_Core_Model_Session
                 $reflection = new ReflectionClass(__CLASS__);
                 self::$_levels = array_flip($reflection->getConstants());
             }
-            if (session_id() == '') {
-                session_start();
-            }
 
             self::$_instances[$namespace] = new self($namespace);
         }
@@ -45,6 +42,14 @@ class Legacies_Core_Model_Session
 
     public function __construct($namespace)
     {
+        if (session_id() == '') {
+            session_start();
+        }
+
+        if (!isset($_SESSION[$namespace])) {
+            $_SESSION[$namespace] = array();
+        }
+
         $this->_data = &$_SESSION[$namespace];
         $this->_data['messages'] = array();
     }

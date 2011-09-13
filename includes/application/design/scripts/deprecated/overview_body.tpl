@@ -4,7 +4,7 @@
 	<tr><td class="c" colspan="4"><a href="overview.php?action=rename" title="<?php echo $this->getData('Planet_menu')?>"><?php echo $this->getData('Planet')?> "<?php echo $this->getData('planet_name')?>"</a> (<?php echo $this->getData('user_username')?>)</td></tr>
 	<?php echo $this->getData('Have_new_message')?>
 	<?php echo $this->getData('Have_new_level_mineur')?>
-	<?php echo $this->getData('Have_new_level_raid')?>
+	<?php //echo $this->getData('Have_new_level_raid')?>
 	<tr><th><?php echo $this->getData('Server_time')?></th>
 	<th colspan="3"><div id="dateheure"></div></th></tr>
 	<tr><th><?php echo $this->getData('MembersOnline')?></th>
@@ -17,7 +17,7 @@
 	<th colspan="2"><img src="<?php echo $this->getData('dpath')?>graphics/planeten/<?php echo $this->getData('planet_image')?>.jpg" height="200" width="200"><br><?php echo $this->getData('building')?></th>
 	<th class="s"><table class="s" align="top" border="0"><tr><?php echo $this->getData('anothers_planets')?></tr></table></th></tr>
 	<tr><th><?php echo $this->getData('Diameter')?></th>
-	<th colspan="3"><?php echo $this->getData('planet_diameter')?> km (<a title="<?php echo $this->getData('Developed_fields')?>"><?php echo $this->getData('planet_field_current')?></a> / <a title="<?php echo $this->getData('max_eveloped_fields')?>"><?php echo $this->getData('planet_field_max')?></a> <?php echo $this->getData('fields')?>)</th></tr>
+	<th colspan="3"><?php echo $this->getData('planet_diameter')?> km (<a title="<?php echo $this->getData('Developed_fields')?>"><?php echo $this->getData('planet_field_current')?></a> / <a title="<?php echo $this->getData('max_developed_fields')?>"><?php echo $this->getData('planet_field_max')?></a> <?php echo $this->getData('fields')?>)</th></tr>
 	<th><?php echo $this->getData('Developed_fields')?></th>
 	<th colspan="3" align="center"><div  style="border: 1px solid rgb(153, 153, 255); width: 400px;"><div  id="CaseBarre" style="background-color: <?php echo $this->getData('case_barre_barcolor')?>; width: <?php echo $this->getData('case_barre')?>%;"><font color="#CCF19F"><?php echo $this->getData('case_pourcentage')?></font></div></th>
 	<tr><tr><th><?php echo $this->getData('ov_off_level')?></th><th colspan="3" align="center"><table border="0" width="100%"><tbody><tr>

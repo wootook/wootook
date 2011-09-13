@@ -49,7 +49,9 @@ function bbcode($string) {
         '/\[img](.*?)\[\/img\]/ise',
         '/\[color=(.*?)\](.*?)\[\/color\]/is',
         '/\[quote\](.*?)\[\/quote\]/ise',
-        '/\[code\](.*?)\[\/code\]/ise'
+        '/\[code\](.*?)\[\/code\]/ise',
+        '#\[youtube\]([^\]]+)\[/youtube\]#',
+        '#\[dailymotion\]([^\]]+)\[/dailymotion\]#'
     );
 
     $replace = array(
@@ -62,12 +64,14 @@ function bbcode($string) {
         '<span style="text-decoration: underline;">\1</span>',
         '<span style="text-decoration: line-through;">\1</span>',
         '<span style="text-decoration: line-through;">\1</span>',
-        'urlfix(\'\\1\',\'\\2\')',
+        'urlfix($1,$2)',
         '<a href="mailto:\1" title="\1">\2</a>',
         'imagefix(\'\\1\')',
         '<span style="color: \1;">\2</span>',
         'sQuote(\'\1\')',
-        'sCode(\'\1\')'
+        'sCode(\'\1\')',
+        '<iframe src="http://www.youtube.com/embed/\\1" width="640" height="385"></iframe>',
+        '<iframe frameborder="0" width="560" height="420" src="http://www.dailymotion.com/embed/video/\\1?width=560"></iframe>'
     );
 
     return preg_replace($pattern, $replace, nl2br(htmlspecialchars(stripslashes($string))));
