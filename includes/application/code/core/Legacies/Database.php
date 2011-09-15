@@ -7,6 +7,10 @@ class Legacies_Database
 
     protected static $_prefix = null;
 
+    public static $options = array(
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+        );
+
     public static function getSingleton()
     {
         if (self::$_singleton === null) {
@@ -21,8 +25,16 @@ class Legacies_Database
                 $port = $config['global']['database']['options']['port'];
             }
 
-            self::$_singleton = new self("mysql:dbname={$database};host={$hostname};port={$port}", $username, $password, array(
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+            $event = Legacies::dispatchEvent('database.prepare-options', array(
+                'options' => self::$options
+                ));
+
+            self::$options = $event->getData('options');
+
+            self::$_singleton = new self("mysql:dbname={$database};host={$hostname};port={$port}", $username, $password, self::$options);
+
+            Legacies::dispatchEvent('database.init', array(
+                'handler' => self::$_singleton
                 ));
         }
         return self::$_singleton;

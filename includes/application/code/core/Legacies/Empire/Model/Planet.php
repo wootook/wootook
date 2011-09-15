@@ -769,7 +769,7 @@ class Legacies_Empire_Model_Planet
                 return;
             }
 
-            $collection = self::_searchMostFreeSystems();
+            $collection = self::searchMostFreeSystems();
             $collection->limit(1)->load();
 
             if ($collection->count() == 0) {
@@ -832,22 +832,21 @@ class Legacies_Empire_Model_Planet
                 'user'   => $user
                 ));
 
-            //$planet->save();
+            $planet->save();
         }
     }
 
-    protected static function _searchMostFreeSystems($galaxyList = null, $systemList = null)
+    public static function searchMostFreeSystems($galaxyList = null, $systemList = null)
     {
-        $collection = new Legacies_Core_Collection(array('planet' => 'planets'));
+        $collection = new Legacies_Core_Collection(array('galaxy' => 'galaxy'));
         $collection
             ->column(array(
-                'galaxy' => 'planet.galaxy',
-                'system' => 'planet.system',
-                'count'  => 'COUNT(planet.id)'
+                'galaxy' => 'galaxy.galaxy',
+                'system' => 'galaxy.system',
+                'count'  => 'COUNT(*)'
                 ))
-            ->group('planet.galaxy')
-            ->group('planet.system')
-            ->where('planet.planet_type=1')
+            ->group('galaxy.galaxy')
+            ->group('galaxy.system')
         ;
 
         $config = Legacies_Core_Model_Config::getSingleton();
@@ -858,7 +857,7 @@ class Legacies_Empire_Model_Planet
 
         if ($galaxyList !== null) {
             array_walk($galaxyList, array(__CLASS__, '_cleanItemRanges'));
-            $collection->where('planet.galaxy IN(' . implode(', ', $galaxyList) . ')');
+            $collection->where('galaxy.galaxy IN(' . implode(', ', $galaxyList) . ')');
         }
 
         if ($systemList === null && $config->hasData('user/registration/system_list')) {
@@ -867,16 +866,20 @@ class Legacies_Empire_Model_Planet
 
         if ($systemList !== null) {
             array_walk($systemList, array(__CLASS__, '_cleanItemRanges'));
-            $collection->where('planet.system IN(' . implode(', ', $systemList) . ')');
+            $collection->where('galaxy.system IN(' . implode(', ', $systemList) . ')');
         }
 
         $orders = array(
-            "1.5 / COUNT(planet.id)",
-            "ABS(planet.galaxy - CEIL({$collection->quote(MAX_GALAXY_IN_WORLD)} / 2))",
-            "ABS(planet.system - CEIL({$collection->quote(MAX_SYSTEM_IN_GALAXY)} / 2))"
+            "COUNT(*) / {$collection->quote(MAX_PLANET_IN_SYSTEM)}",
+            "1 + ABS(galaxy.galaxy - CEIL({$collection->quote(MAX_GALAXY_IN_WORLD)} / 2))",
+            "1 + 2 * ABS(galaxy.system - CEIL({$collection->quote(MAX_SYSTEM_IN_GALAXY)} / 2))",
+            "RAND() / 1000",
             );
         $collection
             ->order('((' . implode(') * (', $orders) . '))', 'ASC')
+            //->order("ABS(galaxy.system - CEIL({$collection->quote(MAX_SYSTEM_IN_GALAXY)} / 2))", 'ASC')
+            //->order("ABS(galaxy.galaxy - CEIL({$collection->quote(MAX_GALAXY_IN_WORLD)} / 2))", 'ASC')
+            //->order("1.5 / COUNT(*)", 'ASC')
             ->order('RAND()', 'ASC');
 
         return $collection;

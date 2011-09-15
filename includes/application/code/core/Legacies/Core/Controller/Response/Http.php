@@ -1,6 +1,6 @@
 <?php
 
-class Legacies_Core_Controller_Response
+class Legacies_Core_Controller_Response_Http
     extends Legacies_Object
 {
     public function __construct()

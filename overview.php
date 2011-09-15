@@ -197,7 +197,30 @@ if (isset($_POST) && !empty($_POST)) {
         $newMessages = new Legacies_Core_View();
         $newMessages->setTemplate('empire/overview/messages.phtml');
         $newMessages['count'] = (int) $count;
-
+		
+		/** Gestion des officiers
+		 *  Update miner and raider level
+		 *
+		 */
+		 $Xp_Next_Level_Miner = $user->getData('lvl_minier') * 5000;
+		 $Xp_Next_Level_Raider = $user->getData('lvl_raid') * 10;
+		 $Xp_Miner = $user->getData('xpminier');
+		 $Xp_Raider = $user->getData('xpraid');
+		 if ($Xp_Miner >= $Xp_Next_Level_Miner) {
+			$HaveNewLevelMineur = "<tr>";
+            $HaveNewLevelMineur .= "<th colspan=4><a href=officier.php>" . $lang['Have_new_level_mineur'] . "</a></th></tr>";
+			$user->setData('lvl_minier', $user->getData('lvl_minier') + 1);
+			$user->setData('rpg_points', $user->getData('rpg_points')+1);
+			$user->save();
+		}
+		if ($Xp_Raider >= $Xp_Next_Level_Raider) {
+			$HaveNewLevelRaider = "<tr>";
+            $HaveNewLevelRaider .= "<th colspan=4><a href=officier.php>". $lang['Have_new_level_raid'] . "</a></th></tr>";
+			$user->setData('lvl_raid', $user->getData('lvl_raid') + 1);
+			$user->setData('rpg_points', $user->getData('rpg_points') +1);
+			$user->save();
+		}
+		 
         /**
          * Page display
          * Refactoring needed

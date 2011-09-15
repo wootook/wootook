@@ -48,7 +48,7 @@ if (!empty($_POST) && isset($_POST['username']) && isset($_POST['planet_name']) 
     if (true || count($session->getMessages(false)) === 0) {
         $user = Legacies_Empire_Model_User::register($_POST['username'], $_POST['email'], $_POST['password']);
 
-        $user->getHomePlanet()->setName($_POST['planet_name']);
+        $user->getHomePlanet()->setName($_POST['planet_name'])->save();
     }
 
     if ($user !== null && $user->getId()) {

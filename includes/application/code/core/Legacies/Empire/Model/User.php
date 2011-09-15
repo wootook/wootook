@@ -127,9 +127,7 @@ class Legacies_Empire_Model_User
 
     public function logout()
     {
-        if (Legacies::$response !== null) {
-            Legacies::$response->unsetCookie(self::$_cookieName);
-        }
+        Legacies::getResponse()->unsetCookie(self::$_cookieName);
         Legacies_Core_Model_Session::destroy();
     }
 

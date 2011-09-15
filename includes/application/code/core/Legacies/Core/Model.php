@@ -5,8 +5,8 @@ abstract class Legacies_Core_Model
 {
     protected $_originalData = array();
 
-    protected $_eventPrefix = 'model';
-    protected $_eventObject = 'model';
+    protected $_eventPrefix = null;
+    protected $_eventObject = null;
 
     public function __construct(Array $data = array())
     {
@@ -41,16 +41,22 @@ abstract class Legacies_Core_Model
 
     protected function _beforeSave()
     {
-        Legacies::dispatchEvent('model.before-save', array($this->_eventObject => $this));
-        Legacies::dispatchEvent($this->_eventPrefix . '.before-save', array($this->_eventObject => $this));
+        Legacies::dispatchEvent('model.before-save', array('model' => $this));
+
+        if ($this->_eventPrefix !== null && $this->_eventObject !== null) {
+            Legacies::dispatchEvent($this->_eventPrefix . '.before-save', array($this->_eventObject => $this));
+        }
 
         return $this;
     }
 
     protected function _afterSave()
     {
-        Legacies::dispatchEvent('model.after-save', array($this->_eventObject => $this));
-        Legacies::dispatchEvent($this->_eventPrefix . '.after-save', array($this->_eventObject => $this));
+        Legacies::dispatchEvent('model.after-save', array('model' => $this));
+
+        if ($this->_eventPrefix !== null && $this->_eventObject !== null) {
+            Legacies::dispatchEvent($this->_eventPrefix . '.after-save', array($this->_eventObject => $this));
+        }
 
         return $this;
     }
@@ -73,16 +79,22 @@ abstract class Legacies_Core_Model
 
     protected function _beforeLoad()
     {
-        Legacies::dispatchEvent('model.before-load', array($this->_eventObject => $this));
-        Legacies::dispatchEvent($this->_eventPrefix . '.before-load', array($this->_eventObject => $this));
+        Legacies::dispatchEvent('model.before-load', array('model' => $this));
+
+        if ($this->_eventPrefix !== null && $this->_eventObject !== null) {
+            Legacies::dispatchEvent($this->_eventPrefix . '.before-load', array($this->_eventObject => $this));
+        }
 
         return $this;
     }
 
     protected function _afterLoad()
     {
-        Legacies::dispatchEvent('model.after-load', array($this->_eventObject => $this));
-        Legacies::dispatchEvent($this->_eventPrefix . '.after-load', array($this->_eventObject => $this));
+        Legacies::dispatchEvent('model.after-load', array('model' => $this));
+
+        if ($this->_eventPrefix !== null && $this->_eventObject !== null) {
+            Legacies::dispatchEvent($this->_eventPrefix . '.after-load', array($this->_eventObject => $this));
+        }
 
         return $this;
     }
@@ -104,16 +116,22 @@ abstract class Legacies_Core_Model
 
     protected function _beforeDelete()
     {
-        Legacies::dispatchEvent('model.before-delete', array($this->_eventObject => $this));
-        Legacies::dispatchEvent($this->_eventPrefix . '.before-delete', array($this->_eventObject => $this));
+        Legacies::dispatchEvent('model.before-delete', array('model' => $this));
+
+        if ($this->_eventPrefix !== null && $this->_eventObject !== null) {
+            Legacies::dispatchEvent($this->_eventPrefix . '.before-delete', array($this->_eventObject => $this));
+        }
 
         return $this;
     }
 
     protected function _afterDelete()
     {
-        Legacies::dispatchEvent('model.after-delete', array($this->_eventObject => $this));
-        Legacies::dispatchEvent($this->_eventPrefix . '.after-delete', array($this->_eventObject => $this));
+        Legacies::dispatchEvent('model.after-delete', array('model' => $this));
+
+        if ($this->_eventPrefix !== null && $this->_eventObject !== null) {
+            Legacies::dispatchEvent($this->_eventPrefix . '.after-delete', array($this->_eventObject => $this));
+        }
 
         return $this;
     }

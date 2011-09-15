@@ -24,11 +24,12 @@
 <input type="hidden" name="t" value="<?php echo $this->getData('t')?>">
 <table width=519>
 	<tr>
-	  <td class="c" colspan=2><?php echo $this->getData('Texts')?></td>
+	  <td class="c" colspan=3><?php echo $this->getData('Texts')?></td>
 	</tr>
 	<tr>
 	  <th><a href="?mode=admin&edit=ally&t=1"><?php echo $this->getData('External_text')?></a></th>
 	  <th><a href="?mode=admin&edit=ally&t=2"><?php echo $this->getData('Internal_text')?></a></th>
+	  <th><a href="?mode=admin&edit=ally&t=3"><?php echo $this->getData('Request_text')?></a></th>
 	</tr>
 	<tr>
 	  <td class=c colspan=3><?php echo $this->getData('Show_of_request_text')?> (<span id="cntChars">0</span> / 5000 <?php echo $this->getData('characters')?>)</td>

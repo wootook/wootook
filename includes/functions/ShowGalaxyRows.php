@@ -38,7 +38,7 @@ function ShowGalaxyRows ($Galaxy, $System) {
 	global $lang, $planetcount, $CurrentRC, $dpath, $user;
 
 	$Result = "";
-	for ($Planet = 1; $Planet < 16; $Planet++) {
+	for ($Planet = 1; $Planet <= MAX_PLANET_IN_SYSTEM; $Planet++) {
 		unset($GalaxyRowPlanet);
 		unset($GalaxyRowMoon);
 		unset($GalaxyRowPlayer);

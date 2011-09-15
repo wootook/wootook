@@ -207,7 +207,7 @@ class Legacies
     public static function getResponse()
     {
         if (self::$_response === null) {
-            self::$_response = new Legacies_Core_Controller_Response();
+            self::$_response = new Legacies_Core_Controller_Response_Http();
         }
         return self::$_response;
     }

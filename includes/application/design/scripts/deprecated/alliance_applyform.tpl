@@ -1,3 +1,4 @@
+<script src="scripts/cntchar.js" type="text/javascript"></script>
 <br>
 <h1><?php echo $this->getData('Send_Apply')?></h1>
 
