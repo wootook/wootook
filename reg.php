@@ -53,7 +53,8 @@ if (!empty($_POST) && isset($_POST['username']) && isset($_POST['planet_name']) 
 
     if ($user !== null && $user->getId()) {
         header("HTTP/1.1 302 Found");
-        header("Location: welcome.php");
+        //header("Location: welcome.php");
+        header("Location: frames.php");
     } else {
         header("HTTP/1.1 302 Found");
         header("Location: reg.php");

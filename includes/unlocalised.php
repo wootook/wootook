@@ -63,38 +63,51 @@ function GetGameSpeedFactor () {
  *  Calcul de la vitesse de la flotte par rapport aux technos du joueur
  *  Avec prise en compte
  */
-function GetFleetMaxSpeed ($FleetArray, $Fleet, $Player) {
+function GetFleetMaxSpeed($FleetArray, $Fleet, $Player) {
     global $reslist, $pricelist;
+
+    if (!is_array($FleetArray)) {
+        $FleetArray = array();
+    }
 
     if ($Fleet != 0) {
         $FleetArray[$Fleet] =  1;
     }
+
+    $speedalls = array();
     foreach ($FleetArray as $Ship => $Count) {
-        if ($Ship == 202) {
+        if ($Ship == Legacies_Empire::ID_SHIP_SOLAR_SATELLITE) {
+            $speedalls[$Ship] = 0;
+        }
+        if ($Ship == Legacies_Empire::ID_SHIP_LIGHT_TRANSPORT) {
             if ($Player['impulse_motor_tech'] >= 5) {
                 $speedalls[$Ship] = $pricelist[$Ship]['speed2'] + (($pricelist[$Ship]['speed'] * $Player['impulse_motor_tech']) * 0.2);
             } else {
                 $speedalls[$Ship] = $pricelist[$Ship]['speed']  + (($pricelist[$Ship]['speed'] * $Player['combustion_tech']) * 0.1);
             }
         }
-        if ($Ship == 203 or $Ship == 204 or $Ship == 209 or $Ship == 210) {
+        if ($Ship == Legacies_Empire::ID_SHIP_LARGE_TRANSPORT || $Ship == Legacies_Empire::ID_SHIP_LIGHT_FIGHTER ||
+            $Ship == Legacies_Empire::ID_SHIP_RECYCLER || $Ship == Legacies_Empire::ID_SHIP_SPY_DRONE) {
             $speedalls[$Ship] = $pricelist[$Ship]['speed'] + (($pricelist[$Ship]['speed'] * $Player['combustion_tech']) * 0.1);
         }
-        if ($Ship == 205 or $Ship == 206 or $Ship == 208) {
+        if ($Ship == Legacies_Empire::ID_SHIP_HEAVY_FIGHTER || $Ship == Legacies_Empire::ID_SHIP_CRUISER ||
+            $Ship == Legacies_Empire::ID_SHIP_COLONY_SHIP) {
             $speedalls[$Ship] = $pricelist[$Ship]['speed'] + (($pricelist[$Ship]['speed'] * $Player['impulse_motor_tech']) * 0.2);
         }
-        if ($Ship == 211) {
+        if ($Ship == Legacies_Empire::ID_SHIP_BOMBER) {
             if ($Player['hyperspace_motor_tech'] >= 8) {
                 $speedalls[$Ship] = $pricelist[$Ship]['speed2'] + (($pricelist[$Ship]['speed'] * $Player['hyperspace_motor_tech']) * 0.3);
             } else {
                 $speedalls[$Ship] = $pricelist[$Ship]['speed']  + (($pricelist[$Ship]['speed'] * $Player['impulse_motor_tech']) * 0.2);
             }
         }
-        if ($Ship == 207 or $Ship == 213 or $Ship == 214 or $Ship == 215 or $Ship == 216) {
+        if ($Ship == Legacies_Empire::ID_SHIP_BATTLESHIP || $Ship == Legacies_Empire::ID_SHIP_DESTRUCTOR ||
+            $Ship == Legacies_Empire::ID_SHIP_DEATH_STAR || $Ship == Legacies_Empire::ID_SHIP_BATTLECRUISER ||
+            $Ship == Legacies_Empire::ID_SHIP_SUPERNOVA) {
             $speedalls[$Ship] = $pricelist[$Ship]['speed'] + (($pricelist[$Ship]['speed'] * $Player['hyperspace_motor_tech']) * 0.3);
         }
     }
-    if ($Fleet != 0) {
+    if ($Fleet != 0 && isset($speedalls[$Ship])) {
         $ShipSpeed = $speedalls[$Ship];
         $speedalls = $ShipSpeed;
     }

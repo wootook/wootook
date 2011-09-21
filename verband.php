@@ -42,7 +42,7 @@ require_once dirname(__FILE__) .'/common.php';
 
 	$query = doquery("SELECT * FROM {{table}} WHERE fleet_id = '" . $fleetid . "'", 'fleets');
 
-	if (mysql_num_rows($query) != 1) {
+	if ($query->rowCount() != 1) {
 		message('Cette flotte n\'existe pas (ou plus)!', 'Erreur');
 	}
 
@@ -104,10 +104,9 @@ require_once dirname(__FILE__) .'/common.php';
 		id = '" . $fleet['fleet_group'] . "'"
 		, 'aks');
 
-		if (mysql_num_rows($aks) != 1) {
+		if ($aks->rowCount() != 1) {
 			message('AKS nicht gefunden!', 'Fehler');
 		}
-		$aks = mysql_num_rows($aks);
 	}
 
 	$missiontype = array(1 => 'Attaquer',

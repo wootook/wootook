@@ -1,6 +1,6 @@
 <?php
 /**
- * Tis file is part of XNova:Legacies
+ * This file is part of XNova:Legacies
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  * @see http://www.xnova-ng.org/
@@ -50,37 +50,79 @@ require_once dirname(dirname(__FILE__)) .'/common.php';
 
         switch ($_GET['result']){
             case 'usr_search':
-                $pattern = mysql_real_escape_string($_GET['player']);
-                $SelUser = doquery("SELECT * FROM {{table}} WHERE `username` LIKE '%". $pattern ."%' LIMIT 1;", 'users', true);
-                $UsrMain = doquery("SELECT `name` FROM {{table}} WHERE `id` = '". $SelUser['id_planet'] ."';", 'planets', true);
+                $db = Legacies_Database::getSingleton();
+                $sql =<<<SQL_EOF
+SELECT
+    planet.id AS planet_id,
+    planet.name AS planet_name,
+    planet.galaxy AS planet_galaxy,
+    planet.system AS planet_system,
+    planet.planet AS planet_position,
+    user.id AS user_id,
+    user.username AS username,
+    user.user_lastip AS user_lastip,
+    user.email AS email,
+    user.authlevel AS authlevel,
+    user.sex AS sex
+
+FROM {{table}}planets AS planet
+INNER JOIN {{table}}users AS user ON user.id_planet=planet.id
+WHERE user.id = {$db->quote('%' . str_replace('*', '%', str_replace('%', '%%', $_GET['player'])) . '%')}"
+SQL_EOF;
+                $statement = $db->prepare($sql);
+                $statement->execute();
+                $data = $statement->fetch(PDO::FETCH_ASSOC);
 
                 $bloc                   = $lang;
-                $bloc['answer1']        = $SelUser['id'];
-                $bloc['answer2']        = $SelUser['username'];
-                $bloc['answer3']        = $SelUser['user_lastip'];
-                $bloc['answer4']        = $SelUser['email'];
-                $bloc['answer5']        = $lang['adm_usr_level'][ $SelUser['authlevel'] ];
-                $bloc['answer6']        = $lang['adm_usr_genre'][ $SelUser['sex'] ];
-                $bloc['answer7']        = "[".$SelUser['id_planet']."] ".$UsrMain['name'];
-                $bloc['answer8']        = "[".$SelUser['galaxy'].":".$SelUser['system'].":".$SelUser['planet']."] ";
+                $bloc['answer1']        = $data['user_id'];
+                $bloc['answer2']        = $data['username'];
+                $bloc['answer3']        = $data['user_lastip'];
+                $bloc['answer4']        = $data['email'];
+                $bloc['answer5']        = $lang['adm_usr_level'][$data['authlevel']];
+                $bloc['answer6']        = $lang['adm_usr_genre'][$data['sex']];
+                $bloc['answer7']        = "[".$data['planet_id']."] {$data['planet_name']}";
+                $bloc['answer8']        = "[".$SelUser['planet_galaxy'].":".$SelUser['planet_system'].":".$SelUser['planet_position']."] ";
                 $SubPanelTPL            = gettemplate('admin/admin_panel_asw1');
-                $parse['adm_sub_form2'] = parsetemplate( $SubPanelTPL, $bloc );
+                $parse['adm_sub_form2'] = parsetemplate($SubPanelTPL, $bloc);
                 break;
 
             case 'usr_data':
+                $db = Legacies_Database::getSingleton();
+                $sql =<<<SQL_EOF
+SELECT
+    planet.id AS planet_id,
+    planet.name AS planet_name,
+    planet.galaxy AS planet_galaxy,
+    planet.system AS planet_system,
+    planet.planet AS planet_position,
+    user.id AS user_id,
+    user.username AS username,
+    user.user_lastip AS user_lastip,
+    user.email AS email,
+    user.authlevel AS authlevel,
+    user.sex AS sex
+
+FROM {{table}}planets AS planet
+INNER JOIN {{table}}users AS user ON user.id_planet=planet.id
+WHERE user.id = {$db->quote('%' . str_replace('*', '%', str_replace('%', '%%', $_GET['player'])) . '%')}"
+SQL_EOF;
+                $statement = $db->prepare($sql);
+                $statement->execute();
+                $data = $statement->fetch(PDO::FETCH_ASSOC);
+
                 $pattern = mysql_real_escape_string($_GET['player']);
                 $SelUser = doquery("SELECT * FROM {{table}} WHERE `username` LIKE '%". $pattern ."%' LIMIT 1;", 'users', true);
                 $UsrMain = doquery("SELECT `name` FROM {{table}} WHERE `id` = '". $SelUser['id_planet'] ."';", 'planets', true);
 
                 $bloc                    = $lang;
-                $bloc['answer1']         = $SelUser['id'];
-                $bloc['answer2']         = $SelUser['username'];
-                $bloc['answer3']         = $SelUser['user_lastip'];
-                $bloc['answer4']         = $SelUser['email'];
-                $bloc['answer5']         = $lang['adm_usr_level'][ $SelUser['authlevel'] ];
-                $bloc['answer6']         = $lang['adm_usr_genre'][ $SelUser['sex'] ];
-                $bloc['answer7']         = "[".$SelUser['id_planet']."] ".$UsrMain['name'];
-                $bloc['answer8']         = "[".$SelUser['galaxy'].":".$SelUser['system'].":".$SelUser['planet']."] ";
+                $bloc['answer1']         = $data['user_id'];
+                $bloc['answer2']         = $data['username'];
+                $bloc['answer3']         = $data['user_lastip'];
+                $bloc['answer4']         = $data['email'];
+                $bloc['answer5']         = $lang['adm_usr_level'][$data['authlevel']];
+                $bloc['answer6']         = $lang['adm_usr_genre'][$data['sex']];
+                $bloc['answer7']         = "[".$data['planet_id']."] {$data['planet_name']}";
+                $bloc['answer8']         = "[".$SelUser['planet_galaxy'].":".$SelUser['planet_system'].":".$SelUser['planet_position']."] ";
                 $SubPanelTPL             = gettemplate('admin/admin_panel_asw1');
                 $parse['adm_sub_form1']  = parsetemplate( $SubPanelTPL, $bloc );
 

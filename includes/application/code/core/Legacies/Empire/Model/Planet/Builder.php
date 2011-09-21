@@ -27,7 +27,7 @@ class Legacies_Empire_Model_Planet_Builder
         }
 
         if (!isset($params['started_at'])) {
-            $startedAt = 0;
+            $startedAt = null;
         } else {
             $startedAt = $params['started_at'];
         }
@@ -128,7 +128,7 @@ class Legacies_Empire_Model_Planet_Builder
         foreach ($this->getQueue() as $element) {
             $elementTime = $element->getData('started_at');
 
-            if ($elementTime == 0) {
+            if ($elementTime === null) {
                 $element->setData('started_at', $startingTime);
                 $elementTime = $startingTime;
             }
@@ -197,6 +197,10 @@ class Legacies_Empire_Model_Planet_Builder
         $remainingAmounts = $this->_calculateResourceRemainingAmounts($resourcesNeeded);
         if ($remainingAmounts === false) {
             return $this;
+        }
+
+        if ($this->count() == 0) {
+            $this->_currentPlanet->setData('b_building', $time);
         }
 
         $this->enqueue(array(

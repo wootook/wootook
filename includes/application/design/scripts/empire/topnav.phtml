@@ -1,13 +1,17 @@
 <div class="planet-carrousel">
+  <div class="arrow left">&#8678;</div>
+  <div class="items">
 <?php foreach ($this->getPlanetCollection() as $planet):?>
-  <div class="planet item">
+    <div class="planet item">
   <?php if ($planet->getId() != $this->getCurrentPlanet()->getId()):?>
-  <a href="<?php echo $this->getUrl('', array('cp' => $planet->getId()))?>"><?php echo $this->escape($planet->getName())?> [<?php echo $this->escape($planet->getCoords())?>]</a>
+      <a href="<?php echo $this->getUrl('', array('cp' => $planet->getId()))?>"><?php echo $this->escape($planet->getName())?> [<?php echo $this->escape($planet->getCoords())?>]</a>
   <?php else:?>
   <?php echo $this->escape($planet->getName())?> [<?php echo $this->escape($planet->getCoords())?>]
   <?php endif?>
-  </div>
+    </div>
 <?php endforeach?>
+  </div>
+  <div class="arrow right">&#8680;</div>
 </div>
 <div class="resources-display">
   <div class="resource metal">

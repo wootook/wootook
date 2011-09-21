@@ -1,6 +1,6 @@
 <?php
 /**
- * Tis file is part of XNova:Legacies
+ * This file is part of XNova:Legacies
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  * @see http://www.xnova-ng.org/
@@ -53,7 +53,7 @@ require_once dirname(dirname(__FILE__)) .'/common.php';
 		$parse['adm_ul_table'] = "";
 		$i                     = 0;
 		$Color                 = "lime";
-		while ($u = mysql_fetch_assoc ($query) ) {
+		while ($u = $query->fetch(PDO::FETCH_ASSOC) ) {
 			if ($PrevIP != "") {
 				if ($PrevIP == $u['declarator']) {
 					$Color = "red";

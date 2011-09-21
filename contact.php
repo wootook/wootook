@@ -44,7 +44,7 @@ require_once dirname(__FILE__) .'/common.php';
 	$QrySelectUser .= "WHERE `authlevel` != '0' ORDER BY `authlevel` DESC;";
 	$GameOps = doquery ( $QrySelectUser, 'users');
 
-	while( $Ops = mysql_fetch_assoc($GameOps) ) {
+	while( $Ops = $GameOps->fetch(PDO::FETCH_ASSOC) ) {
 		$bloc['ctc_data_name']    = $Ops['username'];
 		$bloc['ctc_data_auth']    = $lang['user_level'][$Ops['authlevel']];
 		$bloc['ctc_data_mail']    = "<a href=mailto:".$Ops['email'].">".$Ops['email']."</a>";

@@ -52,10 +52,10 @@ function min(a, b) {
 function maxspeed() {
 	var msp = 1000000000;
 	for (i = 200; i < 220; i++) {
-		if (document.getElementsByName("ship" + i)[0]) {
-			if ((document.getElementsByName("speed" + i)[0].value * 1) >= 1
-			&& (document.getElementsByName("ship" + i)[0].value * 1) >= 1) {
-				msp = min(msp, document.getElementsByName("speed" + i)[0].value);
+		if (document.getElementsByName("ship[" + i + "]")[0]) {
+			if ((document.getElementsByName("speed[" + i + "]")[0].value * 1) >= 1
+			&& (document.getElementsByName("ship[" + i + "]")[0].value * 1) >= 1) {
+				msp = min(msp, document.getElementsByName("speed[" + i + "]")[0].value);
 			}
 		}
 	}
@@ -113,10 +113,10 @@ function consumption2() {
 	var basicConsumption = 0;
 
 	for (i = 200; i < 220; i++) {
-		if (document.getElementsByName("ship" + i)[0]) {
+		if (document.getElementsByName("ship[" + i + "]")[0]) {
 			basicConsumption = basicConsumption +
-			document.getElementsByName("consumption" + i)[0].value
-			* document.getElementsByName("ship" + i)[0].value;
+			document.getElementsByName("consumption[" + i + "]")[0].value
+			* document.getElementsByName("ship[" + i + "]")[0].value;
 		}
 	}
 
@@ -143,16 +143,16 @@ function consumption() {
 	speedfactor = document.getElementsByName("speedfactor")[0].value;
 
 	for (i = 200; i < 220; i++) {
-		if (document.getElementsByName("ship" + i)[0]) {
-			shipspeed = document.getElementsByName("speed" + i)[0].value;
+		if (document.getElementsByName("ship[" + i + "]")[0]) {
+			shipspeed = document.getElementsByName("speed[" + i + "]")[0].value;
 			spd = 35000 / (dur * speedfactor - 10) * Math.sqrt(dist * 10 / shipspeed);
 
 			//spd = Math.max(msp / document.getElementsByName("speed" + i)[0].value, 0.1);
 			//spd = Math.min(spd, 1.0);
 			//spd = spd * sp;
 			//spd = 10;
-			basicConsumption = document.getElementsByName("consumption" + i)[0].value
-			* document.getElementsByName("ship" + i)[0].value;
+			basicConsumption = document.getElementsByName("consumption[" + i + "]")[0].value
+			* document.getElementsByName("ship[" + i + "]")[0].value;
 			consumption += basicConsumption * dist / 35000 * ((spd / 10) + 1) * ((spd / 10) + 1);
 			//      values = values + " " + spd;
 		}
@@ -208,11 +208,11 @@ function storage() {
 
 	for (i = 200; i < 300; i++) {
 
-		if (document.getElementsByName("ship" + i)[0]) {
-			if ((document.getElementsByName("ship" + i)[0].value * 1) >= 1) {
+		if (document.getElementsByName("ship[" + i + "]")[0]) {
+			if ((document.getElementsByName("ship[" + i + "]")[0].value * 1) >= 1) {
 				storage
-				+= document.getElementsByName("ship" + i)[0].value
-				*  document.getElementsByName("capacity" + i)[0].value
+				+= document.getElementsByName("ship[" + i + "]")[0].value
+				*  document.getElementsByName("capacity[" + i + "]")[0].value
 			}
 		}
 	}
@@ -359,7 +359,7 @@ function maxShip(id) {
 function maxShips() {
 	var id;
 	for (i = 200; i < 220; i++) {
-		id = "ship"+i;
+		id = "ship["+i+"]";
 		maxShip(id);
 	}
 }
@@ -375,7 +375,7 @@ function noShip(id) {
 function noShips (){
 	var id;
 	for (i = 200; i < 220; i++) {
-		id = "ship"+i;
+		id = "ship["+i+"]";
 		noShip(id);
 	}
 }

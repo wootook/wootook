@@ -43,6 +43,8 @@ define('LEVEL_OPERATOR', 2);
 define('LEVEL_MODERATOR', 1);
 define('LEVEL_PLAYER', 0);
 
+define('ALLOW_SPY_DRONE_ATTACKS', true);
+
 // Nombre de colones pour les rapports d'espionnage
 define('SPY_REPORT_ROW', 2);
 

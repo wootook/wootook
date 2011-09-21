@@ -53,12 +53,12 @@ if (isset($resource) && !empty($resource[401])) {
 			$select_owner = doquery("SELECT military_tech FROM {{table}} WHERE
 								id = '" . $selected_row['owner'] . "'", 'users');
 
-			if (mysql_num_rows($planetrow) != 1 OR mysql_num_rows($select_ziel) != 1) {
+			if ($planetrow->rowCount() != 1 || $select_ziel->rowCount() != 1) {
 				doquery("DELETE FROM {{table}} WHERE id = '" . $selected_row['id'] . "'", 'iraks');
 			} else {
-				$verteidiger = mysql_fetch_array($select_ziel);
-				$angreifer = mysql_fetch_array($select_owner);
-				$planet = mysql_fetch_array($planetrow);
+				$verteidiger = $select_ziel->fetch(PDO::FETCH_BOTH);
+				$angreifer = $select_owner->fetch(PDO::FETCH_BOTH);
+				$planet = $planetrow->fetch(PDO::FETCH_BOTH);
 
 				$ids = array(0 => 401,
 					1 => 402,
@@ -136,7 +136,7 @@ if (isset($resource) && !empty($resource[401])) {
 								system = '" . $selected_row['system_angreifer'] . "' AND
 								planet = '" . $selected_row['planet_angreifer'] . "'", 'planets');
 
-				if (mysql_num_rows($planet_) == 1) {
+				if ($planet_->rowCount() == 1) {
 					$array = mysql_fetch_array($planet_);
 
 					$name = $array['name'];
@@ -147,7 +147,7 @@ if (isset($resource) && !empty($resource[401])) {
 								system = '" . $selected_row['system'] . "' AND
 								planet = '" . $selected_row['planet'] . "'", 'planets');
 
-				if (mysql_num_rows($planet_2) == 1) {
+				if ($planet_2->rowCount() == 1) {
 					$array = mysql_fetch_array($planet_2);
 
 					$name_deffer = $array['name'];

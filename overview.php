@@ -153,7 +153,7 @@ if (isset($_POST) && !empty($_POST)) {
 					planet = '" . $irak['planet_angreifer'] . "' AND
 					planet_type = '1'", 'planets', true);
 
-                if (mysql_num_rows($planet_start) == 1) {
+                if ($planet_start->rowCount() == 1) {
                     $planet = mysql_fetch_array($planet_start);
                 }
 
@@ -197,7 +197,7 @@ if (isset($_POST) && !empty($_POST)) {
         $newMessages = new Legacies_Core_View();
         $newMessages->setTemplate('empire/overview/messages.phtml');
         $newMessages['count'] = (int) $count;
-		
+
 		/** Gestion des officiers
 		 *  Update miner and raider level
 		 *
@@ -220,7 +220,7 @@ if (isset($_POST) && !empty($_POST)) {
 			$user->setData('rpg_points', $user->getData('rpg_points') +1);
 			$user->save();
 		}
-		 
+
         /**
          * Page display
          * Refactoring needed

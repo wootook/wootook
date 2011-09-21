@@ -36,10 +36,12 @@
 function MissionCaseColonisation ( $FleetRow ) {
 	global $lang, $resource;
 
-	$iPlanetCount = mysql_result(doquery ("SELECT count(*) FROM {{table}} WHERE `id_owner` = '". $FleetRow['fleet_owner'] ."' AND `planet_type` = '1'", 'planets'), 0);
+	$statement = doquery ("SELECT count(*) FROM {{table}} WHERE `id_owner` = '". $FleetRow['fleet_owner'] ."' AND `planet_type` = '1'", 'planets');
+	$iPlanetCount = $statement->fetch(PDO::FETCH_ASSOC);
 	if ($FleetRow['fleet_mess'] == 0) {
 		// Déjà, sommes nous a l'aller ??
-		$iGalaxyPlace = mysql_result(doquery ("SELECT count(*) FROM {{table}} WHERE `galaxy` = '". $FleetRow['fleet_end_galaxy']."' AND `system` = '". $FleetRow['fleet_end_system']."' AND `planet` = '". $FleetRow['fleet_end_planet']."';", 'galaxy'), 0);
+		$statement2 = doquery ("SELECT count(*) FROM {{table}} WHERE `galaxy` = '". $FleetRow['fleet_end_galaxy']."' AND `system` = '". $FleetRow['fleet_end_system']."' AND `planet` = '". $FleetRow['fleet_end_planet']."';", 'galaxy');
+		$iGalaxyPlace = $statement2->fetch(PDO::FETCH_ASSOC);
 		$TargetAdress = sprintf ($lang['sys_adress_planet'], $FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet']);
 		if ($iGalaxyPlace == 0) {
 			// Y a personne qui s'y est mis avant que je ne debarque !

@@ -10,21 +10,10 @@ __   __ _   _
 */
 
 
-., #, td, th, textarea, body, table
-{
-  font-family          : Tahoma,sans-serif;
-  font-size            : 10px;
-}
+* {font-family:Tahoma,sans-serif;font-size:10px;}
 
-img
-{
-  border               : 0px;
-}
-
-p table
-{
-  border               : 0px;
-}
+img {border:none;}
+p table {border:none;}
 
 p td
 {
@@ -33,78 +22,29 @@ p td
   font-family          : Tahoma,sans-serif;
 }
 
-table table
-{
-  border               : 0px;
-}
+table table {border:0px;}
 
-table table td
-{
-  font-size            : 10px;
-  font-family          : Tahoma,sans-serif;
-}
+body {color:#000;margin:1px 0 0 1px;background:#040e1e url(../../graphics/img/background2.jpg) fixed no-repeat top left;}
 
-body
-{
-  color                : #FFFFFF;
-  margin-top           : 1px;
-  margin-left          : 1px;
-  background-color     : #040e1e;
-  background-image     : url(img/background2.jpg);
-  background-attachment: fixed;
-  background-repeat    : no-repeat;
-  background-position  : top left;
-  scrollbar-arrow-color: #FFFFFF;
-  scrollbar-base-color: #344566;
-  scrollbar-track-color: #344566;
-  scrollbar-face-color: #344566;
-  scrollbar-highlight-color: #344566;
-  scrollbar-3dlight-color: #465673;
-  scrollbar-darkshadow-color: #344566;
-  scrollbar-shadow-color: #465673;
-  font-size            : 10px;
-  font-family          : Tahoma,sans-serif;
-}
+body.style {background-image:url(../../graphics/img/background1.jpg);}
+body.style table {margin:0px;border:0 auto}
+body form table th table input {width: 60px;}
 
-body.style{
-  background-image     : url(img/background1.jpg);
-}
-
-body.style table {
-  margin               : 0px;
-}
-
-body form table th table input
-{
-  width: 60px;
-}
+.content table {margin:0 auto;}
 
 th, td.a, td.b, td.c, td.f, td.g, td.h, td.i,
 td.j, td.k, td.l, td.m, td.n, td.o, td.q, td.r,
 td.v, .style td, p td, table.s th img
 {
   border               : 1px #545454 solid;
-  font-size            : 10px;
-  font-family          : Tahoma,sans-serif;
 }
 
 input, select, textarea
 {
   border               : 1px #545454 solid;
-  font-size            : 10px;
-  font-family          : Tahoma,sans-serif;
 }
 
-th, td.a, td.b, td.c, td.f, input, select, td.g,
-td.h, td.i, td.j, td.k, td.m, td.o, td.q, td.r,
-td.v, td.s, .style td, p td
-{
-  background-color     : #000000;
-  filter               : alpha(opacity=70);
-  -moz-opacity         : 0.7;
-  -khtml-opacity       : 0.7;
-  opacity              : 0.7;
-}
+th, td.a,td.b,td.c,td.f,input,select,td.g,td.h,td.i,td.j,td.k,td.m,td.o,td.q,td.r,td.v,td.s,.style td,p td {background:#FFF;filter:alpha(opacity=90);-moz-opacity:0.9;-khtml-opacity:0.9;opacity:0.9;}
 
 th
 {
@@ -130,7 +70,7 @@ td.c
   color                : #FFFFFF;
   padding-left         : 3px;
   background-image     : url(img/bg1.gif);
-  filter               : alpha(opacity=70);
+  filter               : alpha(opacity=90);
   -moz-opacity         : 0.7;
   -khtml-opacity       : 0.7;
   opacity              : 0.7;
@@ -140,7 +80,7 @@ td.f, input, select, textarea
 {
   color                : #FFFFFF;
   background-color     : #1c1c1c;
-  filter               : alpha(opacity=70);
+  filter               : alpha(opacity=90);
   -moz-opacity         : 0.7;
   -khtml-opacity       : 0.7;
   opacity              : 0.7;
@@ -265,24 +205,24 @@ div.z
 {
   font-size            : 10px;
   font-weight          : bold;
-  color                : #FFFFFF;
+  color                : #000;
 }
 
 a
 {
-  color                : #FFFFFF;
+  color                : #000;
   text-decoration      : none;
   font-weight          : bold;
 }
 
 a.s
 {
-  color                : #FFFFFF;
+  color                : #000;
 }
 
 a.t
 {
-  color                : #FFFFFF;
+  color                : #000;
 }
 
 a:hover

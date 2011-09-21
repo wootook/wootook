@@ -297,7 +297,7 @@ SQL_EOF;
     {
         $clone = clone $this;
         $clone->_fields = array();
-        $clone->column('COUNT(*)');
+        $clone->column('1');
 
         $sql = $clone->_prepareSql();
 
@@ -306,7 +306,10 @@ SQL_EOF;
 
         $args = func_get_args();
         $statement->execute(array_shift($args));
-        return $statement->fetch(PDO::FETCH_COLUMN, 0);
+        $count = $statement->rowCount();
+        $statement->closeCursor();
+
+        return $count;
     }
 
     public function count()
@@ -341,5 +344,23 @@ SQL_EOF;
     public function valid()
     {
         return current($this->_items) !== false;
+    }
+
+    public function getFirstItem()
+    {
+        if (!$this->_)
+        if (count($this->_items) > 0) {
+            return $this->_items[0];
+        }
+        return null;
+    }
+
+    public function getLastItem()
+    {
+        $size = count($this->_items);
+        if ($size > 0) {
+            return $this->_items[$size - 1];
+        }
+        return null;
     }
 }

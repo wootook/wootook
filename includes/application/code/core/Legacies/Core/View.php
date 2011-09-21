@@ -112,18 +112,7 @@ class Legacies_Core_View
 
     public function getUrl($uri, Array $params = array())
     {
-        // TODO: base path integration
-        $serializedParams = array();
-        foreach ($params as $paramKey => $paramValue) {
-            if ($paramValue) {
-                $serializedParams[] = "{$paramKey}={$paramValue}";
-            }
-        }
-
-        if (count($serializedParams) > 0) {
-            return $uri . '?' . implode('&', $serializedParams);
-        }
-        return $uri;
+        return Legacies::getUrl($uri, $params);
     }
 
     public function getSkinUrl($uri)

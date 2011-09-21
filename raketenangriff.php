@@ -65,7 +65,7 @@ elseif ($user['impulse_motor_tech'] == 0) {;
 elseif ($tempvar1 >= $tempvar2 || $g != $currentplanet['galaxy']) {
 	$error = 1;
 }
-elseif (mysql_num_rows($tempvar3) != 1) {
+elseif ($tempvar3->rowCount() != 1) {
 	$error = 1;
 }
 elseif ($anz > $iraks) {

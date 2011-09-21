@@ -5,7 +5,7 @@ class Legacies_Empire_Block_Planet_Shipyard_Queue
 {
     public function getQueue()
     {
-        return $this->getPlanet()->getShipyard()->getQueue();
+        return $this->getPlanet()->getShipyard()->getBuilder();
     }
 
     public function isEmpty()

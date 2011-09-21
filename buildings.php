@@ -40,7 +40,7 @@ $mode = isset($_GET['mode']) ? $_GET['mode'] : null;
 
 switch ($mode) {
 case 'fleet':
-    if ($planet->getElement(Legacies_Empire::ID_BUILDING_SHIPYARD) === null) {
+    if ($planet->getElement(Legacies_Empire::ID_BUILDING_SHIPYARD) < 1) {
         $layout = new Legacies_Core_Layout();
         $layout->load('message');
 
@@ -71,7 +71,7 @@ case 'fleet':
     break;
 
 case 'research':
-    if ($planet->getElement(Legacies_Empire::ID_BUILDING_RESEARCH_LAB) === null) {
+    if ($planet->getElement(Legacies_Empire::ID_BUILDING_RESEARCH_LAB) < 1) {
         $layout = new Legacies_Core_Layout();
         $layout->load('message');
 
@@ -99,7 +99,7 @@ case 'research':
     break;
 
 case 'defense':
-    if ($planet->getElement(Legacies_Empire::ID_BUILDING_SHIPYARD) === null) {
+    if ($planet->getElement(Legacies_Empire::ID_BUILDING_SHIPYARD) < 1) {
         $layout = new Legacies_Core_Layout();
         $layout->load('message');
 

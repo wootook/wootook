@@ -233,11 +233,11 @@ class Legacies_Empire_Model_User
      */
     public function updateCurrentPlanet($planet)
     {
-        if (!$planetId instanceof Legacies_Empire_Model_Planet) {
+        if (!$planet instanceof Legacies_Empire_Model_Planet) {
             $planetCollection = $this->_preparePlanetCollection()->where('id=:id');
 
             $planetCollection->load(array(
-                'id'    => $planet,
+                'id'   => $planet,
                 'user' => $this->getId()
                 ));
 

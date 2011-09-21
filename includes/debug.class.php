@@ -125,33 +125,32 @@ EOF;
      * @param $title
      * @return unknown_type
      */
-    function error($message, $title)
+    public function error($message, $title)
     {
-        global $link, $gameConfig;
+        $gameConfig = Legacies_Core_Model_Config::getSingleton();
 
-        if($gameConfig['debug']==1){
+        if ($gameConfig['debug'] == 1) {
             echo "<h2>$title</h2><br><font color=red>$message</font><br><hr>";
             echo  "<table>".$this->log."</table>";
         }
 
-        global $user;
+        $user = Legacies_Empire_Model_User::getSingleton();
+
+        $db = Legacies_Database::getSingleton();
         $config = include ROOT_PATH . 'config.' . PHPEXT;
         if(!$link) die('La base de donnee n est pas disponible pour le moment, desole pour la gene occasionnee...');
-        $query = "INSERT INTO {{table}} SET
-            `error_sender` = '{$user['id']}' ,
-            `error_time` = '".time()."' ,
-            `error_type` = '{$title}' ,
-            `error_text` = '".mysql_escape_string($message)."';";
-        $sqlquery = mysql_query(str_replace("{{table}}", $dbsettings["prefix"].'errors',$query))
-            or die('error fatal');
-        $query = "explain select * from {{table}}";
-        $q = mysql_fetch_array(mysql_query(str_replace("{{table}}", $dbsettings["prefix"].
-            'errors', $query))) or die('error fatal: ');
+        $query = "INSERT INTO {$db->getTable('errors')} SET
+            `error_sender` = {$user->getId()} ,
+            `error_time` = {$db->quote(time())},
+            `error_type` = {$db->quote($title)},
+            `error_text` = {$db->quote($message)}";
 
+        $db->query($query);
+        $id = $db->lastInsertId($db->getTable('errors'));
         if (!function_exists('message')) {
-            echo "Erreur, merci de contacter l'admin. Erreur n�: <b>".$q['rows']."</b>";
+            echo "Erreur, merci de contacter l'admin. Erreur n�: <b>".$id."</b>";
         } else {
-            message("Erreur, merci de contacter l'admin. Erreur n�: <b>".$q['rows']."</b>", "Erreur");
+            message("Erreur, merci de contacter l'admin. Erreur n�: <b>".$id."</b>", "Erreur");
         }
     }
 }

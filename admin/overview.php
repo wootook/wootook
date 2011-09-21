@@ -1,6 +1,6 @@
 <?php
 /**
- * Tis file is part of XNova:Legacies
+ * This file is part of XNova:Legacies
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  * @see http://www.xnova-ng.org/
@@ -53,7 +53,7 @@ require_once dirname(dirname(__FILE__)) .'/common.php';
 		$Last15Mins = doquery("SELECT * FROM {{table}} WHERE `onlinetime` >= '". (time() - 15 * 60) ."' ORDER BY `". $TypeSort ."` ASC;", 'users');
 		$Count      = 0;
 		$Color      = "lime";
-		while ( $TheUser = mysql_fetch_array($Last15Mins) ) {
+		while ($TheUser = $Last15Mins->fetch(PDO::FETCH_ASSOC) ) {
 			if ($PrevIP != "") {
 				if ($PrevIP == $TheUser['user_lastip']) {
 					$Color = "red";

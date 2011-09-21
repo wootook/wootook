@@ -216,4 +216,20 @@ class Legacies
     {
         self::$_response = $response;
     }
+
+    public static function getUrl($uri, Array $params = array())
+    {
+        // TODO: base path integration
+        $serializedParams = array();
+        foreach ($params as $paramKey => $paramValue) {
+            if ($paramValue) {
+                $serializedParams[] = "{$paramKey}={$paramValue}";
+            }
+        }
+
+        if (count($serializedParams) > 0) {
+            return $uri . '?' . implode('&', $serializedParams);
+        }
+        return $uri;
+    }
 }

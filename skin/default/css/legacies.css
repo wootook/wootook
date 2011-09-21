@@ -1,5 +1,12 @@
 @CHARSET "UTF-8";
-.global .content .resources-display {width:770px;height:40px;margin:0 auto 30px;padding:0 50px;color:#000;background:#FFF;box-shadow:0 -4px 6px #156 inset;border:1px solid #FFF;border-top:none;border-radius: 0 0 20px 20px;}
+
+.global .content .planet-carrousel {width:950px;height:100px;margin:0 auto;padding:0 30px;color:#000;background:#FFF;border:1px solid #FFF;border-top:none;box-shadow:0 -4px 8px #115566 inset, 20px 20px 40px #115566, -20px 20px 40px #115566, 0 -20px 40px #115566;border-bottom-left-radius:50px;border-bottom-right-radius:50px;}
+.global .content .planet-carrousel .items {width:900px;height:100px;overflow:hidden;float:left;}
+.global .content .planet-carrousel .arrow {height:40px;width:25px;float:left;font-size:20px;font-weight:bold;margin:30px 0;}
+.global .content .planet-carrousel .planet {color:#000;height:100px;width:100px;float:left;}
+.global .content .planet-carrousel .planet a {color:#000;}
+
+.global .content .resources-display {width:770px;height:40px;margin:0 auto 30px;padding:0 50px;color:#000;background:#FFF;box-shadow:0 -4px 6px #115566 inset, 0 20px 40px #115566;border:1px solid #FFF;border-top:none;border-radius: 0 0 20px 20px;}
 .global .content .resources-display .resource,.global .content .resources-display .messages {height:22px;float:left;width:140px;margin:7px 0;}
 .global .content .resources-display .resource img,.global .content .resources-display .messages img {float:left;}
 .global .content .resources-display .resource p,.global .content .resources-display .messages p {font-weight:bold;font-size:12px;margin:2px 0 2px 47px;}
@@ -8,15 +15,25 @@
 .global .content .resources-display .messages {height:22px;float:left;width:160px;}
 .global .content .resources-display .energy {width:190px;}
 
-
 .global .content .queue {width:600px;margin:10px auto 0;background:#FFF;color:#000;border:1px solid #FFF;border-radius:5px;border-top-left-radius:20px;border-top-right-radius:20px;box-shadow:0 4px 6px #156 inset;}
 .global .content .queue h1 {color:#000;margin:10px 15px;width:570px;text-align:center;border-bottom:5px solid #9BC;}
 
 .global .content .queue .item {width:580px;margin:0 10px;border:0;box-shadow:none;border-radius:0;}
 .global .content .queue .item,.global .content .queue .item * {color:#000;}
 
-.global .content .item-list {width:800px; margin:10px auto 0;background:#FFF;color:#000;border:1px solid #FFF;border-radius:5px;border-top-left-radius:20px;border-top-right-radius:20px;box-shadow:0 4px 6px #156 inset;}
+.global .content .item-list {width:800px; margin:10px auto 0;background:#FFF;color:#000;border:1px solid #FFF;border-radius:5px;border-top-left-radius:20px;border-top-right-radius:20px;box-shadow:0 -4px 8px #115566 inset, 20px 20px 40px #115566, -20px 20px 40px #115566, 0 -20px 40px #115566;}
 .global .content .item-list h1 {color:#000;margin:10px 15px;width:770px;text-align:center;border-bottom:5px solid #9BC;}
 
 .global .content .item-list .item {width:780px;margin:0 10px;border:0;box-shadow:none;border-radius:0;}
 .global .content .item-list .item,.global .content .item-list .item * {color:#000;}
+
+/**
+ * Galaxy user name display colors
+ */
+.allymember {color:lime;}
+.noob {color:darkgreen;}
+.strong {color:darkred;}
+.vacation {color:lightblue;}
+.inactive {color:grey;}
+.longinactive {color:darkgrey;}
+.banned {color:red;text-decoration:line-through;}

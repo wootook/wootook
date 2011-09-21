@@ -81,7 +81,7 @@ require_once dirname(__FILE__) .'/common.php';
 
 			$FleetToTarget  = doquery( $QryLookFleets, 'fleets' );
 
-			if (mysql_num_rows($FleetToTarget) <> 0 ) {
+			if ($FleetToTarget->rowCount() > 0 ) {
 				while ($FleetRow = $FleetToTarget->fetch(PDO::FETCH_BOTH)) {
 					$Record++;
 

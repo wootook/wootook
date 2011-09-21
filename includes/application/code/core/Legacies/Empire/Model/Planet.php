@@ -64,6 +64,56 @@ class Legacies_Empire_Model_Planet
         return self::$_instances[$id];
     }
 
+    public static function factoryFromCoords($coords, $type = self::TYPE_PLANET)
+    {
+        if ($coords === null || empty($coords)) {
+            return new self();
+        }
+
+        if (!in_array($type, array(self::TYPE_PLANET, self::TYPE_DEBRIS, self::TYPE_MOON))) {
+            $type = self::TYPE_PLANET;
+        }
+
+        if (!is_array($coords)) {
+            $coords = explode(':', $coords);
+
+            if (count($coords) != 3) {
+                return new self();
+            }
+
+            $coords = array(
+                'galaxy'   => $coords[0],
+                'system'   => $coords[1],
+                'position' => $coords[2],
+                'type'     => $type
+                );
+        }
+
+        if (!isset($coords['type'])) {
+            $coords['type'] = $type;
+        }
+
+        $database = Legacies_Database::getSingleton();
+        $collection = new Legacies_Core_Collection('planets');
+        $collection
+            ->column('id')
+            ->where('galaxy=:galaxy')
+            ->where('system=:system')
+            ->where('planet=:position')
+            ->where('planet_type=:type')
+            ->limit(1)
+            ->load($coords)
+        ;
+
+        $planetData = $collection->getFirstItem();
+
+        if ($planetData === null || !$planetData->getData('id')) {
+            return new self();
+        }
+
+        return self::factory($planetData->getData('id'));
+    }
+
     public function _init()
     {
         $this->_tableName = 'planets';
