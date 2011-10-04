@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of XNova:Legacies
+ * This file is part of Wootook
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-Present, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
@@ -36,9 +36,9 @@ function MissionCaseAttack($FleetRow)
 {
     global $lang;
 
-    $pricelist = Legacies_Empire_Model_Game_Prices::getSingleton();
-    $resource = Legacies_Empire_Model_Game_FieldsAlias::getSingleton();
-    $CombatCaps = Legacies_Empire_Model_Game_Combat::getSingleton();
+    $pricelist = Wootook_Empire_Model_Game_Prices::getSingleton();
+    $resource = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
+    $CombatCaps = Wootook_Empire_Model_Game_Combat::getSingleton();
 
     if ($FleetRow['fleet_start_time'] <= time()) {
         if ($FleetRow['fleet_mess'] == 0) {
@@ -47,18 +47,18 @@ function MissionCaseAttack($FleetRow)
             }
 // refactored parts
 // {{{
-            $planetCollection = new Legacies_Core_Collection(array('planet' => 'planets'), 'Legacies_Empire_Model_Planet');
+            $planetCollection = new Wootook_Core_Collection(array('planet' => 'planets'), 'Wootook_Empire_Model_Planet');
             $planetCollection
                 ->where('galaxy=:galaxy')
                 ->where('system=:system')
                 ->where('planet=:planet')
-                ->where('type=:type')
+                ->where('planet_type=:type')
                 ->limit(1)
                 ->load(array(
-                    'galaxy'      => $FleetRow['fleet_end_galaxy'],
-                    'system'      => $FleetRow['fleet_end_system'],
-                    'planet'      => $FleetRow['fleet_end_planet'],
-                    'planet_type' => $FleetRow['fleet_end_type']
+                    'galaxy' => $FleetRow['fleet_end_galaxy'],
+                    'system' => $FleetRow['fleet_end_system'],
+                    'planet' => $FleetRow['fleet_end_planet'],
+                    'type'   => $FleetRow['fleet_end_type']
                     ))
             ;
             $TargetPlanet = $planetCollection->current();
@@ -66,13 +66,13 @@ function MissionCaseAttack($FleetRow)
             /*
              * Update planet resources and constructions
              */
-            Legacies::dispatchEvent('planet.update', array(
+            Wootook::dispatchEvent('planet.update', array(
                 'planet' => $TargetPlanet
                 ));
             $TargetPlanet->save();
 
-            $TargetUser = $targetPlanet->getUser();
-            $CurrentUser = Legacies_Empire_Model_User::factory($FleetRow['fleet_owner']);
+            $TargetUser = $TargetPlanet->getUser();
+            $CurrentUser = Wootook_Empire_Model_User::factory($FleetRow['fleet_owner']);
 
             $TargetUserID = $TargetUser->getId();
             $CurrentUserID = $CurrentUser->getId();

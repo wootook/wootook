@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of XNova:Legacies
+ * This file is part of Wootook
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-Present, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,13 +24,13 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
 define('INSIDE' , true);
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/common.php';
+require_once dirname(__FILE__) .'/application/bootstrap.php';
 
 // On efface les anciens messages
 $timemoment=time();
@@ -62,12 +62,12 @@ while($v=mysql_fetch_object($query)){
 	$msg=preg_replace("#:\(#isU","<img src=\"images/smileys/sad.png\" align=\"absmiddle\" title=\":(\" alt=\":(\">",$msg);
 	$msg=preg_replace("#;\)#isU","<img src=\"images/smileys/wink.png\" align=\"absmiddle\" title=\";)\" alt=\";)\">",$msg);
 	$msg=preg_replace("#:s#isU","<img src=\"images/smileys/shit.png\" align=\"absmiddle\" title=\":s\" alt=\":s\">",$msg);
-	$msg=preg_replace("#xnova#","<a href=\"http://www.xnova-ng.org\">XNova</a>",$msg);
+	$msg=preg_replace("#xnova#","<a href=\"http://www.xnova-ng.org\">Wootook</a>",$msg);
 
 	// Affichage du message
 	$msg="<div align=\"left\">".$nick." > ".$msg."<br></div>";
 	print stripslashes($msg);
 }
 
-// Shoutbox by e-Zobar - Copyright XNova Team 2008
+// Shoutbox by e-Zobar - Copyright Wootook Team 2008
 ?>

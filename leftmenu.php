@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of XNova:Legacies
+ * This file is part of Wootook
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-Present, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,13 +24,13 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
 define('INSIDE' , true);
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/common.php';
+require_once dirname(__FILE__) .'/application/bootstrap.php';
 
 function ShowLeftMenu ( $Level , $Template = 'left_menu') {
 	global $lang, $user, $dpath, $gameConfig;
@@ -46,7 +46,7 @@ function ShowLeftMenu ( $Level , $Template = 'left_menu') {
 	$parse['lm_tx_queue']     = MAX_FLEET_OR_DEFS_PER_ROW;
 	$SubFrame                 = parsetemplate( $InfoTPL, $parse );
 	$parse['server_info']     = $SubFrame;
-	$parse['XNovaRelease']    = VERSION;
+	$parse['WootookRelease']    = VERSION;
 	$parse['dpath']           = $dpath;
 	$parse['forum_url']       = $gameConfig['forum_url'];
 	$parse['mf']              = "Hauptframe";
@@ -106,6 +106,6 @@ function ShowLeftMenu ( $Level , $Template = 'left_menu') {
 
 // -----------------------------------------------------------------------------------------------------------
 // History version
-// 1.0 - Passage en fonction pour XNova version future
+// 1.0 - Passage en fonction pour Wootook version future
 // 1.1 - Modification pour gestion Admin / Game OP / Modo
 ?>

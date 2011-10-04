@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of XNova:Legacies
+ * This file is part of Wootook
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-Present, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
@@ -134,7 +134,7 @@ PRIMARY KEY  (`messageid`)
 ('urlaubs_modus_erz', '1'),
 ('forum_url', 'http://board.xnova-ng.org/'),
 ('OverviewNewsFrame', '1'),
-('OverviewNewsText', 'Vous avez correctement mis votre serveur UGamela sous XNova!'),
+('OverviewNewsText', 'Vous avez correctement mis votre serveur UGamela sous Wootook!'),
 ('OverviewExternChat', '0'),
 ('OverviewExternChatCmd', ''),
 ('OverviewBanner', '0'),
@@ -143,8 +143,8 @@ PRIMARY KEY  (`messageid`)
 ('ExtCopyOwner', ''),
 ('ExtCopyFunct', ''),
 ('ForumBannerFrame', '0');",
-"UPDATE `{{prefix}}config` SET `config_value`='XNova' WHERE `config_name`='COOKIE_NAME';",
-"UPDATE `{{prefix}}config` SET `config_value`='XNova' WHERE `config_name`='game_name';",
+"UPDATE `{{prefix}}config` SET `config_value`='Wootook' WHERE `config_name`='COOKIE_NAME';",
+"UPDATE `{{prefix}}config` SET `config_value`='Wootook' WHERE `config_name`='game_name';",
 
 "CREATE TABLE `{{prefix}}multi` (
 `id` int(11) NOT NULL auto_increment,

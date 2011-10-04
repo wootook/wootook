@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of XNova:Legacies
+ * This file is part of Wootook
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-Present, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
-$CombatCaps = Legacies_Empire_Model_Game_Combat::getSingleton();
+$CombatCaps = Wootook_Empire_Model_Game_Combat::getSingleton();
 
 $AtFleet = array ( 203 => 2 );
 $AtTechn = array ( 109 => 3, 110 => 5, 111 => 3 );

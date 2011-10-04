@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of XNova:Legacies
+ * This file is part of Wootook
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-Present, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/common.php';
+require_once dirname(__FILE__) .'/application/bootstrap.php';
 
-$user   = Legacies_Empire_Model_User::getSingleton();
+$user   = Wootook_Empire_Model_User::getSingleton();
 $planet = $user->getCurrentPlanet();
 $moon   = $planet->getMoon();
 
@@ -41,7 +41,7 @@ if (isset($_POST) && !empty($_POST)) {
     $action = isset($_POST['action']) && !empty($_POST['action']) ? $_POST['action'] : $action;
     $formKey = isset($_POST['form_key']) && !empty($_POST['form_key']) ? $_POST['form_key'] : null;
 
-    if ($formKey == Legacies::getSession('security')->getData('form_key')) {
+    if ($formKey == Wootook::getSession('security')->getData('form_key')) {
         if ($action == 'rename' && isset($_POST['name']) && !empty($_POST['name'])) {
             $planet->setData('name', $_POST['name'])->save();
 
@@ -50,8 +50,8 @@ if (isset($_POST) && !empty($_POST)) {
             exit(0);
         } else if ($action == 'destroy' && isset($_POST['password']) && !empty($_POST['password']) && isset($_POST['confirm'])) {
             if (!$user->checkPassword($_POST['password'])) {
-                Legacies::getSession('user')
-                    ->addError(Legacies::__('Password was not correct.'));
+                Wootook::getSession('user')
+                    ->addError(Wootook::__('Password was not correct.'));
 
                 header('302 Found');
                 header('Location: ' . basename(__FILE__));
@@ -61,10 +61,10 @@ if (isset($_POST) && !empty($_POST)) {
             try {
                 $user->getCurrentPlanet()->destroy();
 
-                Legacies::getSession('user')
-                    ->addSucces(Legacies::__('Planet has been successfully destroyed.'));
-            } catch (Legacies_Empire_Model_Planet_Exception $e) {
-                Legacies::getSession('user')
+                Wootook::getSession('user')
+                    ->addSucces(Wootook::__('Planet has been successfully destroyed.'));
+            } catch (Wootook_Empire_Model_Planet_Exception $e) {
+                Wootook::getSession('user')
                     ->addError($e->getMessage());
             }
 
@@ -73,17 +73,17 @@ if (isset($_POST) && !empty($_POST)) {
             exit(0);
         }
     } else {
-        Legacies::getSession('user')
-            ->addError(Legacies::__('Invalid security key.'));
+        Wootook::getSession('user')
+            ->addError(Wootook::__('Invalid security key.'));
     }
 } else if ($action == 'rename') {
-    $layout = new Legacies_Core_Layout();
+    $layout = new Wootook_Core_Layout();
     $layout->load('overview.rename-planet');
 
     echo $layout->render();
     exit(0);
 } else if ($action == 'destroy') {
-    $layout = new Legacies_Core_Layout();
+    $layout = new Wootook_Core_Layout();
     $layout->load('overview.destroy-planet');
 
     echo $layout->render();
@@ -92,12 +92,15 @@ if (isset($_POST) && !empty($_POST)) {
     includeLang('resources');
     includeLang('overview');
 
+    $layout = new Wootook_Core_Layout();
+    $layout->load('overview');
+
     if ($user->getId()) {
         $planetCollection = $user->getPlanetCollection();
-        $planetBlock = new Legacies_Core_Block_Template();
+        $planetBlock = $layout->createBlock('core/deprecated', 'planet.view');
         $planetBlock->setTemplate('empire/overview/planet/view.phtml');
 
-        $planetList = new Legacies_Core_Block_Concat();
+        $planetList = $layout->createBlock('core/concat', 'planet.list');
         $planetBlock->planetList = $planetList;
 
         foreach ($planetCollection as $userPlanet) {
@@ -108,13 +111,14 @@ if (isset($_POST) && !empty($_POST)) {
             /*
              * Update planet resources and constructions
              */
-            Legacies::dispatchEvent('planet.update', array(
+            Wootook::dispatchEvent('planet.update', array(
                 'planet' => $userPlanet
                 ));
             $userPlanet->save();
 
             if ($userPlanet->getId() != $user->getCurrentPlanet()->getId() && $userPlanet->isPlanet()) {
-                $block = new Legacies_Core_Block_Template();
+                $id = uniqid();
+                $block = $layout->createBlock('core/deprecated', "planet.list.item.{$id}");
                 $block->setTemplate('empire/overview/planet/list/item.phtml');
                 $block['planet'] = $userPlanet;
 
@@ -122,6 +126,8 @@ if (isset($_POST) && !empty($_POST)) {
                 $buildingQueue->rewind();
                 $currentItem = $buildingQueue->current();
                 $block['queue_item'] = $currentItem;
+
+                $planetList->$id = $block;
             }
         }
 
@@ -173,28 +179,30 @@ if (isset($_POST) && !empty($_POST)) {
         /*
          * Update fleet list
          */
-        Legacies::dispatchEvent('fleet.update', array(
+        Wootook::dispatchEvent('fleet.update', array(
             'user' => $user
             ));
 
-        $fleetList = new Legacies_Core_Block_Concat();
+        $fleetList = $layout->createBlock('core/concat', 'fleet.list');
         $fleetCollection = $user->getFleetCollection();
         foreach ($fleetCollection as $fleet) {
-            $block = new Legacies_Core_Block_Template();
-            $block->setTemplate('empire/overview/fleets/item.phtml');
+            $id = uniqid();
+            $block = $layout->createBlock('core/deprecated', "fleet.list.item.{$id}");
+            $block->setTemplate('empire/overview/fleet/item.phtml');
 
             $block['class'] = $fleet->getRowClass();
             $block['fleet'] = $fleet;
+            $block['user'] = $user;
 
-            $fleetList->setPartial(uniqid(), $block);
+            $fleetList->setPartial($id, $block);
         }
 
-        $messageCollection = new Legacies_Core_Collection('messages');
+        $messageCollection = new Wootook_Core_Collection('messages');
         $messageCollection->where('message_owner=:user');
         $messageCollection->where('message_read_at<=0');
 
         $count = $messageCollection->getSize(array('user' => $user->getId()));
-        $newMessages = new Legacies_Core_View();
+        $newMessages = $layout->createBlock('core/deprecated', 'overview.messages');
         $newMessages->setTemplate('empire/overview/messages.phtml');
         $newMessages['count'] = (int) $count;
 

@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of XNova:Legacies
+ * This file is part of Wootook
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-Present, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
@@ -124,8 +124,8 @@
 	$QryInsertConfig    .= "('Fleet_Cdr'             , '30'), ";
 	$QryInsertConfig    .= "('Defs_Cdr'              , '30'), ";
 	$QryInsertConfig    .= "('initial_fields'        , '163'), ";
-	$QryInsertConfig    .= "('COOKIE_NAME'           , 'XNova Legacies'), ";
-	$QryInsertConfig    .= "('game_name'             , 'XNova Legacies'), ";
+	$QryInsertConfig    .= "('COOKIE_NAME'           , 'Wootook Legacies'), ";
+	$QryInsertConfig    .= "('game_name'             , 'Wootook Legacies'), ";
 	$QryInsertConfig    .= "('game_disable'          , '1'), ";
 	$QryInsertConfig    .= "('close_reason'          , 'Le jeu est clos pour le moment!'), ";
 	$QryInsertConfig    .= "('metal_basic_income'    , '20'), ";
@@ -142,7 +142,7 @@
 	$QryInsertConfig    .= "('noobprotectionmulti'   , '5'), ";
 	$QryInsertConfig    .= "('forum_url'             , 'http://board.xnova-ng.org/' ), ";
 	$QryInsertConfig    .= "('OverviewNewsFrame'     , '1' ), ";
-	$QryInsertConfig    .= "('OverviewNewsText'      , 'Bienvenue sur le nouveau serveur XNova Legacies' ), ";
+	$QryInsertConfig    .= "('OverviewNewsText'      , 'Bienvenue sur le nouveau serveur Wootook Legacies' ), ";
 	$QryInsertConfig    .= "('OverviewExternChat'    , '0' ), ";
 	$QryInsertConfig    .= "('OverviewExternChatCmd' , '' ), ";
 	$QryInsertConfig    .= "('OverviewBanner'        , '0' ), ";

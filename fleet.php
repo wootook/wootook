@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of XNova:Legacies
+ * This file is part of Wootook
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-Present, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,18 +24,13 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
 define('INSIDE' , true);
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/common.php';
-
-$maxfleet = doquery("SELECT 1 FROM {{table}} WHERE `fleet_owner` = '".$user['id']."';", 'fleets');
-
-$MaxFlyingFleets = $maxfleet->rowCount();
-$maxfleet->closeCursor();
+require_once dirname(__FILE__) .'/application/bootstrap.php';
 
 //Compteur de flotte en expéditions et nombre d'expédition maximum
 $maxExpedition = $user->getElement(Legacies_Empire::ID_RESEARCH_EXPEDITION_TECHNOLOGY);
@@ -73,8 +68,10 @@ $position      = isset($_GET['planet']) ? intval($_GET['planet']) : 0;
 $planetType    = isset($_GET['planettype']) ? intval($_GET['planettype']) : 0;
 $targetMission = isset($_GET['target_mission']) ? intval($_GET['target_mission']) : 0;
 
-$user = Legacies_Empire_Model_User::getSingleton();
+$user = Wootook_Empire_Model_User::getSingleton();
 $planet = $user->getCurrentPlanet();
+
+$MaxFlyingFleets = $user->getFleetCount();
 
 if ($galaxy <= 0 || $galaxy > MAX_GALAXY_IN_WORLD) {
     $galaxy = $planet['galaxy'];
@@ -87,9 +84,9 @@ if ($position <= 0 || $position > MAX_PLANET_IN_SYSTEM) {
 }
 
 $allowedPlanetTypes = array(
-    Legacies_Empire_Model_Planet::TYPE_PLANET,
-    Legacies_Empire_Model_Planet::TYPE_DEBRIS,
-    Legacies_Empire_Model_Planet::TYPE_MOON
+    Wootook_Empire_Model_Planet::TYPE_PLANET,
+    Wootook_Empire_Model_Planet::TYPE_DEBRIS,
+    Wootook_Empire_Model_Planet::TYPE_MOON
     );
 
 if (!in_array($planetType, $allowedPlanetTypes)) {

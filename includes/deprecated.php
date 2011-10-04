@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of XNova:Legacies
+ * This file is part of Wootook
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-Present, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
@@ -32,8 +32,8 @@
  * Deprecated method used to add a building to the planet building list.
  *
  * @deprecated
- * @param Legacies_Empire_Model_Planet|array $currentPlanet
- * @param Legacies_Empire_Model_User|array $currentUser
+ * @param Wootook_Empire_Model_Planet|array $currentPlanet
+ * @param Wootook_Empire_Model_User|array $currentUser
  * @param int $buildingId
  * @param bool $AddMode
  */
@@ -41,9 +41,9 @@ function AddBuildingToQueue($currentPlanet, $currentUser, $buildingId, $AddMode 
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-    if (!$currentPlanet instanceof Legacies_Empire_Model_Planet) {
-        trigger_error('$currentPlanet should be an instance of Legacies_Empire_Model_Planet', E_USER_WARNING);
-        $currentPlanet = Legacies_Empire_Model_Planet::factory($currentPlanet['id']);
+    if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
+        trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
+        $currentPlanet = Wootook_Empire_Model_Planet::factory($currentPlanet['id']);
     }
 
     $currentPlanet->appendBuildingQueue($buildingId, !$AddMode);
@@ -55,15 +55,15 @@ function AddBuildingToQueue($currentPlanet, $currentUser, $buildingId, $AddMode 
  * Deprecaed function used to save the planet record
  *
  * @deprecated
- * @param Legacies_Empire_Model_Planet|array $currentPlanet
+ * @param Wootook_Empire_Model_Planet|array $currentPlanet
  */
 function BuildingSavePlanetRecord($currentPlanet)
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-    if (!$currentPlanet instanceof Legacies_Empire_Model_Planet) {
-        trigger_error('$currentPlanet should be an instance of Legacies_Empire_Model_Planet', E_USER_WARNING);
-        $currentPlanet = Legacies_Empire_Model_Planet::factory($currentPlanet['id']);
+    if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
+        trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
+        $currentPlanet = Wootook_Empire_Model_Planet::factory($currentPlanet['id']);
     }
 
     $currentPlanet->save();
@@ -73,15 +73,15 @@ function BuildingSavePlanetRecord($currentPlanet)
  * Deprecaed function used to save the user record
  *
  * @deprecated
- * @param Legacies_Empire_Model_User|array $currentUser
+ * @param Wootook_Empire_Model_User|array $currentUser
  */
 function BuildingSaveUserRecord($currentUser)
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-    if (!$currentUser instanceof Legacies_Empire_Model_User) {
-        trigger_error('$currentUser should be an instance of Legacies_Empire_Model_User', E_USER_WARNING);
-        $currentUser = Legacies_Empire_Model_User::factory($currentUser['id']);
+    if (!$currentUser instanceof Wootook_Empire_Model_User) {
+        trigger_error('$currentUser should be an instance of Wootook_Empire_Model_User', E_USER_WARNING);
+        $currentUser = Wootook_Empire_Model_User::factory($currentUser['id']);
     }
 
     $currentUser->save();
@@ -89,21 +89,21 @@ function BuildingSaveUserRecord($currentUser)
 
 /**
  * @deprecated
- * @param Legacies_Empire_Model_Planet|array $currentPlanet
- * @param Legacies_Empire_Model_User|array $currentUser
+ * @param Wootook_Empire_Model_Planet|array $currentPlanet
+ * @param Wootook_Empire_Model_User|array $currentUser
  */
 function CheckPlanetBuildingQueue($currentPlanet, $currentUser)
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-    if (!$currentPlanet instanceof Legacies_Empire_Model_Planet) {
-        trigger_error('$currentPlanet should be an instance of Legacies_Empire_Model_Planet', E_USER_WARNING);
-        $currentPlanet = Legacies_Empire_Model_Planet::factory($currentPlanet['id']);
+    if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
+        trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
+        $currentPlanet = Wootook_Empire_Model_Planet::factory($currentPlanet['id']);
     }
 
-    if (!$currentUser instanceof Legacies_Empire_Model_User) {
-        trigger_error('$currentUser should be an instance of Legacies_Empire_Model_User', E_USER_WARNING);
-        $currentUser = Legacies_Empire_Model_User::factory($currentUser['id']);
+    if (!$currentUser instanceof Wootook_Empire_Model_User) {
+        trigger_error('$currentUser should be an instance of Wootook_Empire_Model_User', E_USER_WARNING);
+        $currentUser = Wootook_Empire_Model_User::factory($currentUser['id']);
     }
 
     $currentPlanet->updateBuildingQueue();
@@ -112,15 +112,15 @@ function CheckPlanetBuildingQueue($currentPlanet, $currentUser)
 /**
  *
  * @deprecated
- * @param Legacies_Empire_Model_Planet|array $currentPlanet
+ * @param Wootook_Empire_Model_Planet|array $currentPlanet
  */
 function CheckPlanetUsedFields($currentPlanet)
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-    if (!$currentPlanet instanceof Legacies_Empire_Model_Planet) {
-        trigger_error('$currentPlanet should be an instance of Legacies_Empire_Model_Planet', E_USER_WARNING);
-        $currentPlanet = Legacies_Empire_Model_Planet::factory($currentUser['id']);
+    if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
+        trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
+        $currentPlanet = Wootook_Empire_Model_Planet::factory($currentPlanet['id']);
     }
 
     $currentPlanet->updateStorages()->save();
@@ -129,8 +129,8 @@ function CheckPlanetUsedFields($currentPlanet)
 /**
  *
  * @deprecated
- * @param Legacies_Empire_Model_User|array $currentUser
- * @param Legacies_Empire_Model_Planet|array $currentPlanet
+ * @param Wootook_Empire_Model_User|array $currentUser
+ * @param Wootook_Empire_Model_Planet|array $currentPlanet
  * @param int $buildingId
  * @param bool $incremental
  * @param bool $destroy
@@ -139,17 +139,17 @@ function GetBuildingPrice($currentUser, $currentPlanet, $buildingId, $incrementa
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-    if (!$currentPlanet instanceof Legacies_Empire_Model_Planet) {
-        trigger_error('$currentPlanet should be an instance of Legacies_Empire_Model_Planet', E_USER_WARNING);
-        $currentPlanet = Legacies_Empire_Model_Planet::factory($currentPlanet['id']);
+    if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
+        trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
+        $currentPlanet = Wootook_Empire_Model_Planet::factory($currentPlanet['id']);
     }
 
-    if (!$currentUser instanceof Legacies_Empire_Model_User) {
-        trigger_error('$currentUser should be an instance of Legacies_Empire_Model_User', E_USER_WARNING);
-        $currentUser = Legacies_Empire_Model_User::factory($currentUser['id']);
+    if (!$currentUser instanceof Wootook_Empire_Model_User) {
+        trigger_error('$currentUser should be an instance of Wootook_Empire_Model_User', E_USER_WARNING);
+        $currentUser = Wootook_Empire_Model_User::factory($currentUser['id']);
     }
 
-    $types = Legacies_Empire_Model_Game_Types::getSingleton();
+    $types = Wootook_Empire_Model_Game_Types::getSingleton();
 
     if ($types->is($buildingId, Legacies_Empire::TYPE_BUILDING)) {
         $level = $currentPlanet->getElement($buildingId);
@@ -184,25 +184,25 @@ function GetBuildingPrice($currentUser, $currentPlanet, $buildingId, $incrementa
 /**
  *
  * @deprecated
- * @param Legacies_Empire_Model_User|array $currentUser
- * @param Legacies_Empire_Model_Planet|array $currentPlanet
+ * @param Wootook_Empire_Model_User|array $currentUser
+ * @param Wootook_Empire_Model_Planet|array $currentPlanet
  * @param int $buildingId
  */
 function GetBuildingTime($currentUser, $currentPlanet, $buildingId)
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-    if (!$currentPlanet instanceof Legacies_Empire_Model_Planet) {
-        trigger_error('$currentPlanet should be an instance of Legacies_Empire_Model_Planet', E_USER_WARNING);
-        $currentPlanet = Legacies_Empire_Model_Planet::factory($currentPlanet['id']);
+    if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
+        trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
+        $currentPlanet = Wootook_Empire_Model_Planet::factory($currentPlanet['id']);
     }
 
-    if (!$currentUser instanceof Legacies_Empire_Model_User) {
-        trigger_error('$currentUser should be an instance of Legacies_Empire_Model_User', E_USER_WARNING);
-        $currentUser = Legacies_Empire_Model_User::factory($currentUser['id']);
+    if (!$currentUser instanceof Wootook_Empire_Model_User) {
+        trigger_error('$currentUser should be an instance of Wootook_Empire_Model_User', E_USER_WARNING);
+        $currentUser = Wootook_Empire_Model_User::factory($currentUser['id']);
     }
 
-    $types = Legacies_Empire_Model_Game_Types::getSingleton();
+    $types = Wootook_Empire_Model_Game_Types::getSingleton();
 
     if ($types->is($buildingId, Legacies_Empire::TYPE_BUILDING)) {
         return $currentPlanet->getBuildingTime($buildingId, 1);
@@ -218,8 +218,8 @@ function GetBuildingTime($currentUser, $currentPlanet, $buildingId)
 /**
  *
  * @deprecated
- * @param Legacies_Empire_Model_User|array $currentUser
- * @param Legacies_Empire_Model_Planet|array $currentPlanet
+ * @param Wootook_Empire_Model_User|array $currentUser
+ * @param Wootook_Empire_Model_Planet|array $currentPlanet
  * @param int $Element
  * @param int|string $level
  */
@@ -227,17 +227,17 @@ function GetBuildingTimeLevel($currentUser, $currentPlanet, $buildingId, $level)
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-    if (!$currentPlanet instanceof Legacies_Empire_Model_Planet) {
-        trigger_error('$currentPlanet should be an instance of Legacies_Empire_Model_Planet', E_USER_WARNING);
-        $currentPlanet = Legacies_Empire_Model_Planet::factory($currentPlanet['id']);
+    if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
+        trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
+        $currentPlanet = Wootook_Empire_Model_Planet::factory($currentPlanet['id']);
     }
 
-    if (!$currentUser instanceof Legacies_Empire_Model_User) {
-        trigger_error('$currentUser should be an instance of Legacies_Empire_Model_User', E_USER_WARNING);
-        $currentUser = Legacies_Empire_Model_User::factory($currentUser['id']);
+    if (!$currentUser instanceof Wootook_Empire_Model_User) {
+        trigger_error('$currentUser should be an instance of Wootook_Empire_Model_User', E_USER_WARNING);
+        $currentUser = Wootook_Empire_Model_User::factory($currentUser['id']);
     }
 
-    $types = Legacies_Empire_Model_Game_Types::getSingleton();
+    $types = Wootook_Empire_Model_Game_Types::getSingleton();
 
     if ($types->is($buildingId, Legacies_Empire::TYPE_BUILDING)) {
         return $currentPlanet->getBuildingTime($buildingId, $level);
@@ -253,8 +253,8 @@ function GetBuildingTimeLevel($currentUser, $currentPlanet, $buildingId, $level)
 /**
  *
  * @deprecated
- * @param Legacies_Empire_Model_User|array $currentUser
- * @param Legacies_Empire_Model_Planet|array $currentPlanet
+ * @param Wootook_Empire_Model_User|array $currentUser
+ * @param Wootook_Empire_Model_Planet|array $currentPlanet
  * @param int $buildingId
  * @param unknown_type $userfactor
  */
@@ -262,20 +262,20 @@ function GetElementPrice($currentUser, $currentPlanet, $buildingId, $userfactor 
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-    if (!$currentPlanet instanceof Legacies_Empire_Model_Planet) {
-        trigger_error('$currentPlanet should be an instance of Legacies_Empire_Model_Planet', E_USER_WARNING);
-        $currentPlanet = Legacies_Empire_Model_Planet::factory($currentPlanet['id']);
+    if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
+        trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
+        $currentPlanet = Wootook_Empire_Model_Planet::factory($currentPlanet['id']);
     }
 
-    if (!$currentUser instanceof Legacies_Empire_Model_User) {
-        trigger_error('$currentUser should be an instance of Legacies_Empire_Model_User', E_USER_WARNING);
-        $currentUser = Legacies_Empire_Model_User::factory($currentUser['id']);
+    if (!$currentUser instanceof Wootook_Empire_Model_User) {
+        trigger_error('$currentUser should be an instance of Wootook_Empire_Model_User', E_USER_WARNING);
+        $currentUser = Wootook_Empire_Model_User::factory($currentUser['id']);
     }
 
     global $lang;
 
-    $prices = Legacies_Empire_Model_Game_Prices::getSingleton();
-    $types = Legacies_Empire_Model_Game_Types::getSingleton();
+    $prices = Wootook_Empire_Model_Game_Prices::getSingleton();
+    $types = Wootook_Empire_Model_Game_Types::getSingleton();
 
     $array = array(
         Legacies_Empire::RESOURCE_METAL     => $lang["Metal"],
@@ -320,7 +320,7 @@ function GetElementRessources($elementId, $count)
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-    $currentUser = Legacies_Empire_Model_User::getSingleton();
+    $currentUser = Wootook_Empire_Model_User::getSingleton();
     $currentPlanet = $currentUser->getCurrentPlanet();
 
     return $currentPlanet->getShipyard()->getResourcesNeeded($buildingId, $count);
@@ -329,8 +329,8 @@ function GetElementRessources($elementId, $count)
 /**
  *
  * @deprecated
- * @param Legacies_Empire_Model_User|array $currentUser
- * @param Legacies_Empire_Model_Planet|array $currentPlanet
+ * @param Wootook_Empire_Model_User|array $currentUser
+ * @param Wootook_Empire_Model_Planet|array $currentPlanet
  * @param int $productionTime
  *
  * @see Lagecies_Empire_Model_Planet::updateBuildingQueue()
@@ -347,15 +347,15 @@ function HandleElementBuildingQueue($currentUser, $currentPlanet, $productionTim
  * @deprecated
  * @param bool $isUserChecked
  *
- * @see Legacies_Empire_Model_User::getSingleton()
+ * @see Wootook_Empire_Model_User::getSingleton()
  */
 function CheckCookies($isUserChecked)
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-    $user = Legacies_Empire_Model_User::getSingleton();
+    $user = Wootook_Empire_Model_User::getSingleton();
 
-    if ($user instanceof Legacies_Empire_Model_User) {
+    if ($user instanceof Wootook_Empire_Model_User) {
         return array(
             'state' => true,
             'record' => $user
@@ -373,7 +373,7 @@ function CheckCookies($isUserChecked)
  * @deprecated
  * @param bool $isUserChecked
  *
- * @see Legacies_Empire_Model_User::getSingleton()
+ * @see Wootook_Empire_Model_User::getSingleton()
  */
 function CheckTheUser($isUserChecked)
 {
@@ -381,7 +381,7 @@ function CheckTheUser($isUserChecked)
 
     $result = CheckCookies($isUserChecked);
 
-    if ($result['record'] instanceof Legacies_Empire_Model_User && $result['record']['bana']) {
+    if ($result['record'] instanceof Wootook_Empire_Model_User && $result['record']['bana']) {
         die(parsetemplate(gettemplate('usr_banned'), $lang));
     }
 
@@ -391,21 +391,21 @@ function CheckTheUser($isUserChecked)
 /**
  *
  * @deprecated
- * @param Legacies_Empire_Model_Planet|array $currentPlanet
- * @param Legacies_Empire_Model_User|array $currentUser
+ * @param Wootook_Empire_Model_Planet|array $currentPlanet
+ * @param Wootook_Empire_Model_User|array $currentUser
  *
- * @see Legacies_Empire_Model_Planet::updateBuildingQueue()
+ * @see Wootook_Empire_Model_Planet::updateBuildingQueue()
  */
 function UpdatePlanetBatimentQueueList($currentPlanet, $currentUser)
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-    if (!$currentPlanet instanceof Legacies_Empire_Model_Planet) {
-        trigger_error('$currentPlanet should be an instance of Legacies_Empire_Model_Planet', E_USER_WARNING);
-        $currentPlanet = Legacies_Empire_Model_Planet::factory($currentPlanet['id']);
+    if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
+        trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
+        $currentPlanet = Wootook_Empire_Model_Planet::factory($currentPlanet['id']);
     }
 
-    $currentPlanet->updateBuildingQueue(Legacies::now());
+    $currentPlanet->updateBuildingQueue(Beyond::now());
 
     return true;
 }
@@ -413,15 +413,15 @@ function UpdatePlanetBatimentQueueList($currentPlanet, $currentUser)
 /**
  *
  * @deprecated
- * @param Legacies_Empire_Model_Planet|array $currentPlanet
+ * @param Wootook_Empire_Model_Planet|array $currentPlanet
  */
 function CalculateMaxPlanetFields($currentPlanet)
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-    if (!$currentPlanet instanceof Legacies_Empire_Model_Planet) {
-        trigger_error('$currentPlanet should be an instance of Legacies_Empire_Model_Planet', E_USER_WARNING);
-        $currentPlanet = Legacies_Empire_Model_Planet::factory($currentPlanet['id']);
+    if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
+        trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
+        $currentPlanet = Wootook_Empire_Model_Planet::factory($currentPlanet['id']);
     }
 
     return max(1, $currentPlanet['field_max'] + ($currentPlanet->getElement(Legacies_Empire::ID_BUILDING_TERRAFORMER) * 5));
@@ -431,39 +431,39 @@ function CalculateMaxPlanetFields($currentPlanet)
 /**
  *
  * @deprecated
- * @param Legacies_Empire_Model_User|array $currentUser
- * @param Legacies_Empire_Model_Planet|array $currentPlanet
+ * @param Wootook_Empire_Model_User|array $currentUser
+ * @param Wootook_Empire_Model_Planet|array $currentPlanet
  */
 function AbandonColony($currentUser, $currentPlanet)
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-    if (!$currentPlanet instanceof Legacies_Empire_Model_Planet) {
-        trigger_error('$currentPlanet should be an instance of Legacies_Empire_Model_Planet', E_USER_WARNING);
-        $currentPlanet = Legacies_Empire_Model_Planet::factory($currentPlanet['id']);
+    if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
+        trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
+        $currentPlanet = Wootook_Empire_Model_Planet::factory($currentPlanet['id']);
     }
 
     try {
         $currentPlanet->destroy();
-    } catch (Legacies_Core_Model_Exception $e) {
-        Legacies_Core_Model_Session::factory('empire')->addCritical($e->getMessage());
-    } catch (Legacies_Empire_Model_Planet_Exception $e) {
-        Legacies_Core_Model_Session::factory('empire')->addError($e->getMessage());
+    } catch (Wootook_Core_Model_Exception $e) {
+        Wootook_Core_Model_Session::factory('empire')->addCritical($e->getMessage());
+    } catch (Wootook_Empire_Model_Planet_Exception $e) {
+        Wootook_Core_Model_Session::factory('empire')->addError($e->getMessage());
     }
 }
 
 /**
  *
  * @deprecated
- * @param Legacies_Empire_Model_Planet|array $currentPlanet
+ * @param Wootook_Empire_Model_Planet|array $currentPlanet
  */
 function CheckFleets($currentPlanet)
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-    if (!$currentPlanet instanceof Legacies_Empire_Model_Planet) {
-        trigger_error('$currentPlanet should be an instance of Legacies_Empire_Model_Planet', E_USER_WARNING);
-        $currentPlanet = Legacies_Empire_Model_Planet::factory($currentPlanet['id']);
+    if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
+        trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
+        $currentPlanet = Wootook_Empire_Model_Planet::factory($currentPlanet['id']);
     }
 
     return (bool) ($currentPlanet->getFleetCollection()->count() > 0);
@@ -472,16 +472,16 @@ function CheckFleets($currentPlanet)
 /**
  *
  * @deprecated
- * @param Legacies_Empire_Model_User|array $currentUser
- * @param Legacies_Empire_Model_Planet|array $currentPlanet
+ * @param Wootook_Empire_Model_User|array $currentUser
+ * @param Wootook_Empire_Model_Planet|array $currentPlanet
  */
 function CancelBuildingFromQueue($currentPlanet, $currentUser)
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
-    if (!$currentPlanet instanceof Legacies_Empire_Model_Planet) {
-        trigger_error('$currentPlanet should be an instance of Legacies_Empire_Model_Planet', E_USER_WARNING);
-        $currentPlanet = Legacies_Empire_Model_Planet::factory($currentPlanet['id']);
+    if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
+        trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
+        $currentPlanet = Wootook_Empire_Model_Planet::factory($currentPlanet['id']);
     }
 
     if ($currentPlanet->getBuildingQueue()->count() <= 0) {
@@ -493,6 +493,27 @@ function CancelBuildingFromQueue($currentPlanet, $currentUser)
     return true;
 }
 
+class Deprecated
+{
+    /**
+     * @var Wootook_Core_Layout $layout
+     */
+    public static $layout = null;
+
+    /**
+     * @return Wootook_Core_Layout
+     */
+    public static function getLayout()
+    {
+        if (self::$layout === null) {
+            self::$layout = new Wootook_Core_Layout();
+            self::$layout->load('2columns-left');
+        }
+
+        return self::$layout;
+    }
+}
+
 /**
  *
  * @deprecated
@@ -500,15 +521,14 @@ function CancelBuildingFromQueue($currentPlanet, $currentUser)
  * @param string $title The page title
  * @param bool $topnav Wether we show the top navigation or not
  * @param null $metatags Extra meta tags
- * @param bool $AdminPage unused
+ * @param bool $adminPage unused
  */
-function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false)
+function display($page, $title = '', $topnav = true, $metatags = '', $adminPage = false)
 {
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
     // TODO: implement extra meta tags
-    $layout = new Legacies_Core_Layout();
-    $layout->load('2columns-left');
+    $layout = Deprecated::getLayout();
     $content = $layout->getBlock('content');
 
     if ($topnav) {
@@ -537,14 +557,15 @@ function parsetemplate($template, $array)
 
     static $baseUrl = null;
     if ($baseUrl === null) {
-        $user = Legacies_Empire_Model_User::getSingleton();
+        $user = Wootook_Empire_Model_User::getSingleton();
         if ($user !== null && $user->getId() && ($baseUrl = $user->getSkinPath()) == '') {
             $baseUrl = DEFAULT_SKINPATH;
         }
     }
     $array['dpath'] = $baseUrl;
 
-    $view = new Legacies_Core_View($array);
+    $layout = Deprecated::getLayout();
+    $view = $layout->createBlock('core/deprecated', uniqid(), $array);
     $view->setTemplate('deprecated/' .$template . '.tpl');
 
     return $view->render();
@@ -588,4 +609,42 @@ function getTemplate($templateName)
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
     return $templateName;
+}
+
+
+/**
+ *
+ * Enter description here ...
+ * @deprecated
+ * @param string $query
+ * @param string $table
+ * @param bool $fetch
+ */
+function doquery($query, $table, $fetch = false)
+{
+    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+
+    /**
+     * @var Wootook_Database $database
+     */
+    $database = Wootook_Database::getSingleton();
+
+    $sql = str_replace("{{table}}", $database->getTable($table), $query);
+
+    /**
+     * @var PDOStatement $statement
+     */
+    try {
+        $statement = $database->prepare($sql);
+
+        $statement->execute(array());
+    } catch (PDOException $e) {
+        trigger_error($e->getMessage() . PHP_EOL . "<br /><pre></code>$sql<code></pre><br />" . PHP_EOL, E_USER_WARNING);
+    }
+
+    if ($fetch) {
+        return $statement->fetch(PDO::FETCH_BOTH);
+    } else {
+        return $statement;
+    }
 }

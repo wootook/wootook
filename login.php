@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of XNova:Legacies
+ * This file is part of Wootook
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-Present, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,31 +24,31 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
 define('INSIDE', true);
 define('INSTALL', false);
 define('DISABLE_IDENTITY_CHECK', true);
-require_once dirname(__FILE__) . '/common.php';
+require_once dirname(__FILE__) . '/application/bootstrap.php';
 
 includeLang('login');
 
 if (!empty($_POST) && isset($_POST['username']) && isset($_POST['password'])) {
-    $user = Legacies_Empire_Model_User::login($_POST['username'], $_POST['password'], isset($_POST['rememberme']) && !empty($_POST['rememberme']));
+    $user = Wootook_Empire_Model_User::login($_POST['username'], $_POST['password'], isset($_POST['rememberme']) && !empty($_POST['rememberme']));
 
-    $session = Legacies::getSession(Legacies_Empire_Model_User::SESSION_KEY);
+    $session = Wootook::getSession(Wootook_Empire_Model_User::SESSION_KEY);
     if ($user !== null && $user->getId()) {
         header("Location: frames.php");
     } else {
         header("Location: login.php");
     }
-    Legacies_Core_ErrorProfiler::unregister(true);
+    Wootook_Core_ErrorProfiler::unregister(true);
     exit(0);
 }
 
-$db = Legacies_Database::getSingleton();
+$db = Wootook_Database::getSingleton();
 $displayedPlayerLevels = implode(',', array(
     //LEVEL_ADMIN,
     LEVEL_OPERATOR,
@@ -57,17 +57,17 @@ $displayedPlayerLevels = implode(',', array(
     ));
 $userCountStatement = $db->prepare("SELECT COUNT(DISTINCT user.id) AS `user_count` FROM {$db->getTable('users')} AS user WHERE user.authlevel IN({$displayedPlayerLevels})");
 $userCountStatement->execute();
-$userCount = $userCountStatement->fetch(Legacies_Database::FETCH_COLUMN, 0);
+$userCount = $userCountStatement->fetch(Wootook_Database::FETCH_COLUMN, 0);
 
 $latestPlayerStatement = $db->prepare("SELECT user.username AS `latest_player` FROM {$db->getTable('users')} AS user WHERE user.authlevel IN({$displayedPlayerLevels}) ORDER BY user.`register_time` DESC LIMIT 1");
 $latestPlayerStatement->execute();
-$latestPlayer = $latestPlayerStatement->fetch(Legacies_Database::FETCH_COLUMN, 0);
+$latestPlayer = $latestPlayerStatement->fetch(Wootook_Database::FETCH_COLUMN, 0);
 
 $onlinePlayersStatement = $db->prepare("SELECT COUNT(DISTINCT user.id) AS `online_players` FROM {$db->getTable('users')} AS user WHERE user.authlevel IN({$displayedPlayerLevels}) AND user.`onlinetime` > (UNIX_TIMESTAMP() - 900)");
 $onlinePlayersStatement->execute();
-$onlinePlayers = $onlinePlayersStatement->fetch(Legacies_Database::FETCH_COLUMN, 0);
+$onlinePlayers = $onlinePlayersStatement->fetch(Wootook_Database::FETCH_COLUMN, 0);
 
-$layout = new Legacies_Core_Layout();
+$layout = new Wootook_Core_Layout();
 $layout->load('login');
 $block = $layout->getBlock('login');
 

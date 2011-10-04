@@ -1,11 +1,11 @@
 <?php
 /**
- * XNova Legacies
+ * Wootook Legacies
  *
  * @license http://www.xnova-ng.org/license-legacies
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-Present, XNova Support Team
+ * Copyright (c) 2009-Present, Wootook Support Team
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
@@ -271,7 +271,7 @@ EOF;
 
 $data = array_merge(
     array(
-        'game_name' => 'XNova:Legacies',
+        'game_name' => 'Wootook:Legacies',
         'date' => date('d M Y')
         ),
     doquery($sql, '', true)

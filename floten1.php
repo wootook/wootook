@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of XNova:Legacies
+ * This file is part of Wootook
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-Present, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,28 +24,29 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
 define('INSIDE' , true);
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/common.php';
+require_once dirname(__FILE__) .'/application/bootstrap.php';
 includeLang('fleet');
 
-$speed = array(10 => 100,
-    9 => 90,
-    8 => 80,
-    7 => 70,
-    6 => 60,
-    5 => 50,
-    4 => 40,
-    3 => 30,
-    2 => 20,
-    1 => 10,
+$speed = array(
+    10 => 100,
+    9  => 90,
+    8  => 80,
+    7  => 70,
+    6  => 60,
+    5  => 50,
+    4  => 40,
+    3  => 30,
+    2  => 20,
+    1  => 10,
     );
 
-$user = Legacies_Empire_Model_User::getSingleton();
+$user = Wootook_Empire_Model_User::getSingleton();
 $planetrow = $user->getCurrentPlanet();
 
 $g = isset($_POST['galaxy']) ? intval($_POST['galaxy']) : 0;
@@ -63,16 +64,16 @@ if ($p <= 0 || $p > MAX_PLANET_IN_SYSTEM) {
     $p = $planetrow['planet'];
 }
 $allowedPlanetTypes = array(
-    Legacies_Empire_Model_Planet::TYPE_PLANET,
-    Legacies_Empire_Model_Planet::TYPE_DEBRIS,
-    Legacies_Empire_Model_Planet::TYPE_MOON
+    Wootook_Empire_Model_Planet::TYPE_PLANET,
+    Wootook_Empire_Model_Planet::TYPE_DEBRIS,
+    Wootook_Empire_Model_Planet::TYPE_MOON
     );
 
 if (!in_array($t, $allowedPlanetTypes)) {
     $t = $planet['planet_type'];
 }
 
-$session = Legacies::getSession('fleet');
+$session = Wootook::getSession('fleet');
 $session->clearData();
 $FleetHiddenBlock  = "";
 
@@ -127,7 +128,7 @@ if (empty($fleetArray)) {
 $speedFactor = GetGameSpeedFactor();
 $session['speedallsmin'] = $speedallsmin;
 
-$scriptPath = Legacies::getUrl('scripts/flotten.js');
+$scriptPath = Wootook::getUrl('scripts/flotten.js');
 $page .= "<script type=\"text/javascript\" src=\"{$scriptPath}\"></script>";
 $page .= "<script type=\"text/javascript\">\n";
 $page .= "function getStorageFaktor() {\n";

@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of XNova:Legacies
+ * This file is part of Wootook
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-Present, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
@@ -49,7 +49,7 @@ LOCK TABLE
 SQL_EOF;
     //doquery($sql, ''); // FIXME: use transactions
 
-    foreach ($planet->getFleetCollection(Legacies::now()) as $CurrentFleet) {
+    foreach ($planet->getFleetCollection(Wootook::now()) as $CurrentFleet) {
         switch ($CurrentFleet["fleet_mission"]) {
             case Legacies_Empire::ID_MISSION_ATTACK:
                 // Attaquer

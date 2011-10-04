@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of XNova:Legacies
+ * This file is part of Wootook
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-Present, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,29 +24,29 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
 define('INSIDE' , true);
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/common.php';
+require_once dirname(__FILE__) .'/application/bootstrap.php';
 
 includeLang('buildings');
 
-$user = Legacies_Empire_Model_User::getSingleton();
+$user = Wootook_Empire_Model_User::getSingleton();
 $planet = $user->getCurrentPlanet();
 $mode = isset($_GET['mode']) ? $_GET['mode'] : null;
 
 switch ($mode) {
 case 'fleet':
     if ($planet->getElement(Legacies_Empire::ID_BUILDING_SHIPYARD) < 1) {
-        $layout = new Legacies_Core_Layout();
+        $layout = new Wootook_Core_Layout();
         $layout->load('message');
 
         $block = $layout->getBlock('message');
-        $block['title'] = Legacies::__('Shipyard is required');
-        $block['message'] = Legacies::__('In order to build ships you will need to build a shipyard building.');
+        $block['title'] = Wootook::__('Shipyard is required');
+        $block['message'] = Wootook::__('In order to build ships you will need to build a shipyard building.');
 
         $layout->render();
         break;
@@ -64,7 +64,7 @@ case 'fleet':
         $planet->save();
     }
 
-    $layout = new Legacies_Core_Layout();
+    $layout = new Wootook_Core_Layout();
     $layout->load('planet.shipyard');
 
     echo $layout->render();
@@ -72,12 +72,12 @@ case 'fleet':
 
 case 'research':
     if ($planet->getElement(Legacies_Empire::ID_BUILDING_RESEARCH_LAB) < 1) {
-        $layout = new Legacies_Core_Layout();
+        $layout = new Wootook_Core_Layout();
         $layout->load('message');
 
         $block = $layout->getBlock('message');
-        $block['title'] = Legacies::__('Research lab is required');
-        $block['title'] = Legacies::__('In order to do technological researches, you will need to build a research lab building.');
+        $block['title'] = Wootook::__('Research lab is required');
+        $block['title'] = Wootook::__('In order to do technological researches, you will need to build a research lab building.');
 
         $layout->render();
         break;
@@ -92,7 +92,7 @@ case 'research':
         $planet->save();
     }
 
-    $layout = new Legacies_Core_Layout();
+    $layout = new Wootook_Core_Layout();
     $layout->load('planet.research-lab');
 
     echo $layout->render();
@@ -100,12 +100,12 @@ case 'research':
 
 case 'defense':
     if ($planet->getElement(Legacies_Empire::ID_BUILDING_SHIPYARD) < 1) {
-        $layout = new Legacies_Core_Layout();
+        $layout = new Wootook_Core_Layout();
         $layout->load('message');
 
         $block = $layout->getBlock('message');
-        $block['title'] = Legacies::__('Shipyard is required');
-        $block['title'] = Legacies::__('In order to build ships you will need to build a shipyard building.');
+        $block['title'] = Wootook::__('Shipyard is required');
+        $block['title'] = Wootook::__('In order to build ships you will need to build a shipyard building.');
 
         $layout->render();
         break;
@@ -123,7 +123,7 @@ case 'defense':
         $planet->save();
     }
 
-    $layout = new Legacies_Core_Layout();
+    $layout = new Wootook_Core_Layout();
     $layout->load('planet.defense');
 
     /** @var Legacies_Empire_Block_Planet_Shipyard $block */
@@ -143,7 +143,7 @@ default:
         $planet->save();
     }
 
-    $layout = new Legacies_Core_Layout();
+    $layout = new Wootook_Core_Layout();
     $layout->load('planet.buildings');
     echo $layout->render();
     break;

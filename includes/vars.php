@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of XNova:Legacies
+ * This file is part of Wootook
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-2010, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-2010, Wootook Support Team <http://www.xnova-ng.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
@@ -46,14 +46,14 @@ $messfields = array (
     100 => "new_message"
     );
 
-$resource = Legacies_Empire_Model_Game_FieldsAlias::getSingleton();
+$resource = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
 
-$requirements = Legacies_Empire_Model_Game_Requirements::getSingleton();
+$requirements = Wootook_Empire_Model_Game_Requirements::getSingleton();
 
-$pricelist = Legacies_Empire_Model_Game_Prices::getSingleton();
+$pricelist = Wootook_Empire_Model_Game_Prices::getSingleton();
 
-$CombatCaps = Legacies_Empire_Model_Game_Combat::getSingleton();
+$CombatCaps = Wootook_Empire_Model_Game_Combat::getSingleton();
 
-$ProdGrid = Legacies_Empire_Model_Game_Production::getSingleton();
+$ProdGrid = Wootook_Empire_Model_Game_Production::getSingleton();
 
-$reslist = Legacies_Empire_Model_Game_Types::getSingleton();
+$reslist = Wootook_Empire_Model_Game_Types::getSingleton();

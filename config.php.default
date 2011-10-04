@@ -1,5 +1,12 @@
 <?php return array(
     'global' => array(
+        'storyline' => array(
+            'universe' => 'legacies',
+            'episode'  => 'default',
+            ),
+        'web' => array(
+            'base_url' => 'http://testing.xnova-legacies.org/'
+            ),
         'date' => array(
             'timezone' => 'Europe/Paris'
             ),

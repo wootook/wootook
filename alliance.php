@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of XNova:Legacies
+ * This file is part of Wootook
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-Present, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,16 +24,16 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
 define('INSTALL' , false);
 define('INSIDE' , true);
-require_once dirname(__FILE__) .'/common.php';
+require_once dirname(__FILE__) .'/application/bootstrap.php';
 
-$user = Legacies_Empire_Model_User::getSingleton();
-$db = Legacies_Database::getSingleton();
+$user = Wootook_Empire_Model_User::getSingleton();
+$db = Wootook_Database::getSingleton();
 
 if(!$user->getId()){
 echo '<script language="javascript">';
@@ -930,7 +930,7 @@ elseif ($user->getData('ally_id') != 0 && $user->getData('ally_request') == 0) {
                 $lang['Set_range'] = 'Set rang';
                 $f['Set_range'] = $lang['Set_range'];
                 $f['Expel_user'] = $lang['Expel_user'];
-                
+
                 $f['You_are_sure_want_kick_to'] = str_replace("%s", $u['username'], $lang['You_are_sure_want_kick_to']);
                 $f['id'] = $u['id'];
                 $u["functions"] = parsetemplate($f_template, $f);

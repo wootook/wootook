@@ -1,11 +1,11 @@
 <?php
 /**
- * This file is part of XNova:Legacies
+ * This file is part of Wootook
  *
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
- * @see http://www.xnova-ng.org/
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-Present, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -24,19 +24,19 @@
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing XNova.
+ * documentation for further information about customizing Wootook.
  *
  */
 
 define('INSIDE' , true);
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/common.php';
+require_once dirname(__FILE__) .'/application/bootstrap.php';
 
 includeLang('fleet');
 
-$session = Legacies::getSession('fleet');
+$session = Wootook::getSession('fleet');
 
-$user = Legacies_Empire_Model_User::getSingleton();
+$user = Wootook_Empire_Model_User::getSingleton();
 $planet = $user->getCurrentPlanet();
 
 $galaxy = isset($_POST['galaxy']) ? intval($_POST['galaxy']) : 0;
@@ -73,9 +73,9 @@ foreach ($fleetArray as $shipId => $count) {
 }
 
 $allowedPlanetTypes = array(
-    Legacies_Empire_Model_Planet::TYPE_PLANET,
-    Legacies_Empire_Model_Planet::TYPE_DEBRIS,
-    Legacies_Empire_Model_Planet::TYPE_MOON
+    Wootook_Empire_Model_Planet::TYPE_PLANET,
+    Wootook_Empire_Model_Planet::TYPE_DEBRIS,
+    Wootook_Empire_Model_Planet::TYPE_MOON
     );
 if (!in_array($type, $allowedPlanetTypes)) {
     message ("<font color=\"red\"><b>". $lang['fl_fleet_err_pl'] ."</b></font>", $lang['fl_error'], "fleet." . PHPEXT, 2);
@@ -96,9 +96,9 @@ $coords = array(
     'position' => $position
     );
 if ($mission == Legacies_Empire::ID_MISSION_RECYCLE) {
-    $destination = Legacies_Empire_Model_Planet::factoryFromCoords($coords);
+    $destination = Wootook_Empire_Model_Planet::factoryFromCoords($coords);
 } else {
-    $destination = Legacies_Empire_Model_Planet::factoryFromCoords($coords, $type);
+    $destination = Wootook_Empire_Model_Planet::factoryFromCoords($coords, $type);
 }
 
 // Test d'existence de l'enregistrement dans la galaxie !
@@ -113,7 +113,6 @@ if ($mission != Legacies_Empire::ID_MISSION_EXPEDITION) {
         message ("<font color=\"red\"><b>". $lang['fl_used_target'] ."</b></font>", $lang['fl_error'], "fleet." . PHPEXT, 2);
     }
 } else {
-
     $EnvoiMaxExpedition = $user->getElement(Legacies_Empire::ID_RESEARCH_EXPEDITION_TECHNOLOGY);
     $Expedition = 0;
     if ($EnvoiMaxExpedition > 0) {
@@ -132,7 +131,7 @@ if ($mission != Legacies_Empire::ID_MISSION_EXPEDITION) {
 if ($destination->getUserId() == $user['id']) {
     $YourPlanet = true;
     $UsedPlanet = true;
-} else if ($destination['id_owner']->getId()) {
+} else if ($destination->getId()) {
     $UsedPlanet = true;
 }
 
@@ -141,15 +140,15 @@ $missionTypes = array();
 if ($position == (MAX_PLANET_IN_SYSTEM + 1)) {
     $missionTypes[Legacies_Empire::ID_MISSION_EXPEDITION] = $lang['type_mission'][Legacies_Empire::ID_MISSION_EXPEDITION];
 } else {
-    if ($type == Legacies_Empire_Model_Planet::TYPE_DEBRIS) {
+    if ($type == Wootook_Empire_Model_Planet::TYPE_DEBRIS) {
         if (isset($fleetArray[Legacies_Empire::ID_SHIP_RECYCLER]) && $fleetArray[Legacies_Empire::ID_SHIP_RECYCLER] > 0) {
             $missionTypes[Legacies_Empire::ID_MISSION_RECYCLE] = $lang['type_mission'][Legacies_Empire::ID_MISSION_RECYCLE];
         }
-    } else if ($type == Legacies_Empire_Model_Planet::TYPE_PLANET) {
+    } else if ($type == Wootook_Empire_Model_Planet::TYPE_PLANET) {
         if (isset($fleetArray[Legacies_Empire::ID_SHIP_COLONY_SHIP]) && $fleetArray[Legacies_Empire::ID_SHIP_COLONY_SHIP] > 0 && !$UsedPlanet) {
             $missionTypes[Legacies_Empire::ID_MISSION_SETTLE_COLONY] = $lang['type_mission'][7];
         }
-    } else if ($type == Legacies_Empire_Model_Planet::TYPE_MOON) {
+    } else if ($type == Wootook_Empire_Model_Planet::TYPE_MOON) {
         if (((isset($fleetArray[Legacies_Empire::ID_SHIP_DEATH_STAR]) && $fleetArray[Legacies_Empire::ID_SHIP_DEATH_STAR] > 0) ||
             (isset($fleetArray[Legacies_Empire::ID_SHIP_SUPERNOVA])   && $fleetArray[Legacies_Empire::ID_SHIP_SUPERNOVA] > 0)) &&
             !$YourPlanet && $UsedPlanet) {
@@ -157,7 +156,7 @@ if ($position == (MAX_PLANET_IN_SYSTEM + 1)) {
         }
     }
 
-    if (in_array($type, array(Legacies_Empire_Model_Planet::TYPE_MOON, Legacies_Empire_Model_Planet::TYPE_PLANET))) {
+    if (in_array($type, array(Wootook_Empire_Model_Planet::TYPE_MOON, Wootook_Empire_Model_Planet::TYPE_PLANET))) {
         if (isset($fleetArray[Legacies_Empire::ID_SHIP_SPY_DRONE]) && $fleetArray[Legacies_Empire::ID_SHIP_SPY_DRONE] > 0 && !$YourPlanet) {
             $missionTypes[Legacies_Empire::ID_MISSION_SPY] = $lang['type_mission'][Legacies_Empire::ID_MISSION_SPY];
         }
@@ -274,10 +273,10 @@ if ($mission != Legacies_Empire::ID_MISSION_EXPEDITION) {
     if ($destination->getElement(Legacies_Empire::ID_BUILDING_ALLIANCE_DEPOT) < 1 && $destinationUser->getId() != $user->getId() && $mission == Legacies_Empire::ID_MISSION_STATION_ALLY) {
         message ("<font color=\"red\"><b>". $lang['fl_no_allydeposit'] ."</b></font>", $lang['fl_error'], "fleet." . PHPEXT, 2);
     }
-    if ($destinationUser->getId() != $user->getId() && ($mission == Legacies_Empire::ID_MISSION_ATTACK)) {
+    if ($destinationUser->getId() == $user->getId() && ($mission == Legacies_Empire::ID_MISSION_ATTACK)) {
         message ("<font color=\"red\"><b>". $lang['fl_no_self_attack'] ."</b></font>", $lang['fl_error'], "fleet." . PHPEXT, 2);
     }
-    if ($destinationUser->getId() != $user->getId() && ($mission == Legacies_Empire::ID_MISSION_SPY)) {
+    if ($destinationUser->getId() == $user->getId() && ($mission == Legacies_Empire::ID_MISSION_SPY)) {
         message ("<font color=\"red\"><b>". $lang['fl_no_self_spy'] ."</b></font>", $lang['fl_error'], "fleet." . PHPEXT, 2);
     }
     if ($destinationUser->getId() != $user->getId() && $mission == Legacies_Empire::ID_MISSION_STATION) {
@@ -369,7 +368,7 @@ $consumption = GetFleetConsumption($fleetArray, $SpeedFactor, $duration, $distan
     }
 
     $StockMetal      = $planet['metal'];
-    $StockCrystal    = $planet['crystal'];
+    $StockCrystal    = $planet['cristal'];
     $StockDeuterium  = $planet['deuterium'];
     $StockDeuterium -= $consumption;
 
@@ -430,7 +429,7 @@ $consumption = GetFleetConsumption($fleetArray, $SpeedFactor, $duration, $distan
     $QryInsertFleet .= "`fleet_end_planet` = '". intval($_POST['planet']) ."', ";
     $QryInsertFleet .= "`fleet_end_type` = '". intval($_POST['planettype']) ."', ";
     $QryInsertFleet .= "`fleet_resource_metal` = '". intval($TransMetal) ."', ";
-    $QryInsertFleet .= "`fleet_resource_crystal` = '". intval($TransCrystal) ."', ";
+    $QryInsertFleet .= "`fleet_resource_cristal` = '". intval($TransCrystal) ."', ";
     $QryInsertFleet .= "`fleet_resource_deuterium` = '". intval($TransDeuterium) ."', ";
     $QryInsertFleet .= "`fleet_target_owner` = '". $destination['id_owner'] ."', ";
     $QryInsertFleet .= "`start_time` = '". time() ."';";
@@ -438,14 +437,14 @@ $consumption = GetFleetConsumption($fleetArray, $SpeedFactor, $duration, $distan
 
 
     $planet["metal"]     = $planet["metal"] - $TransMetal;
-    $planet["crystal"]   = $planet["crystal"] - $TransCrystal;
+    $planet["cristal"]   = $planet["cristal"] - $TransCrystal;
     $planet["deuterium"] = $planet["deuterium"] - $TransDeuterium;
     $planet["deuterium"] = $planet["deuterium"] - $consumption;
 
     $QryUpdatePlanet  = "UPDATE {{table}} SET ";
     $QryUpdatePlanet .= $FleetSubQRY;
     $QryUpdatePlanet .= "`metal` = '". $planet["metal"] ."', ";
-    $QryUpdatePlanet .= "`crystal` = '". $planet["crystal"] ."', ";
+    $QryUpdatePlanet .= "`cristal` = '". $planet["cristal"] ."', ";
     $QryUpdatePlanet .= "`deuterium` = '". $planet["deuterium"] ."' ";
     $QryUpdatePlanet .= "WHERE ";
     $QryUpdatePlanet .= "`id` = '". $planet['id'] ."'";
