@@ -54,23 +54,23 @@ $lang['adm_opt_game_oth_plan'] = "Pianeta";
 $lang['adm_opt_btn_save']      = "Salva";
 
 $lang['adm_opt_warning1']      = "libreria GD del server Apache deve essere attivato! "
-$lang['adm_opt_menu_link_enable']      = "Abilita link personalizzabile? <br> (1 = s�, 0 = no)";  
+$lang['adm_opt_menu_link_enable']      = "Abilita link personalizzabile? <br> (1 = s&igrave;, 0 = no)";  
 $lang['adm_opt_menu_link_text']      = "Link <br> Nome (se abilitato) ";
 $lang['adm_opt_menu_link_url']      = "Link URL <br> (se abilitato) ";
-$lang['adm_opt_control_pages']      = "Controllare le pagine visualizzate nel menu;
-$lang['enable_the_anounces']      = "Gli annunci di visualizzazione? <br> (S� = 1 No = 0)";
-$lang['enable_the_marchand']      ="Mostra il mercante? <br> (S� = 1 No = 0)";
-$lang['enable_the_notes']      = "Note Show? <br> (S� = 1 No = 0)";
+$lang['adm_opt_control_pages']      = "Controllare le pagine visualizzate nel menu";
+$lang['enable_the_anounces']      = "Gli annunci di visualizzazione? <br> (S&igrave; = 1 No = 0)";
+$lang['enable_the_marchand']      ="Mostra il mercante? <br> (S&igrave; = 1 No = 0)";
+$lang['enable_the_notes']      = "Note Show? <br> (S&igrave; = 1 No = 0)";
 $lang['multi_bot_settings']      ="Bot Impostazioni anti-multiaccount";
-$lang['bot_name_multi']      = "<br> Bot Nome (verr� visualizzato dentro il pilori);
-$lang['bot_adress_multi']      = "Indirizzo di risposta del <br> bot (verr� visualizzato dentro il pilori)"; 
+$lang['bot_name_multi']      = "<br> Bot Nome (verr&igrave; visualizzato dentro il pilori)";
+$lang['bot_adress_multi']      = "Indirizzo di risposta del <br> bot (verr&igrave; visualizzato dentro il pilori)"; 
 $lang['bot_ban_duration']      = "Durata del divieto da parte <br> bot (in giorni) "; 
-$lang['bot_active']      = "Attivazione <br> bot (1 = attiva, 0 = non attiva) <br> Per impostazione predefinita, il bot � spento;."; 
+$lang['bot_active']      = "Attivazione <br> bot (1 = attiva, 0 = non attiva) <br> Per impostazione predefinita, il bot &igrave; spento;."; 
 $lang['stat_settings_desc']      = "Tuning di statistiche ";
 $lang['stat_desc']      = "1 Punto= ";
 $lang['stat_units']      = "Risorse spese ";
 $lang['banner']      = "Banner";
 $lang['source_banner']      = "Fonte <u> PNG </ u> il banner ";
-$lang['banner_currently_installed']      = "Banner � attualmente installato ";
+$lang['banner_currently_installed']      = "Banner &igrave; attualmente installato ";
 
 ?>
