@@ -27,6 +27,7 @@ class Wootook_Empire_Block_Topnav
      */
     public function getPlanetCollection()
     {
-        return $this->getCurrentUser()->getPlanetCollection();
+        return $this->getCurrentUser()
+            ->getPlanetCollection(array(Wootook_Empire_Model_Planet::TYPE_PLANET));
     }
 }

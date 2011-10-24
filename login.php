@@ -40,9 +40,11 @@ if (!empty($_POST) && isset($_POST['username']) && isset($_POST['password'])) {
 
     $session = Wootook::getSession(Wootook_Empire_Model_User::SESSION_KEY);
     if ($user !== null && $user->getId()) {
-        header("Location: frames.php");
+        $url = Wootook::getUrl('overview.php');
+        header("Location: $url");
     } else {
-        header("Location: login.php");
+        $url = Wootook::getUrl('login.php');
+        header("Location: $url");
     }
     Wootook_Core_ErrorProfiler::unregister(true);
     exit(0);

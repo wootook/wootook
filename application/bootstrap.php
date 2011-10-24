@@ -60,7 +60,7 @@ if (!defined('DEBUG')) {
 defined('ROOT_PATH') || define('ROOT_PATH', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
 defined('APPLICATION_PATH') || define('APPLICATION_PATH', dirname(__FILE__) . DIRECTORY_SEPARATOR);
 
-defined('PHPEXT') || define('PHPEXT', require 'extension.inc');
+defined('PHPEXT') || define('PHPEXT', 'php');
 
 defined('VERSION') || define('VERSION', '2011.1');
 
@@ -87,8 +87,6 @@ if (0 === filesize(ROOT_PATH . 'config.php')) {
 
 $lang = array();
 
-define('TEMPLATE_DIR', realpath(ROOT_PATH . '/templates/'));
-define('TEMPLATE_NAME', 'OpenGame');
 define('DEFAULT_LANG', 'fr');
 
 include(ROOT_PATH . 'includes/debug.class.'.PHPEXT);

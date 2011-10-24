@@ -23,6 +23,12 @@
         'layout' => array(
             'page'   => 'page.php',
             'empire' => 'empire.php'
+            ),
+        'locales' => array(
+            'fr'    => 'fr_FR',
+            'fr_FR' => 'fr_FR',
+            'en'    => 'en_US',
+            'en_US' => 'en_US'
             )
         )
     );

@@ -1,17 +1,42 @@
+<?php $currentPlanet = $this->getCurrentPlanet();?>
 <div class="planet-carrousel">
-  <div class="arrow left">&#8678;</div>
+  <div class="arrow left"><!--&#8678;--></div>
   <div class="items">
 <?php foreach ($this->getPlanetCollection() as $planet):?>
+  <?php if ($planet->getId() != $currentPlanet->getId()):?>
     <div class="planet item">
-  <?php if ($planet->getId() != $this->getCurrentPlanet()->getId()):?>
-      <a href="<?php echo $this->getUrl('', array('cp' => $planet->getId()))?>"><?php echo $this->escape($planet->getName())?> [<?php echo $this->escape($planet->getCoords())?>]</a>
-  <?php else:?>
-  <?php echo $this->escape($planet->getName())?> [<?php echo $this->escape($planet->getCoords())?>]
-  <?php endif?>
+      <p class="planet-name"><a href="<?php echo $this->getUrl('overview.php', array('cp' => $planet->getId()))?>"><?php echo $this->escape($planet->getName())?></a></p>
+      <div class="planet-image">
+        <?php if (false && ($moon = $planet->getMoon()) !== null): ?>
+        <a href="<?php echo $this->getUrl('overview.php', array('cp' => $moon->getId()))?>" class="moon">
+          <img src="<?php echo $this->getSkinUrl($moon->getImage())?>" width="20" height="20"/>
+        </a>
+        <?php endif?>
+        <a href="<?php echo $this->getUrl('overview.php', array('cp' => $planet->getId()))?>" class="planet">
+          <img src="<?php echo $this->getSkinUrl($planet->getImage())?>" width="50" height="50"/>
+        </a>
+      </div>
+      <p class="planet-position"><a href="<?php echo $this->getUrl('overview.php', array('cp' => $planet->getId()))?>">[<?php echo $this->escape($planet->getCoords())?>]</a></p>
     </div>
+  <?php else:?>
+    <div class="planet item selected">
+      <p class="planet-name"><?php echo $this->escape($planet->getName())?></p>
+      <div class="planet-image">
+        <?php if (false && ($moon = $planet->getMoon()) !== null): ?>
+        <span class="moon">
+          <img src="<?php echo $this->getSkinUrl($moon->getImage())?>" width="20" height="20"/>
+        </span>
+        <?php endif?>
+        <span class="planet">
+          <img src="<?php echo $this->getSkinUrl($planet->getImage())?>" width="50" height="50"/>
+        </span>
+      </div>
+      <p class="planet-position">[<?php echo $this->escape($planet->getCoords())?>]</p>
+    </div>
+  <?php endif?>
 <?php endforeach?>
   </div>
-  <div class="arrow right">&#8680;</div>
+  <div class="arrow right"><!--&#8680;--></div>
 </div>
 <div class="resources-display">
   <div class="resource metal">

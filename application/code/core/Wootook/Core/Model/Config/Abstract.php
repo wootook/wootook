@@ -6,12 +6,10 @@ abstract class Wootook_Core_Model_Config_Abstract
 {
     protected function _initData($filename)
     {
-        $config = include ROOT_PATH . 'config.php';
-        $universe = $config['global']['storyline']['universe'];
-        $episode = $config['global']['storyline']['episode'];
+        $config = Wootook::getConfig('global/storyline');
 
-        $path = 'gamedata' . DIRECTORY_SEPARATOR . $universe . DIRECTORY_SEPARATOR
-            . $episode . DIRECTORY_SEPARATOR . $filename . '.php';
+        $path = 'gamedata' . DIRECTORY_SEPARATOR . $config['universe'] . DIRECTORY_SEPARATOR
+            . $config['episode'] . DIRECTORY_SEPARATOR . $filename . '.php';
 
         foreach (include APPLICATION_PATH . $path as $elementId => $fieldName) {
             $this->setData($elementId, $fieldName);

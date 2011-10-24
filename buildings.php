@@ -48,7 +48,7 @@ case 'fleet':
         $block['title'] = Wootook::__('Shipyard is required');
         $block['message'] = Wootook::__('In order to build ships you will need to build a shipyard building.');
 
-        $layout->render();
+        echo $layout->render();
         break;
     }
 
@@ -77,9 +77,9 @@ case 'research':
 
         $block = $layout->getBlock('message');
         $block['title'] = Wootook::__('Research lab is required');
-        $block['title'] = Wootook::__('In order to do technological researches, you will need to build a research lab building.');
+        $block['message'] = Wootook::__('In order to do technological researches, you will need to build a research lab building.');
 
-        $layout->render();
+        echo $layout->render();
         break;
     }
 
@@ -105,9 +105,9 @@ case 'defense':
 
         $block = $layout->getBlock('message');
         $block['title'] = Wootook::__('Shipyard is required');
-        $block['title'] = Wootook::__('In order to build ships you will need to build a shipyard building.');
+        $block['message'] = Wootook::__('In order to build ships you will need to build a shipyard building.');
 
-        $layout->render();
+        echo $layout->render();
         break;
     }
 

@@ -42,6 +42,10 @@
 function GalaxyRowPlanetName ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $Galaxy, $System, $Planet, $PlanetType ) {
 	global $lang, $user, $HavePhalanx, $CurrentSystem, $CurrentGalaxy;
 
+	if (empty($GalaxyRowPlanet)) {
+	    return '<th width="130"></th>';
+	}
+
 	// Planete (Nom)
 	$Result  = "<th style=\"white-space: nowrap;\" width=130>";
 

@@ -154,7 +154,7 @@ class Wootook
     public static function getTranslator($locale = null)
     {
         if ($locale === null) {
-            $locale = self::getDefaultLocale();
+            $locale = self::getLocale();
         }
 
         if (!isset($translator[$locale])) {
@@ -174,7 +174,14 @@ class Wootook
         $args = func_get_args();
         array_shift($args);
 
-        return self::getTranslator(self::getDefaultLocale())->translateArgs($message, $args);
+        return self::getTranslator(self::getLocale())->translateArgs($message, $args);
+    }
+
+    public static function getLocale()
+    {
+        $availableLocales = self::getConfig('global/locales');
+
+        return self::getPreferredLocale($availableLocales);
     }
 
     public static function setDefaultLocale($locale)
@@ -188,6 +195,56 @@ class Wootook
     public static function getDefaultLocale()
     {
         return self::$_defaultLocale;
+    }
+
+    public function getPreferredLocale($availableLocales = array())
+    {
+        if (empty($availableLocales)) {
+            return self::getDefaultLocale();
+        }
+
+        $userLocale = self::getSession('user')->getData('locale');
+        if ($userLocale !== null) {
+            return $userLocale;
+        }
+
+        $locales = array();
+
+        if (($accept = self::getRequest()->getServer('HTTP_ACCEPT_LANGUAGE')) !== null) {
+            // break up string into pieces (languages and q factors)
+            preg_match_all('/([a-z]{1,8}(?:-([a-z]{1,8}))?)\s*(?:;\s*q\s*=\s*(1|0\.[0-9]+))?/i', $accept, $matches);
+
+            $length = count($matches[1]);
+            for ($i = 0; $i < $length; $i++) {
+                $locale = $lang_parse[1];
+                if (!empty($lang_parse[2])) {
+                    $locale .= '_' . strtoupper($lang_parse[2]);
+                }
+                $locales[$locale] = !empty($lang_parse[3]) ? min(max(floatval($lang_parse[3]), 0), 1) : 1;
+            }
+
+            arsort($locales, SORT_NUMERIC);
+        }
+
+        if (empty($locales)) {
+            return self::getDefaultLocale();
+        }
+
+        $preferredLocale = key($locales);
+        $preferredPriority = current($locales);
+        foreach ($locales as $locale => $piority) {
+            if (!in_array($locale, $availableLocales)) {
+                continue;
+            }
+            if ($preferredPriority < $piority) {
+                $preferredPriority = $piority;
+                $preferredLocale = $locale;
+            }
+        }
+
+        self::getSession('user')->setData('locale', $preferredLocale);
+
+        return $preferredLocale;
     }
 
     public static function now()

@@ -9,10 +9,10 @@ class Wootook_Core_Controller_Response_Http
     const REDIRECT_TEMPORARY         = 307;
 
     protected static $_redirectCodes = array(
-        REDIRECT_MOVED_PERMANENTLY => 'Moved Permanently',
-        REDIRECT_FOUND             => 'Found',
-        REDIRECT_SEE_OTHER         => 'See Other',
-        REDIRECT_TEMPORARY         => 'Temporary Redirect'
+        self::REDIRECT_MOVED_PERMANENTLY => 'Moved Permanently',
+        self::REDIRECT_FOUND             => 'Found',
+        self::REDIRECT_SEE_OTHER         => 'See Other',
+        self::REDIRECT_TEMPORARY         => 'Temporary Redirect'
         );
 
     public function __construct()

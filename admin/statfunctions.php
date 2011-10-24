@@ -36,7 +36,7 @@ function GetTechnoPoints ( $CurrentUser ) {
 	foreach ( $reslist['tech'] as $n => $Techno ) {
 		if ( $CurrentUser[ $resource[ $Techno ] ] > 0 ) {
 			for ( $Level = 1; $Level < $CurrentUser[ $resource[ $Techno ] ]; $Level++ ) {
-				$Units       = $pricelist[ $Techno ]['metal'] + $pricelist[ $Techno ]['crystal'] + $pricelist[ $Techno ]['deuterium'];
+				$Units       = $pricelist[ $Techno ]['metal'] + $pricelist[ $Techno ]['cristal'] + $pricelist[ $Techno ]['deuterium'];
 				$LevelMul    = pow( $pricelist[ $Techno ]['factor'], $Level );
 				$TechPoints += ($Units * $LevelMul);
 				$TechCounts += 1;
@@ -57,7 +57,7 @@ function GetBuildPoints ( $CurrentPlanet ) {
 	foreach($reslist['build'] as $n => $Building) {
 		if ( $CurrentPlanet[ $resource[ $Building ] ] > 0 ) {
 			for ( $Level = 1; $Level < $CurrentPlanet[ $resource[ $Building ] ]; $Level++ ) {
-				$Units        = $pricelist[ $Building ]['metal'] + $pricelist[ $Building ]['crystal'] + $pricelist[ $Building ]['deuterium'];
+				$Units        = $pricelist[ $Building ]['metal'] + $pricelist[ $Building ]['cristal'] + $pricelist[ $Building ]['deuterium'];
 				$LevelMul     = pow( $pricelist[ $Building ]['factor'], $Level );
 				$BuildPoints += ($Units * $LevelMul);
 				$BuildCounts += 1;
@@ -77,7 +77,7 @@ function GetDefensePoints ( $CurrentPlanet ) {
 	$DefensePoints = 0;
 	foreach($reslist['defense'] as $n => $Defense) {
 		if ($CurrentPlanet[ $resource[ $Defense ] ] > 0) {
-			$Units          = $pricelist[ $Defense ]['metal'] + $pricelist[ $Defense ]['crystal'] + $pricelist[ $Defense ]['deuterium'];
+			$Units          = $pricelist[ $Defense ]['metal'] + $pricelist[ $Defense ]['cristal'] + $pricelist[ $Defense ]['deuterium'];
 			$DefensePoints += ($Units * $CurrentPlanet[ $resource[ $Defense ] ]);
 			$DefenseCounts += $CurrentPlanet[ $resource[ $Defense ] ];
 		}
@@ -95,7 +95,7 @@ function GetFleetPoints ( $CurrentPlanet ) {
 	$FleetPoints = 0;
 	foreach($reslist['fleet'] as $n => $Fleet) {
 		if ($CurrentPlanet[ $resource[ $Fleet ] ] > 0) {
-			$Units          = $pricelist[ $Fleet ]['metal'] + $pricelist[ $Fleet ]['crystal'] + $pricelist[ $Fleet ]['deuterium'];
+			$Units          = $pricelist[ $Fleet ]['metal'] + $pricelist[ $Fleet ]['cristal'] + $pricelist[ $Fleet ]['deuterium'];
 			$FleetPoints   += ($Units * $CurrentPlanet[ $resource[ $Fleet ] ]);
 			$FleetCounts   += $CurrentPlanet[ $resource[ $Fleet ] ];
 		}

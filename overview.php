@@ -103,6 +103,7 @@ if (isset($_POST) && !empty($_POST)) {
         $planetList = $layout->createBlock('core/concat', 'planet.list');
         $planetBlock->planetList = $planetList;
 
+        $i = 0;
         foreach ($planetCollection as $userPlanet) {
             if ($userPlanet->getId() == $planet->getId()) {
                 continue;
@@ -126,6 +127,7 @@ if (isset($_POST) && !empty($_POST)) {
                 $buildingQueue->rewind();
                 $currentItem = $buildingQueue->current();
                 $block['queue_item'] = $currentItem;
+                $block['even'] = (($i++ % 4) == 3);
 
                 $planetList->$id = $block;
             }
@@ -206,29 +208,6 @@ if (isset($_POST) && !empty($_POST)) {
         $newMessages->setTemplate('empire/overview/messages.phtml');
         $newMessages['count'] = (int) $count;
 
-		/** Gestion des officiers
-		 *  Update miner and raider level
-		 *
-		 */
-		 $Xp_Next_Level_Miner = $user->getData('lvl_minier') * 5000;
-		 $Xp_Next_Level_Raider = $user->getData('lvl_raid') * 10;
-		 $Xp_Miner = $user->getData('xpminier');
-		 $Xp_Raider = $user->getData('xpraid');
-		 if ($Xp_Miner >= $Xp_Next_Level_Miner) {
-			$HaveNewLevelMineur = "<tr>";
-            $HaveNewLevelMineur .= "<th colspan=4><a href=officier.php>" . $lang['Have_new_level_mineur'] . "</a></th></tr>";
-			$user->setData('lvl_minier', $user->getData('lvl_minier') + 1);
-			$user->setData('rpg_points', $user->getData('rpg_points')+1);
-			$user->save();
-		}
-		if ($Xp_Raider >= $Xp_Next_Level_Raider) {
-			$HaveNewLevelRaider = "<tr>";
-            $HaveNewLevelRaider .= "<th colspan=4><a href=officier.php>". $lang['Have_new_level_raid'] . "</a></th></tr>";
-			$user->setData('lvl_raid', $user->getData('lvl_raid') + 1);
-			$user->setData('rpg_points', $user->getData('rpg_points') +1);
-			$user->save();
-		}
-
         /**
          * Page display
          * Refactoring needed
@@ -251,16 +230,16 @@ if (isset($_POST) && !empty($_POST)) {
         }
         if ($gameConfig['ForumBannerFrame'] == '1') {
 
-            $BannerURL = "scripts/createbanner.php?id=".$user['id']."";
+            $BannerURL = Wootook::getUrl('scripts/createbanner.php', array('id' => $user['id']));
 
-            $parse['bannerframe'] = "<th colspan=\"4\"><img src=\"scripts/createbanner.php?id=".$user['id']."\"><br>".$lang['InfoBanner']."<br><input name=\"bannerlink\" type=\"text\" id=\"bannerlink\" value=\"[img]".$BannerURL."[/img]\" size=\"62\"></th></tr>";
+            $parse['bannerframe'] = "<th colspan=\"4\"><img src=\"{$BannerURL}\"><br>".$lang['InfoBanner']."<br><input name=\"bannerlink\" type=\"text\" id=\"bannerlink\" value=\"[img]".$BannerURL."[/img]\" size=\"62\"></th></tr>";
         }
         // --- Gestion de l'affichage d'une lune ---------------------------------------------------------
-        if ($moon['id'] <> 0) {
-            if ($planet['planet_type'] == 1) {
+        if ($moon['id']) {
+            if ($planet->isPlanet()) {
                 $lune = doquery ("SELECT * FROM {{table}} WHERE `galaxy` = '" . $planet['galaxy'] . "' AND `system` = '" . $planet['system'] . "' AND `planet` = '" . $planet['planet'] . "' AND `planet_type` = '3'", 'planets', true);
-                $parse['moon_img'] = "<a href=\"?cp=" . $lune['id'] . "&re=0\" title=\"" . $lune['name'] . "\"><img src=\"" . $dpath . "planeten/" . $lune['image'] . ".jpg\" height=\"50\" width=\"50\"></a>";
-                $parse['moon'] = $lune['name'];
+                $parse['moon_img'] = "<a href=\"?cp=" . $lune['id'] . "&re=0\" title=\"" . $lune['name'] . "\"><img src=\"" . Wootook::getSkinUrl('base', 'default', "graphics/planeten/{$lune['image']}.jpg") . '" height="50" width="50"></a>';
+                $parse['moon'] = $planet->getMoon()->getName();
             } else {
                 $parse['moon_img'] = "";
                 $parse['moon'] = "";

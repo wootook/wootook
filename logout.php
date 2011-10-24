@@ -34,6 +34,6 @@ require_once dirname(__FILE__) . '/application/bootstrap.php';
 
 includeLang('logout');
 
-Legacies_Empire_Model_User::getSingleton()->logout();
+Wootook_Empire_Model_User::getSingleton()->logout();
 
 message($lang['see_you'], $lang['session_closed'], 'login.php');

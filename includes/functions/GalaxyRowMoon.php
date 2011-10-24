@@ -39,8 +39,12 @@
  * @param unknown_type $Planet
  * @param unknown_type $PlanetType
  */
-function GalaxyRowMoon ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $Galaxy, $System, $Planet, $PlanetType ) {
+function GalaxyRowMoon($GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $Galaxy, $System, $Planet, $PlanetType ) {
 	global $lang, $user, $dpath, $HavePhalanx, $CurrentSystem, $CurrentGalaxy, $CanDestroy;
+
+	if (empty($GalaxyRowPlanet)) {
+	    return '<th width="30"></th>';
+	}
 
 	// Lune
 	$Result  = "<th style=\"white-space: nowrap;\" width=30>";
@@ -78,7 +82,7 @@ function GalaxyRowMoon ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $Galaxy, 
 
 	$MissionType3Link = "<a href=fleet.php?galaxy=".$Galaxy."&system=".$System."&planet=".$Planet."&planettype=".$PlanetType."&target_mission=3>". $lang['type_mission'][3] ."</a><br />";
 
-	if ($GalaxyRow && $GalaxyRowPlanet["destruyed"] == 0 && $GalaxyRow["id_luna"] != 0) {
+	if ($GalaxyRow && (!isset($GalaxyRowPlanet["destruyed"]) || $GalaxyRowPlanet["destruyed"] == 0) && $GalaxyRow["id_luna"] != 0) {
 		$Result .= "<a style=\"cursor: pointer;\"";
 		$Result .= " onmouseover='return overlib(\"";
 		$Result .= "<table width=240>";

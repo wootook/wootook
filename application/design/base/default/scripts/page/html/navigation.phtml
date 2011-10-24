@@ -2,4 +2,17 @@
   <?php foreach ($this->getAllPartials() as $partial):?>
     <?php echo $partial->render()?>
   <?php endforeach?>
+  <span class="last"></span>
 </div>
+<script type="text/javascript">
+//<![CDATA[
+(function($){
+    var navigation = $('.navigation');
+    $('.navigation-node', navigation).hover(function(e){
+        $('.navigation-link,.last', $(this)).show();
+        }, function(e){
+        $('.navigation-link,.last', $(this)).hide();
+        });
+})(jQuery);
+//]]>
+</script>

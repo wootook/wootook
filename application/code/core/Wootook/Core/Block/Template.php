@@ -5,6 +5,11 @@ class Wootook_Core_Block_Template
 {
     protected function _getTemplatePath($file)
     {
+        if ($this->getScriptPath() == '') {
+            trigger_error("No script path defined in block {$this->getNameInLayout()}.", E_USER_NOTICE);
+            return null;
+        }
+
         $pattern = "{$this->getScriptPath()}/%s/%s/scripts/{$file}";
         if (($layout = $this->getLayout()) !== null) {
             $package = $this->getLayout()->getPackage();
@@ -23,6 +28,8 @@ class Wootook_Core_Block_Template
                     return $path;
                 }
             }
+        } else {
+            trigger_error("No layout defined.", E_USER_NOTICE);
         }
 
         $path = sprintf($pattern, Wootook_Core_Layout::DEFAULT_PACKAGE, Wootook_Core_Layout::DEFAULT_THEME);

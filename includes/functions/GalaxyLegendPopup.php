@@ -35,7 +35,7 @@
 function GalaxyLegendPopup () {
 	global $lang;
 
-	$Result  = "<a href=# style=\"cursor: pointer;\"";
+	$Result  = '<a href="#" onclick="return false;" style="cursor: pointer;"';
 	$Result .= " onmouseover='return overlib(\"";
 
 	$Result .= "<table width=240>";
@@ -54,7 +54,11 @@ function GalaxyLegendPopup () {
 	$Result .= "</tr><tr>";
 	$Result .= "<td width=220>".$lang['Inactive_28_days']."</td><td><span class=longinactive>".$lang['inactif_28_shortcut']."</span></td>";
 	$Result .= "</tr><tr>";
-	$Result .= "<td width=220>Admin</td><td><font color=lime><blink>A</blink></font></td>";
+	$Result .= "<td width=220>Admin</td><td><font color=red><blink>A</blink></font></td>";
+	$Result .= "</tr><tr>";
+	$Result .= "<td width=220>Operator</td><td><font color=lime><blink>O</blink></font></td>";
+	$Result .= "</tr><tr>";
+	$Result .= "<td width=220>Moderator</td><td><font color=skyblue><blink>M</blink></font></td>";
 	$Result .= "</tr>";
 	$Result .= "</table>";
 	$Result .= "\");' onmouseout='return nd();'>";

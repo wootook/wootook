@@ -40,7 +40,7 @@ function DisplayGameSettingsPage ( $CurrentUser ) {
 	includeLang('admin/settings');
 
 	if (in_array((int) $CurrentUser['authlevel'], array(LEVEL_ADMIN))) {
-		if ($_POST['opt_save'] == "1") {
+		if (isset($_POST['opt_save']) && $_POST['opt_save'] == "1") {
 			// Jeu Ouvert ou Ferm� !
 			if (isset($_POST['closed']) && $_POST['closed'] == 'on') {
 				$gameConfig['game_disable']         = "1";
@@ -189,64 +189,8 @@ $gameConfig['banner_source_post'] = $_POST['banner_source_post'];
 				$gameConfig['enable_bbcode'] = $_POST['bbcode_field'];
 			}
 
-			// Activation du jeu
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['game_disable']           ."' WHERE `config_name` = 'game_disable';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['close_reason']           ."' WHERE `config_name` = 'close_reason';", 'config');
+			$gameConfig->save();
 
-		//Stats
-
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['stat_settings']              ."' WHERE `config_name` = 'stat_settings';", 'config');
-
-
-				// Configuration du Jeu
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['forum_url']              ."' WHERE `config_name` = 'forum_url';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['game_name']              ."' WHERE `config_name` = 'game_name';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['game_speed']             ."' WHERE `config_name` = 'game_speed';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['fleet_speed']            ."' WHERE `config_name` = 'fleet_speed';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['resource_multiplier']    ."' WHERE `config_name` = 'resource_multiplier';", 'config');
-
-			// Page Generale
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['OverviewNewsFrame']       ."' WHERE `config_name` = 'OverviewNewsFrame';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['OverviewNewsText']        ."' WHERE `config_name` = 'OverviewNewsText';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['OverviewExternChat']      ."' WHERE `config_name` = 'OverviewExternChat';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['OverviewExternChatCmd']   ."' WHERE `config_name` = 'OverviewExternChatCmd';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['OverviewBanner']          ."' WHERE `config_name` = 'OverviewBanner';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['OverviewClickBanner']     ."' WHERE `config_name` = 'OverviewClickBanner';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['ForumBannerFrame']       ."' WHERE `config_name` = 'ForumBannerFrame';", 'config');
-
-			//Bannière
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['banner_source_post']       ."' WHERE `config_name` = 'banner_source_post';", 'config');
-
-			// Lien supplémentaire dans le menu
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['link_enable']         ."' WHERE `config_name` = 'link_enable';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['link_name']         ."' WHERE `config_name` = 'link_name';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['link_url']         ."' WHERE `config_name` = 'link_url';", 'config');
-
-			// Options Planete
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['initial_fields']         ."' WHERE `config_name` = 'initial_fields';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['metal_basic_income']     ."' WHERE `config_name` = 'metal_basic_income';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['crystal_basic_income']   ."' WHERE `config_name` = 'crystal_basic_income';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['deuterium_basic_income'] ."' WHERE `config_name` = 'deuterium_basic_income';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['energy_basic_income']    ."' WHERE `config_name` = 'energy_basic_income';", 'config');
-
-			//Bot antimulti
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['bot_name']    ."' WHERE `config_name` = 'bot_name';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['bot_adress']    ."' WHERE `config_name` = 'bot_adress';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['ban_duration']    ."' WHERE `config_name` = 'ban_duration';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['enable_bot']    ."' WHERE `config_name` = 'enable_bot';", 'config');
-
-
-			//Réglage du BBCode
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['enable_bbcode']    ."' WHERE `config_name` = 'enable_bbcode';", 'config');
-
-
-			//Controle des pages
- 			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['enable_announces']    ."' WHERE `config_name` = 'enable_announces';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['enable_marchand']    ."' WHERE `config_name` = 'enable_marchand';", 'config');
-			doquery("UPDATE {{table}} SET `config_value` = '". $gameConfig['enable_notes']    ."' WHERE `config_name` = 'enable_notes';", 'config');
-
-			// Mode Debug
-			doquery("UPDATE {{table}} SET `config_value` = '" .$gameConfig['debug']                  ."' WHERE `config_name` ='debug'", 'config');
 			AdminMessage ('Options changees avec succes !', 'Succes', '?');
 		} else {
 
@@ -295,7 +239,7 @@ $gameConfig['banner_source_post'] = $_POST['banner_source_post'];
 			$parse['bannerframe']            = ($gameConfig['ForumBannerFrame'] == 1) ? " checked = 'checked' ":"";
 
 			$PageTPL                         = gettemplate('admin/options_body');
-			$Page                           .= parsetemplate( $PageTPL,  $parse );
+			$Page                            = parsetemplate( $PageTPL,  $parse );
 
 			display ( $Page, $lang['adm_opt_title'], false, '', true );
 		}
@@ -305,6 +249,5 @@ $gameConfig['banner_source_post'] = $_POST['banner_source_post'];
 	return $Page;
 }
 
-	$Page = DisplayGameSettingsPage ( $user );
+$Page = DisplayGameSettingsPage($user);
 
-?>

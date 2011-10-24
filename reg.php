@@ -36,7 +36,7 @@ require_once dirname(__FILE__) .'/application/bootstrap.php';
 includeLang('reg');
 
 if (!empty($_POST) && isset($_POST['username']) && isset($_POST['planet_name']) && isset($_POST['email']) && isset($_POST['email_confirm']) && isset($_POST['password']) && isset($_POST['password_confirm'])) {
-    $session = Wootook::getSession(Legacies_Empire_Model_User::SESSION_KEY);
+    $session = Wootook::getSession(Wootook_Empire_Model_User::SESSION_KEY);
     if ($_POST['password'] !== $_POST['password_confirm']) {
         $session->addError('Password and password confirmation does not match.');
     }
@@ -46,24 +46,26 @@ if (!empty($_POST) && isset($_POST['username']) && isset($_POST['planet_name']) 
 
     $user = null;
     if (true || count($session->getMessages(false)) === 0) {
-        $user = Legacies_Empire_Model_User::register($_POST['username'], $_POST['email'], $_POST['password']);
+        $user = Wootook_Empire_Model_User::register($_POST['username'], $_POST['email'], $_POST['password']);
 
-        $user->getHomePlanet()->setName($_POST['planet_name'])->save();
+        if ($user !== null) {
+            $user->getHomePlanet()->setName($_POST['planet_name'])->save();
+        }
     }
 
     if ($user !== null && $user->getId()) {
         header("HTTP/1.1 302 Found");
         //header("Location: welcome.php");
-        header("Location: frames.php");
+        header("Location: overview.php");
     } else {
         header("HTTP/1.1 302 Found");
         header("Location: reg.php");
     }
-    Legacies_Core_ErrorProfiler::unregister(true);
+    Wootook_Core_ErrorProfiler::unregister(true);
     exit(0);
 }
 
-$layout = new Legacies_Core_Layout();
+$layout = new Wootook_Core_Layout();
 $layout->load('registration');
 $block = $layout->getBlock('registration');
 
@@ -73,7 +75,7 @@ function sendpassemail($emailaddress, $password)
 {
     global $lang;
 
-    $parse['gameurl'] = GAMEURL;
+    $parse['gameurl'] = Wootook::getUrl('/');
     $parse['password'] = $password;
     $email = parsetemplate($lang['mail_welcome'], $parse);
     $status = mymail($emailaddress, $lang['mail_title'], $email);

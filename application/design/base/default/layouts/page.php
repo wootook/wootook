@@ -1,6 +1,16 @@
 <?php return array(
     '1column' => array(
-        'update' => 'default'
+        'update' => 'default',
+        'reference' => array(
+            'content' => array(
+                'children' => array(
+                    'navigation' => array(
+                        'type' => 'core/html.navigation',
+                        'template' => 'page/html/navigation.phtml'
+                        )
+                    )
+                )
+            )
         ),
 
     '2columns-left' => array(
@@ -78,6 +88,12 @@
                         'method' => 'addCss',
                         'params' => array(
                             'stylesheet' => 'css/legacies.css'
+                            )
+                        ),
+                    array(
+                        'method' => 'addJs',
+                        'params' => array(
+                            'script' => 'scripts/jquery/jquery-1.6.4.js'
                             )
                         )
                     )

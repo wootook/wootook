@@ -507,7 +507,7 @@ class Deprecated
     {
         if (self::$layout === null) {
             self::$layout = new Wootook_Core_Layout();
-            self::$layout->load('2columns-left');
+            self::$layout->load('empire');
         }
 
         return self::$layout;

@@ -325,7 +325,12 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
             return $this;
         }
 
-        $this->enqueue($shipId, $qty, $time);
+        $this->enqueue(array(
+            'ship_id'    => $shipId,
+            'qty'        => $qty,
+            'created_at' => $time,
+            'updated_at' => $time
+            ));
         $this->_currentPlanet->setData('b_hangar_id', $this->serialize());
 
         foreach ($remainingAmounts as $resourceId => $resourceAmount) {

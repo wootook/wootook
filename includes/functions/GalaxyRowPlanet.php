@@ -42,6 +42,9 @@
 function GalaxyRowPlanet ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $Galaxy, $System, $Planet, $PlanetType ) {
 	global $lang, $dpath, $user, $HavePhalanx, $CurrentSystem, $CurrentGalaxy;
 
+	if (empty($GalaxyRowPlanet)) {
+	    return '<th width="30"></th>';
+	}
 	// Planete (Image)
 	$Result  = "<th width=30>";
 

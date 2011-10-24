@@ -1,4 +1,4 @@
-<title>XNova:Legacies</title>
+<title><?php echo $this->escape($this->getTitle())?></title>
 <link rel="shortcut icon" href="<?php echo $this->getUrl('favicon.ico')?>">
 <?php foreach ($this->getCss() as $css):?>
 <link rel="stylesheet" type="<?php echo $css['type']?>" href="<?php echo $this->getSkinUrl($css['path'])?>" />

@@ -30,18 +30,24 @@
 
 defined('E_USER_DEPRECATED') || define('E_USER_DEPRECATED', E_USER_WARNING); // Defined in PHP 5.3 core
 
-define('ADMINEMAIL', "admin@xnova-ng.org");
-define('GAMEURL', "http://".$_SERVER['HTTP_HOST']."/");
+define('ADMINEMAIL', "moderation@wootook.org");
 
 // Definition du monde connu !
 define('MAX_GALAXY_IN_WORLD', 3);
 define('MAX_SYSTEM_IN_GALAXY', 100);
 define('MAX_PLANET_IN_SYSTEM', 50);
 
+/**
+ * User level constants
+ * {{{
+ */
 define('LEVEL_ADMIN', 3);
 define('LEVEL_OPERATOR', 2);
 define('LEVEL_MODERATOR', 1);
 define('LEVEL_PLAYER', 0);
+/**
+ * }}}
+ */
 
 define('ALLOW_SPY_DRONE_ATTACKS', true);
 

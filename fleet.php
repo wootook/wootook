@@ -228,6 +228,7 @@ if (!$planet) {
 
 $ShipData       = "";
 
+$have_ships = false;
 foreach ($reslist['fleet'] as $n => $i) {
     if ($planet[$resource[$i]] > 0) {
         $page .= "<tr height=\"20\">";
@@ -246,8 +247,8 @@ foreach ($reslist['fleet'] as $n => $i) {
             $page .= "<th><input name=\"ship[". $i ."]\" size=\"10\" value=\"0\" onfocus=\"javascript:if(this.value == '0') this.value='';\" onblur=\"javascript:if(this.value == '') this.value='0';\" alt=\"". $lang['tech'][$i] . $planet[$resource[$i]] ."\" onChange=\"shortInfo()\" onKeyUp=\"shortInfo()\" /></th>";
         }
         $page .= "</tr>";
+        $have_ships = true;
     }
-    $have_ships = true;
 }
 
 $btncontinue = "<tr height=\"20\"><th colspan=\"4\"><input type=\"submit\" value=\" ".$lang['fl_continue']." \" /></th>";

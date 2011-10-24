@@ -33,4 +33,4 @@ if (filesize('config.php') == 0) {
 	exit();
 }
 
-header('location: frames.php');
+header('location: overview.php');

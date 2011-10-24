@@ -46,10 +46,10 @@ class Legacies_Officers_Model_Observer
             if ($user->getData('lvl_minier') < $level) {
                 $difference = $level - $user->getData('lvl_minier');
                 if ($difference == 1) {
-                    Wootook::getSession(Legacies_Empire_Model_User::SESSION_KEY)
+                    Wootook::getSession(Wootook_Empire_Model_User::SESSION_KEY)
                         ->addInfo('You gained 1 miner level.');
                 } else {
-                    Wootook::getSession(Legacies_Empire_Model_User::SESSION_KEY)
+                    Wootook::getSession(Wootook_Empire_Model_User::SESSION_KEY)
                         ->addInfo('You gained %1$d miner level.', (int) $difference);
                 }
             }
@@ -58,10 +58,10 @@ class Legacies_Officers_Model_Observer
             if ($user->getData('lvl_raid') < $level) {
                 $difference = $level - $user->getData('lvl_raid');
                 if ($difference == 1) {
-                    Wootook::getSession(Legacies_Empire_Model_User::SESSION_KEY)
+                    Wootook::getSession(Wootook_Empire_Model_User::SESSION_KEY)
                         ->addInfo('You gained 1 raider level.');
                 } else {
-                    Wootook::getSession(Legacies_Empire_Model_User::SESSION_KEY)
+                    Wootook::getSession(Wootook_Empire_Model_User::SESSION_KEY)
                         ->addInfo('You gained %1$d raider level.', (int) $difference);
                 }
             }

@@ -64,8 +64,8 @@ class Wootook_Empire_Model_User
             $session = Wootook::getSession(self::SESSION_KEY);
             if ($session->hasData('user_id')) {
                 $id = intval($session->getData('user_id'));
-            } else if (Wootook::getRequest() !== null && ($cookie = Wootook::getRequest()->getCookie(self::$_cookieName)) !== null) {
-                $cookieData = unserialize(stripslashes($cookie));
+            } else if (Wootook::getRequest() !== null && ($cookieData = Wootook::getRequest()->getCookie(self::$_cookieName)) !== null) {
+                //$cookieData = unserialize(stripslashes($cookie));
                 if (is_array($cookieData)) {
                     $collection = new Wootook_Core_Collection(array('user' => 'users'));
                     $cookieData = array(
@@ -182,8 +182,8 @@ class Wootook_Empire_Model_User
                 }
             }
 
-            if (isset($_POST["rememberme"]) && Wootook::getRequest() !== null) {
-                Wootook::$response->setCookie(self::$_cookieName, array('id' => $login['id'], 'key' => $login['login_rememberme']), self::COOKIE_LIFETIME);
+            if (isset($_POST["rememberme"]) && Wootook::getResponse() !== null) {
+                Wootook::getResponse()->setCookie(self::$_cookieName, array('id' => $login['id'], 'key' => $login['login_rememberme']), self::COOKIE_LIFETIME);
             }
 
             self::$_singleton = self::factory($login['id']);
@@ -223,7 +223,9 @@ class Wootook_Empire_Model_User
 
             $user->save();
         } catch (Wootook_Core_Exception_DataAccessException $e) {
-            echo $e->getTraceAsString();
+            $session = Wootook_Core_Model_Session::factory(Wootook_Empire_Model_User::SESSION_KEY);
+
+            trigger_error($e->getMessage(), E_USER_ERROR);
             $session->addError($e->getMessage());
             return null;
         }
@@ -382,9 +384,13 @@ class Wootook_Empire_Model_User
         return $planetCollection;
     }
 
-    public function getPlanetCollection()
+    public function getPlanetCollection(Array $typeFilter = array())
     {
         $planetCollection = $this->_preparePlanetCollection();
+
+        if (!empty($typeFilter)) {
+            $planetCollection->where('planet.planet_type IN(' . implode(',', $typeFilter) . ')');
+        }
 
         $planetCollection->load(array(
             'user' => $this->getId()
@@ -534,5 +540,21 @@ class Wootook_Empire_Model_User
             return $count;
         }
         return null;
+    }
+
+    public static function layoutPrepareAfterListener($eventData)
+    {
+        $player = self::getSingleton();
+        if ($player === null || !$player->getId() || !in_array($player->getData('authlevel'), array(LEVEL_ADMIN, LEVEL_OPERATOR, LEVEL_MODERATOR))) {
+            return;
+        }
+
+        if (!isset($eventData['layout']) || !$eventData['layout'] instanceof Wootook_Core_Layout) {
+            return;
+        }
+        $layout = $eventData['layout'];
+        $navigation = $layout->getBlock('navigation');
+
+        $navigation->addLink('tools/admin', 'Admin Panel', 'Admin Panel', 'admin/index.php', array(), array('admin'));
     }
 }

@@ -11,7 +11,69 @@ class Wootook_Core_Block_Html_Head
     const TYPE_INLINE_CSS = 'inline_css';
     const TYPE_INLINE_JS  = 'inline_js';
 
+    const TITLE_CONCAT_BEFORE = 'BEFORE';
+    const TITLE_CONCAT_AFTER  = 'AFTER';
+    const TITLE_OVERWRITE     = 'OVERWRITE';
+
     protected $_items = array();
+
+    protected $_title = '';
+    protected $_titleDefaultConcat = self::TITLE_CONCAT_AFTER;
+    protected $_titleSeparator = ' | ';
+
+    protected $_titleConcatTypes = array(
+        self::TITLE_CONCAT_AFTER,
+        self::TITLE_CONCAT_BEFORE,
+        self::TITLE_OVERWRITE
+        );
+
+    public function setTitleSeparator($separator)
+    {
+        $this->_titleSeparator = $separator;
+
+        return $this;
+    }
+
+    public function getTitleSeparator()
+    {
+        return $this->_titleSeparator;
+    }
+
+    public function setTitleDefaultConcat($defaultConcat)
+    {
+        if (in_array($concatType, $this->_titleConcatTypes)) {
+            $this->_titleDefaultConcat = $defaultConcat;
+        }
+
+        return $this;
+    }
+
+    public function getTitleDefaultConcat()
+    {
+        return $this->_titleDefaultConcat;
+    }
+
+    public function setTitle($title, $concatType = self::TITLE_CONCAT_AFTER)
+    {
+        if (!in_array($concatType, $this->_titleConcatTypes)) {
+            $concatType = $this->getTitleDefaultConcat();
+        }
+
+        if ($concatType == self::TITLE_OVERWRITE) {
+            $this->_title = $title;
+        } else if ($concatType == self::TITLE_CONCAT_BEFORE) {
+            $this->_title = $title . $this->getTitleSeparator() . $this->_title;
+        } else if ($concatType == self::TITLE_CONCAT_AFTER) {
+            $this->_title .= $this->getTitleSeparator() . $title;
+        }
+
+        return $this;
+    }
+
+    public function getTitle()
+    {
+        return $this->_title;
+    }
 
     public function addItem($type, Array $options = array())
     {

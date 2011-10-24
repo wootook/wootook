@@ -139,9 +139,17 @@ class Wootook_Core_Layout
             }
         }
 
+        Wootook::dispatchEvent($this->_eventPrefix . '.prepare.before', array(
+            $this->_eventObject => $this
+            ));
+
         foreach ($this->_blocks as $block) {
             $block->prepareLayout();
         }
+
+        Wootook::dispatchEvent($this->_eventPrefix . '.prepare.after', array(
+            $this->_eventObject => $this
+            ));
     }
 
     protected function _save()
@@ -190,7 +198,7 @@ class Wootook_Core_Layout
             }
         }
 
-        trigger_error(Wootook::__('Class type "%s" could not be resolved.', $type), E_USER_INFO);
+        trigger_error(Wootook::__('Class type "%s" could not be resolved.', $type), E_USER_NOTICE);
         return null;
     }
 
@@ -220,6 +228,9 @@ class Wootook_Core_Layout
     {
         $instance = $this->_createBlock($type, $name, $config);
 
+        if ($instance === null) {
+            return null;
+        }
         $instance->prepareLayout();
 
         return $instance;
@@ -263,11 +274,14 @@ class Wootook_Core_Layout
                 if (!isset($config['type'])) {
                     $instance->$alias = new Wootook_Core_View($config);
                 } else {
-                    $instance->$alias = $this->_createBlock($config['type'], $name, $config);
+                    $child = $this->_createBlock($config['type'], $name, $config);
+                    if ($child !== null) {
+                        $instance->$alias = $child;
+                    }
                 }
             }
         } catch (ReflectionException $e) {
-            trigger_error($e->getMessage(), E_USER_INFO);
+            trigger_error($e->getMessage(), E_USER_NOTICE);
             return null;
         }
 
@@ -305,13 +319,14 @@ class Wootook_Core_Layout
                         $callParamaters[$paramterPosition] = $parameter->getDefaultValue();
                     //} else if (!$parameter->isOptionnal()) {
                     } else if ($paramterPosition <= $requiredParameterCount) {
-                        throw new Wootook_Core_Exception_RuntimeException();
+                        throw new Wootook_Core_Exception_RuntimeException(Wootook::__('Method %s requires parameter %d ($%s) to be defined.',
+                            $reflectionMethod->getName(), $paramterPosition + 1, $paramterName));
                     }
                 }
 
                 $reflectionMethod->invokeArgs($block, $callParamaters);
             } catch (ReflectionException $e) {
-                trigger_error($e->getMessage(), E_USER_INFO);
+                trigger_error($e->getMessage(), E_USER_NOTICE);
                 continue;
             } catch (RuntimeException $e) {
                 trigger_error($e->getMessage(), E_USER_WARNING);
@@ -392,7 +407,7 @@ class Wootook_Core_Layout
             return $path;
         }
 
-        trigger_error(Legacies::__("Layout file '%s' does not exist.", $file), E_USER_INFO);
+        trigger_error(Legacies::__("Layout file '%s' does not exist.", $file), E_USER_NOTICE);
 
         return null;
     }

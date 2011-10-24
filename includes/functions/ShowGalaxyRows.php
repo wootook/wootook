@@ -39,10 +39,11 @@ function ShowGalaxyRows ($Galaxy, $System) {
 
 	$Result = "";
 	for ($Planet = 1; $Planet <= MAX_PLANET_IN_SYSTEM; $Planet++) {
-		unset($GalaxyRowPlanet);
-		unset($GalaxyRowMoon);
-		unset($GalaxyRowPlayer);
-		unset($GalaxyRowAlly);
+
+		$GalaxyRowPlanet = array();
+		$GalaxyRowMoon = array();
+		$GalaxyRowPlayer = array();
+		$GalaxyRowAlly = array();
 
 		$GalaxyRow = doquery("SELECT * FROM {{table}} WHERE `galaxy` = '".$Galaxy."' AND `system` = '".$System."' AND `planet` = '".$Planet."';", 'galaxy', true);
 

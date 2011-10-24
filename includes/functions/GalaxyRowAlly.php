@@ -42,6 +42,10 @@
 function GalaxyRowAlly ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $Galaxy, $System, $Planet, $PlanetType ) {
 	global $lang, $user;
 
+	if (empty($GalaxyRowPlanet)) {
+	    return '<th width="80"></th>';
+	}
+
 	// Alliances
 	$Result  = "<th width=80>";
 	if ($GalaxyRowUser['ally_id'] && $GalaxyRowUser['ally_id'] != 0) {
@@ -77,7 +81,7 @@ function GalaxyRowAlly ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $Galaxy, 
 			$Result .= "</table>\"";
 			$Result .= ", STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -40, OFFSETY, -40 );'";
 			$Result .= " onmouseout='return nd();'>";
-			if ($user['ally_id'] == $GalaxyRowPlayer['ally_id']) {
+			if ($user['ally_id'] == $GalaxyRowUser['ally_id']) {
 				$Result .= "<span class=\"allymember\">". $allyquery['ally_tag'] ."</span></a>";
 			} else {
 				$Result .= $allyquery['ally_tag'] ."</a>";

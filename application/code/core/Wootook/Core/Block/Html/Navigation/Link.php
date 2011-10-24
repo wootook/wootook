@@ -5,9 +5,11 @@ class Wootook_Core_Block_Html_Navigation_Link
 {
     protected $_label = '';
     protected $_title = '';
-    protected $_uri = '';
+    protected $_uri = null;
+    protected $_url = null;
     protected $_params = array();
     protected $_classes = array('link');
+    protected $_attributes = array();
 
     public function getTemplate()
     {
@@ -43,16 +45,69 @@ class Wootook_Core_Block_Html_Navigation_Link
 
     public function setUrl($uri, $params = array())
     {
+        if ($uri === null) {
+            return $this;
+        }
+
         $this->_uri = $uri;
         $this->_params = $params;
+        $this->_url = $this->getUrl($uri, $params);
+
+        return $this;
+    }
+
+    public function setExternalUrl($url)
+    {
+        $this->_url = $url;
+        $this->_uri = null;
+        $this->_params = array();
 
         return $this;
     }
 
     public function getLinkUrl($moreParams = array())
     {
+        if (empty($moreParams) || $this->_uri === null) {
+            return $this->_url;
+        }
         $params = array_merge($this->_params, $moreParams);
         return $this->getUrl($this->_uri, $params);
+    }
+
+    public function setAttribute($attributeName, $attributeValue)
+    {
+        $this->_attributes[$attributeName] = $attributeValue;
+
+        return $this;
+    }
+
+    public function getAttribute($attributeName)
+    {
+        if ($this->hasAttribute($attributeName)) {
+            return $this->_attributes[$attributeName];
+        }
+        return null;
+    }
+
+    public function hasAttribute($attributeName)
+    {
+        if (isset($this->_attributes[$attributeName])) {
+            return true;
+        }
+        return false;
+    }
+
+    public function unsetAttribute($attributeName)
+    {
+        if ($this->hasAttribute($attributeName)) {
+            unset($this->_attributes[$attributeName]);
+        }
+        return $this;
+    }
+
+    public function getAttributes()
+    {
+        return $this->_attributes;
     }
 
     public function addClass($class)
@@ -69,7 +124,7 @@ class Wootook_Core_Block_Html_Navigation_Link
         return $this;
     }
 
-    public function renderClasses($moreClasses)
+    public function renderClasses(Array $moreClasses = array())
     {
         $classes = array_merge($this->_classes, $moreClasses);
         return implode(' ', $classes);
@@ -95,7 +150,7 @@ class Wootook_Core_Block_Html_Navigation_Link
                     $this->setUrl($data['url']['uri']);
                 }
             } else {
-                $this->setUrl($data['url']);
+                $this->setExternalUrl($data['url']);
             }
             unset($data['url']);
         }
@@ -105,7 +160,16 @@ class Wootook_Core_Block_Html_Navigation_Link
             unset($data['classes']);
 
             foreach ($classes as $class) {
-                $this->set($class);
+                $this->addClass(trim($class));
+            }
+        }
+
+        if (isset($data['attributes'])) {
+            $attributes = (array) $data['attributes'];
+            unset($data['attributes']);
+
+            foreach ($attributes as $attributeName => $attributeValue) {
+                $this->setAttribute($attributeName, $attributeValue);
             }
         }
 
