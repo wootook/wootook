@@ -1,16 +1,6 @@
 <?php return array(
     '1column' => array(
-        'update' => 'default',
-        'reference' => array(
-            'content' => array(
-                'children' => array(
-                    'navigation' => array(
-                        'type' => 'core/html.navigation',
-                        'template' => 'page/html/navigation.phtml'
-                        )
-                    )
-                )
-            )
+        'update' => 'default'
         ),
 
     '2columns-left' => array(
@@ -20,13 +10,7 @@
             'root' => array(
                 'children' => array(
                     'left' => array(
-                        'type' => 'core/concat',
-                        'children' => array(
-                            'navigation' => array(
-                                'type' => 'core/html.navigation',
-                                'template' => 'page/html/navigation.phtml'
-                                )
-                            )
+                        'type' => 'core/concat'
                         )
                     )
                 )

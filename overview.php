@@ -44,18 +44,10 @@ if (isset($_POST) && !empty($_POST)) {
     if ($formKey == Wootook::getSession('security')->getData('form_key')) {
         if ($action == 'rename' && isset($_POST['name']) && !empty($_POST['name'])) {
             $planet->setData('name', $_POST['name'])->save();
-
-            header('302 Found');
-            header('Location: ' . basename(__FILE__));
-            exit(0);
         } else if ($action == 'destroy' && isset($_POST['password']) && !empty($_POST['password']) && isset($_POST['confirm'])) {
             if (!$user->checkPassword($_POST['password'])) {
                 Wootook::getSession('user')
                     ->addError(Wootook::__('Password was not correct.'));
-
-                header('302 Found');
-                header('Location: ' . basename(__FILE__));
-                exit(0);
             }
 
             try {
@@ -67,15 +59,15 @@ if (isset($_POST) && !empty($_POST)) {
                 Wootook::getSession('user')
                     ->addError($e->getMessage());
             }
-
-            header('302 Found');
-            header('Location: ' . basename(__FILE__));
-            exit(0);
         }
     } else {
         Wootook::getSession('user')
             ->addError(Wootook::__('Invalid security key.'));
     }
+
+    header('HTTP/1.1 302 Found');
+    header('Location: ' . Wootook::getUrl(basename(__FILE__)));
+    exit(0);
 } else if ($action == 'rename') {
     $layout = new Wootook_Core_Layout();
     $layout->load('overview.rename-planet');

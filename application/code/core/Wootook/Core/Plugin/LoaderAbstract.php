@@ -15,7 +15,7 @@ abstract class Wootook_Core_Plugin_LoaderAbstract
             $className = $namespace . ucfirst($pluginName);
             $fileName = $path . DIRECTORY_SEPARATOR . ucfirst($pluginName) . '.php';
 
-            if (!file_exists($fileName)) {
+            if (!Wootook::fileExists($fileName)) {
                 continue;
             }
 
@@ -26,7 +26,7 @@ abstract class Wootook_Core_Plugin_LoaderAbstract
             return $this->_load($className, $useSingleton);
         }
 
-        return $this;
+        return null;
     }
 
     public function registerNamespace($namespace, $path = null)
@@ -48,7 +48,7 @@ abstract class Wootook_Core_Plugin_LoaderAbstract
         return $this;
     }
 
-    abstract protected function _load($className);
+    abstract protected function _load($className, $useSingleton);
 
     public function getPlugin($pluginName)
     {

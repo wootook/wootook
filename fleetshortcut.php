@@ -33,131 +33,174 @@ define('INSTALL' , false);
 require_once dirname(__FILE__) .'/application/bootstrap.php';
 
 
-$mode = $_GET['mode'];
-$a = $_GET['a'];
-/*
-  Este script es original xD
-  La funcion de este script es administrar una variable del $user
-  Permite agregar y quitar arrays...
-*/
-//Lets start!
-if(isset($_GET['mode'])){
-	if($_POST){
-		//Pegamos el texto :P
-		if($_POST["n"] == ""){$_POST["n"] = "Unbenannt";}
+$mode = isset($_GET['mode']) ? $_GET['mode'] : null;
+$a = isset($_GET['a']) ? $_GET['a'] : null;
 
-		$r = strip_tags($_POST[n]).",".intval($_POST[g]).",".intval($_POST[s]).",".intval($_POST[p]).",".intval($_POST[t])."\r\n";
-		$user['fleet_shortcut'] .= $r;
-		doquery("UPDATE {{table}} SET fleet_shortcut='{$user[fleet_shortcut]}' WHERE id={$user[id]}","users");
-		message("Le raccourcis a &eacute;t&eacute; enregistr&eacute; !","Enregistrment","fleetshortcut.php");
-	}
-	$page = "<form method=POST><table border=0 cellpadding=0 cellspacing=1 width=519>
-	<tr height=20>
-	<td colspan=2 class=c>Nom [Galaxie/Syst&egrave;me solaire/Plan&egrave;te]</td>
-	</tr><tr height=\"20\"><th>
-	<input type=text name=n value=\"$g\" size=32 maxlength=32 title=\"Name\">
-	<input type=text name=g value=\"$s\" size=3 maxlength=1 title=\"Galaxie\">
-	<input type=text name=s value=\"$p\" size=3 maxlength=3 title=\"Sonnensystem\">
-	<input type=text name=p value=\"$t\" size=3 maxlength=3 title=\"Planet\">
-	 <select name=t>";
-	$page .= '<option value="1"'.(($c[4]==1)?" SELECTED":"").">Plan&egrave;te</option>";
-	$page .= '<option value="2"'.(($c[4]==2)?" SELECTED":"").">D&eacute;bris</option>";
-	$page .= '<option value="3"'.(($c[4]==3)?" SELECTED":"").">Lune</option>";
-	$page .= "</select>
-	</th></tr><tr>
-	<th><input type=\"reset\" value=\"Zur&uuml;cksetzen\"> <input type=\"submit\" value=\"Enregistrer\">";
-	//Muestra un (L) si el destino pertenece a luna, lo mismo para escombros
-	$page .= "</th></tr>";
-	$page .= '<tr><td colspan=2 class=c><a href=fleetshortcut.php>Effacer</a></td></tr></tr></table></form>';
-}
-elseif(isset($_GET['a'])){
-	if($_POST){
-		//Armamos el array...
-		$scarray = explode("\r\n",$user['fleet_shortcut']);
-		if($_POST["delete"]){
-			unset($scarray[$a]);
-			$user['fleet_shortcut'] =  implode("\r\n",$scarray);
-			doquery("UPDATE {{table}} SET fleet_shortcut='{$user[fleet_shortcut]}' WHERE id={$user[id]}","users");
-			message("Shortcut wurde gel&ouml;scht","Gel&ouml;scht","fleetshortcut.php");
-		}
-		else{
-			$r = explode(",",$scarray[$a]);
-			$r[0] = strip_tags($_POST['n']);
-			$r[1] = intval($_POST['g']);
-			$r[2] = intval($_POST['s']);
-			$r[3] = intval($_POST['p']);
-			$r[4] = intval($_POST['t']);
-			$scarray[$a] = implode(",",$r);
-			$user['fleet_shortcut'] =  implode("\r\n",$scarray);
-			doquery("UPDATE {{table}} SET fleet_shortcut='{$user[fleet_shortcut]}' WHERE id={$user[id]}","users");
-			message("Le raccourcis a &eacute;t&eacute; &eacute;dit&eacute; !.","Editer","fleetshortcut.php");
-		}
-	}
-	if($user['fleet_shortcut']){
+$user = Wootook_Empire_Model_User::getSingleton();
 
-		$scarray = explode("\r\n",$user['fleet_shortcut']);
-		$c = explode(',',$scarray[$a]);
+if ($mode) {
+    if ($_POST) {
+        //Pegamos el texto :P
+        if (!isset($_POST["n"]) || empty($_POST["n"])) {
+            $name = Wootook::__("Unnamed");
+        } else {
+            $name = $_POST["n"];
+        }
 
-		$page = "<form method=POST><table border=0 cellpadding=0 cellspacing=1 width=519>
-	<tr height=20>
-	<td colspan=2 class=c>Editer: {$c[0]} [{$c[1]}:{$c[2]}:{$c[3]}]</td>
-	</tr>";
-		//if($i==0){$page .= "";}
-		$page .= "<tr height=\"20\"><th>
-		<input type=hidden name=a value=$a>
-		<input type=text name=n value=\"{$c[0]}\" size=32 maxlength=32>
-		<input type=text name=g value=\"{$c[1]}\" size=3 maxlength=1>
-		<input type=text name=s value=\"{$c[2]}\" size=3 maxlength=3>
-		<input type=text name=p value=\"{$c[3]}\" size=3 maxlength=3>
-		 <select name=t>";
-		$page .= '<option value="1"'.(($c[4]==1)?" SELECTED":"").">Plan&egrave;te</option>";
-		$page .= '<option value="2"'.(($c[4]==2)?" SELECTED":"").">D&eacute;bris</option>";
-		$page .= '<option value="3"'.(($c[4]==3)?" SELECTED":"").">Lune</option>";
-		$page .= "</select>
-		</th></tr><tr>
-		<th><input type=reset value=\"Reset\"> <input type=submit value=\"Enregistrer\"> <input type=submit name=delete value=\"Supprimer\">";
-		$page .= "</th></tr>";
+        if (($offset = strpos($name, "\n")) !== false) {
+            $name = substr($name, 0, $offset);
+        }
+        if (($offset = strpos($name, "\r")) !== false) {
+            $name = substr($name, 0, $offset);
+        }
+        if (($offset = strpos($name, ",")) !== false) {
+            $name = substr($name, 0, $offset);
+        }
+        $planetTypes = array(
+            Wootook_Empire_Model_Planet::TYPE_PLANET,
+            Wootook_Empire_Model_Planet::TYPE_DEBRIS,
+            Wootook_Empire_Model_Planet::TYPE_MOON
+            );
 
-	}else{$page .= message("Le raccourcis a &eacute;t&eacute; enregistr&eacute; !","Enregistrer","fleetshortcut.php");}
+        $r = array();
+        $r[0] = preg_replace('#[^[:alnum:]\s\-\_\']#', '', $name);
+        $r[1] = (isset($_POST['g']) && intval($_POST['g']) > 0 && intval($_POST['g']) <= MAX_GALAXY_IN_WORLD) ? intval($_POST['g']) : '1';
+        $r[2] = (isset($_POST['s']) && intval($_POST['s']) > 0 && intval($_POST['s']) <= MAX_SYSTEM_IN_GALAXY) ? intval($_POST['s']) : '1';
+        $r[3] = (isset($_POST['p']) && intval($_POST['p']) > 0 && intval($_POST['p']) <= MAX_PLANET_IN_SYSTEM) ? intval($_POST['p']) : '1';
+        $r[4] = (isset($_POST['t']) && intval($_POST['t']) > 0 && in_array(intval($_POST['t']), $planetTypes)) ? intval($_POST['t']) : '1';
 
-	$page .= '<tr><td colspan=2 class=c><a href=fleetshortcut.php>Retour</a></td></tr></tr></table></form>';
+        $user['fleet_shortcut'] .= implode(",", $r);
+        $user->save();
+        message(Wootook::__("The shortcut has been saved."), Wootook::__("Success"), "fleetshortcut.php");
+    }
+    $page = "<form method=POST><table border=0 cellpadding=0 cellspacing=1 width=519>
+    <tr height=20>
+    <td colspan=2 class=c>Nom [Galaxie/Syst&egrave;me solaire/Plan&egrave;te]</td>
+    </tr><tr height=\"20\"><th>
+    <input type=text name=n value=\"$g\" size=32 maxlength=32 title=\"" . Wootook::__('Name') . "\">
+    <input type=text name=g value=\"$s\" size=3 maxlength=1 title=\"" . Wootook::__('Galaxy') . "\">
+    <input type=text name=s value=\"$p\" size=3 maxlength=3 title=\"" . Wootook::__('System') . "\">
+    <input type=text name=p value=\"$t\" size=3 maxlength=3 title=\"" . Wootook::__('Planet') . "\">
+     <select name=t>";
+    $page .= '<option value="1"'.(($c[4]==1)?" SELECTED":"").">" . Wootook::__('Planet') . "</option>";
+    $page .= '<option value="2"'.(($c[4]==2)?" SELECTED":"").">" . Wootook::__('Debris') . "</option>";
+    $page .= '<option value="3"'.(($c[4]==3)?" SELECTED":"").">" . Wootook::__('Moon') . "</option>";
+    $page .= "</select>
+    </th></tr><tr>
+    <th><input type=\"reset\" value=\"" . Wootook::__('Reset') . "\"> <input type=\"submit\" value=\"" . Wootook::__('Save') . "\">";
+    //Muestra un (L) si el destino pertenece a luna, lo mismo para escombros
+    $page .= "</th></tr>";
+    $page .= '<tr><td colspan=2 class=c><a href=fleetshortcut.php>Effacer</a></td></tr></tr></table></form>';
+} else if ($a !== null) {
+    if ($_POST) {
+        //Armamos el array...
+        $scarray = explode("\r\n", $user['fleet_shortcut']);
+        if (isset($_POST["delete"])) {
+            unset($scarray[$a]);
+            $user['fleet_shortcut'] =  implode("\r\n", $scarray);
+            doquery("UPDATE {{table}} SET fleet_shortcut={$db->quote($user['fleet_shortcut'])} WHERE id={$user['id']}", "users");
+            message(Wootook::__("The shortcut has been deleted"), Wootook::__("Success"), "fleetshortcut.php");
+        } else {
+            $r = explode(",", $scarray[$a]);
+            if (!isset($_POST["n"]) || empty($_POST["n"])) {
+                $name = $r[0];
+            } else {
+                $name = $_POST["n"];
+            }
+
+            if (($offset = strpos($name, "\n")) !== false) {
+                $name = substr($name, 0, $offset);
+            }
+            if (($offset = strpos($name, "\r")) !== false) {
+                $name = substr($name, 0, $offset);
+            }
+            if (($offset = strpos($name, ",")) !== false) {
+                $name = substr($name, 0, $offset);
+            }
+            $planetTypes = array(
+                Wootook_Empire_Model_Planet::TYPE_PLANET,
+                Wootook_Empire_Model_Planet::TYPE_DEBRIS,
+                Wootook_Empire_Model_Planet::TYPE_MOON
+                );
+            $r[0] = preg_replace('#[^[:alnum:]\s\-\_\']#', '', $name);
+            $r[1] = (isset($_POST['g']) && intval($_POST['g']) > 0 && intval($_POST['g']) <= MAX_GALAXY_IN_WORLD) ? intval($_POST['g']) : $r[1];
+            $r[2] = (isset($_POST['s']) && intval($_POST['s']) > 0 && intval($_POST['s']) <= MAX_SYSTEM_IN_GALAXY) ? intval($_POST['s']) : $r[2];
+            $r[3] = (isset($_POST['p']) && intval($_POST['p']) > 0 && intval($_POST['p']) <= MAX_PLANET_IN_SYSTEM) ? intval($_POST['p']) : $r[3];
+            $r[4] = (isset($_POST['t']) && intval($_POST['t']) > 0 && in_array(intval($_POST['t']), $planetTypes)) ? intval($_POST['t']) : $r[4];
+
+            $scarray[$a] = implode(",", $r);
+            $user['fleet_shortcut'] =  implode("\r\n", $scarray);
+            $user->save();
+            message(Wootook::__("The shortcut has been updated."), Wootook::__("Success"), "fleetshortcut.php");
+        }
+    }
+
+    if ($user['fleet_shortcut']) {
+
+        $scarray = explode("\r\n",$user['fleet_shortcut']);
+        $c = explode(',',$scarray[$a]);
+
+        $page = "<form method=POST><table border=0 cellpadding=0 cellspacing=1 width=519>
+    <tr height=20>
+    <td colspan=2 class=c>Editer: {$c[0]} [{$c[1]}:{$c[2]}:{$c[3]}]</td>
+    </tr>";
+        //if($i==0){$page .= "";}
+        $page .= "<tr height=\"20\"><th>
+        <input type=hidden name=a value=$a>
+        <input type=text name=n value=\"{$c[0]}\" size=32 maxlength=32>
+        <input type=text name=g value=\"{$c[1]}\" size=3 maxlength=1>
+        <input type=text name=s value=\"{$c[2]}\" size=3 maxlength=3>
+        <input type=text name=p value=\"{$c[3]}\" size=3 maxlength=3>
+         <select name=t>";
+        $page .= '<option value="1"'.(($c[4]==1)?" SELECTED":"").">Plan&egrave;te</option>";
+        $page .= '<option value="2"'.(($c[4]==2)?" SELECTED":"").">D&eacute;bris</option>";
+        $page .= '<option value="3"'.(($c[4]==3)?" SELECTED":"").">Lune</option>";
+        $page .= "</select>
+        </th></tr><tr>
+        <th><input type=reset value=\"Reset\"> <input type=submit value=\"Enregistrer\"> <input type=submit name=delete value=\"Supprimer\">";
+        $page .= "</th></tr>";
+
+    } else {
+        $page .= message("Le raccourcis a &eacute;t&eacute; enregistr&eacute; !","Enregistrer","fleetshortcut.php");
+    }
+
+    $page .= '<tr><td colspan=2 class=c><a href=fleetshortcut.php>Retour</a></td></tr></tr></table></form>';
 
 
-}
-else{
+} else {
 
-	$page = '<table border="0" cellpadding="0" cellspacing="1" width="519">
-	<tr height="20">
-	<td colspan="2" class="c">Raccourcis(<a href="?mode=add">Ajout</a>)</td>
-	</tr>';
+    $page = '<table border="0" cellpadding="0" cellspacing="1" width="519">
+    <tr height="20">
+    <td colspan="2" class="c">Raccourcis(<a href="?mode=add">Ajout</a>)</td>
+    </tr>';
 
-	if($user['fleet_shortcut']){
-		/*
-		  Dentro de fleet_shortcut, se pueden almacenar las diferentes direcciones
-		  de acceso directo, el formato es el siguiente.
-		  Nombre, Galaxia,Sistema,Planeta,Tipo
-		*/
-		$scarray = explode("\r\n",$user['fleet_shortcut']);
-		$i=$e=0;
-		foreach($scarray as $a => $b){
-			if($b!=""){
-			$c = explode(',',$b);
-			if($i==0){$page .= "<tr height=\"20\">";}
-			$page .= "<th><a href=\"?a=".$e++."\">";
-			$page .= "{$c[0]} {$c[1]}:{$c[2]}:{$c[3]}";
-			//Muestra un (L) si el destino pertenece a luna, lo mismo para escombros
-			if($c[4]==2){$page .= " (E)";}elseif($c[4]==3){$page .= " (L)";}
-			$page .= "</a></th>";
-			if($i==1){$page .= "</tr>";}
-			if($i==1){$i=0;}else{$i=1;}
-			}
+    if($user['fleet_shortcut']){
+        /*
+          Dentro de fleet_shortcut, se pueden almacenar las diferentes direcciones
+          de acceso directo, el formato es el siguiente.
+          Nombre, Galaxia,Sistema,Planeta,Tipo
+        */
+        $scarray = explode("\r\n",$user['fleet_shortcut']);
+        $i=$e=0;
+        foreach($scarray as $a => $b){
+            if($b!=""){
+            $c = explode(',',$b);
+            if($i==0){$page .= "<tr height=\"20\">";}
+            $page .= "<th><a href=\"?a=".$e++."\">";
+            $page .= "{$c[0]} {$c[1]}:{$c[2]}:{$c[3]}";
+            //Muestra un (L) si el destino pertenece a luna, lo mismo para escombros
+            if($c[4]==2){$page .= " (E)";}elseif($c[4]==3){$page .= " (L)";}
+            $page .= "</a></th>";
+            if($i==1){$page .= "</tr>";}
+            if($i==1){$i=0;}else{$i=1;}
+            }
 
-		}
-		if($i==1){$page .= "<th></th></tr>";}
+        }
+        if($i==1){$page .= "<th></th></tr>";}
 
-	}else{$page .= "<th colspan=\"2\">Pas de Raccourcis</th>";}
+    }else{$page .= "<th colspan=\"2\">Pas de Raccourcis</th>";}
 
-	$page .= '<tr><td colspan=2 class=c><a href=fleet.php>Retour</a></td></tr></tr></table>';
+    $page .= '<tr><td colspan=2 class=c><a href=fleet.php>Retour</a></td></tr></tr></table>';
 }
 display($page,"Shortcutmanager");
 

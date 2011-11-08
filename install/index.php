@@ -32,44 +32,158 @@ define('INSIDE' , true);
 define('INSTALL', false);
 define('IN_INSTALL', true);
 
-define('ROOT_PATH', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
-define('PHPEXT', include ROOT_PATH . 'extension.inc');
+define('STEP_SYSTEM',   1);
+define('STEP_DATABASE', 2);
+define('STEP_PROFILE',  3);
+define('STEP_UNIVERSE', 4);
+define('STEP_CONFIG',   5);
 
-define('DEFAULT_SKINPATH', '../skins/xnova/');
-define('TEMPLATE_DIR', realpath(ROOT_PATH . '/templates/'));
-define('TEMPLATE_NAME', 'OpenGame');
-define('DEFAULT_LANG', 'fr');
-$dpath = DEFAULT_SKINPATH;
+require_once dirname(dirname(__FILE__)) .'/application/bootstrap.php';
 
-include(ROOT_PATH . 'includes/debug.class.'.PHPEXT);
-$debug = new debug();
-
-include(ROOT_PATH . 'includes/constants.' . PHPEXT);
-include(ROOT_PATH . 'includes/functions.' . PHPEXT);
-include(ROOT_PATH . 'includes/unlocalised.' . PHPEXT);
-include(ROOT_PATH . 'includes/todofleetcontrol.' . PHPEXT);
-include(ROOT_PATH . 'language/' . DEFAULT_LANG . '/lang_info.cfg');
-include(ROOT_PATH . 'includes/vars.' . PHPEXT);
-include(ROOT_PATH . 'includes/db.' . PHPEXT);
-include(ROOT_PATH . 'includes/strings.' . PHPEXT);
-
-include(ROOT_PATH . 'includes/databaseinfos.php');
-include(ROOT_PATH . 'includes/migrateinfo.php');
+//include(ROOT_PATH . 'includes/databaseinfos.php');
+//include(ROOT_PATH . 'includes/migrateinfo.php');
 
 $mode     = isset($_GET['mode']) ? strval($_GET['mode']) : 'intro';
-$page     = isset($_GET['page']) ? intval($_GET['page']) : 1;
-$nextPage = $page + 1;
+$step     = isset($_GET['step']) ? intval($_GET['step']) : 1;
+$prevStep = $step - 1;
+$nextStep = $step + 1;
 
-$mainTpl = gettemplate('install/ins_body');
 includeLang('install/install');
 
+$baseUrl = (isset($_SERVER["HTTPS"]) && strtolower($_SERVER["HTTPS"]) == "on" ? 'https://' : 'http://')
+    . $_SERVER["SERVER_NAME"] . ($_SERVER["SERVER_PORT"] != "80" ? ":{$_SERVER["SERVER_PORT"]}" : '');
+if (isset($_SERVER['REQUEST_URI'])) {
+    if (strrpos($_SERVER['REQUEST_URI'], '/') == (strlen($_SERVER['REQUEST_URI']) - 1)) {
+        $baseUrl .= dirname($_SERVER['REQUEST_URI']) . '/';
+    } else {
+        $baseUrl .= dirname(dirname($_SERVER['REQUEST_URI'])) . '/';
+    }
+}
+Wootook::setConfig('global/web/base_url', $baseUrl);
+
+Wootook::setConfig('global/package', 'install');
+Wootook::setConfig('global/theme', 'default');
+Wootook::setconfig('global/layout', array(
+    'page' => 'page.php',
+    'install' => 'install.php'
+    ));
+
+$session = Wootook::getSession('install');
+$layout = new Wootook_Core_Layout();
+$request = new Wootook_Core_Controller_Request_Http();
+$response = new Wootook_Core_Controller_Response_Http();
+
 switch ($mode) {
-    case 'intro':
-            $subTpl = gettemplate('install/ins_intro');
-            $bloc = $lang;
-            $bloc['dpath'] = $dpath;
-            $frame  = parsetemplate($subTpl, $bloc);
-         break;
+case 'intro':
+    $layout->load('install.intro');
+    $session->setData('step', 1);
+    break;
+
+case 'install':
+    $session->addError('Test %s', 'Hello world!');
+    if ($step != $session->getData('step')) {
+        $session->setData('step', 0);
+        $response->setRedirect("?mode=intro", Wootook_Core_Controller_Response_Http::REDIRECT_TEMPORARY);
+        $response->sendHeaders();
+        exit(0);
+    }
+
+    switch ($step) {
+    case STEP_SYSTEM:
+        if ($request->isPost()) {
+            $form = new Wootook_Core_Form($session, array(
+                'url_path' => 'text'
+                ));
+            $form->addField('url_path');
+            $form->setRequest($request);
+            $form->populate();
+
+            if (!$form->validate()) {
+                $session->setData('step', $step);
+                $session->setFormData($form->getData());
+                var_dump($session);
+                $response->setRedirect("?mode=install&step={$step}");
+                $response->sendHeaders();
+                exit(0);
+            }
+
+            $layout->getMessagesblock()->prepareMessages('install');
+            $session->setBaseUrl($request->getPost('url_path'));
+
+            $session->setStep(STEP_DATABASE);
+            $response->setRedirect("?mode=install&step={$nextStep}");
+            $response->sendHeaders();
+            exit(0);
+        }
+
+        $layout->load('install.step.system');
+        break;
+
+    case STEP_DATABASE:
+        if ($request->isPost()) {
+            $form = new Wootook_Core_Form($session, array(
+                'host'     => 'text',
+                'port'     => 'text',
+                'user'     => 'text',
+                'password' => 'text',
+                'dbname'   => 'text',
+                'prefix'   => 'text',
+                ));
+            $form->setRequest($request);
+            $form->populate();
+
+            if (!$form->validate()) {
+                $session->setData('step', $step);
+                $session->setFormData($request->getPost());
+                $response->setRedirect("?mode=install&step={$step}");
+                $response->sendHeaders();
+                exit(0);
+            }
+
+            $layout->getMessagesblock()->prepareMessages('install');
+            $session->setStep(STEP_PROFILE);
+            $response->setRedirect("?mode=install&step={$nextStep}");
+            $response->sendHeaders();
+            exit(0);
+        }
+
+        $layout->load('install.database');
+        break;
+
+    case STEP_PROFILE:
+        if (empty($_POST)) {
+            $session->setData('step', $step);
+            $response->setRedirect("?mode=install&step={$nextStep}");
+            $response->sendHeaders();
+            exit(0);
+        }
+
+        $layout->load('install.profile');
+        break;
+
+    case STEP_UNIVERSE:
+        if (empty($_POST)) {
+            $session->setData('step', $step);
+            $response->setRedirect("?mode=install&step={$nextStep}");
+            $response->sendHeaders();
+            exit(0);
+        }
+
+        $layout->load('install.universe');
+        break;
+
+    case STEP_CONFIG:
+        if (empty($_POST)) {
+            $session->setData('step', $step);
+            $response->setRedirect("?mode=install&step={$nextStep}");
+            $response->sendHeaders();
+            exit(0);
+        }
+
+        $layout->load('install.config');
+        break;
+    }
+    break;
 
     case 'ins':
         if ($page == 1) {
@@ -345,12 +459,4 @@ EOF;
         die();
 }
 
-
-$parse                 = $lang;
-$parse['ins_state']    = $page;
-$parse['ins_page']     = $frame;
-$parse['dis_ins_btn']  = "?mode=$mode&page=$nextPage";
-$parse['dpath']        = $dpath;
-$data                 = parsetemplate($mainTpl, $parse);
-
-display($data, "Installeur", false, '', true);
+echo $layout->render();

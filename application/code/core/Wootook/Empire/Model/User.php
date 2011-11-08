@@ -555,6 +555,10 @@ class Wootook_Empire_Model_User
         $layout = $eventData['layout'];
         $navigation = $layout->getBlock('navigation');
 
-        $navigation->addLink('tools/admin', 'Admin Panel', 'Admin Panel', 'admin/index.php', array(), array('admin'));
+        if (!defined('IN_ADMIN')) {
+            $navigation->addLink('tools/admin', 'Admin Panel', 'Admin Panel', 'admin/overview.php', array(), array('admin'));
+        } else {
+            $navigation->addLink('tools/back', 'Go back to the game', 'Go back to the game', 'overview.php', array(), array('admin'));
+        }
     }
 }

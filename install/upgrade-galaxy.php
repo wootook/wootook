@@ -1,0 +1,98 @@
+<?php
+
+$galaxyCount = 3;
+$systemCount = 100;
+
+$sql = <<<SQL_EOF
+INSERT INTO `game_galaxy` (`galaxy`, `system`, `planet`, `id_planet`, `metal`, `crystal`, `id_luna`, `luna`)
+  SELECT _increment.galaxy, _increment.system, 0, 0, 0, 0, 0, 0
+  FROM (
+    SELECT _galaxy.galaxy, (1 + _10e0.system + _10e1.system + _10e2.system) system
+    FROM (
+        SELECT 0 AS system
+        UNION ALL
+        SELECT 1 AS system
+        UNION ALL
+        SELECT 2 AS system
+        UNION ALL
+        SELECT 3 AS system
+        UNION ALL
+        SELECT 4 AS system
+        UNION ALL
+        SELECT 5 AS system
+        UNION ALL
+        SELECT 6 AS system
+        UNION ALL
+        SELECT 7 AS system
+        UNION ALL
+        SELECT 8 AS system
+        UNION ALL
+        SELECT 9 AS system
+      ) _10e0
+    CROSS JOIN (
+        SELECT 0  AS system
+        UNION ALL
+        SELECT 10 AS system
+        UNION ALL
+        SELECT 20 AS system
+        UNION ALL
+        SELECT 30 AS system
+        UNION ALL
+        SELECT 40 AS system
+        UNION ALL
+        SELECT 50 AS system
+        UNION ALL
+        SELECT 60 AS system
+        UNION ALL
+        SELECT 70 AS system
+        UNION ALL
+        SELECT 80 AS system
+        UNION ALL
+        SELECT 90 AS system
+      ) _10e1
+    CROSS JOIN (
+        SELECT 0   AS system
+        UNION ALL
+        SELECT 100 AS system
+        UNION ALL
+        SELECT 200 AS system
+        UNION ALL
+        SELECT 300 AS system
+        UNION ALL
+        SELECT 400 AS system
+        UNION ALL
+        SELECT 500 AS system
+        UNION ALL
+        SELECT 600 AS system
+        UNION ALL
+        SELECT 700 AS system
+        UNION ALL
+        SELECT 800 AS system
+        UNION ALL
+        SELECT 900 AS system
+      ) _10e2
+    CROSS JOIN (
+        SELECT 1 AS galaxy
+        UNION ALL
+        SELECT 2 AS galaxy
+        UNION ALL
+        SELECT 3 AS galaxy
+        UNION ALL
+        SELECT 4 AS galaxy
+        UNION ALL
+        SELECT 5 AS galaxy
+        UNION ALL
+        SELECT 6 AS galaxy
+        UNION ALL
+        SELECT 7 AS galaxy
+        UNION ALL
+        SELECT 8 AS galaxy
+        UNION ALL
+        SELECT 9 AS galaxy
+      ) _galaxy
+    ) _increment
+
+  WHERE _increment.galaxy<={$galaxyCount}
+    AND _increment.system<={$systemCount}
+SQL_EOF;
+

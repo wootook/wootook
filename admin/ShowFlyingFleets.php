@@ -33,18 +33,18 @@ define('INSTALL' , false);
 define('IN_ADMIN', true);
 require_once dirname(dirname(__FILE__)) .'/application/bootstrap.php';
 
-	if (in_array($user['authlevel'], array(LEVEL_ADMIN, LEVEL_OPERATOR, LEVEL_MODERATOR))) {
-		includeLang('admin/fleets');
-		$PageTPL            = gettemplate('admin/fleet_body');
+include(ROOT_PATH . 'includes/functions/BuildFlyingFleetTable.'.PHPEXT);
 
-		$parse              = $lang;
-		$parse['flt_table'] = BuildFlyingFleetTable ();
+if (in_array($user['authlevel'], array(LEVEL_ADMIN, LEVEL_OPERATOR, LEVEL_MODERATOR))) {
+	includeLang('admin/fleets');
+	$PageTPL            = gettemplate('admin/fleet_body');
 
-		$page               = parsetemplate( $PageTPL, $parse );
-		display ( $page, $lang['flt_title'], false, '', true);
+	$parse              = $lang;
+	$parse['flt_table'] = BuildFlyingFleetTable ();
 
-	} else {
-		AdminMessage ( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
-	}
+	$page               = parsetemplate( $PageTPL, $parse );
+	display ( $page, $lang['flt_title'], false, '', true);
 
-?>
+} else {
+	AdminMessage ( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+}

@@ -27,6 +27,11 @@ class Wootook_Empire_Model_Planet
     protected $_moon = null;
 
     /**
+     * @var Wootook_Empire_Model_Planet
+     */
+    protected $_planet = null;
+
+    /**
      * @var Wootook_Empire_Model_Planet_Builder
      */
     protected $_builder = null;
@@ -175,10 +180,14 @@ class Wootook_Empire_Model_Planet
 
     public function getGalaxyData()
     {
-        $entity = new Wootook_Empire_Model_Galaxy_Position();
-        $entity->load(array('id_planet' => $this->getId()));
+        if ($this->isPlanet()) {
+            $entity = new Wootook_Empire_Model_Galaxy_Position();
+            $entity->load(array('id_planet' => $this->getId()));
 
-        return $entity;
+            return $entity;
+        }
+
+        return $this->getPlanet()->getGalaxyData();
     }
 
     public function updateStorages($time = null)
@@ -533,8 +542,60 @@ class Wootook_Empire_Model_Planet
                 ));
 
             $this->_moon = $statement->current();
+
+            if ($this->_moon !== null && $this->_moon instanceof self) {
+                $this->_moon->setPlanet($this);
+            }
         }
         return $this->_moon;
+    }
+
+    public function setMoon(Wootook_Empire_Model_Planet $moon)
+    {
+        $this->_moon = $moon;
+
+        return $this;
+    }
+
+    public function getPlanet()
+    {
+        static $statement = null;
+
+        if ($this->isPlanet()) {
+            return null;
+        }
+
+        if ($this->_planet === null) {
+            if ($statement === null) {
+                $statement = new Wootook_Core_Collection(array('planet' => 'planets'), get_class($this));
+                $statement
+                    ->where('galaxy=:galaxy')
+                    ->where('system=:system')
+                    ->where('planet=:position')
+                    ->where('planet_type=' . strval(self::TYPE_PLANET))
+                ;
+            }
+
+            $statement->load(array(
+                'galaxy' => $this->getGalaxy(),
+                'system' => $this->getSystem(),
+                'position' => $this->getPosition()
+                ));
+
+            $this->_planet = $statement->current();
+
+            if ($this->_planet !== null && $this->_planet instanceof self) {
+                $this->_planet->setMoon($this);
+            }
+        }
+        return $this->_planet;
+    }
+
+    public function setPlanet(Wootook_Empire_Model_Planet $planet)
+    {
+        $this->_planet = $planet;
+
+        return $this;
     }
 
     public function setGalaxy($galaxy)

@@ -8,6 +8,13 @@ abstract class Wootook_Core_Model_Config_Abstract
     {
         $config = Wootook::getConfig('global/storyline');
 
+        if ($config === null || empty($config)) {
+            $config = array(
+                'universe' => 'default',
+                'episode'  => 'default'
+                );
+        }
+
         $path = 'gamedata' . DIRECTORY_SEPARATOR . $config['universe'] . DIRECTORY_SEPARATOR
             . $config['episode'] . DIRECTORY_SEPARATOR . $filename . '.php';
 

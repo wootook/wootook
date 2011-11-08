@@ -62,6 +62,11 @@ case 'fleet':
             $shipyard->appendQueue($shipId, $count);
         }
         $planet->save();
+
+        Wootook::getResponse()
+            ->setRedirect(Wootook::getUrl('buildings.php', array('mode' => $mode)))
+            ->sendHeaders();
+        exit(0);
     }
 
     $layout = new Wootook_Core_Layout();
@@ -87,9 +92,19 @@ case 'research':
         $data = $planet->getAllDatas();
         $planet->appendBuildingQueue(intval($_GET['research']), isset($_GET['destroy']));
         $planet->save();
+
+        Wootook::getResponse()
+            ->setRedirect(Wootook::getUrl('buildings.php', array('mode' => $mode)))
+            ->sendHeaders();
+        exit(0);
     } else if (isset($_GET['cancel']) && !empty($_GET['cancel'])) {
         $planet->dequeueItem($_GET['cancel']);
         $planet->save();
+
+        Wootook::getResponse()
+            ->setRedirect(Wootook::getUrl('buildings.php', array('mode' => $mode)))
+            ->sendHeaders();
+        exit(0);
     }
 
     $layout = new Wootook_Core_Layout();
@@ -121,6 +136,11 @@ case 'defense':
             $shipyard->appendQueue($defenseId, $count);
         }
         $planet->save();
+
+        Wootook::getResponse()
+            ->setRedirect(Wootook::getUrl('buildings.php', array('mode' => $mode)))
+            ->sendHeaders();
+        exit(0);
     }
 
     $layout = new Wootook_Core_Layout();
@@ -138,9 +158,19 @@ default:
         $data = $planet->getAllDatas();
         $planet->appendBuildingQueue(intval($_GET['building']), isset($_GET['destroy']));
         $planet->save();
+
+        Wootook::getResponse()
+            ->setRedirect(Wootook::getUrl('buildings.php', array('mode' => $mode)))
+            ->sendHeaders();
+        exit(0);
     } else if (isset($_GET['cancel']) && !empty($_GET['cancel'])) {
         $planet->dequeueItem($_GET['cancel']);
         $planet->save();
+
+        Wootook::getResponse()
+            ->setRedirect(Wootook::getUrl('buildings.php', array('mode' => $mode)))
+            ->sendHeaders();
+        exit(0);
     }
 
     $layout = new Wootook_Core_Layout();

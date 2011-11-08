@@ -22,6 +22,7 @@
             ),
         'layout' => array(
             'page'   => 'page.php',
+            'admin'  => 'admin.php',
             'empire' => 'empire.php'
             ),
         'locales' => array(

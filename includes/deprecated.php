@@ -503,11 +503,15 @@ class Deprecated
     /**
      * @return Wootook_Core_Layout
      */
-    public static function getLayout()
+    public static function getLayout($adminPage = false)
     {
         if (self::$layout === null) {
             self::$layout = new Wootook_Core_Layout();
-            self::$layout->load('empire');
+
+            if (defined('IN_INSTALL')) {
+                self::$layout->setPackage('install');
+                self::$layout->setTheme('default');
+            }
         }
 
         return self::$layout;
@@ -528,7 +532,13 @@ function display($page, $title = '', $topnav = true, $metatags = '', $adminPage 
     defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
 
     // TODO: implement extra meta tags
-    $layout = Deprecated::getLayout();
+    $layout = Deprecated::getLayout($adminPage);
+    if ($adminPage === false) {
+        $layout->load('empire');
+    } else {
+        $layout->load('admin');
+    }
+
     $content = $layout->getBlock('content');
 
     if ($topnav) {

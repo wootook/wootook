@@ -36,13 +36,13 @@ require_once dirname(dirname(__FILE__)) .'/application/bootstrap.php';
 includeLang('leftmenu');
 
 	if (in_array($user['authlevel'], array(LEVEL_ADMIN, LEVEL_OPERATOR, LEVEL_MODERATOR))) {
-		$parse                 = $lang;
-		$parse['mf']           = "Hauptframe";
-		$parse['dpath']        = $dpath;
+		$parse                   = $lang;
+		$parse['mf']             = "Hauptframe";
+		$parse['dpath']          = $dpath;
 		$parse['WootookRelease'] = VERSION;
-		$parse['servername']   = Wootook;
-		$Page                  = parsetemplate(gettemplate('admin/left_menu'), $parse);
-		display( $Page, "", false, '', true);
+		$parse['servername']     = 'Wootook';
+		$Page                    = parsetemplate(gettemplate('admin/left_menu'), $parse);
+		display($Page, "", false, '', true);
 	} else {
 		message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
 	}

@@ -1,10 +1,16 @@
-<form name="rename-planet" id="overview:rename-planet" method="post" action="">
+<form name="rename-planet" class="form rename-planet" id="overview:rename-planet" method="post" action="">
   <fieldset>
     <input type="hidden" name="form_key" value="<?php echo $this->getFormKey()?>" />
-    <label for="overview:rename-planet:password"><?php echo $this->__('Password:')?></label>
-    <input id="overview:rename-planet:password" type="password" name="password" />
-    <label for="overview:rename-planet:name"><?php echo $this->__('New name:')?></label>
-    <input id="overview:rename-planet:name" type="text" name="name" />
-    <input type="submit" />
+    <p>
+      <label for="overview:rename-planet:name"><?php echo $this->__('New name:')?></label>
+      <input id="overview:rename-planet:name" type="text" name="name" />
+    </p>
+    <p>
+      <label for="overview:rename-planet:password"><?php echo $this->__('Password:')?></label>
+      <input id="overview:rename-planet:password" type="password" name="password" />
+    </p>
+    <p>
+      <input type="submit" />
+    </p>
   </fieldset>
 </form>

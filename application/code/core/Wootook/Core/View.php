@@ -142,7 +142,16 @@ class Wootook_Core_View
             $theme = Wootook_Core_Layout::DEFAULT_THEME;
         }
 
-        return Wootook::getSkinUrl($package, $theme, $uri, $params);
+        $pattern = ROOT_PATH . DIRECTORY_SEPARATOR . 'skin/%s/%s/{$uri}';
+
+        if (Wootook::fileExists(sprintf($pattern, $package, $theme))) {
+            return Wootook::getSkinUrl($package, $theme, $uri, $params);
+        }
+        if (Wootook::fileExists(sprintf($pattern, $package, Wootook_Core_Layout::DEFAULT_THEME))) {
+            return Wootook::getSkinUrl($package, Wootook_Core_Layout::DEFAULT_THEME, $uri, $params);
+        }
+
+        return Wootook::getSkinUrl(Wootook_Core_Layout::DEFAULT_PACKAGE, Wootook_Core_Layout::DEFAULT_THEME, $uri, $params);
     }
 
     public function setPartial($name, $content)

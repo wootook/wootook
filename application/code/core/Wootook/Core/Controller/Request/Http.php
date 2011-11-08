@@ -84,9 +84,59 @@ class Wootook_Core_Controller_Request_Http
         return $_SERVER[$key];
     }
 
+    public function getAllQueryData()
+    {
+        return $_GET;
+    }
+
+    public function getAllFilesData()
+    {
+        return $_FILES;
+    }
+
+    public function getAllCookieData()
+    {
+        $data = array();
+        foreach ($_COOKIE as $key => $value) {
+            $data[$key] = unserialize(stripslashes($value));
+        }
+        return $data;
+    }
+
+    public function getAllRawCookieData()
+    {
+        return $_COOKIE;
+    }
+
+    public function getAllPostData()
+    {
+        return $_POST;
+    }
+
+    public function getAllServerData()
+    {
+        return $_SERVER;
+    }
+
     public function isPost()
     {
         if (strtoupper($this->getServer('REQUEST_METHOD')) == 'POST') {
+            return true;
+        }
+        return false;
+    }
+
+    public function isPut()
+    {
+        if (strtoupper($this->getServer('REQUEST_METHOD')) == 'PUT') {
+            return true;
+        }
+        return false;
+    }
+
+    public function isHead()
+    {
+        if (strtoupper($this->getServer('REQUEST_METHOD')) == 'HEAD') {
             return true;
         }
         return false;

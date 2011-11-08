@@ -37,10 +37,6 @@ if (0 === filesize(ROOT_PATH . 'config.php')) {
     die();
 }
 
-foreach (include ROOT_PATH . 'includes/data/events.php' as $event => $listenerList) {
-    foreach ($listenerList as $listener) {
-        Wootook::registerListener($event, $listener);
-    }
-}
+Wootook_Core_Model_Config_Events::registerEvents();
 
 include ROOT_PATH . 'includes/constants.php';

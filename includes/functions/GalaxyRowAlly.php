@@ -63,17 +63,17 @@ function GalaxyRowAlly ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $Galaxy, 
 			$Result .= " onmouseover='return overlib(\"";
 			$Result .= "<table width=240>";
 			$Result .= "<tr>";
-			$Result .= "<td class=c>".$lang['Alliance']." ". $allyquery['ally_name'] ." ".$lang['gl_with']." ". $members_count[0] ." ". $lang['gl_membre'] . $add ."</td>";
+			$Result .= "<td class=c>".htmlspecialchars($lang['Alliance'], ENT_QUOTES, 'UTF-8')." ". htmlspecialchars($allyquery['ally_name'], ENT_QUOTES, 'UTF-8') ." ".$lang['gl_with']." ". $members_count[0] ." ". $lang['gl_membre'] . $add ."</td>";
 			$Result .= "</tr>";
 			$Result .= "<th>";
 			$Result .= "<table>";
 			$Result .= "<tr>";
-			$Result .= "<td><a href=alliance.php?mode=ainfo&a=". $allyquery['id'] .">".$lang['gl_ally_internal']."</a></td>";
+			$Result .= "<td><a href=alliance.php?mode=ainfo&a=". intval($allyquery['id']) .">".$lang['gl_ally_internal']."</a></td>";
 			$Result .= "</tr><tr>";
 			$Result .= "<td><a href=stat.php?start=101&who=ally>".$lang['gl_stats']."</a></td>";
 			if ($allyquery["ally_web"] != "") {
 				$Result .= "</tr><tr>";
-				$Result .= "<td><a href=". $allyquery["ally_web"] ." target=_new>".$lang['gl_ally_web']."</td>";
+				$Result .= "<td><a href=". htmlspecialchars($allyquery["ally_web"], ENT_QUOTES, 'UTF-8') ." target=_new>".$lang['gl_ally_web']."</td>";
 			}
 			$Result .= "</tr>";
 			$Result .= "</table>";
@@ -82,7 +82,7 @@ function GalaxyRowAlly ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $Galaxy, 
 			$Result .= ", STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -40, OFFSETY, -40 );'";
 			$Result .= " onmouseout='return nd();'>";
 			if ($user['ally_id'] == $GalaxyRowUser['ally_id']) {
-				$Result .= "<span class=\"allymember\">". $allyquery['ally_tag'] ."</span></a>";
+				$Result .= "<span class=\"allymember\">". htmlspecialchars($allyquery['ally_tag'], ENT_QUOTES, 'UTF-8') ."</span></a>";
 			} else {
 				$Result .= $allyquery['ally_tag'] ."</a>";
 			}

@@ -197,7 +197,7 @@ class Wootook
         return self::$_defaultLocale;
     }
 
-    public function getPreferredLocale($availableLocales = array())
+    public static function getPreferredLocale($availableLocales = array())
     {
         if (empty($availableLocales)) {
             return self::getDefaultLocale();
@@ -255,6 +255,9 @@ class Wootook
         return self::$_now;
     }
 
+    /**
+     * @return Wootook_Core_Controller_Request_Http
+     */
     public static function getRequest()
     {
         if (self::$_request === null) {
@@ -268,6 +271,9 @@ class Wootook
         self::$_request = $request;
     }
 
+    /**
+     * @return Wootook_Core_Controller_Response_Http
+     */
     public static function getResponse()
     {
         if (self::$_response === null) {
@@ -281,11 +287,20 @@ class Wootook
         self::$_response = $response;
     }
 
-    public static function getConfig($path = null)
+    private static function _loadConfig()
     {
         if (self::$_config === null) {
             self::$_config = include ROOT_PATH . DIRECTORY_SEPARATOR . 'config.php';
+
+            if (!is_array(self::$_config)) {
+                self::$_config = array();
+            }
         }
+    }
+
+    public static function getConfig($path = null)
+    {
+        self::_loadConfig();
 
         if ($path === null || !is_string($path)) {
             return self::$_config;
@@ -298,6 +313,25 @@ class Wootook
             $config = $config[$chunk];
         }
         return $config;
+    }
+
+    public static function setConfig($path = null, $value)
+    {
+        self::_loadConfig();
+
+        if ($path === null || !is_string($path)) {
+            return self::$_config;
+        }
+        $config = &self::$_config;
+        foreach (explode('/', $path) as $chunk) {
+            if (!isset($config[$chunk])) {
+                $config[$chunk] = array();
+            }
+            $config = &$config[$chunk];
+        }
+        $config = $value;
+
+        return true;
     }
 
     public static function getBaseUrl()
@@ -333,10 +367,13 @@ class Wootook
             return false;
         }
 
+        Wootook_Core_ErrorProfiler::sleep();
         if (($fp = @fopen($path, 'r', true)) === false) {
+            Wootook_Core_ErrorProfiler::wakeup();
             return false;
         }
         fclose($fp);
+        Wootook_Core_ErrorProfiler::wakeup();
         return true;
     }
 }

@@ -48,25 +48,17 @@ include(ROOT_PATH . 'includes/functions/SendSimpleMessage.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/SpyTarget.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/RestoreFleetToPlanet.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/StoreGoodsToPlanet.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/CheckPlanetBuildingQueue.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/CheckPlanetUsedFields.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/CreateOneMoonRecord.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/CreateOnePlanetRecord.'.PHPEXT);
+include(ROOT_PATH . 'includes/functions/CreateOneMoonRecord.'.PHPEXT); // <- TODO: delete
+include(ROOT_PATH . 'includes/functions/CreateOnePlanetRecord.'.PHPEXT); // <- TODO: delete
 include(ROOT_PATH . 'includes/functions/InsertJavaScriptChronoApplet.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/IsTechnologieAccessible.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/GetBuildingTime.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/GetBuildingTimeLevel.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/GetRestPrice.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/GetElementPrice.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/GetBuildingPrice.'.PHPEXT);
+include(ROOT_PATH . 'includes/functions/IsTechnologieAccessible.'.PHPEXT); // <- TODO: delete
+include(ROOT_PATH . 'includes/functions/GetRestPrice.'.PHPEXT); // <- TODO: delete
 include(ROOT_PATH . 'includes/functions/IsElementBuyable.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/CheckCookies.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/ChekUser.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/InsertGalaxyScripts.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/GalaxyCheckFunctions.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/ShowGalaxyRows.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/GetPhalanxRange.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/GetMissileRange.'.PHPEXT);
+include(ROOT_PATH . 'includes/functions/GetPhalanxRange.'.PHPEXT); // <- TODO: delete
+include(ROOT_PATH . 'includes/functions/GetMissileRange.'.PHPEXT); // <- TODO: delete
 include(ROOT_PATH . 'includes/functions/GalaxyRowPos.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/GalaxyRowPlanet.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/GalaxyRowPlanetName.'.PHPEXT);
@@ -80,30 +72,8 @@ include(ROOT_PATH . 'includes/functions/ShowGalaxyMISelector.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/ShowGalaxyTitles.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/GalaxyLegendPopup.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/ShowGalaxyFooter.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/GetMaxConstructibleElements.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/GetElementRessources.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/ElementBuildListBox.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/ElementBuildListQueue.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/FleetBuildingPage.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/DefensesBuildingPage.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/ResearchBuildingPage.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/BatimentBuildingPage.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/CheckLabSettingsInQueue.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/InsertBuildListScript.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/AddBuildingToQueue.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/ShowBuildingQueue.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/HandleTechnologieBuild.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/BuildingSavePlanetRecord.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/BuildingSaveUserRecord.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/RemoveBuildingFromQueue.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/CancelBuildingFromQueue.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/SetNextQueueElementOnTop.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/ShowTopNavigationBar.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/SetSelectedPlanet.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/MessageForm.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/BuildFlyingFleetTable.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/SendNewPassword.'.PHPEXT);
-//include(ROOT_PATH . 'includes/functions/UpdatePlanetBatimentQueueList.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/IsOfficierAccessible.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/CheckInputStrings.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/MipCombatEngine.'.PHPEXT);

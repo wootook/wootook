@@ -3,10 +3,14 @@
 
 class Wootook_Core_Time
 {
-    public static function init()
+    public static function init($timezone = null)
     {
-        $config = include ROOT_PATH . 'config.php';
-        $timezone = $config['global']['date']['timezone'];
+        if ($timezone === null) {
+            $timezone = Wootook::getConfig('global/date/timezone');
+        }
+        if ($timezone === null) {
+            $timezone = 'GMT';
+        }
 
         date_default_timezone_set($timezone);
     }

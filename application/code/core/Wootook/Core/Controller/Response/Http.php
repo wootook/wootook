@@ -81,7 +81,7 @@ class Wootook_Core_Controller_Response_Http
         return $this;
     }
 
-    public function setRawHeader($name, $value)
+    public function setRawHeader($value)
     {
         if (!isset($this->_data['raw_headers']) || !is_array($this->_data['raw_headers'])) {
             $this->clearRawHeaders();

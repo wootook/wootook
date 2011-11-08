@@ -8,6 +8,8 @@ class Wootook_Core_Layout
 
     protected $_blocks = array();
 
+    protected $_messageBlock = null;
+
     protected $_view = null;
     protected $_eventPrefix = 'layout';
     protected $_eventObject = 'layout';
@@ -31,19 +33,16 @@ class Wootook_Core_Layout
             }
         }
 
-        $config = include ROOT_PATH . 'config.php';
-        $fileList = array();
-        if (isset($config['global'])) {
-            if (isset($config['global']['layout'])) {
-                $fileList = $config['global']['layout'];
-            }
-            if (isset($config['global']['package'])) {
-                $this->setPackage($config['global']['package']);
-            }
-            if (isset($config['global']['theme'])) {
-                $this->setTheme($config['global']['theme']);
-            }
+        $fileList = Wootook::getConfig('global/layout');
+        if (!is_array($fileList) || empty($fileList)) {
+            $fileList = $this->getAllDatas();
+        } else {
+            $fileList = array_merge($fileList, $this->getAllDatas());
         }
+        $this->_data = array();
+
+        $this->setPackage(Wootook::getConfig('global/package'));
+        $this->setTheme(Wootook::getConfig('global/theme'));
 
         foreach ($fileList as $layoutFile) {
             foreach (include $this->_getLayoutPath($layoutFile) as $layoutId => $layoutConfig) {
@@ -56,6 +55,8 @@ class Wootook_Core_Layout
                 $this->setData($layoutId, $layoutConfig);
             }
         }
+
+        $this->_messageBlock = $this->createBlock('core/messages', 'messages');
 
         return $this;
     }
@@ -86,6 +87,9 @@ class Wootook_Core_Layout
         $layoutUpdates = array();
         $layoutConfig = array();
         foreach (array_reverse($layoutConfigs) as $config) {
+            if (!is_array($config)) {
+                continue;
+            }
             $layoutConfig = array_merge($layoutConfig, $config);
 
             if (isset($layoutConfig['reference'])) {
@@ -374,6 +378,10 @@ class Wootook_Core_Layout
 
     public function render()
     {
+        if (!$this->_view instanceof Wootook_Core_View) {
+            throw new Wootook_Core_Exception_RuntimeException(Wootook::__('No root view declared.'));
+        }
+
         $scriptPath = $this->getScriptPath();
         foreach ($this->_blocks as $block) {
             if ($block instanceof Wootook_Core_Block_Template) {
@@ -407,8 +415,17 @@ class Wootook_Core_Layout
             return $path;
         }
 
-        trigger_error(Legacies::__("Layout file '%s' does not exist.", $file), E_USER_NOTICE);
+        trigger_error(Wootook::__("Layout file '%s' does not exist.", $file), E_USER_NOTICE);
 
         return null;
+    }
+
+    /**
+     *
+     * @return Wootook_Core_Block_Messages
+     */
+    public function getMessagesblock()
+    {
+        return $this->_messageBlock;
     }
 }

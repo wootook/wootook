@@ -1,0 +1,13 @@
+<?php $session = Wootook::getSession('install')?>
+<div class="install">
+  <h1><?php echo $this->__('Welcome to the Wootook! installer')?></h1>
+  <h2><?php echo $this->__('System Config')?></h2>
+  <?php echo $this->getLayout()->getMessagesblock()->renderGroupedHtml()?>
+  <form method="post" action="?mode=install&step=1">
+    <p>
+      <label for="system:url_path"><?php echo $this->__('Base URL path for the game:')?></label>
+      <input type="text" id="system:url_path" name="url_path" value="<?php echo $session->getFormData('url_path', Wootook::getBaseUrl())?>" />
+    </p>
+    <p><input type="submit" value="<?php echo $this->__('Next step')?>" /></p>
+  </form>
+</div>
