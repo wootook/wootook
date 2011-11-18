@@ -11,14 +11,27 @@
             'timezone' => 'Europe/Paris'
             ),
         'database' => array(
-            'engine' => 'mysql',
-            'options' => array(
-                'hostname' => 'localhost',
-                'username' => 'root',
-                'password' => '',
-                'database' => 'db_xnova'
+            'default' => array(
+                'engine' => 'mysql',
+                'options' => array(
+                    ),
+                'params' => array(
+                     'hostname' => 'localhost',
+                     'username' => 'root',
+                     'password' => '',
+                     'database' => 'db_wootook'
+                     ),
+                'table_prefix' => 'wtk_',
+                 ),
+            'core_setup' => array(
+                'use' => 'default'
                 ),
-            'table_prefix' => 'game_',
+            'core_read' => array(
+                'use' => 'default'
+                ),
+            'core_write' => array(
+                'use' => 'default'
+                ),
             ),
         'layout' => array(
             'page'   => 'page.php',
@@ -30,6 +43,9 @@
             'fr_FR' => 'fr_FR',
             'en'    => 'en_US',
             'en_US' => 'en_US'
+            'es'    => 'es_SP',
+            'es_SP' => 'es_SP',
+            'es_AR' => 'es_AR'
             )
         )
     );

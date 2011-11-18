@@ -84,17 +84,7 @@
                 ),
             'header' => array(
                 'type' => 'core/template',
-                'template' => 'page/html/header.phtml',
-                'children' => array(
-                    'menu' => array(
-                        'type'     => 'core/html.navigation',
-                        'template' => 'page/html/navigation.phtml',
-                        ),
-                    'planet-list' => array(
-                        'type'     => 'empire/planet-list',
-                        'template' => 'empire/planet-list.phtml',
-                        )
-                    )
+                'template' => 'page/html/header.phtml'
                 ),
             'footer' => array(
                 'type' => 'core/template',

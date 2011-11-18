@@ -10,7 +10,7 @@ __   __ _   _
 */
 
 
-* {font-family:Tahoma,sans-serif;font-size:10px;}
+* {font-family:Arial,sans-serif;font-size:10px;}
 
 img {border:none;}
 p table {border:none;}
@@ -19,14 +19,14 @@ p td
 {
   text-align           : center;
   font-size            : 10px;
-  font-family          : Tahoma,sans-serif;
+  font-family          : Arial,sans-serif;
 }
 
 table table {border:0px;}
 
-body {color:#000;margin:1px 0 0 1px;background:#040e1e url(../../graphics/img/background2.jpg) fixed no-repeat top left;}
+body {color:#000;margin:1px 0 0 1px;background:#040e1e url("../../graphics/img/background2.jpg") fixed no-repeat top left;}
 
-body.style {background-image:url(../../graphics/img/background1.jpg);}
+body.style {background-image:url("../../graphics/img/background1.jpg");}
 body.style table {margin:0px;border:0 auto}
 body form table th table input {width: 60px;}
 
@@ -44,7 +44,7 @@ input, select, textarea
   border               : 1px #545454 solid;
 }
 
-th, td.a,td.b,td.c,td.f,input,select,td.g,td.h,td.i,td.j,td.k,td.m,td.o,td.q,td.r,td.v,td.s,.style td,p td {background:#FFF;filter:alpha(opacity=90);-moz-opacity:0.9;-khtml-opacity:0.9;opacity:0.9;}
+th,td.a,td.b,td.c,td.f,input,select,td.g,td.h,td.i,td.j,td.k,td.m,td.o,td.q,td.r,td.v,td.s,.style td,p td {background:#FFF;color:#000;}
 
 th
 {
@@ -64,32 +64,15 @@ td.b
   padding              : 3px;
 }
 
-td.c
-{
-  font-weight          : bold;
-  color                : #FFFFFF;
-  padding-left         : 3px;
-  background-image     : url(img/bg1.gif);
-  filter               : alpha(opacity=90);
-  -moz-opacity         : 0.7;
-  -khtml-opacity       : 0.7;
-  opacity              : 0.7;
-}
+td.c {font-weight:bold;padding:0 10px;background:#DDD url("../../graphics/img/bg1.gif") repeat-x;color:#FFF;font-size:1.5em;height:30px;}
+td.c a,td.c a:visited {color:#FFF;}
+td.c a:hover {color:#CDF;}
 
-td.f, input, select, textarea
-{
-  color                : #FFFFFF;
-  background-color     : #1c1c1c;
-  filter               : alpha(opacity=90);
-  -moz-opacity         : 0.7;
-  -khtml-opacity       : 0.7;
-  opacity              : 0.7;
-}
+td.f{color:#FFF;background-color:#1c1c1c;}
 
-textarea
-{
-  width                : 100%;
-}
+input,select,textarea {color:#FFF;background-color:#1c1c1c;}
+
+textarea {width:100%;}
 
 td.k input
 {
@@ -133,10 +116,6 @@ td.l
   color                : #FFFFFF;
   vertical-align       : top;
   padding              : 3px;
-  filter               : alpha(opacity=70);
-  -moz-opacity         : 0.7;
-  -khtml-opacity       : 0.7;
-  opacity              : 0.7;
 }
 
 td.m
@@ -166,7 +145,7 @@ td.q
 {
   font-weight          : bold;
   font-size            : 10px;
-  font-family          : Tahoma,sans-serif;
+  font-family          : Arial,sans-serif;
   text-align           : center;
   vertical-align       : middle;
   color                : #FFFFFF;
@@ -236,7 +215,7 @@ a:hover
   color                : #FFFFFF;
   border-top           : 0px;
   font-size            : 10px;
-  font-family          : Tahoma,sans-serif;
+  font-family          : Arial,sans-serif;
 }
 
 .style div a
@@ -245,7 +224,7 @@ a:hover
   height               : 100%;
   width                : 100%;
   font-size            : 10px;
-  font-family          : Tahoma,sans-serif;
+  font-family          : Arial,sans-serif;
 }
 
 .style div a:link
@@ -253,7 +232,7 @@ a:hover
   height               : 100%;
   width                : 100%;
   font-size            : 10px;
-  font-family          : Tahoma,sans-serif;
+  font-family          : Arial,sans-serif;
 }
 
 .style div a:visited
@@ -261,19 +240,19 @@ a:hover
   height               : 100%;
   width                : 100%;
   font-size            : 10px;
-  font-family          : Tahoma,sans-serif;
+  font-family          : Arial,sans-serif;
 }
 
 .style div a:hover
 {
-  background-image     : url(img/link.gif);
+  background-image     : url("../../graphics/img/link.gif");
   background-repeat    : no-repeat;
   background-position  : left;
   height               : 100%;
   width                : 108px;
   text-decoration      : none;
   font-size            : 10px;
-  font-family          : Tahoma,sans-serif;
+  font-family          : Arial,sans-serif;
 }
 
 .style

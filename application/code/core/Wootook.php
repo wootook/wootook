@@ -315,12 +315,12 @@ class Wootook
         return $config;
     }
 
-    public static function setConfig($path = null, $value)
+    public static function setConfig($path, $value)
     {
         self::_loadConfig();
 
         if ($path === null || !is_string($path)) {
-            return self::$_config;
+            return self::$_config = $value;
         }
         $config = &self::$_config;
         foreach (explode('/', $path) as $chunk) {
@@ -332,6 +332,12 @@ class Wootook
         $config = $value;
 
         return true;
+    }
+
+    public static function writeConfig(Array $config)
+    {
+        file_put_contents(ROOT_PATH . DIRECTORY_SEPARATOR . 'config.php',
+            '<' . '?p' . 'hp ' . var_export($config, true) . ';');
     }
 
     public static function getBaseUrl()

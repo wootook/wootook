@@ -424,7 +424,7 @@ class Wootook_Core_Layout
      *
      * @return Wootook_Core_Block_Messages
      */
-    public function getMessagesblock()
+    public function getMessagesBlock()
     {
         return $this->_messageBlock;
     }

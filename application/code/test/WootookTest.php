@@ -1,6 +1,6 @@
 <?php
 
-class Test_LegaciesTest
+class Test_WootookTest
     extends PHPUnit_Framework_TestCase
 {
     protected function tearDown()

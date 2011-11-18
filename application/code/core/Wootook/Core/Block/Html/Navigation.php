@@ -17,7 +17,8 @@ class Wootook_Core_Block_Html_Navigation
                     ),
                 'label'   => $label,
                 'title'   => $title,
-                'classes' => $classes
+                'classes' => $classes,
+                'attributes' => $attributes
                 ));
         $parent->setPartial($baseName, $child);
 

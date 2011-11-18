@@ -59,8 +59,11 @@ class Wootook_Core_Form
     public function validate()
     {
         foreach ($this->_fields as $field) {
-            $field->validate();
+            if (!$field->validate()) {
+                return false;
+            }
         }
+        return true;
     }
 
     /**

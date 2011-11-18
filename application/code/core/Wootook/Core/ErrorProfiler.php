@@ -14,6 +14,8 @@ class Wootook_Core_ErrorProfiler
 
     private static $_listen = true;
 
+    private $_mute = false;
+
     public static function getSingleton()
     {
         if (self::$_singleton === null) {
@@ -134,6 +136,10 @@ ERROR_EOF;
 
     public function shutdownManager()
     {
+        if ($this->_mute === true) {
+            return;
+        }
+
         $index = 0;
         echo '<div style="background:#FFF;border:1px solid #F00;color:#000;padding:10px;margin:20px;text-align:left;">';
         echo '<h1>Debug profiler</h1>';
@@ -173,6 +179,8 @@ ERROR_EOF;
         set_error_handler(array(self::getSingleton(), 'errorManager'));
         set_exception_handler(array(self::getSingleton(), 'exceptionManager'));
 
+        self::getSingleton()->_mute = false;
+
         if (self::$_isTraceRegistered === false && defined('DEBUG')) {
             self::$_isTraceRegistered = true;
             register_shutdown_function(array(self::getSingleton(), 'shutdownManager'));
@@ -184,8 +192,10 @@ ERROR_EOF;
         restore_error_handler();
         restore_exception_handler();
 
-        if ((self::$_isTraceRegistered && defined('DEBUG')) || $force) {
-            self::$_isTraceRegistered = false;
+        self::getSingleton()->_mute = true;
+
+        if ((self::$_isTraceRegistered === false && defined('DEBUG')) || $force) {
+            self::$_isTraceRegistered = true;
             register_shutdown_function(array(self::getSingleton(), 'shutdownManager'));
         }
     }

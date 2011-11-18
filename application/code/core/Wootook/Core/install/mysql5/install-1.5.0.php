@@ -2,45 +2,33 @@
 /**
  * This file is part of Wootook
  *
- * @license Modified BSD
- * @see https://github.com/gplanchat/one.platform
+ * @license http://www.gnu.org/licenses/agpl-3.0.txt
+ * @see http://www.wootook.com/
  *
- * Copyright (c) 2009-2010, Grégory PLANCHAT <g.planchat at gmail.com>
+ * Copyright (c) 2011-Present, Grégory PLANCHAT <g.planchat@gmail.com>
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted provided that the following conditions are met:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *     - Redistributions of source code must retain the above copyright notice,
- *       this list of conditions and the following disclaimer.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- *     - Redistributions in binary form must reproduce the above copyright notice,
- *       this list of conditions and the following disclaimer in the documentation
- *       and/or other materials provided with the distribution.
- *
- *     - Neither the name of Grégory PLANCHAT nor the names of its
- *       contributors may be used to endorse or promote products derived from this
- *       software without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  *                                --> NOTICE <--
  *  This file is part of the core development branch, changing its contents will
  * make you unable to use the automatic updates manager. Please refer to the
- * documentation for further information about customizing One.Platform.
+ * documentation for further information about customizing Wootook.
  *
  */
 
-$this->setSetupConnection('legacies_setup');
+$this->setSetupConnection('core_setup');
 
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/aks')} (
@@ -58,12 +46,6 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/aks')} (
 SQL_EOF;
 
 $this->query($sql);
-
-$this
-    ->grant('legacies/aks', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/aks', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/aks', 'legacies_setup')
-;
 
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/alliance')} (
@@ -88,12 +70,6 @@ SQL_EOF;
 
 $this->query($sql);
 
-$this
-    ->grant('legacies/alliance', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/alliance', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/alliance', 'legacies_setup')
-;
-
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/annonce')} (
     `id`                    SMALLINT UNSIGNED   NOT NULL    AUTO_INCREMENT,
@@ -112,12 +88,6 @@ SQL_EOF;
 
 $this->query($sql);
 
-$this
-    ->grant('legacies/annonce', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/annonce', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/annonce', 'legacies_setup')
-;
-
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/banned')} (
     `id`                    BIGINT UNSIGNED     NOT NULL    AUTO_INCREMENT,
@@ -134,12 +104,6 @@ SQL_EOF;
 
 $this->query($sql);
 
-$this
-    ->grant('legacies/banned', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/banned', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/banned', 'legacies_setup')
-;
-
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/buddy')} (
     `id`                    BIGINT UNSIGNED     NOT NULL    AUTO_INCREMENT,
@@ -153,12 +117,6 @@ SQL_EOF;
 
 $this->query($sql);
 
-$this
-    ->grant('legacies/buddy', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/buddy', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/buddy', 'legacies_setup')
-;
-
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/chat')} (
     `messageid`             BIGINT UNSIGNED     NOT NULL    AUTO_INCREMENT,
@@ -171,12 +129,6 @@ SQL_EOF;
 
 $this->query($sql);
 
-$this
-    ->grant('legacies/chat', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/chat', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/chat', 'legacies_setup')
-;
-
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/config')} (
     `config_name`           VARCHAR(64)         NOT NULL,
@@ -186,12 +138,6 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/config')} (
 SQL_EOF;
 
 $this->query($sql);
-
-$this
-    ->grant('legacies/config', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/config', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/config', 'legacies_setup')
-;
 
 $sql = <<<SQL_EOF
 INSERT INTO {$this->getTableName('legacies/config')} (`config_name`, `config_value`) VALUES
@@ -206,7 +152,7 @@ INSERT INTO {$this->getTableName('legacies/config')} (`config_name`, `config_val
     ('game_disable', '1'),
     ('close_reason', 'Le jeu est clos pour le moment!'),
     ('metal_basic_income', '20'),
-    ('crystal_basic_income', '10'),
+    ('cristal_basic_income', '10'),
     ('deuterium_basic_income', '0'),
     ('energy_basic_income', '0'),
     ('BuildLabWhileRun', '0'),
@@ -259,12 +205,6 @@ SQL_EOF;
 
 $this->query($sql);
 
-$this
-    ->grant('legacies/declared', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/declared', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/declared', 'legacies_setup')
-;
-
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/errors')} (
     `error_id`              BIGINT UNSIGNED     NOT NULL    AUTO_INCREMENT,
@@ -277,12 +217,6 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/errors')} (
 SQL_EOF;
 
 $this->query($sql);
-
-$this
-    ->grant('legacies/errors', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/errors', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/errors', 'legacies_setup')
-;
 
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/fleets')} (
@@ -316,12 +250,6 @@ SQL_EOF;
 
 $this->query($sql);
 
-$this
-    ->grant('legacies/fleets', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/fleets', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/fleets', 'legacies_setup')
-;
-
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/galaxy')} (
     `galaxy`                TINYINT UNSIGNED    NOT NULL,
@@ -340,12 +268,6 @@ KEY `planet` (`planet`)
 SQL_EOF;
 
 $this->query($sql);
-
-$this
-    ->grant('legacies/galaxy', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/galaxy', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/galaxy', 'legacies_setup')
-;
 
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/iraks')} (
@@ -367,12 +289,6 @@ SQL_EOF;
 
 $this->query($sql);
 
-$this
-    ->grant('legacies/iraks', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/iraks', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/iraks', 'legacies_setup')
-;
-
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/lunas')} (
     `id`                    BIGINT UNSIGNED         NOT NULL    AUTO_INCREMENT,
@@ -393,12 +309,6 @@ SQL_EOF;
 
 $this->query($sql);
 
-$this
-    ->grant('legacies/lunas', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/lunas', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/lunas', 'legacies_setup')
-;
-
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/messages')} (
     `message_id`            BIGINT UNSIGNED         NOT NULL    AUTO_INCREMENT,
@@ -415,12 +325,6 @@ SQL_EOF;
 
 $this->query($sql);
 
-$this
-    ->grant('legacies/messages', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/messages', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/messages', 'legacies_setup')
-;
-
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/multi')} (
     `id`                    BIGINT UNSIGNED         NOT NULL    AUTO_INCREMENT,
@@ -432,12 +336,6 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/multi')} (
 SQL_EOF;
 
 $this->query($sql);
-
-$this
-    ->grant('legacies/multi', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/multi', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/multi', 'legacies_setup')
-;
 
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/notes')} (
@@ -452,12 +350,6 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/notes')} (
 SQL_EOF;
 
 $this->query($sql);
-
-$this
-    ->grant('legacies/notes', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/notes', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/notes', 'legacies_setup')
-;
 
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/planets')} (
@@ -489,16 +381,16 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/planets')} (
     `metal`                         DECIMAL(65,0)           NOT NULL    DEFAULT 0,
     `metal_perhour`                 DECIMAL(65,0)           NOT NULL    DEFAULT 0,
     `metal_max`                     DECIMAL(65,0)           NOT NULL    DEFAULT 0,
-    `crystal`                       DECIMAL(65,0)           NOT NULL    DEFAULT 0,
-    `crystal_perhour`               DECIMAL(65,0)           NOT NULL    DEFAULT 0,
-    `crystal_max`                   DECIMAL(65,0)           NOT NULL    DEFAULT 0,
+    `cristal`                       DECIMAL(65,0)           NOT NULL    DEFAULT 0,
+    `cristal_perhour`               DECIMAL(65,0)           NOT NULL    DEFAULT 0,
+    `cristal_max`                   DECIMAL(65,0)           NOT NULL    DEFAULT 0,
     `deuterium`                     DECIMAL(65,0)           NOT NULL    DEFAULT 0,
     `deuterium_perhour`             DECIMAL(65,0)           NOT NULL    DEFAULT 0,
     `deuterium_max`                 DECIMAL(65,0)           NOT NULL    DEFAULT 0,
     `energy_used`                   DECIMAL(65,0)           NOT NULL    DEFAULT 0,
     `energy_max`                    DECIMAL(65,0)           NOT NULL    DEFAULT 0,
     `metal_mine`                    SMALLINT UNSIGNED       NOT NULL    DEFAULT 0,
-    `crystal_mine`                  SMALLINT UNSIGNED       NOT NULL    DEFAULT 0,
+    `cristal_mine`                  SMALLINT UNSIGNED       NOT NULL    DEFAULT 0,
     `deuterium_sintetizer`          SMALLINT UNSIGNED       NOT NULL    DEFAULT 0,
     `solar_plant`                   SMALLINT UNSIGNED       NOT NULL    DEFAULT 0,
     `fusion_plant`                  SMALLINT UNSIGNED       NOT NULL    DEFAULT 0,
@@ -506,7 +398,7 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/planets')} (
     `nano_factory`                  SMALLINT UNSIGNED       NOT NULL    DEFAULT 0,
     `hangar`                        SMALLINT UNSIGNED       NOT NULL    DEFAULT 0,
     `metal_store`                   SMALLINT UNSIGNED       NOT NULL    DEFAULT 0,
-    `crystal_store`                 SMALLINT UNSIGNED       NOT NULL    DEFAULT 0,
+    `cristal_store`                 SMALLINT UNSIGNED       NOT NULL    DEFAULT 0,
     `deuterium_store`               SMALLINT UNSIGNED       NOT NULL    DEFAULT 0,
     `laboratory`                    SMALLINT UNSIGNED       NOT NULL    DEFAULT 0,
     `terraformer`                   SMALLINT UNSIGNED       NOT NULL    DEFAULT 0,
@@ -540,7 +432,7 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/planets')} (
     `interceptor_misil`             SMALLINT                NOT NULL    DEFAULT 0,
     `interplanetary_misil`          SMALLINT                NOT NULL    DEFAULT 0,
     `metal_mine_porcent`            TINYINT                 NOT NULL    DEFAULT 10,
-    `crystal_mine_porcent`          TINYINT                 NOT NULL    DEFAULT 10,
+    `cristal_mine_porcent`          TINYINT                 NOT NULL    DEFAULT 10,
     `deuterium_sintetizer_porcent`  TINYINT                 NOT NULL    DEFAULT 10,
     `solar_plant_porcent`           TINYINT                 NOT NULL    DEFAULT 10,
     `fusion_plant_porcent`          TINYINT                 NOT NULL    DEFAULT 10,
@@ -551,12 +443,6 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/planets')} (
 SQL_EOF;
 
 $this->query($sql);
-
-$this
-    ->grant('legacies/planets', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/planets', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/planets', 'legacies_setup')
-;
 
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/rw')} (
@@ -573,12 +459,6 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/rw')} (
 SQL_EOF;
 
 $this->query($sql);
-
-$this
-    ->grant('legacies/rw', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/rw', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/rw', 'legacies_setup')
-;
 
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/statpoints')} (
@@ -616,12 +496,6 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/statpoints')} (
 SQL_EOF;
 
 $this->query($sql);
-
-$this
-    ->grant('legacies/statpoints', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/statpoints', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/statpoints', 'legacies_setup')
-;
 
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/users')} (
@@ -736,57 +610,3 @@ SQL_EOF;
 
 $this->query($sql);
 
-$this
-    ->grant('legacies/users', 'legacies_read',  array('SELECT'))
-    ->grant('legacies/users', 'legacies_write', array('SELECT', 'CREATE', 'UPDATE', 'DELETE'))
-    ->grant('legacies/users', 'legacies_setup')
-;
-
-$sql = <<<SQL_EOF
-INSERT INTO {$this->getTableName('legacies/alliance')} (
-    `id`, `ally_name`, `ally_tag`, `ally_owner`, `ally_register_time`, `ally_description`,
-    `ally_web`, `ally_text`, `ally_image`, `ally_request`, `ally_request_waiting`,
-    `ally_request_notallow`, `ally_owner_range`, `ally_ranks`, `ally_members`
-    )
-    VALUES
-    ('1', 'Admin', 'Admin', 1, NOW(), 'Administrator alliance', 'http://www.xnova-ng.org/',
-    '', '', '', '', '', '', '', '')
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
-INSERT INTO {$this->getTableName('legacies/users')} (
-    `id`, `username`, `password`, `email`, `email_2`, `lang`, `authlevel`, `sex`,
-    `avatar`, `sign`, `id_planet`, `galaxy`, `system`, `planet`, `current_planet`,
-    `user_lastip`, `ip_at_reg`, `user_agent`, `current_page`, `register_time`,
-    `onlinetime`, `dpath`, `design`, `noipcheck`, `planet_sort`, `planet_sort_order`,
-    `spio_anz`, `settings_tooltiptime`, `settings_fleetactions`, `settings_allylogo`,
-    `settings_esp`, `settings_wri`, `settings_bud`, `settings_mis`, `settings_rep`,
-    `urlaubs_modus`, `urlaubs_until`, `db_deaktjava`, `new_message`, `fleet_shortcut`,
-    `b_tech_planet`, `spy_tech`, `computer_tech`, `military_tech`, `defence_tech`,
-    `shield_tech`, `energy_tech`, `hyperspace_tech`, `combustion_tech`,
-    `impulse_motor_tech`, `hyperspace_motor_tech`, `laser_tech`, `ionic_tech`,
-    `buster_tech`, `intergalactic_tech`, `expedition_tech`, `graviton_tech`,
-    `ally_id`, `ally_name`, `ally_request`, `ally_request_text`, `ally_register_time`,
-    `ally_rank_id`, `current_luna`, `kolorminus`, `kolorplus`, `kolorpoziom`,
-    `rpg_geologue`, `rpg_amiral`, `rpg_ingenieur`, `rpg_technocrate`, `rpg_espion`,
-    `rpg_constructeur`, `rpg_scientifique`, `rpg_commandant`, `rpg_points`, `rpg_stockeur`,
-    `rpg_defenseur`, `rpg_destructeur`, `rpg_general`, `rpg_bunker`, `rpg_raideur`,
-    `rpg_empereur`, `lvl_minier`, `lvl_raid`, `xpraid`, `xpminier`, `raids`,
-    `p_infligees`, `mnl_alliance`, `mnl_joueur`, `mnl_attaque`, `mnl_spy`,
-    `mnl_exploit`, `mnl_transport`, `mnl_expedition`, `mnl_general`, `mnl_buildlist`,
-    `bana`, `multi_validated`, `banaday`, `raids1`, `raidswin`, `raidsloose`
-    )
-    VALUES
-    ('1', 'Admin', '', '', '', 'fr', '3', NULL, '', '', '1', '1', '1', '1',
-    '1', '127.0.0.1', '', '', '', '1254743313', '1269391977', '', '1', '1', '0',
-    '0', '1', '5', '0', '0', '1', '1', '1', '1', '0', '0', '0', '0', '0', '', '0',
-    '16', '20', '11', '11', '11', '12', '10', '14', '10', '9', '0', '0', '0', '0',
-    '0', '1', 1, 'Admin', '0', '', NOW(), '0', '0', 'red', '#00FF00', 'yellow', '20',
-    '20', '10', '10', '0', '3', '3', '0', '27', '2', '2', '0', '0', '0', '0', '0',
-    '98', '1', '0', '1133583738', '0', '0', '0', '0', '0', '0', '0', '0', '0',
-    '0', '0', '0', '0', '0', '0', '0', '0')
-SQL_EOF;
-
-$this->query($sql);

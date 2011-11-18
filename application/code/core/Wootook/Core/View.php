@@ -56,9 +56,14 @@ class Wootook_Core_View
         }
     }
 
-    protected function escape($unescaped)
+    public function escape($unescaped)
     {
         return htmlspecialchars($unescaped, ENT_QUOTES, 'UTF-8');
+    }
+
+    public function escapeJs($unescaped)
+    {
+        return addslashes($unescaped);
     }
 
     public function __($message, $_ = null)

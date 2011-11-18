@@ -128,19 +128,26 @@ class Wootook_Core_Model_Session
         return $this->addMessage(vsprintf($message, $args), self::DEBUG);
     }
 
+    public function initFormKey()
+    {
+        $key = $this->getData('form_key');
+        $this->setData('form_key', uniqid());
+
+        return $key;
+    }
+
     public function getFormKey($reset = true)
     {
         if (!$this->getData('form_key')) {
-            $this->setData('form_key', uniqid());
+            $this->initFormKey();
             return $this->getData('form_key');
         }
 
-        $key = $this->getData('form_key');
-        if ($reset !== true) {
-            $this->setData('form_key', uniqid());
+        if ($reset === true) {
+            $this->initFormKey();
         }
 
-        return $key;
+        return $this->getData('form_key');
     }
 
     public function setFormData(Array $data = array())

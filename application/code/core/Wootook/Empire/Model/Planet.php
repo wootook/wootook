@@ -429,7 +429,7 @@ class Wootook_Empire_Model_Planet
         ;
 
         $options = array(
-            'galaxy'      => $this->getSystem(),
+            'galaxy'      => $this->getGalaxy(),
             'system'      => $this->getSystem(),
             'position'    => $this->getPosition(),
             'planet_type' => $this->getType()

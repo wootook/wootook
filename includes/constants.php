@@ -30,12 +30,14 @@
 
 defined('E_USER_DEPRECATED') || define('E_USER_DEPRECATED', E_USER_WARNING); // Defined in PHP 5.3 core
 
-define('ADMINEMAIL', "moderation@wootook.org");
+define('ADMINEMAIL', "no-reply@wootook.org");
 
 // Definition du monde connu !
-define('MAX_GALAXY_IN_WORLD', 3);
-define('MAX_SYSTEM_IN_GALAXY', 100);
-define('MAX_PLANET_IN_SYSTEM', 50);
+defined('MAX_GALAXY_IN_WORLD')  || define('MAX_GALAXY_IN_WORLD', Wootook::getConfig('default/engine/universe/galaxies'));
+defined('MAX_SYSTEM_IN_GALAXY') || define('MAX_SYSTEM_IN_GALAXY', Wootook::getConfig('default/engine/universe/systems'));
+defined('MAX_PLANET_IN_SYSTEM') || define('MAX_PLANET_IN_SYSTEM', Wootook::getConfig('default/engine/universe/positions'));
+
+defined('BCNUMBERS') || define('BCNUMBERS', Wootook::getConfig('default/engine/core/use_large_numbers'));
 
 /**
  * User level constants
@@ -49,7 +51,7 @@ define('LEVEL_PLAYER', 0);
  * }}}
  */
 
-define('ALLOW_SPY_DRONE_ATTACKS', true);
+define('ALLOW_SPY_DRONE_ATTACKS', Wootook::getConfig('default/engine/combat/allow_spy_drone_attacks'));
 
 // Nombre de colones pour les rapports d'espionnage
 define('SPY_REPORT_ROW', 2);

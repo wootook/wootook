@@ -72,6 +72,8 @@ function __autoload($class) {
     include_once str_replace('_', '/', $class) . '.php';
 }
 
+include ROOT_PATH . 'includes/constants.php';
+
 Wootook_Core_Time::init();
 Wootook_Core_ErrorProfiler::register();
 Wootook_Core_Model_Config_Events::registerEvents();
@@ -89,7 +91,6 @@ define('DEFAULT_LANG', 'fr');
 include(ROOT_PATH . 'includes/debug.class.'.PHPEXT);
 $debug = new Debug();
 
-include(ROOT_PATH . 'includes/constants.' . PHPEXT);
 include(ROOT_PATH . 'includes/functions.' . PHPEXT);
 include(ROOT_PATH . 'includes/unlocalised.' . PHPEXT);
 include(ROOT_PATH . 'includes/todofleetcontrol.' . PHPEXT);

@@ -3,9 +3,12 @@
 class Wootook_Database
     extends PDO
 {
-    protected static $_singleton = null;
+    const DEFAULT_CONNECTION_NAME = 'default';
 
-    protected static $_prefix = null;
+    protected static $_connections = array();
+    protected static $_connectionAliases = array();
+
+    protected $_tablePrefix = null;
 
     public static $options = array(
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
@@ -13,39 +16,80 @@ class Wootook_Database
 
     public static function getSingleton()
     {
-        if (self::$_singleton === null) {
-            $config = include ROOT_PATH . 'config.php';
-            $hostname = $config['global']['database']['options']['hostname'];
-            $username = $config['global']['database']['options']['username'];
-            $password = $config['global']['database']['options']['password'];
-            $database = $config['global']['database']['options']['database'];
-            $port = 3306;
+        return self::getConnection(self::DEFAULT_CONNECTION_NAME);
+    }
 
-            if (isset($config['global']['database']['options']['port'])) {
-                $port = $config['global']['database']['options']['port'];
+    public static function getConnection($connectionName)
+    {
+        if (empty($connectionName) || $connectionName === null) {
+            return null;
+        }
+
+        if (!isset(self::$_connections[$connectionName])) {
+            if (isset(self::$_connectionAliases[$connectionName])) {
+                return self::$_connectionAliases[$connectionName];
             }
 
-            $event = Wootook::dispatchEvent('database.prepare-options', array(
-                'options' => self::$options
-                ));
+            if ($alias = Wootook::getConfig("global/database/{$connectionName}/use")) {
+                self::$_connectionAliases[$connectionName] = self::getConnection($alias);
+            }
 
-            self::$options = $event->getData('options');
-
-            self::$_singleton = new self("mysql:dbname={$database};host={$hostname};port={$port}", $username, $password, self::$options);
-
-            Wootook::dispatchEvent('database.init', array(
-                'handler' => self::$_singleton
-                ));
+            self::$_connections[$connectionName] = self::_initConnection($connectionName);
         }
-        return self::$_singleton;
+
+        return self::$_connections[$connectionName];
+    }
+
+    private static function _initConnection($connectionName)
+    {
+        $hostname = Wootook::getConfig("global/database/{$connectionName}/params/hostname");
+        $username = Wootook::getConfig("global/database/{$connectionName}/params/username");
+        $password = Wootook::getConfig("global/database/{$connectionName}/params/password");
+        $database = Wootook::getConfig("global/database/{$connectionName}/params/database");
+
+        if (empty($hostname) || empty($username) || empty($database)) {
+            return null;
+        }
+
+        if (!($port = Wootook::getConfig("global/database/{$connectionName}/params/port")) || !is_numeric($port)) {
+            $port = 3306;
+        }
+
+        $event = Wootook::dispatchEvent('database.prepare-options', array(
+            'name'    => $connectionName,
+            'options' => array_merge(self::$options, Wootook::getConfig("global/database/{$connectionName}/options"))
+            ));
+
+        $options = $event->getData('options');
+
+        $connection = new self("mysql:dbname={$database};host={$hostname};port={$port}", $username, $password, $options);
+
+        if (($prefix = Wootook::getConfig("global/database/{$connectionName}/table_prefix")) !== null) {
+            $connection->setTablePrefix($prefix);
+        }
+
+        Wootook::dispatchEvent('database.init', array(
+            'name'    => $connectionName,
+            'handler' => $connection
+            ));
+
+        return $connection;
+    }
+
+    public function setTablePrefix($prefix)
+    {
+        $this->_tablePrefix = $prefix;
+
+        return $this;
+    }
+
+    public function getTablePrefix()
+    {
+        return $this->_tablePrefix;
     }
 
     public function getTable($name)
     {
-        if (self::$_prefix === null) {
-            $config = include ROOT_PATH . 'config.php';
-            self::$_prefix = $config['global']['database']['table_prefix'];
-        }
-        return self::$_prefix . $name;
+        return $this->getTablePrefix() . $name;
     }
 }
