@@ -7,7 +7,7 @@
     <input type="hidden" id="form_key" name="__formkey" value="<?php echo $session->getFormKey()?>" />
     <p>
       <label for="system:url_path"><?php echo $this->__('Base URL path for the game:')?></label>
-      <input type="text" id="system:url_path" name="url_path" value="<?php echo $session->getFormData('url_path', Wootook::getBaseUrl())?>" />
+      <input type="text" id="system:url_path" name="url_path" value="<?php echo $this->escape($session->getFormData('url_path', Wootook::getBaseUrl()))?>" />
     </p>
     <p>
       <label for="system:timezone"><?php echo $this->__('Game timezone:')?></label>

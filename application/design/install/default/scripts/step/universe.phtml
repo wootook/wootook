@@ -1,0 +1,37 @@
+<?php $session = Wootook::getSession('install')?>
+<div class="install">
+  <h1><?php echo $this->__('Welcome to the Wootook! installer')?></h1>
+  <h2><?php echo $this->__('Universe Config')?></h2>
+  <?php echo $this->getLayout()->getMessagesblock()->renderGroupedHtml()?>
+  <form method="post" action="?mode=install&step=3" id="form:database">
+    <input type="hidden" id="form_key" name="__formkey" value="<?php echo $session->getFormKey()?>" />
+    <p>
+      <label for="universe:galaxies"><?php echo $this->__('Galaxies count:')?></label>
+      <input type="text" id="universe:galaxies" name="galaxies" value="<?php echo $this->escape($session->getFormData('galaxies', 3))?>" />
+    </p>
+    <p>
+      <label for="universe:systems"><?php echo $this->__('Systems count:')?></label>
+      <input type="text" id="universe:systems" name="systems" value="<?php echo $this->escape($session->getFormData('systems', 100))?>" />
+    </p>
+    <p>
+      <label for="universe:positions"><?php echo $this->__('Positions in each system:')?></label>
+      <input type="text" id="universe:positions" name="positions" value="<?php echo $this->escape($session->getFormData('positions', 15))?>" />
+    </p>
+    <p>
+      <label for="universe:allow_spy_drone_attacks"><?php echo $this->__('Allow spy drone attacks')?></label>
+      <input type="checkbox" id="universe:allow_spy_drone_attacks" <?php if ($session->getFormData('allow_spy_drone_attacks', true)):?>checked="checked" <?php endif?>name="allow_spy_drone_attacks" value="1" />
+    </p>
+    <p>
+      <label for="universe:use_large_numbers"><?php echo $this->__('Activate large numbers handling')?></label>
+      <?php if (extension_loaded('bcmath')):?>
+      <input type="checkbox" id="universe:use_large_numbers" <?php if ($session->getFormData('use_large_numbers', true)):?>checked="checked" <?php endif?>name="use_large_numbers" value="1" />
+      <?php else:?>
+      <input type="checkbox" id="universe:use_large_numbers" <?php if ($session->getFormData('use_large_numbers', false)):?>checked="checked" <?php endif?>name="use_large_numbers" value="1" />
+      <span class="alert"><?php echo $this->__("'BC Math' extension is unavailable. This option will have no effect until the extension isn't active.")?></span>
+      <?php endif?>
+    </p>
+    <p>
+      <input type="submit" value="<?php echo $this->__('Next step')?>" />
+    </p>
+  </form>
+</div>

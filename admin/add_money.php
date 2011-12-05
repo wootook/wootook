@@ -33,35 +33,36 @@ define('INSTALL' , false);
 define('IN_ADMIN', true);
 require_once dirname(dirname(__FILE__)) .'/application/bootstrap.php';
 
-	if (in_array($user['authlevel'], array(LEVEL_ADMIN, LEVEL_OPERATOR))) {
-		includeLang('admin');
+$user = Wootook_Empire_Model_User::getSingleton();
 
-		$mode      = $_POST['mode'];
+if (!in_array($user['authlevel'], array(LEVEL_ADMIN, LEVEL_OPERATOR))) {
+    message( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+    exit(0);
+}
 
-		$PageTpl   = gettemplate("admin/add_money");
-		$parse     = $lang;
+includeLang('admin');
 
-		if ($mode == 'addit') {
-			$id          = $_POST['id'];
-			$metal       = $_POST['metal'];
-			$cristal     = $_POST['cristal'];
-			$deut        = $_POST['deut'];
+$mode      = $_POST['mode'];
 
-			$QryUpdatePlanet  = "UPDATE {{table}} SET ";
-			$QryUpdatePlanet .= "`metal` = `metal` + '". $metal ."', ";
-			$QryUpdatePlanet .= "`crystal` = `crystal` + '". $cristal ."', ";
-			$QryUpdatePlanet .= "`deuterium` = `deuterium` + '". $deut ."' ";
-			$QryUpdatePlanet .= "WHERE ";
-			$QryUpdatePlanet .= "`id` = '". $id ."' ";
-			doquery( $QryUpdatePlanet, "planets");
+$PageTpl   = gettemplate("admin/add_money");
+$parse     = $lang;
 
-			AdminMessage ( $lang['adm_am_done'], $lang['adm_am_ttle'] );
-		}
-		$Page = parsetemplate($PageTpl, $parse);
+if ($mode == 'addit') {
+    $id          = $_POST['id'];
+    $metal       = $_POST['metal'];
+    $cristal     = $_POST['cristal'];
+    $deut        = $_POST['deut'];
 
-		display ($Page, $lang['adm_am_ttle'], false, '', true);
-	} else {
-		AdminMessage ( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
-	}
+    $QryUpdatePlanet  = "UPDATE {{table}} SET ";
+    $QryUpdatePlanet .= "`metal` = `metal` + '". $metal ."', ";
+    $QryUpdatePlanet .= "`crystal` = `crystal` + '". $cristal ."', ";
+    $QryUpdatePlanet .= "`deuterium` = `deuterium` + '". $deut ."' ";
+    $QryUpdatePlanet .= "WHERE ";
+    $QryUpdatePlanet .= "`id` = '". $id ."' ";
+    doquery( $QryUpdatePlanet, "planets");
 
-?>
+    AdminMessage ( $lang['adm_am_done'], $lang['adm_am_ttle'] );
+}
+$Page = parsetemplate($PageTpl, $parse);
+
+display ($Page, $lang['adm_am_ttle'], false, '', true);

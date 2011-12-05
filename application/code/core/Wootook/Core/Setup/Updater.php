@@ -29,14 +29,28 @@ class Wootook_Core_Setup_Updater
     public function getSetupConnection()
     {
         if ($this->_setupConnection === null) {
-            return Wootook_Database::getSingleton();
+            $this->setSetupConnection('default');
         }
         return $this->_setupConnection;
     }
 
-    public function getTable($tableName)
+    public function getTableName($tableName)
     {
-        $this->getSetupConnection()->getTable($tableName);
+        return $this->getSetupConnection()->getTable($tableName);
+    }
+
+    public function query($statement)
+    {
+        try {
+            if (!$this->getSetupConnection()->query($statement)) {
+                $info = $this->getSetupConnection()->errorInfo();
+                throw new Wootook_Core_Setup_Exception_RuntimeException(
+                    Wootook::__('Query failed: SQLSTATE %s: %s.', $info[1], $info[2]));
+            }
+        } catch (PDOException $e) {
+            Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
+            throw new Wootook_Core_Setup_Exception_RuntimeException($e->getMessage(), null, $e);
+        }
     }
 
     public function grant($tableName, $connectionName, $perms = null)

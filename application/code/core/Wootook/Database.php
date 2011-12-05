@@ -9,6 +9,9 @@ class Wootook_Database
     protected static $_connectionAliases = array();
 
     protected $_tablePrefix = null;
+    protected $_dsn = null;
+    protected $_username = null;
+    protected $_password = null;
 
     public static $options = array(
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
@@ -51,8 +54,9 @@ class Wootook_Database
             return null;
         }
 
-        if (!($port = Wootook::getConfig("global/database/{$connectionName}/params/port")) || !is_numeric($port)) {
-            $port = 3306;
+        $dsn = "mysql:dbname={$database};host={$hostname}";
+        if (($port = Wootook::getConfig("global/database/{$connectionName}/params/port")) && is_numeric($port)) {
+            $dsn .= ";port={$port}";
         }
 
         $event = Wootook::dispatchEvent('database.prepare-options', array(
@@ -62,7 +66,10 @@ class Wootook_Database
 
         $options = $event->getData('options');
 
-        $connection = new self("mysql:dbname={$database};host={$hostname};port={$port}", $username, $password, $options);
+        $connection = new self($dsn, $username, $password, $options);
+        $connection->_dsn = $dsn;
+        $connection->_username = $username;
+        $connection->_password = $password;
 
         if (($prefix = Wootook::getConfig("global/database/{$connectionName}/table_prefix")) !== null) {
             $connection->setTablePrefix($prefix);

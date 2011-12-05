@@ -31,7 +31,7 @@
 $this->setSetupConnection('core_setup');
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/aks')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('aks')} (
     `id`                    BIGINT UNSIGNED     NOT NULL    AUTO_INCREMENT,
     `name`                  VARCHAR(50)         NULL,
     `teilnehmer`            TEXT                NULL,
@@ -48,7 +48,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/alliance')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('alliance')} (
     `id`                    BIGINT UNSIGNED     NOT NULL    AUTO_INCREMENT,
     `ally_name`             VARCHAR(32)         NOT NULL,
     `ally_tag`              VARCHAR(8)          NOT NULL,
@@ -71,7 +71,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/annonce')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('annonce')} (
     `id`                    SMALLINT UNSIGNED   NOT NULL    AUTO_INCREMENT,
     `user`                  TEXT                NOT NULL,
     `galaxie`               TINYINT UNSIGNED    NOT NULL,
@@ -89,7 +89,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/banned')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('banned')} (
     `id`                    BIGINT UNSIGNED     NOT NULL    AUTO_INCREMENT,
     `who`                   BIGINT UNSIGNED     NOT NULL,
     `theme`                 TEXT                NOT NULL,
@@ -105,7 +105,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/buddy')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('buddy')} (
     `id`                    BIGINT UNSIGNED     NOT NULL    AUTO_INCREMENT,
     `sender`                BIGINT UNSIGNED     NOT NULL,
     `owner`                 BIGINT UNSIGNED     NOT NULL,
@@ -118,7 +118,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/chat')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('chat')} (
     `messageid`             BIGINT UNSIGNED     NOT NULL    AUTO_INCREMENT,
     `user`                  VARCHAR(255)        NOT NULL,
     `message`               TEXT                NOT NULL,
@@ -130,7 +130,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/config')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('config')} (
     `config_name`           VARCHAR(64)         NOT NULL,
     `config_value`          TEXT                NOT NULL,
     UNIQUE KEY (`config_name`)
@@ -140,32 +140,40 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-INSERT INTO {$this->getTableName('legacies/config')} (`config_name`, `config_value`) VALUES
+INSERT IGNORE INTO {$this->getTableName('config')} (`config_name`, `config_value`) VALUES
+    -- ('game/1/resource/income/base/metal', '20'),
+    -- ('game/1/resource/income/base/cristal', '10'),
+    -- ('game/1/resource/income/base/deuterium', '0'),
+    -- ('game/1/resource/income/base/energy', '0'),
+    -- ('game/1/resource/multiplier', '1000'),
+
+    -- ('game/1/speed/general', '2500'),
+    -- ('game/1/speed/fleet', '2500'),
+
     ('game_speed', '2500'),
     ('fleet_speed', '2500'),
     ('resource_multiplier', '1000'),
-    ('Fleet_Cdr', '30'),
-    ('Defs_Cdr', '30'),
-    ('initial_fields', '5000'),
-    ('COOKIE_NAME', 'xnova-legacies'),
-    ('game_name', 'Wootook:Legacies'),
-    ('game_disable', '1'),
-    ('close_reason', 'Le jeu est clos pour le moment!'),
+
     ('metal_basic_income', '20'),
     ('cristal_basic_income', '10'),
     ('deuterium_basic_income', '0'),
     ('energy_basic_income', '0'),
+
+    ('Fleet_Cdr', '30'),
+    ('Defs_Cdr', '30'),
+    ('initial_fields', '5000'),
+    ('COOKIE_NAME', 'wootook'),
+    ('game_name', 'Wootook'),
+    ('game_disable', '1'),
+    ('close_reason', 'Le jeu est clos pour le moment!'),
     ('BuildLabWhileRun', '0'),
-    ('LastSettedGalaxyPos', '1'),
-    ('LastSettedSystemPos', '1'),
-    ('LastSettedPlanetPos', '1'),
     ('urlaubs_modus_erz', '1'),
     ('noobprotection', '1'),
     ('noobprotectiontime', '5000'),
     ('noobprotectionmulti', '5'),
     ('forum_url', 'http://board.xnova-ng.org/'),
     ('OverviewNewsFrame', '1'),
-    ('OverviewNewsTEXT', 'Bienvenue sur le nouveau serveur Wootook Legacies'),
+    ('OverviewNewsTEXT', 'Bienvenue sur le nouveau serveur Wootook'),
     ('OverviewExternChat', '0'),
     ('OverviewExternChatCmd', ''),
     ('OverviewBanner', '0'),
@@ -182,18 +190,17 @@ INSERT INTO {$this->getTableName('legacies/config')} (`config_name`, `config_val
     ('enable_marchand', '1'),
     ('enable_notes', '1'),
     ('bot_name', 'XNoviana Reali'),
-    ('bot_adress', 'xnova@xnova.fr'),
+    ('bot_adress', 'contact@wootook.org'),
     ('banner_source_post', '../images/bann.png'),
     ('ban_duration', '30'),
     ('enable_bot', '0'),
-    ('enable_bbcode', '1'),
-    ('debug', '0');
+    ('enable_bbcode', '1');
 SQL_EOF;
 
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/declared')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('declared')} (
     `declarator`            TEXT                NOT NULL,
     `declared_1`            TEXT                NOT NULL,
     `declared_2`            TEXT                NOT NULL,
@@ -206,7 +213,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/errors')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('errors')} (
     `error_id`              BIGINT UNSIGNED     NOT NULL    AUTO_INCREMENT,
     `error_sender`          VARCHAR(32)         NOT NULL,
     `error_time`            TIMESTAMP           NOT NULL,
@@ -219,7 +226,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/fleets')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('fleets')} (
     `fleet_id`                  BIGINT UNSIGNED     NOT NULL    AUTO_INCREMENT,
     `fleet_owner`               BIGINT UNSIGNED     NOT NULL,
     `fleet_mission`             TINYINT UNSIGNED    NOT NULL,
@@ -251,7 +258,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/galaxy')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('galaxy')} (
     `galaxy`                TINYINT UNSIGNED    NOT NULL,
     `system`                SMALLINT UNSIGNED   NOT NULL,
     `planet`                TINYINT UNSIGNED    NOT NULL,
@@ -270,7 +277,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/iraks')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('iraks')} (
     `id`                    BIGINT UNSIGNED         NOT NULL    AUTO_INCREMENT,
     `zeit`                  TIMESTAMP               NOT NULL,
     `galaxy`                TINYINT UNSIGNED        NOT NULL,
@@ -290,7 +297,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/lunas')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('lunas')} (
     `id`                    BIGINT UNSIGNED         NOT NULL    AUTO_INCREMENT,
     `id_luna`               BIGINT UNSIGNED         NOT NULL,
     `name`                  VARCHAR(100)            NOT NULL    DEFAULT 'Lune',
@@ -310,7 +317,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/messages')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('messages')} (
     `message_id`            BIGINT UNSIGNED         NOT NULL    AUTO_INCREMENT,
     `message_owner`         BIGINT UNSIGNED         NOT NULL,
     `message_sender`        BIGINT UNSIGNED         NOT NULL,
@@ -326,7 +333,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/multi')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('multi')} (
     `id`                    BIGINT UNSIGNED         NOT NULL    AUTO_INCREMENT,
     `player`                BIGINT UNSIGNED         NOT NULL,
     `sharer`                BIGINT UNSIGNED         NOT NULL,
@@ -338,7 +345,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/notes')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('notes')} (
     `id`                    BIGINT UNSIGNED         NOT NULL    AUTO_INCREMENT,
     `owner`                 BIGINT UNSIGNED         NOT NULL,
     `time`                  TIMESTAMP               NOT NULL,
@@ -352,7 +359,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/planets')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('planets')} (
     `id`                            BIGINT UNSIGNED         NOT NULL    AUTO_INCREMENT,
     `name`                          VARCHAR(100)            NOT NULL,
     `id_owner`                      BIGINT UNSIGNED         NOT NULL,
@@ -445,7 +452,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/rw')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('rw')} (
     `id_owner1`             BIGINT UNSIGNED         NOT NULL,
     `id_owner2`             BIGINT UNSIGNED         NOT NULL,
     `rid`                   VARCHAR(72)             NOT NULL,
@@ -461,7 +468,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/statpoints')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('statpoints')} (
     `id_owner`              BIGINT UNSIGNED         NOT NULL,
     `id_ally`               BIGINT UNSIGNED         NOT NULL,
     `stat_type`             TINYINT UNSIGNED        NOT NULL,
@@ -498,7 +505,7 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('legacies/users')} (
+CREATE TABLE IF NOT EXISTS {$this->getTableName('users')} (
     `id`                        BIGINT UNSIGNED         NOT NULL    AUTO_INCREMENT,
     `username`                  VARCHAR(100)            NOT NULL,                   -- FIXME
     `password`                  VARCHAR(64)             NOT NULL,                   -- FIXME

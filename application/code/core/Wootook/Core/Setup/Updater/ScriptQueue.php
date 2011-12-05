@@ -1,6 +1,6 @@
 <?php
 
-class Wootook_Core_Setup_Model_Updater_ScriptQueue
+class Wootook_Core_Setup_Updater_ScriptQueue
     implements Iterator, Countable, ArrayAccess
 {
     const PCRE_FILE_PATTERN = '%^(?<action>install|upgrade|uninstall|downgrade)-(?<version1>[0-9]+\.[0-9]+\.[0-9]+)(?:\.(?<stage1>[a-z]+)(?<level1>[0-9]+))?(?:-(?<version2>[0-9]+\.[0-9]+\.[0-9]+)(?:\.(?<stage2>[a-z]+)(?<level2>[0-9]+))?)?$%';
@@ -36,26 +36,34 @@ class Wootook_Core_Setup_Model_Updater_ScriptQueue
         }
 
         if ($fromVersion === null) {
-            $fromVersion = '0.0.0';
+            $fromVersion = array(
+                'version' => self::VERSION_NULL,
+                'stage'   => self::STAGE_STABLE,
+                'level'   => 0,
+                );
+        } else {
+            preg_match(self::PCRE_VERSION_PATTERN, $fromVersion, $matches);
+            $fromVersion = array(
+                'version' => isset($matches['version']) ? $matches['version'] : self::VERSION_NULL,
+                'stage'   => isset($matches['stage']) && !empty($matches['stage']) ? $matches['stage'] : self::STAGE_STABLE,
+                'level'   => isset($matches['level']) && !empty($matches['level']) ? (int) $matches['level'] : 0,
+                );
         }
 
         if ($toVersion === null) {
-            $toVersion = '0.0.0';
+            $toVersion = array(
+                'version' => self::VERSION_NULL,
+                'stage'   => self::STAGE_STABLE,
+                'level'   => 0,
+                );
+        } else {
+            preg_match(self::PCRE_VERSION_PATTERN, $toVersion, $matches);
+            $toVersion = array(
+                'version' => isset($matches['version']) ? $matches['version'] : self::VERSION_NULL,
+                'stage'   => isset($matches['stage']) && !empty($matches['stage']) ? $matches['stage'] : self::STAGE_STABLE,
+                'level'   => isset($matches['level']) && !empty($matches['level']) ? (int) $matches['level'] : 0,
+                );
         }
-
-        preg_match(self::PCRE_VERSION_PATTERN, $fromVersion, $matches);
-        $fromVersion = array(
-            'version' => isset($matches['version']) ? $matches['version'] : self::VERSION_NULL,
-            'stage'   => isset($matches['stage']) && !empty($matches['stage']) ? $matches['stage'] : self::STAGE_STABLE,
-            'level'   => isset($matches['level']) && !empty($matches['level']) ? (int) $matches['level'] : 0,
-            );
-
-        preg_match(self::PCRE_VERSION_PATTERN, $toVersion, $matches);
-        $toVersion = array(
-            'version' => isset($matches['version']) ? $matches['version'] : self::VERSION_NULL,
-            'stage'   => isset($matches['stage']) && !empty($matches['stage']) ? $matches['stage'] : self::STAGE_STABLE,
-            'level'   => isset($matches['level']) && !empty($matches['level']) ? (int) $matches['level'] : 0,
-            );
 
         switch (version_compare($toVersion['version'], $fromVersion['version'])) {
         case 1:
@@ -110,7 +118,7 @@ class Wootook_Core_Setup_Model_Updater_ScriptQueue
                     $this->_upgradeToVersion($fromVersion, $toVersion);
                 }
             } else {
-                throw new Wootook_Core_Exception_RuntimeException("Invalid version stage.");
+                throw new Wootook_Core_Setup_Exception_VersionStageError("Invalid version stage.");
             }
             break;
         }
@@ -121,6 +129,13 @@ class Wootook_Core_Setup_Model_Updater_ScriptQueue
     public function getFinalVersion()
     {
         return $this->_finalVersion;
+    }
+
+    public function getCurrentVersion()
+    {
+        $current = $this->current();
+
+        return $current['version'];
     }
 
     protected function _installHighestInstaller($currentVersion, $toVersion)
@@ -143,14 +158,16 @@ class Wootook_Core_Setup_Model_Updater_ScriptQueue
             return $version;
         }
 
-        if (isset($this->_installVersions[$highestVersion][self::STAGE_RC])) {
+        if (isset($this->_installVersions[$highestVersion][self::STAGE_STABLE])) {
+            $stage = self::STAGE_STABLE;
+        } else if (isset($this->_installVersions[$highestVersion][self::STAGE_RC])) {
             $stage = self::STAGE_RC;
         } else if (isset($this->_installVersions[$highestVersion][self::STAGE_BETA])) {
             $stage = self::STAGE_BETA;
         } else if (isset($this->_installVersions[$highestVersion][self::STAGE_ALPHA])) {
             $stage = self::STAGE_ALPHA;
         } else {
-            throw new Wootook_Core_Exception_RuntimeException("Invalid version stage.");
+            throw new Wootook_Core_Setup_Exception_VersionStageError("Invalid version stage.");
         }
 
         $levelList = array_keys($this->_installVersions[$highestVersion][$stage]);
@@ -232,7 +249,7 @@ class Wootook_Core_Setup_Model_Updater_ScriptQueue
 
                 $level = max(array_keys($versionPointer[$highestVersion][$stage]));
             } else {
-                throw new Wootook_Core_Exception_RuntimeException("Invalid version value.");
+                throw new Wootook_Core_Setup_Exception_VersionValueError("Invalid version value.");
             }
 
             $currentVersion = array(

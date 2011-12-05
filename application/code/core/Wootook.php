@@ -287,20 +287,22 @@ class Wootook
         self::$_response = $response;
     }
 
-    private static function _loadConfig()
+    public static function loadConfig()
     {
-        if (self::$_config === null) {
-            self::$_config = include ROOT_PATH . DIRECTORY_SEPARATOR . 'config.php';
+        self::$_config = include ROOT_PATH . DIRECTORY_SEPARATOR . 'config.php';
 
-            if (!is_array(self::$_config)) {
-                self::$_config = array();
-            }
+        if (!is_array(self::$_config)) {
+            self::$_config = array();
         }
+
+        return self::$_config;
     }
 
     public static function getConfig($path = null)
     {
-        self::_loadConfig();
+        if (self::$_config === null) {
+            self::loadConfig();
+        }
 
         if ($path === null || !is_string($path)) {
             return self::$_config;
@@ -317,7 +319,9 @@ class Wootook
 
     public static function setConfig($path, $value)
     {
-        self::_loadConfig();
+        if (self::$_config === null) {
+            self::loadConfig();
+        }
 
         if ($path === null || !is_string($path)) {
             return self::$_config = $value;
@@ -338,6 +342,8 @@ class Wootook
     {
         file_put_contents(ROOT_PATH . DIRECTORY_SEPARATOR . 'config.php',
             '<' . '?p' . 'hp ' . var_export($config, true) . ';');
+
+        self::$_config = $config;
     }
 
     public static function getBaseUrl()

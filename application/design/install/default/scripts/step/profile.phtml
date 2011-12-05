@@ -1,0 +1,30 @@
+<?php $session = Wootook::getSession('install')?>
+<div class="install">
+  <h1><?php echo $this->__('Welcome to the Wootook! installer')?></h1>
+  <h2><?php echo $this->__('Admin Profile Config')?></h2>
+  <?php echo $this->getLayout()->getMessagesblock()->renderGroupedHtml()?>
+  <form method="post" action="?mode=install&step=3" id="form:database">
+    <input type="hidden" id="form_key" name="__formkey" value="<?php echo $session->getFormKey()?>" />
+    <p>
+      <label for="account:username"><?php echo $this->__('Root admin account name:')?></label>
+      <input type="text" id="account:username" name="username" value="<?php echo $this->escape($session->getFormData('username', 'admin'))?>" />
+    </p>
+    <p>
+      <label for="account:email"><?php echo $this->__('Root admin email:')?></label>
+      <input type="text" id="account:email" name="email" value="<?php echo $this->escape($session->getFormData('email'))?>" />
+    </p>
+    <p>
+      <label for="account:email_confirm"><?php echo $this->__('Root admin email:')?></label>
+      <input type="text" id="account:email_confirm" name="email_confirm" value="<?php echo $this->escape($session->getFormData('email_confirm'))?>" />
+    </p>
+    <p>
+      <label for="account:password"><?php echo $this->__('Root admin account password:')?></label>
+      <input type="password" id="account:password" name="password" value="<?php echo $this->escape($session->getFormData('password'))?>" />
+    </p>
+    <p>
+      <label for="account:password_confirm"><?php echo $this->__('Root admin account password confirm:')?></label>
+      <input type="password" id="account:password_confirm" name="password_confirm" value="<?php echo $this->escape($session->getFormData('password_confirm'))?>" />
+    </p>
+    <p><input type="submit" value="<?php echo $this->__('Next step')?>" /></p>
+  </form>
+</div>

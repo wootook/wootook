@@ -38,15 +38,19 @@ define('STEP_UNIVERSE', 3);
 define('STEP_PROFILE',  4);
 define('STEP_CONFIG',   5);
 
-require_once dirname(dirname(__FILE__)) .'/application/bootstrap.php';
-
-//include(ROOT_PATH . 'includes/databaseinfos.php');
-//include(ROOT_PATH . 'includes/migrateinfo.php');
+require_once dirname(dirname(__FILE__)) . '/application/bootstrap.php';
 
 $mode     = isset($_GET['mode']) ? strval($_GET['mode']) : 'intro';
 $step     = isset($_GET['step']) ? intval($_GET['step']) : 1;
 $prevStep = $step - 1;
 $nextStep = $step + 1;
+
+$modules = array(
+    'Wootook_Core',
+    'Wootook_Empire',
+    'Legacies_Empire',
+    'Legacies_Officers'
+    );
 
 includeLang('install/install');
 
@@ -59,14 +63,17 @@ if (isset($_SERVER['REQUEST_URI'])) {
         $baseUrl .= dirname(dirname($_SERVER['REQUEST_URI'])) . '/';
     }
 }
-Wootook::setConfig('global/web/base_url', $baseUrl);
 
-Wootook::setConfig('global/package', 'install');
-Wootook::setConfig('global/theme', 'default');
-Wootook::setconfig('global/layout', array(
-    'page' => 'page.php',
-    'install' => 'install.php'
-    ));
+if (count(Wootook::getConfig()) == 0) {
+    Wootook::setConfig('global/web/base_url', $baseUrl);
+
+    Wootook::setConfig('global/package', 'install');
+    Wootook::setConfig('global/theme', 'default');
+    Wootook::setconfig('global/layout', array(
+        'page' => 'page.php',
+        'install' => 'install.php'
+        ));
+}
 
 $session = Wootook::getSession('install');
 $layout = new Wootook_Core_Layout();
@@ -75,6 +82,7 @@ $response = new Wootook_Core_Controller_Response_Http();
 
 switch ($mode) {
 case 'intro':
+    $layout->getMessagesBlock()->prepareMessages('install');
     $layout->load('install.intro');
     $session->setData('step', 1);
     break;
@@ -132,6 +140,7 @@ case 'install':
                         )
                     ),
                 );
+            $session->setData('config', serialize($config));
 
             Wootook::writeConfig($config);
 
@@ -141,10 +150,21 @@ case 'install':
             exit(0);
         }
 
+        $layout->getMessagesBlock()->prepareMessages('install');
         $layout->load('install.step.system');
         break;
 
     case STEP_DATABASE:
+        $config = unserialize($session->getData('config'));
+        $session->setFormData(array(
+            'host'     => $config['global']['database']['default']['params']['hostname'],
+            'port'     => $config['global']['database']['default']['params']['port'],
+            'user'     => $config['global']['database']['default']['params']['username'],
+            'password' => $config['global']['database']['default']['params']['password'],
+            'dbname'   => $config['global']['database']['default']['params']['database'],
+            'prefix'   => $config['global']['database']['default']['table_prefix'],
+            ));
+
         if ($request->isPost()) {
             $form = new Wootook_Core_Form($session, array(
                 'host'     => 'text',
@@ -196,9 +216,9 @@ case 'install':
 
             $layout->getMessagesblock()->prepareMessages('install');
 
-            $config = Wootook::getConfig();
-            $config['database'] = array(
-                'core_setup' => array(
+            $config = unserialize($session->getData('config'));
+            $config['global']['database'] = array(
+                'default' => array(
                     'engine' => 'mysql',
                     'options' => array(
                         ),
@@ -210,36 +230,18 @@ case 'install':
                         'port'     => $request->getPost('port')
                         ),
                     'table_prefix' => $request->getPost('prefix'),
+                    ),
+                'core_setup' => array(
+                    'use' => 'default'
                     ),
                 'core_read' => array(
-                    'engine' => 'mysql',
-                    'options' => array(
-                        ),
-                    'params' => array(
-                        'hostname' => $request->getPost('host'),
-                        'username' => $request->getPost('user'),
-                        'password' => $request->getPost('password'),
-                        'database' => $request->getPost('dbname'),
-                        'port'     => $request->getPost('port')
-                        ),
-                    'table_prefix' => $request->getPost('prefix'),
+                    'use' => 'default'
                     ),
                 'core_write' => array(
-                    'engine' => 'mysql',
-                    'options' => array(
-                        ),
-                    'params' => array(
-                        'hostname' => $request->getPost('host'),
-                        'username' => $request->getPost('user'),
-                        'password' => $request->getPost('password'),
-                        'database' => $request->getPost('dbname'),
-                        'port'     => $request->getPost('port')
-                        ),
-                    'table_prefix' => $request->getPost('prefix'),
+                    'use' => 'default'
                     ),
                 );
-
-            Wootook::writeConfig($config);
+            $session->setData('config', serialize($config));
 
             $session->setData('step', STEP_UNIVERSE);
             $response->setRedirect(Wootook::getUrl('install/index.php', array('mode' => 'install', 'step' => STEP_UNIVERSE)));
@@ -247,6 +249,7 @@ case 'install':
             exit(0);
         }
 
+        $layout->getMessagesBlock()->prepareMessages('install');
         $layout->load('install.step.database');
         break;
 
@@ -271,7 +274,7 @@ case 'install':
                 exit(0);
             }
 
-            $config = Wootook::getConfig();
+            $config = unserialize($session->getData('config'));
             $config['default'] = array(
                 'engine' => array(
                     'core' => array(
@@ -287,30 +290,56 @@ case 'install':
                         )
                     ),
                 );
-
             Wootook::writeConfig($config);
 
-            $scriptPath = APPLICATION_PATH . 'code' . DIRECTORY_SEPARATOR . 'core'
-                . 'Wootook' . DIRECTORY_SEPARATOR . 'Core' . DIRECTORY_SEPARATOR
-                . 'install' . DIRECTORY_SEPARATOR . 'mysql5';
-            $queue = new Wootook_Core_Setup_Model_Updater_ScriptQueue($scriptPath);
-
-            try {
-                $updater = new Wootook_Core_Setup_Model_Updater();
-                foreach ($queue as $installScript) {
-                    $updater->run($installScript);
-                }
-            } catch (Exception $e) {
-                $session->addSuccess(Wootook::__('An error occured durong game data initialization.'));
-                $session->setData('step', STEP_SYSTEM);
-                $response->setRedirect(Wootook::getUrl('install/index.php', array('mode' => 'install', 'step' => STEP_SYSTEM)));
-                $response->sendHeaders();
-                exit(0);
+            $gameplays = include dirname(__FILE__) . DIRECTORY_SEPARATOR . 'gameplays.php';
+            $gameplayKey = $config['global']['storyline']['universe'];
+            if (!isset($gameplays[$gameplayKey])) {
+                $gameplayKey = key($gameplays);
             }
+            $moduleList = $gameplays[$gameplayKey]['modules'];
+
+            $installedModules = array();
+            $updater = new Wootook_Core_Setup_Updater();
+            foreach ($moduleList as $module => $moduleData) {
+                $version = $moduleData['version'];
+                $codePool = $moduleData['code_pool'];
+                $modulePath = str_replace('_', DIRECTORY_SEPARATOR, $module);
+
+                $scriptPath = APPLICATION_PATH . 'code' . DIRECTORY_SEPARATOR . $codePool
+                    . DIRECTORY_SEPARATOR . $modulePath . DIRECTORY_SEPARATOR . 'install'
+                    . DIRECTORY_SEPARATOR . 'mysql5';
+
+                try {
+                    $queue = new Wootook_Core_Setup_Updater_ScriptQueue($scriptPath, null, $version);
+
+                    foreach ($queue as $installScript) {
+                        $updater->run($installScript['script']);
+                        $installedModules[$module] = $installScript['version']['version'];
+                    }
+                } catch (Wootook_Core_Setup_Exception_VersionStageError $e) {
+                    Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
+                    continue;
+                } catch (Wootook_Core_Setup_Exception_VersionValueError $e) {
+                    Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
+                    continue;
+                } catch (Wootook_Core_Setup_Exception_RuntimeException $e) {
+                    Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
+                    continue;
+                }
+            }
+            $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'gamedata'  . DIRECTORY_SEPARATOR
+                . $gameplayKey . DIRECTORY_SEPARATOR . 'version.php';
+            file_put_contents($path, '<' . '?p' . 'hp ' . var_export($installedModules, true) . ';');
 
             $session->addSuccess(Wootook::__('Game data successfully initialized.'));
+            $session->setData('step', STEP_PROFILE);
+            $response->setRedirect(Wootook::getUrl('install/index.php', array('mode' => 'install', 'step' => STEP_PROFILE)));
+            $response->sendHeaders();
+            exit(0);
         }
 
+        $layout->getMessagesBlock()->prepareMessages('install');
         $layout->load('install.step.universe');
         break;
 
@@ -354,12 +383,13 @@ case 'install':
 
             Wootook_Empire_Model_User::register($request->getPost('username'), $request->getPost('email'), $request->getPost('password'));
 
-            $session->setData('step', STEP_UNIVERSE);
-            $response->setRedirect(Wootook::getUrl('install/index.php', array('mode' => 'install', 'step' => STEP_UNIVERSE)));
+            $session->setData('step', STEP_CONFIG);
+            $response->setRedirect(Wootook::getUrl('install/index.php', array('mode' => 'install', 'step' => STEP_CONFIG)));
             $response->sendHeaders();
             exit(0);
         }
 
+        $layout->getMessagesBlock()->prepareMessages('install');
         $layout->load('install.step.profile');
         break;
 
@@ -371,6 +401,7 @@ case 'install':
             exit(0);
         }
 
+        $layout->getMessagesBlock()->prepareMessages('install');
         $layout->load('install.config');
         break;
     }
