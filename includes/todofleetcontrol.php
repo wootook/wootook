@@ -48,12 +48,9 @@ include(ROOT_PATH . 'includes/functions/SendSimpleMessage.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/SpyTarget.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/RestoreFleetToPlanet.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/StoreGoodsToPlanet.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/CreateOneMoonRecord.'.PHPEXT); // <- TODO: delete
-include(ROOT_PATH . 'includes/functions/CreateOnePlanetRecord.'.PHPEXT); // <- TODO: delete
 include(ROOT_PATH . 'includes/functions/InsertJavaScriptChronoApplet.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/IsTechnologieAccessible.'.PHPEXT); // <- TODO: delete
 include(ROOT_PATH . 'includes/functions/GetRestPrice.'.PHPEXT); // <- TODO: delete
-include(ROOT_PATH . 'includes/functions/IsElementBuyable.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/InsertGalaxyScripts.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/GalaxyCheckFunctions.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/ShowGalaxyRows.'.PHPEXT);
@@ -80,8 +77,6 @@ include(ROOT_PATH . 'includes/functions/MipCombatEngine.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/DeleteSelectedUser.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/SortUserPlanets.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/BuildFleetEventTable.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/ResetThisFuckingCheater.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/IsVacationMode.'.PHPEXT);
 /**
  * }}}
  */

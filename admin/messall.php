@@ -31,45 +31,45 @@
 define('INSIDE' , true);
 define('INSTALL' , false);
 define('IN_ADMIN', true);
+
 require_once dirname(dirname(__FILE__)) .'/application/bootstrap.php';
 
-	if (in_array($user['authlevel'], array(LEVEL_ADMIN, LEVEL_OPERATOR, LEVEL_MODERATOR))) {
-		if ($_POST && $mode == "change") {
-			if (isset($_POST["tresc"]) && $_POST["tresc"] != '') {
-				$gameConfig['tresc'] = $_POST['tresc'];
+if (in_array($user['authlevel'], array(LEVEL_ADMIN, LEVEL_OPERATOR, LEVEL_MODERATOR))) {
+	if (!empty($_POST)) {
+		if (isset($_POST["tresc"]) && $_POST["tresc"] != '') {
+			$tresc = $_POST['tresc'];
+		}
+		if (isset($_POST["temat"]) && $_POST["temat"] != '') {
+			$temat = $_POST['temat'];
+		}
+		if ($user['authlevel'] == LEVEL_ADMIN) {
+			$kolor = 'red';
+			$ranga = 'Administrator';
+		} elseif ($user['authlevel'] == LEVEL_OPERATOR) {
+			$kolor = 'skyblue';
+			$ranga = 'Operator';
+		} elseif ($user['authlevel'] == LEVEL_MODERATOR) {
+			$kolor = 'yellow';
+			$ranga = 'Moderator';
+		}
+		if (isset($tresc) && isset($temat)) {
+			$sq      = doquery("SELECT `id` FROM {{table}}", "users");
+			$Time    = time();
+			$From    = "<font color=\"". $kolor ."\">". $ranga ." ".$user['username']."</font>";
+			$Subject = "<font color=\"". $kolor ."\">". $temat ."</font>";
+			$Message = "<font color=\"". $kolor ."\"><b>". $tresc ."</b></font>";
+			while ($u = $sq->fetch(PDO::FETCH_BOTH)) {
+				SendSimpleMessage($u['id'], $user['id'], $Time, 97, $From, $Subject, $Message);
 			}
-			if (isset($_POST["temat"]) && $_POST["temat"] != '') {
-				$gameConfig['temat'] = $_POST['temat'];
-			}
-			if ($user['authlevel'] == LEVEL_ADMIN) {
-				$kolor = 'red';
-				$ranga = 'Administrator';
-			} elseif ($user['authlevel'] == LEVEL_OPERATOR) {
-				$kolor = 'skyblue';
-				$ranga = 'Operator';
-			} elseif ($user['authlevel'] == LEVEL_MODERATOR) {
-				$kolor = 'yellow';
-				$ranga = 'Moderator';
-			}
-			if ($gameConfig['tresc'] != '' and $gameConfig['temat']) {
-				$sq      = doquery("SELECT `id` FROM {{table}}", "users");
-				$Time    = time();
-				$From    = "<font color=\"". $kolor ."\">". $ranga ." ".$user['username']."</font>";
-				$Subject = "<font color=\"". $kolor ."\">". $gameConfig['temat'] ."</font>";
-				$Message = "<font color=\"". $kolor ."\"><b>". $gameConfig['tresc'] ."</b></font>";
-				while ($u = $sq->fetch(PDO::FETCH_BOTH)) {
-					SendSimpleMessage ( $u['id'], $user['id'], $Time, 97, $From, $Subject, $Message);
-				}
-				message("<font color=\"lime\">Wys�a�e� wiadomo�� do wszystkich graczy</font>", "Complete", "../overview." . PHPEXT, 3);
-			}
-		} else {
-			$parse = $gameConfig;
-			$parse['dpath'] = $dpath;
-			$parse['debug'] = ($gameConfig['debug'] == 1) ? " checked='checked'/":'';
-			$page .= parsetemplate(gettemplate('admin/messall_body'), $parse);
-			display($page, '', false,'', true);
+			message("<font color=\"lime\">Wys�a�e� wiadomo�� do wszystkich graczy</font>", "Complete", "../overview." . PHPEXT, 3);
 		}
 	} else {
-		message($lang['sys_noalloaw'], $lang['sys_noaccess']);
+	    $parse = array();
+		$parse['dpath'] = $dpath;
+		$parse['debug'] = (defined('DEBUG')) ? " checked='checked'/":'';
+		$page .= parsetemplate(gettemplate('admin/messall_body'), $parse);
+		display($page, '', false,'', true);
 	}
-?>
+} else {
+	message($lang['sys_noalloaw'], $lang['sys_noaccess']);
+}

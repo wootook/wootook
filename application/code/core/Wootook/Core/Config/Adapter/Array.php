@@ -1,0 +1,33 @@
+<?php
+
+class Wootook_Core_Config_Adapter_Array
+    extends Wootook_Core_Config_Adapter_Abstract
+{
+    public function __construct($filename = null)
+    {
+        if ($filename !== null) {
+            $this->load($filename);
+        }
+    }
+
+    public function load($filename)
+    {
+        $data = include $filename;
+
+        if (!is_array($data)) {
+            throw new Wootook_Core_Exception_DataAccessException(
+                Wootook::__('Configuration file could not be loaded.'));
+        }
+
+        $this->_init($data);
+
+        return $this;
+    }
+
+    public function save($filename)
+    {
+        file_put_contents($filename, '<' . '?p' . 'hp return ' . var_export($this->toArray(), true) . ';');
+
+        return $this;
+    }
+}

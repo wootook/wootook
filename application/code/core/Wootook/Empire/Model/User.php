@@ -174,6 +174,7 @@ class Wootook_Empire_Model_User
                      $user->setData('banaday', 0)
                          ->setData('bana', 0)
                          ->setData('urlaubs_modus', 0)
+                         ->setData('urlaubs_until', null)
                          ->save()
                      ;
                 } else {
@@ -186,16 +187,23 @@ class Wootook_Empire_Model_User
                 Wootook::getResponse()->setCookie(self::$_cookieName, array('id' => $login['id'], 'key' => $login['login_rememberme']), self::COOKIE_LIFETIME);
             }
 
-            self::$_singleton = self::factory($login['id']);
-            self::$_singleton->_updateActivity();
-
-            $session->setData('user_id', intval($login['id']));
-
-            return self::$_singleton;
+            return self::setLoggedIn(self::factory($login['id']));
         }
 
         $session->addError('Your username or credential is invalid, please check your input.');
         return null;
+    }
+
+    public static function setLoggedIn(self $user)
+    {
+        $session = Wootook::getSession(self::SESSION_KEY);
+
+        self::$_singleton = $user;
+        self::$_singleton->_updateActivity();
+
+        $session->setData('user_id', intval(self::$_singleton->getId()));
+
+        return self::$_singleton;
     }
 
     public static function register($username, $email, $password)
@@ -225,12 +233,50 @@ class Wootook_Empire_Model_User
         } catch (Wootook_Core_Exception_DataAccessException $e) {
             $session = Wootook_Core_Model_Session::factory(Wootook_Empire_Model_User::SESSION_KEY);
 
-            trigger_error($e->getMessage(), E_USER_ERROR);
+            Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
             $session->addError($e->getMessage());
             return null;
         }
 
         return $user;
+    }
+
+    public function createNewPlanet($galaxy, $system, $position, $type, $name, $size = null)
+    {
+        if ($size === null) {
+            $baseSize = Wootook::getGameConfig('resource/initial/fields');
+
+            $factor = $position * 10 / (1 + log($position * 10));
+            $fuzz = 2 * $factor * pow(sin($factor), 2) / 2 + $factor / 4;
+
+            $size = mt_rand(floor($factor / 10), ceil($factor * 5 / 4)) + mt_rand(0, $fuzz);
+        }
+
+        $planet = new self();
+        $planet
+            ->setData('id_owner', $user->getId())
+            ->setData('name', $name)
+            ->setData('galaxy', $galaxy)
+            ->setData('system', $system)
+            ->setData('planet', $position)
+            ->setData('planet_type', $type)
+            ->setData('field_max', $size)
+            ->setData('diameter', pow($size, 2) + mt_rand(0, $size * $position))
+            ->setData('field_current', 0)
+        ;
+
+        $resourceConfig = Wootook::getGameConfig('resource/initial');
+        $resourceList = Wootook_Empire_Model_Game_Resources::getSingleton();
+        foreach ($resourceList as $resource => $resourceData) {
+            $planet->setData($resourceData['production_field'], $resourceConfig[$resource]);
+        }
+
+        Wootook::dispatchEvent('planet.init', array(
+            'planet' => $planet,
+            'user'   => $user
+            ));
+
+        $planet->save();
     }
 
     /**
@@ -560,5 +606,35 @@ class Wootook_Empire_Model_User
         } else {
             $navigation->addLink('tools/back', 'Go back to the game', 'Go back to the game', 'overview.php', array(), array('admin'));
         }
+    }
+
+    public function getVacation()
+    {
+        return $this->getData('urlaubs_modus') ? true : false;
+    }
+
+    public function getVacationEndDate()
+    {
+        return $this->getData('urlaubs_until');
+    }
+
+    public function setVacation($active = true)
+    {
+        $this->setData('urlaubs_modus', $active);
+
+        foreach ($this->getPlanetCollection() as $planet) {
+            $planet->updateResources();
+            $planet->updateResourceProduction();
+            $planet->save();
+        }
+
+        if ($active) {
+            $this->setData('urlaubs_until', time() + Wootook::getConfig('engine/options/vacation-min-time'));
+        } else {
+            $this->setData('urlaubs_until', null);
+        }
+        $this->save();
+
+        return $this;
     }
 }

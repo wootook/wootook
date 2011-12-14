@@ -1,7 +1,7 @@
 <?php
 
 class Wootook_Core_Collection
-    extends Wootook_Core_Model
+    extends Wootook_Core_Database_Resource
     implements Iterator, Countable
 {
     protected $_tableName = null;
@@ -254,7 +254,7 @@ SQL_EOF;
     {
         $sql = $this->_prepareSql();
 
-        $database = Wootook_Database::getSingleton();
+        $database = $this->getReadConnection();
         $statement = $database->prepare($sql);
 
         $args = func_get_args();

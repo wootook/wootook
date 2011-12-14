@@ -54,9 +54,7 @@ function GetMissionDuration ($GameSpeed, $MaxFleetSpeed, $Distance, $SpeedFactor
 
 // Retourne la valeur ajustée de vitesse des flottes
 function GetGameSpeedFactor () {
-    global $gameConfig;
-
-    return $gameConfig['fleet_speed'] / 2500;
+    return Wootook::getGameConfig('game/speed/fleet') / 2500;
 }
 
 /**

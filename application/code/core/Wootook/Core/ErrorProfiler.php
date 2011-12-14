@@ -16,6 +16,10 @@ class Wootook_Core_ErrorProfiler
 
     private $_mute = false;
 
+    /**
+     *
+     * @return Wootook_Core_ErrorProfiler
+     */
     public static function getSingleton()
     {
         if (self::$_singleton === null) {

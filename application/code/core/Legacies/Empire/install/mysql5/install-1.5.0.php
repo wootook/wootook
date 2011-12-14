@@ -130,71 +130,206 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('config')} (
-    `config_name`           VARCHAR(64)         NOT NULL,
-    `config_value`          TEXT                NOT NULL,
-    UNIQUE KEY (`config_name`)
+CREATE TABLE IF NOT EXISTS {$this->getTableName('core_website')} (
+    `website_id`            TINYINT UNSIGNED    NOT NULL,
+    `code`                  VARCHAR(64)         NOT NULL,
+    `name`                  VARCHAR(255)        NOT NULL,
+    `sort_order`            TINYINT UNSIGNED    NOT NULL,
+    `default_group_id`      TINYINT UNSIGNED    NOT NULL,
+    `is_default`            BOOL                NOT NULL,
+    `is_staging`            BOOL                NOT NULL,
+    `is_active`             BOOL                NOT NULL,
+    PRIMARY KEY (`webste_id`),
+    UNIQUE (`code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL_EOF;
 
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-INSERT IGNORE INTO {$this->getTableName('config')} (`config_name`, `config_value`) VALUES
-    -- ('game/1/resource/income/base/metal', '20'),
-    -- ('game/1/resource/income/base/cristal', '10'),
-    -- ('game/1/resource/income/base/deuterium', '0'),
-    -- ('game/1/resource/income/base/energy', '0'),
-    -- ('game/1/resource/multiplier', '1000'),
+CREATE TABLE IF NOT EXISTS {$this->getTableName('core_game_group')} (
+    `group_id`              TINYINT UNSIGNED    NOT NULL,
+    `website_id`            TINYINT UNSIGNED    NOT NULL,
+    `code`                  VARCHAR(64)         NOT NULL,
+    `name`                  VARCHAR(255)        NOT NULL,
+    `sort_order`            TINYINT UNSIGNED    NOT NULL,
+    `is_default`            BOOL                NOT NULL,
+    PRIMARY KEY (`group_id`),
+    INDEX (`webste_id`),
+    UNIQUE (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL_EOF;
 
-    -- ('game/1/speed/general', '2500'),
-    -- ('game/1/speed/fleet', '2500'),
+$this->query($sql);
 
-    ('game_speed', '2500'),
-    ('fleet_speed', '2500'),
-    ('resource_multiplier', '1000'),
+$sql = <<<SQL_EOF
+CREATE TABLE IF NOT EXISTS {$this->getTableName('core_game')} (
+    `game_id`               SMALLINT UNSIGNED   NOT NULL,
+    `group_id`              TINYINT UNSIGNED    NOT NULL,
+    `website_id`            TINYINT UNSIGNED    NOT NULL,
+    `code`                  VARCHAR(64)         NOT NULL,
+    `name`                  VARCHAR(255)        NOT NULL,
+    `sort_order`            TINYINT UNSIGNED    NOT NULL,
+    `is_default`            BOOL                NOT NULL,
+    `is_staging`            BOOL                NOT NULL,
+    `is_active`             BOOL                NOT NULL,
+    PRIMARY KEY (`group_id`),
+    INDEX (`webste_id`),
+    UNIQUE (`code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL_EOF;
 
-    ('metal_basic_income', '20'),
-    ('cristal_basic_income', '10'),
-    ('deuterium_basic_income', '0'),
-    ('energy_basic_income', '0'),
+$this->query($sql);
 
-    ('Fleet_Cdr', '30'),
-    ('Defs_Cdr', '30'),
-    ('initial_fields', '5000'),
-    ('COOKIE_NAME', 'wootook'),
-    ('game_name', 'Wootook'),
-    ('game_disable', '1'),
-    ('close_reason', 'Le jeu est clos pour le moment!'),
-    ('BuildLabWhileRun', '0'),
-    ('urlaubs_modus_erz', '1'),
-    ('noobprotection', '1'),
-    ('noobprotectiontime', '5000'),
-    ('noobprotectionmulti', '5'),
-    ('forum_url', 'http://board.xnova-ng.org/'),
-    ('OverviewNewsFrame', '1'),
-    ('OverviewNewsTEXT', 'Bienvenue sur le nouveau serveur Wootook'),
-    ('OverviewExternChat', '0'),
-    ('OverviewExternChatCmd', ''),
-    ('OverviewBanner', '0'),
-    ('OverviewClickBanner', ''),
-    ('ExtCopyFrame', '0'),
-    ('ExtCopyOwner', ''),
-    ('ExtCopyFunct', ''),
-    ('ForumBannerFrame', '0'),
-    ('stat_settings', '1000'),
-    ('link_enable', '0'),
-    ('link_name', ''),
-    ('link_url', ''),
-    ('enable_announces', '1'),
-    ('enable_marchand', '1'),
-    ('enable_notes', '1'),
-    ('bot_name', 'XNoviana Reali'),
-    ('bot_adress', 'contact@wootook.org'),
-    ('banner_source_post', '../images/bann.png'),
-    ('ban_duration', '30'),
-    ('enable_bot', '0'),
-    ('enable_bbcode', '1');
+$sql = <<<SQL_EOF
+INSERT INTO {$this->getTableName('core_website')} (`website_id`, `code`, `name`, `sort_order`, `default_group_id`, `is_default`, `is_staging`, `is_active`)
+VALUES
+(0, "admin", "Administration", 0, 0, 0, 0, 1),
+(1, "default", "Default Website", 1, 1, 1, 0, 1);
+SQL_EOF;
+
+$this->query($sql);
+
+$sql = <<<SQL_EOF
+INSERT INTO {$this->getTableName('core_game_group')} (`group_id`, `website_id`, `code`, `name`, `sort_order`, `is_default`)
+VALUES
+(0, 0, "admin", "Administration", 0, 0),
+(1, 1, "default", "Default Group", 1, 1);
+SQL_EOF;
+
+$this->query($sql);
+
+$sql = <<<SQL_EOF
+INSERT INTO {$this->getTableName('core_game')} (`game_id`, `group_id`, `website_id`, `code`, `name`, `sort_order`, `is_default`, `is_staging`, `is_active`)
+VALUES
+(0, 0, 0, "admin", "Administration", 0, 0, 0, 1),
+(1, 1, 1, "default", "Default Game", 1, 1, 0, 1);
+SQL_EOF;
+
+$this->query($sql);
+
+$sql = <<<SQL_EOF
+CREATE TABLE IF NOT EXISTS {$this->getTableName('core_config')} (
+    `website_id`            TINYINT UNSIGNED    NOT NULL,
+    `game_id`               TINYINT UNSIGNED    NOT NULL,
+    `config_path`           VARCHAR(64)         NOT NULL,
+    `config_value`          VARCHAR(255)        NOT NULL,
+    PRIMARY KEY (`website_id`, `game_id`, `config_path`),
+    INDEX (`website_id`),
+    INDEX (`game_id`),
+    INDEX (`config_path`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL_EOF;
+
+$this->query($sql);
+
+$sql = <<<SQL_EOF
+INSERT IGNORE INTO {$this->getTableName('core_config')} (`webste_id`, `game_id`, `config_path`, `config_value`) VALUES
+    (1, 1, 'resource/base-income/metal', '20'),
+    (1, 1, 'resource/base-income/cristal', '10'),
+    (1, 1, 'resource/base-income/deuterium', '0'),
+    (1, 1, 'resource/base-income/energy', '0'),
+
+    (1, 1, 'resource/initial/fields', '163'),
+    (1, 1, 'resource/initial/metal', '500'),
+    (1, 1, 'resource/initial/cristal', '500'),
+    (1, 1, 'resource/initial/deuterium', '0'),
+    (1, 1, 'resource/initial/energy', '0'),
+
+    (1, 1, 'game/general/name', 'Wootook'),
+    (1, 1, 'game/general/boards-url', 'http://wootook.org/board/'),
+    (1, 1, 'game/general/extra-url-title', 'Wootook!'),
+    (1, 1, 'game/general/extra-url', 'http://wootook.org/'),
+    (1, 1, 'game/general/active', '1'),
+    (1, 1, 'game/general/closing-message', 'Le jeu est clos pour le moment.'),
+    (1, 1, 'game/general/locale', 'fr_FR'),
+
+    (1, 1, 'game/resource/multiplier', '1000'),
+    (1, 1, 'game/speed/general', '2500'),
+    (1, 1, 'game/speed/fleet', '2500'),
+
+    (1, 1, 'game/debris/metal-percent', '30'),
+    (1, 1, 'game/debris/cristal-percent', '30'),
+    (1, 1, 'game/debris/deuterium-percent', '0'),
+    (1, 1, 'game/debris/energy-percent', '0'),
+
+    (1, 1, 'game/debris/fleet', '1'),
+    (1, 1, 'game/debris/defense', '0'),
+
+    (1, 1, 'game/noob-protection/active', '0'),
+    (1, 1, 'game/noob-protection/points-cap', '5000'),
+    (1, 1, 'game/noob-protection/multiplier', '5'),
+
+    (0, 0, 'web/cookie/name', '__wtk'),
+    (0, 0, 'web/cookie/time', '2592000'),
+    (0, 0, 'web/cookie/domain', ''),
+    (0, 0, 'web/cookie/path', ''),
+
+    (0, 0, 'engine/options/bbcode', '1'),
+    (0, 0, 'engine/options/ga', '1'),
+    (0, 0, 'engine/options/announces', '0'),
+    (0, 0, 'engine/options/retailer', '0'),
+    (0, 0, 'engine/options/notes', '0'),
+    (0, 0, 'engine/options/chat', '0'),
+    (0, 0, 'engine/options/banner', '0'),
+    (0, 0, 'engine/options/vacation-min-time', '172800'),
+
+    (0, 0, 'game/news/active', '0'),
+    (0, 0, 'game/news/content', 'Bienvenue sur le nouveau serveur de jeu Wootook!'),
+
+    (0, 0, 'engine/ban/duration', '86400'),
+
+    (0, 0, 'engine/bot/active', '0'),
+    (0, 0, 'engine/bot/name', 'Woot'),
+    (0, 0, 'engine/bot/email', 'contact@wootook.org'),
+
+--------------------------------------------------------------------------------
+
+--    (0, 0, 'game_speed', '2500'),
+--    (0, 0, 'fleet_speed', '2500'),
+--    (0, 0, 'resource_multiplier', '1000'),
+
+--    (0, 0, 'metal_basic_income', '20'),
+--    (0, 0, 'cristal_basic_income', '10'),
+--    (0, 0, 'deuterium_basic_income', '0'),
+--    (0, 0, 'energy_basic_income', '0'),
+
+--    (0, 0, 'Fleet_Cdr', '30'),
+--    (0, 0, 'Defs_Cdr', '30'),
+--    (0, 0, 'initial_fields', '5000'),
+--    (0, 0, 'COOKIE_NAME', 'wootook'),
+--    (0, 0, 'game_name', 'Wootook'),
+--    (0, 0, 'game_disable', '1'),
+--    (0, 0, 'close_reason', 'Le jeu est clos pour le moment.'),
+    (0, 0, 'BuildLabWhileRun', '0'),
+--    (0, 0, 'urlaubs_modus_erz', '1'),
+--    (0, 0, 'noobprotection', '1'),
+--    (0, 0, 'noobprotectiontime', '5000'),
+--    (0, 0, 'noobprotectionmulti', '5'),
+--    (0, 0, 'forum_url', 'http://wootook.org/board/'),
+--    (0, 0, 'OverviewNewsFrame', '1'),
+--    (0, 0, 'OverviewNewsTEXT', 'Bienvenue sur le nouveau serveur Wootook'),
+--    (0, 0, 'OverviewExternChat', '0'),
+--    (0, 0, 'OverviewExternChatCmd', ''),
+--    (0, 0, 'OverviewBanner', '0'),
+--    (0, 0, 'OverviewClickBanner', ''),
+    (0, 0, 'ExtCopyFrame', '0'),
+    (0, 0, 'ExtCopyOwner', ''),
+    (0, 0, 'ExtCopyFunct', ''),
+--    (0, 0, 'ForumBannerFrame', '0'),
+--    (0, 0, 'stat_settings', '1000'),
+--    (0, 0, 'link_enable', '0'),
+--    (0, 0, 'link_name', ''),
+--    (0, 0, 'link_url', ''),
+--    (0, 0, 'enable_announces', '1'),
+--    (0, 0, 'enable_marchand', '1'),
+--    (0, 0, 'enable_notes', '1'),
+--    (0, 0, 'bot_name', 'Isaac'),
+--    (0, 0, 'bot_adress', 'contact@wootook.org'),
+--    (0, 0, 'banner_source_post', '../images/bann.png'),
+--    (0, 0, 'ban_duration', '30'),
+--    (0, 0, 'enable_bot', '0'),
+--    (0, 0, 'enable_bbcode', '1');
 SQL_EOF;
 
 $this->query($sql);
@@ -259,7 +394,7 @@ $this->query($sql);
 
 $sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('galaxy')} (
-    `galaxy`                TINYINT UNSIGNED    NOT NULL,
+    `galaxy`                SMALLINT UNSIGNED   NOT NULL,
     `system`                SMALLINT UNSIGNED   NOT NULL,
     `planet`                TINYINT UNSIGNED    NOT NULL,
     `id_planet`             BIGINT UNSIGNED     NOT NULL,
@@ -617,3 +752,320 @@ SQL_EOF;
 
 $this->query($sql);
 
+/*
+ * Galaxy positions generation
+ */
+$galaxyCount = Wootook::getConfig('default/engine/universe/galaxies');
+$systemCount = Wootook::getConfig('default/engine/universe/systems');
+
+$sql = <<<SQL_EOF
+INSERT INTO {$this->getTableName('galaxy')}
+    (`galaxy`, `system`, `planet`, `id_planet`, `metal`, `crystal`, `id_luna`, `luna`)
+  SELECT
+     _increment.galaxy AS `galaxy`,
+     _increment.system AS `system`,
+     0 AS `planet`,
+     0 AS `id_planet`,
+     0 AS `metal`,
+     0 AS `crystal`,
+     0 AS `id_luna`,
+     0 AS `luna`
+  FROM (
+    SELECT
+        (1 + _galaxy_10e0.galaxy + _galaxy_10e1.galaxy + _galaxy_10e2.galaxy + _galaxy_10e3.galaxy + _galaxy_10e4.galaxy) AS galaxy,
+        (1 + _system_10e0.system + _system_10e1.system + _system_10e2.system + _system_10e3.system + _system_10e4.system) AS system
+    FROM (
+        SELECT 0 AS system
+        UNION ALL
+        SELECT 1 AS system
+        UNION ALL
+        SELECT 2 AS system
+        UNION ALL
+        SELECT 3 AS system
+        UNION ALL
+        SELECT 4 AS system
+        UNION ALL
+        SELECT 5 AS system
+        UNION ALL
+        SELECT 6 AS system
+        UNION ALL
+        SELECT 7 AS system
+        UNION ALL
+        SELECT 8 AS system
+        UNION ALL
+        SELECT 9 AS system
+      ) AS _system_10e0
+SQL_EOF;
+
+if ($systemCount > 10) {
+    $sql .= <<<SQL_EOF
+    CROSS JOIN (
+        SELECT 0  AS system
+        UNION ALL
+        SELECT 10 AS system
+        UNION ALL
+        SELECT 20 AS system
+        UNION ALL
+        SELECT 30 AS system
+        UNION ALL
+        SELECT 40 AS system
+        UNION ALL
+        SELECT 50 AS system
+        UNION ALL
+        SELECT 60 AS system
+        UNION ALL
+        SELECT 70 AS system
+        UNION ALL
+        SELECT 80 AS system
+        UNION ALL
+        SELECT 90 AS system
+      ) AS _system_10e1
+SQL_EOF;
+} else {
+    $sql .= <<<SQL_EOF
+    CROSS JOIN (SELECT 0 AS system) AS _system_10e1
+SQL_EOF;
+}
+
+if ($systemCount > 100) {
+$sql .= <<<SQL_EOF
+    CROSS JOIN (
+        SELECT 0   AS system
+        UNION ALL
+        SELECT 100 AS system
+        UNION ALL
+        SELECT 200 AS system
+        UNION ALL
+        SELECT 300 AS system
+        UNION ALL
+        SELECT 400 AS system
+        UNION ALL
+        SELECT 500 AS system
+        UNION ALL
+        SELECT 600 AS system
+        UNION ALL
+        SELECT 700 AS system
+        UNION ALL
+        SELECT 800 AS system
+        UNION ALL
+        SELECT 900 AS system
+      ) AS _system_10e2
+SQL_EOF;
+} else {
+    $sql .= <<<SQL_EOF
+    CROSS JOIN (SELECT 0 AS system) AS _system_10e2
+SQL_EOF;
+}
+
+if ($systemCount > 1000) {
+    $sql .= <<<SQL_EOF
+    CROSS JOIN (
+        SELECT 0    AS system
+        UNION ALL
+        SELECT 1000 AS system
+        UNION ALL
+        SELECT 2000 AS system
+        UNION ALL
+        SELECT 3000 AS system
+        UNION ALL
+        SELECT 4000 AS system
+        UNION ALL
+        SELECT 5000 AS system
+        UNION ALL
+        SELECT 6000 AS system
+        UNION ALL
+        SELECT 7000 AS system
+        UNION ALL
+        SELECT 8000 AS system
+        UNION ALL
+        SELECT 9000 AS system
+      ) AS _system_10e3
+SQL_EOF;
+} else {
+    $sql .= <<<SQL_EOF
+    CROSS JOIN (SELECT 0 AS system) AS _system_10e3
+SQL_EOF;
+}
+
+if ($systemCount > 10000) {
+    $sql .= <<<SQL_EOF
+    CROSS JOIN (
+        SELECT 0     AS system
+        UNION ALL
+        SELECT 10000 AS system
+        UNION ALL
+        SELECT 20000 AS system
+        UNION ALL
+        SELECT 30000 AS system
+        UNION ALL
+        SELECT 40000 AS system
+        UNION ALL
+        SELECT 50000 AS system
+        UNION ALL
+        SELECT 60000 AS system
+        UNION ALL
+        SELECT 70000 AS system
+        UNION ALL
+        SELECT 80000 AS system
+        UNION ALL
+        SELECT 90000 AS system
+      ) AS _system_10e4
+SQL_EOF;
+} else {
+    $sql .= <<<SQL_EOF
+    CROSS JOIN (SELECT 0 AS system) AS _system_10e4
+SQL_EOF;
+}
+
+$sql .= <<<SQL_EOF
+    CROSS JOIN (
+        SELECT 0 AS galaxy
+        UNION ALL
+        SELECT 1 AS galaxy
+        UNION ALL
+        SELECT 2 AS galaxy
+        UNION ALL
+        SELECT 3 AS galaxy
+        UNION ALL
+        SELECT 4 AS galaxy
+        UNION ALL
+        SELECT 5 AS galaxy
+        UNION ALL
+        SELECT 6 AS galaxy
+        UNION ALL
+        SELECT 7 AS galaxy
+        UNION ALL
+        SELECT 8 AS galaxy
+        UNION ALL
+        SELECT 9 AS galaxy
+      ) AS _galaxy_10e0
+SQL_EOF;
+
+if ($systemCount > 10) {
+    $sql .= <<<SQL_EOF
+    CROSS JOIN (
+        SELECT 0  AS galaxy
+        UNION ALL
+        SELECT 10 AS galaxy
+        UNION ALL
+        SELECT 20 AS galaxy
+        UNION ALL
+        SELECT 30 AS galaxy
+        UNION ALL
+        SELECT 40 AS galaxy
+        UNION ALL
+        SELECT 50 AS galaxy
+        UNION ALL
+        SELECT 60 AS galaxy
+        UNION ALL
+        SELECT 70 AS galaxy
+        UNION ALL
+        SELECT 80 AS galaxy
+        UNION ALL
+        SELECT 90 AS galaxy
+      ) AS _galaxy_10e1
+SQL_EOF;
+} else {
+    $sql .= <<<SQL_EOF
+    CROSS JOIN (SELECT 0 AS galaxy) AS _galaxy_10e1
+SQL_EOF;
+}
+
+if ($systemCount > 100) {
+    $sql .= <<<SQL_EOF
+    CROSS JOIN (
+        SELECT 0   AS galaxy
+        UNION ALL
+        SELECT 100 AS galaxy
+        UNION ALL
+        SELECT 200 AS galaxy
+        UNION ALL
+        SELECT 300 AS galaxy
+        UNION ALL
+        SELECT 400 AS galaxy
+        UNION ALL
+        SELECT 500 AS galaxy
+        UNION ALL
+        SELECT 600 AS galaxy
+        UNION ALL
+        SELECT 700 AS galaxy
+        UNION ALL
+        SELECT 800 AS galaxy
+        UNION ALL
+        SELECT 900 AS galaxy
+      ) AS _galaxy_10e2
+SQL_EOF;
+} else {
+    $sql .= <<<SQL_EOF
+    CROSS JOIN (SELECT 0 AS galaxy) AS _galaxy_10e2
+SQL_EOF;
+}
+
+if ($systemCount > 1000) {
+    $sql .= <<<SQL_EOF
+    CROSS JOIN (
+        SELECT 0    AS galaxy
+        UNION ALL
+        SELECT 1000 AS galaxy
+        UNION ALL
+        SELECT 2000 AS galaxy
+        UNION ALL
+        SELECT 3000 AS galaxy
+        UNION ALL
+        SELECT 4000 AS galaxy
+        UNION ALL
+        SELECT 5000 AS galaxy
+        UNION ALL
+        SELECT 6000 AS galaxy
+        UNION ALL
+        SELECT 7000 AS galaxy
+        UNION ALL
+        SELECT 8000 AS galaxy
+        UNION ALL
+        SELECT 9000 AS galaxy
+      ) AS _galaxy_10e3
+SQL_EOF;
+} else {
+    $sql .= <<<SQL_EOF
+    CROSS JOIN (SELECT 0 AS galaxy) AS _galaxy_10e3
+SQL_EOF;
+}
+
+if ($systemCount > 10000) {
+$sql .= <<<SQL_EOF
+    CROSS JOIN (
+        SELECT 0     AS galaxy
+        UNION ALL
+        SELECT 10000 AS galaxy
+        UNION ALL
+        SELECT 20000 AS galaxy
+        UNION ALL
+        SELECT 30000 AS galaxy
+        UNION ALL
+        SELECT 40000 AS galaxy
+        UNION ALL
+        SELECT 50000 AS galaxy
+        UNION ALL
+        SELECT 60000 AS galaxy
+        UNION ALL
+        SELECT 70000 AS galaxy
+        UNION ALL
+        SELECT 80000 AS galaxy
+        UNION ALL
+        SELECT 90000 AS galaxy
+      ) AS _galaxy_10e4
+SQL_EOF;
+} else {
+    $sql .= <<<SQL_EOF
+    CROSS JOIN (SELECT 0 AS galaxy) AS _galaxy_10e4
+SQL_EOF;
+}
+
+$sql .= <<<SQL_EOF
+    ) _increment
+
+  WHERE _increment.galaxy<={$galaxyCount}
+    AND _increment.system<={$systemCount}
+SQL_EOF;
+
+$this->query($sql);

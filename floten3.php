@@ -50,10 +50,9 @@ $position = isset($session['position']) ? $session['position'] : 0;
 $type = isset($session['type']) ? $session['type'] : 0;
 $speed = isset($session['speed']) ? $session['speed'] : 10;
 
-
-$protection      = $gameConfig['noobprotection'];
-$protectiontime  = $gameConfig['noobprotectiontime'];
-$protectionmulti = $gameConfig['noobprotectionmulti'];
+$protection      = Wootook::getGameConfig('game/noob-protection/active');
+$protectiontime  = Wootook::getGameConfig('game/noob-protection/points-cap');
+$protectionmulti = Wootook::getGameConfig('game/noob-protection/multiplier');
 
 if ($protectiontime < 1) {
     $protectiontime = 9999999999999999;

@@ -8,81 +8,56 @@
  * @uses Legacies_Empire
  */
 class Wootook_Core_Model_Config
-    extends Wootook_Core_Model
-    implements Wootook_Core_Singleton
+    extends Wootook_Core_Entity_SubTable
 {
     private static $_singleton = null;
 
     protected $_eventPrefix = 'core.config';
     protected $_eventObject = 'config';
 
-    public static function getSingleton()
-    {
-        if (self::$_singleton === null) {
-            self::$_singleton = new self();
-        }
-        return self::$_singleton;
-    }
-
     protected function _init()
     {
-        $this->load();
+        $this->_tableName = 'core_config';
+        $this->_idFieldNames = array('config_path', 'website_id', 'game_id');
     }
 
-    protected function _load()
+    public function setWebsiteId($websiteId)
     {
-        $database = Wootook_Database::getSingleton();
-
-        $sql =<<<SQL_EOF
-SELECT config_name AS attribute, config_value AS value
-  FROM {$database->getTable('config')} AS config
-SQL_EOF;
-
-        $attributeName = null;
-        $attributeValue = null;
-
-        $statement = $database->prepare($sql);
-        $statement->execute();
-
-        $statement->bindColumn('attribute', $attributeName, PDO::PARAM_STR);
-        $statement->bindColumn('value', $attributeValue, PDO::PARAM_STR);
-
-        while ($statement->fetch(PDO::FETCH_BOUND)) {
-            $this->setData($attributeName, $attributeValue);
-        }
-        return $this;
+        return $this->setData('website_id', $websiteId);
     }
 
-    protected function _save()
+    public function getWebsiteId()
     {
-        $database = Wootook_Database::getSingleton();
-        $fields = array();
-
-        $sql =<<<SQL_EOF
-UPDATE {{table}}
-  SET config_value=:value
-  WHERE config_name=:name
-SQL_EOF;
-        $statement = $database->prepare($sql);
-
-        foreach ($this->getAllDatas() as $attributeName => $attributeValue) {
-            $statement->execute(array(
-                'name'  => $attributeName,
-                'value' => $attributeValue
-                ));
-        }
-
-        return $this;
+        return $this->getData('website_id');
     }
 
-    protected function _delete()
+    public function setGameId($gameId)
     {
-        // NOP
-        return $this;
+        return $this->setData('game_id', $gameId);
     }
 
-    public function isEnabled()
+    public function getGameId()
     {
-        return (bool) $this->getData('game_disable');
+        return $this->getData('game_id');
+    }
+
+    public function setPath($path)
+    {
+        return $this->setData('config_path', $path);
+    }
+
+    public function getPath()
+    {
+        return $this->getData('config_path');
+    }
+
+    public function setValue($value)
+    {
+        return $this->setData('config_value', $value);
+    }
+
+    public function getValue()
+    {
+        return $this->getData('config_value');
     }
 }

@@ -33,9 +33,9 @@ defined('E_USER_DEPRECATED') || define('E_USER_DEPRECATED', E_USER_WARNING); // 
 define('ADMINEMAIL', "no-reply@wootook.org");
 
 // Definition du monde connu !
-defined('MAX_GALAXY_IN_WORLD')  || define('MAX_GALAXY_IN_WORLD', Wootook::getConfig('default/engine/universe/galaxies'));
-defined('MAX_SYSTEM_IN_GALAXY') || define('MAX_SYSTEM_IN_GALAXY', Wootook::getConfig('default/engine/universe/systems'));
-defined('MAX_PLANET_IN_SYSTEM') || define('MAX_PLANET_IN_SYSTEM', Wootook::getConfig('default/engine/universe/positions'));
+defined('MAX_GALAXY_IN_WORLD')  || define('MAX_GALAXY_IN_WORLD', Wootook::getGameConfig('engine/universe/galaxies'));
+defined('MAX_SYSTEM_IN_GALAXY') || define('MAX_SYSTEM_IN_GALAXY', Wootook::getGameConfig('engine/universe/systems'));
+defined('MAX_PLANET_IN_SYSTEM') || define('MAX_PLANET_IN_SYSTEM', Wootook::getGameConfig('engine/universe/positions'));
 
 defined('BCNUMBERS') || define('BCNUMBERS', Wootook::getConfig('default/engine/core/use_large_numbers'));
 

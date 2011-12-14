@@ -33,8 +33,10 @@ class Wootook_Database
                 return self::$_connectionAliases[$connectionName];
             }
 
-            if ($alias = Wootook::getConfig("global/database/{$connectionName}/use")) {
+            if ($alias = Wootook::getConfig("database/{$connectionName}/use")) {
                 self::$_connectionAliases[$connectionName] = self::getConnection($alias);
+
+                return self::$_connectionAliases[$connectionName];
             }
 
             self::$_connections[$connectionName] = self::_initConnection($connectionName);
@@ -45,23 +47,23 @@ class Wootook_Database
 
     private static function _initConnection($connectionName)
     {
-        $hostname = Wootook::getConfig("global/database/{$connectionName}/params/hostname");
-        $username = Wootook::getConfig("global/database/{$connectionName}/params/username");
-        $password = Wootook::getConfig("global/database/{$connectionName}/params/password");
-        $database = Wootook::getConfig("global/database/{$connectionName}/params/database");
+        $hostname = Wootook::getConfig("database/{$connectionName}/params/hostname");
+        $username = Wootook::getConfig("database/{$connectionName}/params/username");
+        $password = Wootook::getConfig("database/{$connectionName}/params/password");
+        $database = Wootook::getConfig("database/{$connectionName}/params/database");
 
         if (empty($hostname) || empty($username) || empty($database)) {
             return null;
         }
 
         $dsn = "mysql:dbname={$database};host={$hostname}";
-        if (($port = Wootook::getConfig("global/database/{$connectionName}/params/port")) && is_numeric($port)) {
+        if (($port = Wootook::getConfig("database/{$connectionName}/params/port")) && is_numeric($port)) {
             $dsn .= ";port={$port}";
         }
 
         $event = Wootook::dispatchEvent('database.prepare-options', array(
             'name'    => $connectionName,
-            'options' => array_merge(self::$options, Wootook::getConfig("global/database/{$connectionName}/options"))
+            'options' => array_merge(self::$options, Wootook::getConfig("database/{$connectionName}/options")->toArray())
             ));
 
         $options = $event->getData('options');
@@ -71,7 +73,7 @@ class Wootook_Database
         $connection->_username = $username;
         $connection->_password = $password;
 
-        if (($prefix = Wootook::getConfig("global/database/{$connectionName}/table_prefix")) !== null) {
+        if (($prefix = Wootook::getConfig("database/{$connectionName}/table_prefix")) !== null) {
             $connection->setTablePrefix($prefix);
         }
 

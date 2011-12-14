@@ -2,16 +2,6 @@
     'install' => array(
         'update' => '2columns-left',
         'reference' => array(
-            'messages' => array(
-                'actions' => array(
-                    array(
-                        'method' => 'prepareMessages',
-                        'params' => array(
-                            'namespace' => 'install'
-                            )
-                        )
-                    )
-                ),
             'content' => array(
                 'children' => array(
                     'navigation' => array(
@@ -155,5 +145,19 @@
                     )
                 )
             )
-        )
+        ),
+
+    'install.summary' => array(
+        'update' => 'install',
+        'reference' => array(
+            'content' => array(
+                'children' => array(
+                    'overview' => array(
+                        'type' => 'core/template',
+                        'template' => 'summary.phtml'
+                        ),
+                    )
+                )
+            )
+        ),
     );

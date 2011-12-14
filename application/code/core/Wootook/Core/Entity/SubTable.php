@@ -7,10 +7,9 @@
  * @uses Wootook_Empire_Model_User
  */
 abstract class Wootook_Core_Entity_SubTable
-    extends Wootook_Core_Model
+    extends Wootook_Core_Database_Resource
 {
     private $_isLoaded = false;
-    protected $_tableName = null;
     protected $_idFieldNames = array();
 
     protected $_eventPrefix = 'entity.sub-table';
@@ -117,17 +116,5 @@ SQL_EOF;
         $this->_isLoaded = false;
 
         return $this;
-    }
-
-    public function setTableName($tableName)
-    {
-        $this->_tableName = $tableName;
-
-        return $this;
-    }
-
-    public function getTableName()
-    {
-        return $this->_tableName;
     }
 }

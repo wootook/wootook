@@ -211,20 +211,16 @@ if (isset($_POST) && !empty($_POST)) {
         // News Frame ...
         // External Chat Frame ...
         // Banner ADS Google (meme si je suis contre cela)
-        if ($gameConfig['OverviewNewsFrame'] == '1') {
-            $parse['NewsFrame'] = "<tr><th>" . $lang['ov_news_title'] . "</th><th colspan=\"3\">" . stripslashes($gameConfig['OverviewNewsText']) . "</th></tr>";
+        if (Wootook::getGameConfig('game/news/active')) {
+            $parse['NewsFrame'] = "<tr><th>" . $lang['ov_news_title'] . "</th><th colspan=\"3\">" . htmlentities(Wootook::getGameConfig('game/news/content'), ENT_QUOTES, 'UTF-8') . "</th></tr>";
         }
-        if ($gameConfig['OverviewExternChat'] == '1') {
-            $parse['ExternalTchatFrame'] = "<tr><th colspan=\"4\">" . stripslashes($gameConfig['OverviewExternChatCmd']) . "</th></tr>";
+        if (Wootook::getGameConfig('engine/options/chat')) {
+            $parse['ExternalTchatFrame'] = "<tr><th colspan=\"4\">" . Wootook::__('Open the chat.') . "</th></tr>";
         }
-        if ($gameConfig['OverviewClickBanner'] != '') {
-            $parse['ClickBanner'] = stripslashes($gameConfig['OverviewClickBanner']);
-        }
-        if ($gameConfig['ForumBannerFrame'] == '1') {
+        if (Wootook::getGameConfig('engine/options/banner')) {
+            $bannerUrl = Wootook::getUrl('scripts/createbanner.php', array('id' => $user['id']));
 
-            $BannerURL = Wootook::getUrl('scripts/createbanner.php', array('id' => $user['id']));
-
-            $parse['bannerframe'] = "<th colspan=\"4\"><img src=\"{$BannerURL}\"><br>".$lang['InfoBanner']."<br><input name=\"bannerlink\" type=\"text\" id=\"bannerlink\" value=\"[img]".$BannerURL."[/img]\" size=\"62\"></th></tr>";
+            $parse['bannerframe'] = "<th colspan=\"4\"><img src=\"{$bannerUrl}\"><br>".$lang['InfoBanner']."<br><input name=\"bannerlink\" type=\"text\" id=\"bannerlink\" value=\"[img]".$bannerUrl."[/img]\" size=\"62\"></th></tr>";
         }
         // --- Gestion de l'affichage d'une lune ---------------------------------------------------------
         if ($moon['id']) {
@@ -276,7 +272,18 @@ if (isset($_POST) && !empty($_POST)) {
         $parse['time'] = "<div id=\"dateheure\"></div>";
         $parse['planet_image'] = $planet['image'];
         $parse['anothers_planets'] = $planetBlock->render();
-        $parse['max_users'] = $gameConfig['users_amount'];
+
+        $db = Wootook_Database::getConnection('default');
+        $displayedPlayerLevels = implode(',', array(
+            //LEVEL_ADMIN,
+            LEVEL_OPERATOR,
+            LEVEL_MODERATOR,
+            LEVEL_PLAYER
+            ));
+        $userCountStatement = $db->prepare("SELECT COUNT(DISTINCT user.id) AS `user_count` FROM {$db->getTable('users')} AS user WHERE user.authlevel IN({$displayedPlayerLevels})");
+        $userCountStatement->execute();
+        $userCount = $userCountStatement->fetch(Wootook_Database::FETCH_COLUMN, 0);
+        $parse['max_users'] = $userCount;
 
         $galaxyData = $planet->getGalaxyData();
         $parse['metal_debris'] = Math::render($galaxyData['metal']);
@@ -287,12 +294,19 @@ if (isset($_POST) && !empty($_POST)) {
             $parse['get_link'] = '';
         }
 
+        $latestPlayerStatement = $db->prepare("SELECT user.username AS `latest_player` FROM {$db->getTable('users')} AS user WHERE user.authlevel IN({$displayedPlayerLevels}) ORDER BY user.`register_time` DESC LIMIT 1");
+        $latestPlayerStatement->execute();
+        $latestPlayer = $latestPlayerStatement->fetch(Wootook_Database::FETCH_COLUMN, 0);
+
+        $onlinePlayersStatement = $db->prepare("SELECT COUNT(DISTINCT user.id) AS `online_players` FROM {$db->getTable('users')} AS user WHERE user.authlevel IN({$displayedPlayerLevels}) AND user.`onlinetime` > (UNIX_TIMESTAMP() - 900)");
+        $onlinePlayersStatement->execute();
+        $onlinePlayers = $onlinePlayersStatement->fetch(Wootook_Database::FETCH_COLUMN, 0);
+
         $query = doquery('SELECT username FROM {{table}} ORDER BY register_time DESC', 'users', true);
-        $parse['last_user'] = $query['username'];
+        $parse['last_user'] = $latestPlayer;
         $query = doquery("SELECT COUNT(DISTINCT(id)) FROM {{table}} WHERE onlinetime>" . (time()-900), 'users', true);
-        $parse['online_users'] = $query[0];
-        // $count = doquery(","users",true);
-        $parse['users_amount'] = $gameConfig['users_amount'];
+        $parse['online_users'] = $onlinePlayers;
+        $parse['users_amount'] = $userCount;
 
         // Rajout d'une barre pourcentage
         // Calcul du pourcentage de remplissage

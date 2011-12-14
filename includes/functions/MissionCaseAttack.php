@@ -214,8 +214,15 @@ function MissionCaseAttack($FleetRow)
         }
 
         if (($UserChance > 0) and ($UserChance <= $MoonChance) and $galenemyrow['id_luna'] == 0) {
-            $targetPlanetName = CreateOneMoonRecord ($FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet'], $TargetUserID, $FleetRow['fleet_start_time'], '', $MoonChance);
-            $GottenMoon = sprintf ($lang['sys_moonbuilt'], $targetPlanetName, $FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet']);
+            $user = Wootook_Empire_Model_User::factory($TargetUserID);
+            $user->createNewPlanet(
+                intval($FleetRow['fleet_end_galaxy']),
+                intval($FleetRow['fleet_end_system']),
+                intval($FleetRow['fleet_end_planet']),
+                Wootook_Empire_Model_Planet::TYPE_MOON,
+                Wootook::__('Moon')
+                );
+            $GottenMoon = Wootook::_('A moon has been created!');
         } elseif ($UserChance = 0 or $UserChance > $MoonChance) {
             $GottenMoon = "";
         }

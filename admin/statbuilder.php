@@ -47,6 +47,8 @@ if (strtolower(substr(PHP_SAPI, 0, 3)) == 'cli' || in_array($user['authlevel'], 
 
 	$GameUsers  = doquery("SELECT * FROM {{table}} WHERE authlevel<3", 'users');
 
+	$resourceMultiplier = Wootook::getGameConfig('game/resource/multiplier');
+
 	while ($CurUser = $GameUsers->fetch(PDO::FETCH_ASSOC)) {
 		// Recuperation des anciennes statistiques
 		$OldStatRecord  = doquery ("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `id_owner` = '".$CurUser['id']."';", 'statpoints', true);
@@ -69,7 +71,7 @@ if (strtolower(substr(PHP_SAPI, 0, 3)) == 'cli' || in_array($user['authlevel'], 
 		// Total des unitées consommée pour la recherche
 		$Points         = GetTechnoPoints ( $CurUser );
 		$TTechCount     = $Points['TechCount'];
-		$TTechPoints    = ($Points['TechPoint'] / $gameConfig['stat_settings']);
+		$TTechPoints    = ($Points['TechPoint'] / $resourceMultiplier);
 
 		// Totalisation des points accumulés par planete
 		$TBuildCount    = 0;
@@ -85,20 +87,20 @@ if (strtolower(substr(PHP_SAPI, 0, 3)) == 'cli' || in_array($user['authlevel'], 
 			$Points           = GetBuildPoints ( $CurPlanet );
 			$TBuildCount     += $Points['BuildCount'];
 			$GCount          += $Points['BuildCount'];
-			$PlanetPoints     = ($Points['BuildPoint'] / $gameConfig['stat_settings']);
-			$TBuildPoints    += ($Points['BuildPoint'] / $gameConfig['stat_settings']);
+			$PlanetPoints     = ($Points['BuildPoint'] / $resourceMultiplier);
+			$TBuildPoints    += ($Points['BuildPoint'] / $resourceMultiplier);
 
 			$Points           = GetDefensePoints ( $CurPlanet );
 			$TDefsCount      += $Points['DefenseCount'];;
 			$GCount          += $Points['DefenseCount'];
-			$PlanetPoints    += ($Points['DefensePoint'] / $gameConfig['stat_settings']);
-			$TDefsPoints     += ($Points['DefensePoint'] / $gameConfig['stat_settings']);
+			$PlanetPoints    += ($Points['DefensePoint'] / $resourceMultiplier);
+			$TDefsPoints     += ($Points['DefensePoint'] / $resourceMultiplier);
 
 			$Points           = GetFleetPoints ( $CurPlanet );
 			$TFleetCount     += $Points['FleetCount'];
 			$GCount          += $Points['FleetCount'];
-			$PlanetPoints    += ($Points['FleetPoint'] / $gameConfig['stat_settings']);
-			$TFleetPoints    += ($Points['FleetPoint'] / $gameConfig['stat_settings']);
+			$PlanetPoints    += ($Points['FleetPoint'] / $resourceMultiplier);
+			$TFleetPoints    += ($Points['FleetPoint'] / $resourceMultiplier);
 
 			$GPoints         += $PlanetPoints;
 			$QryUpdatePlanet  = "UPDATE {{table}} SET ";

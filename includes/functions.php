@@ -35,17 +35,15 @@ function check_urlaubmodus ($user) {
 }
 
 function check_urlaubmodus_time () {
-	global $user, $gameConfig;
-	if ($gameConfig['urlaubs_modus_erz'] == 1) {
-		$begrenzung             = 86400; //24x60x60= 24h
-		$urlaub_modus_time      = $user['urlaubs_modus_time'];
-		$urlaub_modus_time_soll = $urlaub_modus_time + $begrenzung;
-		$time_jetzt             = time();
-		if ($user['urlaubs_modus'] == 1 && $urlaub_modus_time_soll > $time_jetzt) {
-			$soll_datum = date("d.m.Y", $urlaub_modus_time_soll);
-			$soll_uhrzeit = date("H:i:s", $urlaub_modus_time_soll);
-			message("Vous �tes en mode vacances!<br>Le mode vacance dure jusque $soll_datum $soll_uhrzeit<br>	Ce n'est qu'apr�s cette p�riode que vous pouvez changer vos options.", "Mode vacance");
-		}
+	global $user;
+	$begrenzung             = 86400; //24x60x60= 24h
+	$urlaub_modus_time      = $user['urlaubs_modus_time'];
+	$urlaub_modus_time_soll = $urlaub_modus_time + $begrenzung;
+	$time_jetzt             = time();
+	if ($user['urlaubs_modus'] == 1 && $urlaub_modus_time_soll > $time_jetzt) {
+		$soll_datum = date("d.m.Y", $urlaub_modus_time_soll);
+		$soll_uhrzeit = date("H:i:s", $urlaub_modus_time_soll);
+		message("Vous �tes en mode vacances!<br>Le mode vacance dure jusque $soll_datum $soll_uhrzeit<br>	Ce n'est qu'apr�s cette p�riode que vous pouvez changer vos options.", "Mode vacance");
 	}
 }
 

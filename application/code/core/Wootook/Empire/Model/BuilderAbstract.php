@@ -46,6 +46,10 @@ abstract class Wootook_Empire_Model_BuilderAbstract
 
     public function enqueue($params, $index = null)
     {
+        if ($this->_currentUser->getVacation()) {
+            return $this;
+        }
+
         $item = $this->_initItem($params);
         if ($item === null) {
             return $this;

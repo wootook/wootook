@@ -70,9 +70,9 @@ require_once dirname(__FILE__) .'/application/bootstrap.php';
 		}
 	}
 
-	$PrNoob      = $gameConfig['noobprotection'];
-	$PrNoobTime  = $gameConfig['noobprotectiontime'];
-	$PrNoobMulti = $gameConfig['noobprotectionmulti'];
+	$PrNoob      = Wootook::getGameConfig('game/noob-protection/active');
+	$PrNoobTime  = Wootook::getGameConfig('game/noob-protection/points-cap');
+	$PrNoobMulti = Wootook::getGameConfig('game/noob-protection/multiplier');
 
 	// Petit Test de coherance
 	$galaxy          = intval($_POST['galaxy']);

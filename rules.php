@@ -32,15 +32,12 @@ define('INSIDE' , true);
 define('INSTALL' , false);
 require_once dirname(__FILE__) .'/application/bootstrap.php';
 
-	includeLang('rules');
+includeLang('rules');
 
-	$parse = $lang;
-	$parse['servername']   = $gameConfig['game_name'];
+$parse = $lang;
+$parse['servername'] = Wootook::getGameConfig('game/general/name');
 
-	$PageTPL  = gettemplate('rules_body');
-	$page     = parsetemplate( $PageTPL, $parse);
+$PageTPL  = gettemplate('rules_body');
+$page     = parsetemplate( $PageTPL, $parse);
 
-	display($page, $lang['rules'], false);
-
-
-?>
+display($page, $lang['rules'], false);

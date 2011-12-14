@@ -68,14 +68,13 @@ class Wootook_Empire_Model_Planet_Builder
     public function getBuildingTime($buildingId, $level)
     {
         $prices = Wootook_Empire_Model_Game_Prices::getSingleton();
-        $gameConfig = Wootook_Core_Model_Config::getSingleton();
 
         Math::setPrecision(50);
         $firstLevelTime = $prices[$buildingId][Legacies_Empire::BASE_BUILDING_TIME];
         $partialLevelTime = Math::mul($firstLevelTime, Math::pow($prices[$buildingId][Legacies_Empire::RESOURCE_MULTIPLIER], $level));
         $levelTime = Math::sub($partialLevelTime, $firstLevelTime);
 
-        $speedFactor = $gameConfig->getData('game_speed');
+        $speedFactor = Wootook::getGameConfig('game/speed/general');
         $baseTime = $levelTime / $speedFactor * 3600;
 
         Math::setPrecision();

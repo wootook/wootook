@@ -33,19 +33,12 @@ define('INSTALL' , false);
 require_once dirname(__FILE__) .'/application/bootstrap.php';
 
 function BuildRessourcePage($CurrentUser, $CurrentPlanet ) {
-    global $lang, $gameConfig;
+    global $lang;
 
     includeLang('resources');
 
     $RessBodyTPL = gettemplate('resources');
     $RessRowTPL  = gettemplate('resources_row');
-
-    // Si c'est une lune ... pas de ressources produites
-    if ($CurrentPlanet['planet_type'] == 3) {
-        $gameConfig['metal_basic_income']     = 0;
-        $gameConfig['crystal_basic_income']   = 0;
-        $gameConfig['deuterium_basic_income'] = 0;
-    }
 
     $request = Wootook::getRequest();
     if ($request->isPost()) {
@@ -142,10 +135,18 @@ function BuildRessourcePage($CurrentUser, $CurrentPlanet ) {
         $parse['production_level'] = 100;
     }
 
-    $parse['metal_basic_income']     = $gameConfig['metal_basic_income']     * $gameConfig['resource_multiplier'];
-    $parse['crystal_basic_income']   = $gameConfig['crystal_basic_income']   * $gameConfig['resource_multiplier'];
-    $parse['deuterium_basic_income'] = $gameConfig['deuterium_basic_income'] * $gameConfig['resource_multiplier'];
-    $parse['energy_basic_income']    = $gameConfig['energy_basic_income']    * $gameConfig['resource_multiplier'];
+    if ($CurrentPlanet['planet_type'] == Wootook_Empire_Model_Planet::TYPE_PLANET) {
+        $multiplier = Wootook::getGameConfig('game/resource/multiplier');
+        $parse['metal_basic_income']     = Wootook::getGameConfig('resource/base-income/metal') * $multiplier;
+        $parse['crystal_basic_income']   = Wootook::getGameConfig('resource/base-income/cristal') * $multiplier;
+        $parse['deuterium_basic_income'] = Wootook::getGameConfig('resource/base-income/deuterium') * $multiplier;
+        $parse['energy_basic_income']    = Wootook::getGameConfig('resource/base-income/energy') * $multiplier;
+    } else {
+        $parse['metal_basic_income']     = 0;
+        $parse['crystal_basic_income']   = 0;
+        $parse['deuterium_basic_income'] = 0;
+        $parse['energy_basic_income']    = 0;
+    }
 
     if ($CurrentPlanet['metal_max'] < $CurrentPlanet['metal']) {
         $parse['metal_max']         = "<font color=\"#ff0000\">";

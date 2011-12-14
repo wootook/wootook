@@ -658,3 +658,24 @@ function doquery($query, $table, $fetch = false)
         return $statement;
     }
 }
+
+/**
+ *
+ * @deprecated
+ * @param unknown_type $UserID
+ */
+function ResetThisFuckingCheater($userId)
+{
+    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+
+    $user = Wootook_Empire_Model_User::factory($userId);
+    $username = $user->getData('username');
+    $email = $user->getData('email');
+    $password = $user->getData('password');
+    $user->delete();
+
+    $user = Wootook_Empire_Model_User::register($TheUser['username'], $TheUser['email'], 'password');
+    $user->setData('password', $password);
+    $user->save();
+    return;
+}

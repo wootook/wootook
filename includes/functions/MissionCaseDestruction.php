@@ -35,7 +35,7 @@
  */
 function MissionCaseDestruction($FleetRow)
 {
-   global $user, $pricelist, $lang, $resource, $CombatCaps, $gameConfig;
+   global $user, $pricelist, $lang, $resource, $CombatCaps;
 
    includeLang('system');
 
@@ -156,7 +156,7 @@ function MissionCaseDestruction($FleetRow)
             $gravitonPower = 1 + pow(1 - $gravitonLevel, 2);
 
             $rawChances = pow(sqrt(1 / floatval($TargetPlanet['diameter'])) * $destructionPower * $gravitonPower, 2);
-            $chances = (1 - (1 / ((2500 / floatval($gameConfig['game_speed'])) * pow(1 + $rawChances, 2)))) * .5;
+            $chances = (1 - (1 / ((2500 / floatval(Wootook::getGameConfig('game/speed/general'))) * pow(1 + $rawChances, 2)))) * .5;
 
             $tirage = mt_rand(0, 100000000);
             $probalune = sprintf($lang['sys_destruc_lune'], (int) ($chances * 100));
@@ -252,265 +252,142 @@ function MissionCaseDestruction($FleetRow)
          $introdestruc       = sprintf ($lang['sys_destruc_mess'], $DepName , $FleetRow['fleet_start_galaxy'], $FleetRow['fleet_start_system'], $FleetRow['fleet_start_planet'], $FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet']);
 
          // Mise a jour de l'enregistrement de la planete attaqu�e
-
          $QryUpdateTarget  = "UPDATE {{table}} SET ";
-
          $QryUpdateTarget .= $TargetPlanetUpd;
-
          $QryUpdateTarget .= "`metal` = `metal` - '". $Mining['metal'] ."', ";
-
          $QryUpdateTarget .= "`crystal` = `crystal` - '". $Mining['crystal'] ."', ";
-
          $QryUpdateTarget .= "`deuterium` = `deuterium` - '". $Mining['deuter'] ."' ";
-
          $QryUpdateTarget .= "WHERE ";
-
          $QryUpdateTarget .= "`galaxy` = '". $FleetRow['fleet_end_galaxy'] ."' AND ";
-
          $QryUpdateTarget .= "`system` = '". $FleetRow['fleet_end_system'] ."' AND ";
-
          $QryUpdateTarget .= "`planet` = '". $FleetRow['fleet_end_planet'] ."' AND ";
-
          $QryUpdateTarget .= "`planet_type` = '". $FleetRow['fleet_end_type'] ."' ";
-
          $QryUpdateTarget .= "LIMIT 1;";
-
          doquery( $QryUpdateTarget , 'planets');
 
-
-
          // Mise a jour du champ de ruine devant la planete attaqu�e
-
          $QryUpdateGalaxy  = "UPDATE {{table}} SET ";
-
          $QryUpdateGalaxy .= "`metal` = `metal` + '". $zlom['metal'] ."', ";
-
          $QryUpdateGalaxy .= "`crystal` = `crystal` + '". $zlom['crystal'] ."' ";
-
          $QryUpdateGalaxy .= "WHERE ";
-
          $QryUpdateGalaxy .= "`galaxy` = '". $FleetRow['fleet_end_galaxy'] ."' AND ";
-
          $QryUpdateGalaxy .= "`system` = '". $FleetRow['fleet_end_system'] ."' AND ";
-
          $QryUpdateGalaxy .= "`planet` = '". $FleetRow['fleet_end_planet'] ."' ";
-
          $QryUpdateGalaxy .= "LIMIT 1;";
-
          doquery( $QryUpdateGalaxy , 'galaxy');
 
-
-
          // L� on va discuter le bout de gras pour voir s'il y a moyen d'avoir une Lune !
-
          $FleetDebris      = $zlom['metal'] + $zlom['crystal'];
-
          $StrAttackerUnits = sprintf ($lang['sys_attacker_lostunits'], $zlom["atakujacy"]);
-
          $StrDefenderUnits = sprintf ($lang['sys_defender_lostunits'], $zlom["wrog"]);
-
          $StrRuins         = sprintf ($lang['sys_gcdrunits'], $zlom["metal"], $lang['Metal'], $zlom['crystal'], $lang['Crystal']);
-
          $DebrisField      = $StrAttackerUnits ."<br />". $StrDefenderUnits ."<br />". $StrRuins;
-
          $MoonChance       = $FleetDebris / 100000;
-
          if ($FleetDebris > 2000000) {
-
             $MoonChance = 20;
-
          }
-
          if ($FleetDebris < 100000) {
-
             $UserChance = 0;
-
             $ChanceMoon = "";
-
          } elseif ($FleetDebris >= 100000) {
-
             $UserChance = mt_rand(1, 100);
-
             $ChanceMoon       = sprintf ($lang['sys_moonproba'], $MoonChance);
-
          }
-
-
 
          if (($UserChance > 0) and ($UserChance <= $MoonChance) and $galenemyrow['id_luna'] == 0) {
-
-            $TargetPlanetName = CreateOneMoonRecord ( $FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet'], $TargetUserID, $FleetRow['fleet_start_time'], '', $MoonChance );
-
-            $GottenMoon       = sprintf ($lang['sys_moonbuilt'], $TargetPlanetName, $FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet']);
-
+            $user = Wootook_Empire_Model_User::factory($TargetUserID);
+            $user->createNewPlanet(
+                intval($FleetRow['fleet_end_galaxy']),
+                intval($FleetRow['fleet_end_system']),
+                intval($FleetRow['fleet_end_planet']),
+                Wootook_Empire_Model_Planet::TYPE_MOON,
+                Wootook::__('Moon')
+                );
+            $GottenMoon = Wootook::_('A moon has been created!');
          } elseif ($UserChance = 0 or $UserChance > $MoonChance) {
-
             $GottenMoon = "";
-
          }
 
-
-
          $AttackDate        = date("r", $FleetRow["fleet_start_time"]);
-
          $title             = sprintf ($lang['sys_destruc_title'], $AttackDate);
-
          $raport            = "<center><table><tr><td>". $title ."<br />";
-
          $zniszczony        = false;
-
          $a_zestrzelona     = 0;
-
          $AttackTechon['A'] = $CurrentTechno["military_tech"] * 10;
-
          $AttackTechon['B'] = $CurrentTechno["defence_tech"] * 10;
-
          $AttackTechon['C'] = $CurrentTechno["shield_tech"] * 10;
-
          $AttackerData      = sprintf ($lang['sys_attack_attacker_pos'], $CurrentUser["username"], $FleetRow['fleet_start_galaxy'], $FleetRow['fleet_start_system'], $FleetRow['fleet_start_planet'] );
-
          $AttackerTech      = sprintf ($lang['sys_attack_techologies'], $AttackTechon['A'], $AttackTechon['B'], $AttackTechon['C']);
 
-
-
          $DefendTechon['A'] = $TargetTechno["military_tech"] * 10;
-
          $DefendTechon['B'] = $TargetTechno["defence_tech"] * 10;
-
          $DefendTechon['C'] = $TargetTechno["shield_tech"] * 10;
-
          $DefenderData      = sprintf ($lang['sys_attack_defender_pos'], $TargetUser["username"], $FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet'] );
-
          $DefenderTech      = sprintf ($lang['sys_attack_techologies'], $DefendTechon['A'], $DefendTechon['B'], $DefendTechon['C']);
 
-
-
          foreach ($dane_do_rw as $a => $b) {
-
             $raport .= "<table border=1 width=100%><tr><th><br /><center>".$AttackerData."<br />".$AttackerTech."<table border=1>";
-
             if ($b["atakujacy"]['count'] > 0) {
-
                $raport1 = "<tr><th>".$lang['sys_ship_type']."</th>";
-
                $raport2 = "<tr><th>".$lang['sys_ship_count']."</th>";
-
                $raport3 = "<tr><th>".$lang['sys_ship_weapon']."</th>";
-
                $raport4 = "<tr><th>".$lang['sys_ship_shield']."</th>";
-
                $raport5 = "<tr><th>".$lang['sys_ship_armour']."</th>";
-
                foreach ($b["atakujacy"] as $Ship => $Data) {
-
                   if (is_numeric($Ship)) {
-
                      if ($Data['count'] > 0) {
-
                         $raport1 .= "<th>". $lang["tech_rc"][$Ship] ."</th>";
-
                         $raport2 .= "<th>". $Data['count'] ."</th>";
-
                         $raport3 .= "<th>". round($Data["atak"]   / $Data['count']) ."</th>";
-
                         $raport4 .= "<th>". round($Data["tarcza"] / $Data['count']) ."</th>";
-
                         $raport5 .= "<th>". round($Data["obrona"] / $Data['count']) ."</th>";
-
                      }
-
                   }
-
                }
-
                $raport1 .= "</tr>";
-
                $raport2 .= "</tr>";
-
                $raport3 .= "</tr>";
-
                $raport4 .= "</tr>";
-
                $raport5 .= "</tr>";
-
                $raport .= $raport1 . $raport2 . $raport3 . $raport4 . $raport5;
-
             } else {
-
                if ($a == 2) {
-
                   $a_zestrzelona = 1;
-
                }
-
                $zniszczony = true;
-
                $raport .= "<br />". $lang['sys_destroyed'];
-
             }
 
-
-
             $raport .= "</table></center></th></tr></table>";
-
             $raport .= "<table border=1 width=100%><tr><th><br /><center>".$DefenderData."<br />".$DefenderTech."<table border=1>";
-
             if ($b["wrog"]['count'] > 0) {
-
                $raport1 = "<tr><th>".$lang['sys_ship_type']."</th>";
-
                $raport2 = "<tr><th>".$lang['sys_ship_count']."</th>";
-
                $raport3 = "<tr><th>".$lang['sys_ship_weapon']."</th>";
-
                $raport4 = "<tr><th>".$lang['sys_ship_shield']."</th>";
-
                $raport5 = "<tr><th>".$lang['sys_ship_armour']."</th>";
-
                foreach ($b["wrog"] as $Ship => $Data) {
-
                   if (is_numeric($Ship)) {
-
                      if ($Data['count'] > 0) {
-
                         $raport1 .= "<th>". $lang["tech_rc"][$Ship] ."</th>";
-
                         $raport2 .= "<th>". $Data['count'] ."</th>";
-
                         $raport3 .= "<th>". round($Data["atak"]   / $Data['count']) ."</th>";
-
                         $raport4 .= "<th>". round($Data["tarcza"] / $Data['count']) ."</th>";
-
                         $raport5 .= "<th>". round($Data["obrona"] / $Data['count']) ."</th>";
-
                      }
-
                   }
-
                }
-
                $raport1 .= "</tr>";
-
                $raport2 .= "</tr>";
-
                $raport3 .= "</tr>";
-
                $raport4 .= "</tr>";
-
                $raport5 .= "</tr>";
-
                $raport .= $raport1 . $raport2 . $raport3 . $raport4 . $raport5;
-
             } else {
-
                $zniszczony = true;
-
                $raport .= "<br />". $lang['sys_destroyed'];
-
             }
             $raport .= "</table></center></th></tr></table>";
-
-
 
             if (($zniszczony == false) and !($a == 8)) {
                $AttackWaveStat    = sprintf ($lang['sys_attack_attack_wave'], floor($b["atakujacy"]["atak"]), floor($b["wrog"]["tarcza"]));

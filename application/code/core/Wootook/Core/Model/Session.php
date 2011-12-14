@@ -58,7 +58,8 @@ class Wootook_Core_Model_Session
     {
         $messages = $this->_data['messages'];
         if ($clear == true) {
-            $this->_data['messages'] = array();
+            var_dump($this->_data['messages']);
+            //$this->_data['messages'] = array();
         }
         return $messages;
     }

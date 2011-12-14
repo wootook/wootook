@@ -127,9 +127,7 @@ EOF;
      */
     public function error($message, $title)
     {
-        $gameConfig = Legacies_Core_Model_Config::getSingleton();
-
-        if ($gameConfig['debug'] == 1) {
+        if (defined('DEBUG')) {
             echo "<h2>$title</h2><br><font color=red>$message</font><br><hr>";
             echo  "<table>".$this->log."</table>";
         }

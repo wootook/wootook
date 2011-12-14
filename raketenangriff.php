@@ -144,7 +144,7 @@ $select = doquery("SELECT * FROM {{table}} WHERE id = ".$ziel_id, 'users', true)
 
 
 
-$flugzeit = round(((30 + (60 * $tempvar1)) * 2500) / $gameConfig['game_speed']);
+$flugzeit = round(((30 + (60 * $tempvar1)) * 2500) / Wootook::getGameConfig('game/speed/general'));
 
 
 

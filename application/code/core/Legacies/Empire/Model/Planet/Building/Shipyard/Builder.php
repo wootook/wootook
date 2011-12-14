@@ -185,12 +185,11 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
     public function getBuildingTime($shipId, $qty)
     {
         $prices = Wootook_Empire_Model_Game_Prices::getSingleton();
-        $gameConfig = Wootook_Core_Model_Config::getSingleton();
 
         Math::setPrecision(50);
         $buildingTime = Math::mul($prices[$shipId][Legacies_Empire::BASE_BUILDING_TIME], $qty);
 
-        $speedFactor = $gameConfig->getData('game_speed');
+        $speedFactor = Wootook::getGameConfig('game/speed/general');
         $baseTime = Math::div($buildingTime, $speedFactor);
 
         Math::setPrecision();

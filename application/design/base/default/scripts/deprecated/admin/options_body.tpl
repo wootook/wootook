@@ -102,24 +102,17 @@
 </tr><tr>
 	<th colspan="2"><textarea name="NewsText" cols="80" rows="5" size="80" ><?php echo $this->getData('NewsTextVal')?></textarea></th>
 </tr><tr>
-	<th><?php echo $this->getData('adm_opt_game_oth_chat')?></th>
-	<th><input name="chatframe"<?php echo $this->getData('chatframe')?> type="checkbox" /></th>
+	<th><?php echo $this->__('Enable Google Analytics')?></th>
+	<td><input name="ga"<?php echo $this->getData('ga')?> type="checkbox" /></td>
 </tr><tr>
-	<th colspan="2"><textarea name="ExternChat" cols="80" rows="5" size="80" ><?php echo $this->getData('ExtTchatVal')?></textarea></th>
-</tr><tr>
-	<th><?php echo $this->getData('adm_opt_game_oth_adds')?></th>
-	<th><input name="googlead"<?php echo $this->getData('googlead')?> type="checkbox" /></th>
-</tr><tr>
-	<th colspan="2"><textarea name="GoogleAds" cols="80" rows="5" size="80" ><?php echo $this->getData('GoogleAdVal')?></textarea></th>
-</tr><tr>
-	<th><?php echo $this->getData('adm_opt_game_debugmod')?></a></th>
-	<th><input name="debug"<?php echo $this->getData('debug')?> type="checkbox" /></th>
-</tr>	
+	<th><?php echo $this->__('Google Analytics Identifier')?></th>
+	<td><input name=ga_id type="text" value="<?php echo $this->escape($this->getData('ga_id'))?>" /></td>
+</tr>
 <tr>
 	<th><?php echo $this->getData('banner')?></th>
 	<th><textarea name="banner_source_post" cols="80" rows="1" size="80" ><?php echo $this->getData('banner_source_post')?></textarea></th>
 
-	
+
 </tr>
 <tr>
 	<th colspan="2"><img src="<?php echo $this->getData('banner_source_post')?>" alt="<?php echo $this->getData('banner_source_post')?>" title="<?php echo $this->getData('banner_source_post')?>"></th>

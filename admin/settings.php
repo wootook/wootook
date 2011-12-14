@@ -34,8 +34,8 @@ define('IN_ADMIN', true);
 require_once dirname(dirname(__FILE__)) .'/application/bootstrap.php';
 
 
-function DisplayGameSettingsPage ( $CurrentUser ) {
-	global $lang, $gameConfig;
+function DisplayGameSettingsPage($CurrentUser) {
+	global $lang;
 
 	includeLang('admin/settings');
 
@@ -43,208 +43,197 @@ function DisplayGameSettingsPage ( $CurrentUser ) {
 		if (isset($_POST['opt_save']) && $_POST['opt_save'] == "1") {
 			// Jeu Ouvert ou Ferm� !
 			if (isset($_POST['closed']) && $_POST['closed'] == 'on') {
-				$gameConfig['game_disable']         = "1";
-				$gameConfig['close_reason']         = addslashes( $_POST['close_reason'] );
+			    Wootook::setConfig('game/general/active', true, 1, 1);
 			} else {
-				$gameConfig['game_disable']         = "0";
-				$gameConfig['close_reason']         = "";
+			    Wootook::setConfig('game/general/active', false, 1, 1);
+			}
+
+			if (isset($_POST['close_reason'])) {
+			    Wootook::setConfig('game/general/closing-message', $_POST['close_reason'], 1, 1);
 			}
 
 			// Y a un News Frame ? !
 			if (isset($_POST['newsframe']) && $_POST['newsframe'] == 'on') {
-				$gameConfig['OverviewNewsFrame']     = "1";
-				$gameConfig['OverviewNewsText']      = addslashes( $_POST['NewsText'] );
+			    Wootook::setConfig('game/news/active', true, 1, 1);
 			} else {
-				$gameConfig['OverviewNewsFrame']     = "0";
-				$gameConfig['OverviewNewsText']      = "";
+			    Wootook::setConfig('game/news/active', false, 1, 1);
+			}
+
+			if (isset($_POST['NewsText'])) {
+			    Wootook::setConfig('game/news/content', $_POST['NewsText'], 1, 1);
 			}
 
 			// Y a un TCHAT externe ??
 			if (isset($_POST['chatframe']) && $_POST['chatframe'] == 'on') {
-				$gameConfig['OverviewExternChat']     = "1";
-				$gameConfig['OverviewExternChatCmd']  = addslashes( $_POST['ExternChat'] );
+			    Wootook::setConfig('engine/options/chat', true, 1, 1);
 			} else {
-				$gameConfig['OverviewExternChat']     = "0";
-				$gameConfig['OverviewExternChatCmd']  = "";
+			    Wootook::setConfig('engine/options/chat', false, 1, 1);
 			}
 
-			if (isset($_POST['googlead']) && $_POST['googlead'] == 'on') {
-				$gameConfig['OverviewBanner']         = "1";
-				$gameConfig['OverviewClickBanner']    = addslashes( $_POST['GoogleAds'] );
+			if (isset($_POST['ga']) && $_POST['ga'] == 'on') {
+			    Wootook::setConfig('engine/options/ga', true, 1, 1);
 			} else {
-				$gameConfig['OverviewBanner']         = "0";
-				$gameConfig['OverviewClickBanner']    = "";
+			    Wootook::setConfig('engine/options/ga', false, 1, 1);
+			}
+			if (isset($_POST['ga_id']) && !empty($_POST['ga_id'])) {
+			    Wootook::setConfig('engine/options/ga-id', $_POST['ga_id'], 1, 1);
 			}
 
 			// Y a un BANNER Frame ?
 			if (isset($_POST['bannerframe']) && $_POST['bannerframe'] == 'on') {
-				$gameConfig['ForumBannerFrame']     = "1";
+			    Wootook::setConfig('engine/options/banner', true, 1, 1);
 			} else {
-				$gameConfig['ForumBannerFrame']     = "0";
-			}
-
-			// Mode Debug ou pas !
-			if (isset($_POST['debug']) && $_POST['debug'] == 'on') {
-				$gameConfig['debug'] = "1";
-			} else {
-				$gameConfig['debug'] = "0";
+			    Wootook::setConfig('engine/options/banner', false, 1, 1);
 			}
 
 			// Nom du Jeu
-			if (isset($_POST['game_name']) && $_POST['game_name'] != '') {
-				$gameConfig['game_name'] = $_POST['game_name'];
+			if (isset($_POST['game_name']) && !empty($_POST['game_name'])) {
+			    Wootook::setConfig('game/general/name', $_POST['game_name'], 1, 1);
 			}
 
 			// Adresse du Forum
-			if (isset($_POST['forum_url']) && $_POST['forum_url'] != '') {
-				$gameConfig['forum_url'] = $_POST['forum_url'];
+			if (isset($_POST['forum_url']) && !empty($_POST['forum_url'])) {
+			    Wootook::setConfig('game/general/boards-url', $_POST['forum_url'], 1, 1);
 			}
 
 			// Vitesse du Jeu
 			if (isset($_POST['game_speed']) && is_numeric($_POST['game_speed'])) {
-				$gameConfig['game_speed'] = $_POST['game_speed'];
+			    Wootook::setConfig('game/speed/general', $_POST['game_speed'], 1, 1);
 			}
 
 			// Vitesse des Flottes
 			if (isset($_POST['fleet_speed']) && is_numeric($_POST['fleet_speed'])) {
-				$gameConfig['fleet_speed'] = $_POST['fleet_speed'];
+			    Wootook::setConfig('game/speed/fleet', $_POST['fleet_speed'], 1, 1);
 			}
 
 			// Multiplicateur de Production
 			if (isset($_POST['resource_multiplier']) && is_numeric($_POST['resource_multiplier'])) {
-				$gameConfig['resource_multiplier'] = $_POST['resource_multiplier'];
+			    Wootook::setConfig('game/resource/multiplier', $_POST['resource_multiplier'], 1, 1);
 			}
 
 			// Taille de la planete mère
 			if (isset($_POST['initial_fields']) && is_numeric($_POST['initial_fields'])) {
-				$gameConfig['initial_fields'] = $_POST['initial_fields'];
+			    Wootook::setConfig('resource/initial/fields', $_POST['initial_fields'], 1, 1);
 			}
 
 			// Revenu de base Metal
 			if (isset($_POST['metal_basic_income']) && is_numeric($_POST['metal_basic_income'])) {
-				$gameConfig['metal_basic_income'] = $_POST['metal_basic_income'];
+			    Wootook::setConfig('resource/initial/metal', $_POST['metal_basic_income'], 1, 1);
 			}
 
 			// Revenu de base Cristal
 			if (isset($_POST['crystal_basic_income']) && is_numeric($_POST['crystal_basic_income'])) {
-				$gameConfig['crystal_basic_income'] = $_POST['crystal_basic_income'];
+			    Wootook::setConfig('resource/initial/cristal', $_POST['crystal_basic_income'], 1, 1);
 			}
 
 			// Revenu de base Deuterium
 			if (isset($_POST['deuterium_basic_income']) && is_numeric($_POST['deuterium_basic_income'])) {
-				$gameConfig['deuterium_basic_income'] = $_POST['deuterium_basic_income'];
+			    Wootook::setConfig('resource/initial/deuterium', $_POST['deuterium_basic_income'], 1, 1);
 			}
 
 			// Revenu de base Energie
 			if (isset($_POST['energy_basic_income']) && is_numeric($_POST['energy_basic_income'])) {
-				$gameConfig['energy_basic_income'] = $_POST['energy_basic_income'];
+			    Wootook::setConfig('resource/initial/energy', $_POST['energy_basic_income'], 1, 1);
 			}
 
 			// Lien supplémentaire dans le menu
-			if (isset($_POST['enable_link_']) && is_numeric($_POST['enable_link_'])) {
-				$gameConfig['link_enable'] = $_POST['enable_link_'];
+			if (isset($_POST['url_link_']) && is_numeric($_POST['url_link_'])) {
+			    Wootook::setConfig('game/general/boards-url', $_POST['url_link_'], 1, 1);
 			}
-						// Texte de ce lien...
-$gameConfig['link_name'] = addslashes( $_POST['name_link_']);
 
-			// URL de ce lien...
-$gameConfig['link_url'] = $_POST['url_link_'];
 			// Image de la bannière
-$gameConfig['banner_source_post'] = $_POST['banner_source_post'];
+			if (isset($_POST['banner_source_post'])) {
+			    Wootook::setConfig('engine/options/banner', $_POST['banner_source_post'], 1, 1);
+			}
 			// 1 point = ??? Ressources ?
-	if (isset($_POST['stat_settings']) && is_numeric($_POST['stat_settings'])) {
-				$gameConfig['stat_settings'] = $_POST['stat_settings'];
+	        if (isset($_POST['stat_settings']) && is_numeric($_POST['stat_settings'])) {
+			    Wootook::setConfig('game/resource/multiplier', $_POST['stat_settings'], 1, 1);
 			}
-						// Activation -ou non- des annonces
-	if (isset($_POST['enable_announces_']) && is_numeric($_POST['enable_announces_'])) {
-				$gameConfig['enable_announces'] = $_POST['enable_announces_'];
+			// Activation -ou non- des annonces
+			if (isset($_POST['enable_announces_']) && is_numeric($_POST['enable_announces_'])) {
+			    Wootook::setConfig('engine/options/announces', $_POST['enable_announces_'], 1, 1);
 			}
-						// Activation -ou non- du marchand
-	if (isset($_POST['enable_marchand_']) && is_numeric($_POST['enable_marchand_'])) {
-				$gameConfig['enable_marchand'] = $_POST['enable_marchand_'];
+			// Activation -ou non- du marchand
+			if (isset($_POST['enable_marchand_']) && is_numeric($_POST['enable_marchand_'])) {
+			    Wootook::setConfig('engine/options/retailer', $_POST['enable_marchand_'], 1, 1);
 			}
-						// Activation -ou non- des notes
-	if (isset($_POST['enable_notes_']) && is_numeric($_POST['enable_notes_'])) {
-				$gameConfig['enable_notes'] = $_POST['enable_notes_'];
+			// Activation -ou non- des notes
+			if (isset($_POST['enable_notes_']) && is_numeric($_POST['enable_notes_'])) {
+			    Wootook::setConfig('engine/options/notes', $_POST['enable_notes_'], 1, 1);
 			}
-									// Nom du bot antimulti
-									$gameConfig['bot_name'] = addslashes( $_POST['name_bot']);
-
-										// email du bot antimulti
-									$gameConfig['bot_adress'] = addslashes( $_POST['adress_bot']);
-
-					// Activation -ou non- des notes
-	if (isset($_POST['duration_ban']) && is_numeric($_POST['duration_ban'])) {
-				$gameConfig['ban_duration'] = $_POST['duration_ban'];
+			// Nom du bot antimulti
+			if (isset($_POST['name_bot'])) {
+			    Wootook::setConfig('engine/bot/name', $_POST['name_bot'], 1, 1);
+			}
+			// email du bot antimulti
+			if (isset($_POST['adress_bot'])) {
+			    Wootook::setConfig('engine/bot/email', $_POST['adress_bot'], 1, 1);
 			}
 
-								// Activation -ou non- du bot
-	if (isset($_POST['bot_enable']) && is_numeric($_POST['bot_enable'])) {
-				$gameConfig['enable_bot'] = $_POST['bot_enable'];
+			// Activation -ou non- des notes
+			if (isset($_POST['duration_ban']) && is_numeric($_POST['duration_ban'])) {
+				Wootook::setConfig('engine/ban/duration', $_POST['duration_ban'], 1, 1);
 			}
 
-											// BBCode ou pas ?
-
-	if (isset($_POST['bbcode_field']) && is_numeric($_POST['bbcode_field'])) {
-				$gameConfig['enable_bbcode'] = $_POST['bbcode_field'];
+			// Activation -ou non- du bot
+			if (isset($_POST['bot_enable']) && is_numeric($_POST['bot_enable'])) {
+				Wootook::setConfig('engine/bot/active', $_POST['bot_enable'], 1, 1);
 			}
 
-			$gameConfig->save();
+			// BBCode ou pas ?
+			if (isset($_POST['bbcode_field']) && is_numeric($_POST['bbcode_field'])) {
+				Wootook::setConfig('engine/options/bbcode', $_POST['bbcode_field'], 1, 1);
+			}
 
-			AdminMessage ('Options changees avec succes !', 'Succes', '?');
+			AdminMessage('Options changees avec succes !', 'Succes', '?');
 		} else {
-
 			$parse                           = $lang;
-			$parse['game_name']              = $gameConfig['game_name'];
-			$parse['game_speed']             = $gameConfig['game_speed'];
-			$parse['fleet_speed']            = $gameConfig['fleet_speed'];
-			$parse['resource_multiplier']    = $gameConfig['resource_multiplier'];
-			$parse['forum_url']              = $gameConfig['forum_url'];
-			$parse['initial_fields']         = $gameConfig['initial_fields'];
-			$parse['metal_basic_income']     = $gameConfig['metal_basic_income'];
-			$parse['crystal_basic_income']   = $gameConfig['crystal_basic_income'];
-			$parse['deuterium_basic_income'] = $gameConfig['deuterium_basic_income'];
-			$parse['energy_basic_income']    = $gameConfig['energy_basic_income'];
-			$parse['enable_link']    = $gameConfig['link_enable'];
-			$parse['name_link']    = $gameConfig['link_name'];
-			$parse['url_link']    = $gameConfig['link_url'];
-			$parse['enable_announces']    = $gameConfig['enable_announces'];
-			$parse['enable_marchand']    = $gameConfig['enable_marchand'];
-			$parse['enable_notes']    = $gameConfig['enable_notes'];
-			$parse['bot_name']    = stripslashes($gameConfig['bot_name']);
-			$parse['bot_adress']    = stripslashes($gameConfig['bot_adress']);
-			$parse['ban_duration']    = stripslashes($gameConfig['ban_duration']);
-			$parse['enable_bot']    = stripslashes($gameConfig['enable_bot']);
-			$parse['enable_bbcode']    = stripslashes($gameConfig['enable_bbcode']);
+			$parse['game_name']              = Wootook::getGameConfig('game/general/name');
+			$parse['game_speed']             = Wootook::getGameConfig('game/speed/general');
+			$parse['fleet_speed']            = Wootook::getGameConfig('game/speed/fleet');
+			$parse['resource_multiplier']    = Wootook::getGameConfig('game/resource/multiplier');
+			$parse['forum_url']              = Wootook::getGameConfig('game/general/boards-url');
+			$parse['initial_fields']         = Wootook::getGameConfig('resource/initial/fields');
+			$parse['metal_basic_income']     = Wootook::getGameConfig('resource/initial/metal');
+			$parse['crystal_basic_income']   = Wootook::getGameConfig('resource/initial/cristal');
+			$parse['deuterium_basic_income'] = Wootook::getGameConfig('resource/initial/deuterium');
+			$parse['energy_basic_income']    = Wootook::getGameConfig('resource/initial/energy');
+			$parse['enable_link']            = $gameConfig['link_enable'];
+			$parse['name_link']              = Wootook::getGameConfig('game/general/extra-url-title');
+			$parse['url_link']               = Wootook::getGameConfig('game/general/extra-url');
+			$parse['enable_announces']       = Wootook::getGameConfig('engine/options/announces');
+			$parse['enable_marchand']        = Wootook::getGameConfig('engine/options/retailer');
+			$parse['enable_notes']           = Wootook::getGameConfig('engine/options/notes');
+			$parse['bot_name']               = Wootook::getGameConfig('engine/bot/name');
+			$parse['bot_adress']             = Wootook::getGameConfig('engine/bot/email');
+			$parse['ban_duration']           = Wootook::getGameConfig('engine/ban/duration');
+			$parse['enable_bot']             = Wootook::getGameConfig('engine/bot/active');
+			$parse['enable_bbcode']          = Wootook::getGameConfig('engine/options/bbcode');
 
-						$parse['banner_source_post']    = $gameConfig['banner_source_post'];
-						$parse['stat_settings']    = stripslashes($gameConfig['stat_settings']);
+			$parse['banner_source_post']     = Wootook::getGameConfig('engine/options/banner');
+			$parse['stat_settings']          = Wootook::getGameConfig('game/resource/multiplier');
 
+			$parse['closed']                 = (!Wootook::getGameConfig('game/general/active')) ? " checked = 'checked' ":"";
+			$parse['close_reason']           = Wootook::getGameConfig('game/general/closing-message');
 
-
-			$parse['closed']                 = ($gameConfig['game_disable'] == 1) ? " checked = 'checked' ":"";
-			$parse['close_reason']           = stripslashes( $gameConfig['close_reason'] );
-
-			$parse['newsframe']              = ($gameConfig['OverviewNewsFrame'] == 1) ? " checked = 'checked' ":"";
-			$parse['NewsTextVal']            = stripslashes( $gameConfig['OverviewNewsText'] );
+			$parse['newsframe']              = (Wootook::getGameConfig('game/news/active')) ? " checked = 'checked' ":"";
+			$parse['NewsTextVal']            = Wootook::getGameConfig('game/news/content');
 
 			$parse['chatframe']              = ($gameConfig['OverviewExternChat'] == 1) ? " checked = 'checked' ":"";
 			$parse['ExtTchatVal']            = stripslashes( $gameConfig['OverviewExternChatCmd'] );
 
-			$parse['googlead']               = ($gameConfig['OverviewBanner'] == 1) ? " checked = 'checked' ":"";
-			$parse['GoogleAdVal']            = stripslashes( $gameConfig['OverviewClickBanner'] );
-
-			$parse['debug']                  = ($gameConfig['debug'] == 1)        ? " checked = 'checked' ":"";
+			$parse['ga']                     = (Wootook::getGameConfig('engine/options/ga')) ? " checked = 'checked' ":"";
+			$parse['ga_id']                  = Wootook::getGameConfig('engine/options/ga-id');
 
 			$parse['bannerframe']            = ($gameConfig['ForumBannerFrame'] == 1) ? " checked = 'checked' ":"";
 
 			$PageTPL                         = gettemplate('admin/options_body');
-			$Page                            = parsetemplate( $PageTPL,  $parse );
+			$Page                            = parsetemplate($PageTPL, $parse);
 
-			display ( $Page, $lang['adm_opt_title'], false, '', true );
+			display($Page, $lang['adm_opt_title'], false, '', true);
 		}
 	} else {
-		AdminMessage ( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+		AdminMessage($lang['sys_noalloaw'], $lang['sys_noaccess']);
 	}
 	return $Page;
 }

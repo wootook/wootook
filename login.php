@@ -77,8 +77,8 @@ $block['user_count'] = $userCount;
 $block['latest_player'] = $latestPlayer;
 $block['online_players'] = $onlinePlayers;
 
-$block['server_name'] = $gameConfig['game_name'];
-$block['board_url'] = $gameConfig['forum_url'];
+$block['server_name'] = Wootook::getWebsiteConfig('game/general/name');
+$block['board_url'] = Wootook::getWebsiteConfig('game/general/boards-url');
 
 echo $layout->render();
 

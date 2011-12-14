@@ -108,13 +108,12 @@ class Legacies_Empire_Model_Planet_Building_ResearchLab_Builder
     {
         $prices = Wootook_Empire_Model_Game_Prices::getSingleton();
         $types = Wootook_Empire_Model_Game_Types::getSingleton();
-        $gameConfig = Wootook_Core_Model_Config::getSingleton();
 
         Math::setPrecision(50);
 
          // FIXME: Resource dependency
         $totalCost = Math::mul(Math::add($prices[$technologyId][Legacies_Empire::RESOURCE_METAL], $prices[$technologyId][Legacies_Empire::RESOURCE_CRISTAL]), $level);
-        $speedFactor = $gameConfig->getData('game_speed');
+        $speedFactor = Wootook::getGameConfig('game/speed/general');
 
         // FIXME: Building & Technology dependency
         $extraLaboratoriesLevels = 0;

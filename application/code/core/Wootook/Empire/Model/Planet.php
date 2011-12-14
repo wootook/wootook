@@ -260,6 +260,14 @@ class Wootook_Empire_Model_Planet
             return $this;
         }
 
+        if ($this->getUser()->isVacation()) {
+            $resourceConfig = Wootook::getGameConfig('resource/base-income');
+            foreach ($resources->getAllDatas() as $resource => $resourceData) {
+                $this->setData($resourceData['production_field'], $resourceConfig[$resource]);
+            }
+            return $this;
+        }
+
         /*
          * Compute resources consumers and resources producers
          */
@@ -952,22 +960,14 @@ class Wootook_Empire_Model_Planet
             $key = array_rand($positions, 1);
             $finalPosition = $positions[$key];
 
-            $config = Wootook_Core_Model_Config::getSingleton();
-            $planet = new self();
-            $planet
-                ->setData('id_owner', $user->getId())
-                ->setData('name', Wootook::getRequest()->getParam('planet'))
-                ->setData('galaxy', $systemInfo->getData('galaxy'))
-                ->setData('system', $systemInfo->getData('system'))
-                ->setData('planet', $finalPosition)
-                ->setData('planet_type', 1)
-                ->setData('field_max', $config->getData('initial_fields'))
-                ->setData('field_current', 0)
-                ->setData('metal', 500) // TODO: use config
-                ->setData('cristal', 500) // TODO: use config
-            ;
-
-            $planet->save();
+            $user->createNewPlanet(
+                $systemInfo->getData('galaxy'),
+                $systemInfo->getData('system'),
+                $finalPosition,
+                Wootook_Empire_Model_Planet::TYPE_PLANET,
+                Wootook::getRequest()->getParam('planet'),
+                Wootook::getGameConfig('resource/initial/fields')
+                );
 
             $user
                 ->setData('id_planet', $planet->getId())
@@ -976,13 +976,6 @@ class Wootook_Empire_Model_Planet
                 ->setData('system', $planet->getSystem())
                 ->setData('planet', $planet->getPosition())
             ;
-
-            Wootook::dispatchEvent('planet.init', array(
-                'planet' => $planet,
-                'user'   => $user
-                ));
-
-            $planet->save();
         }
     }
 

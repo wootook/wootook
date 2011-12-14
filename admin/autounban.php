@@ -33,16 +33,15 @@ define('INSTALL' , false);
 define('IN_ADMIN', true);
 require_once dirname(dirname(__FILE__)) .'/application/bootstrap.php';
 
-	if (in_array($user['authlevel'], array(LEVEL_ADMIN))) {
-		$lang['PHP_SELF'] = 'options.'.PHPEXT;
-		doquery("UPDATE {{table}} SET `banaday` =` banaday` - '1' WHERE `banaday` != '0';",'users');
-		doquery("UPDATE {{table}} SET `bana` = '0' WHERE `banaday` < '1';",'users');
-		$parse = $gameConfig;
-		$parse['dpath'] = $dpath;
-		$parse['debug'] = ($gameConfig['debug'] == 1) ? " checked='checked'/":'';
-	} else {
-		message ( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
-	}
+if (in_array($user['authlevel'], array(LEVEL_ADMIN))) {
+    doquery("UPDATE {{table}} SET `banaday` =` banaday` - '1' WHERE `banaday` != '0';",'users');
+    doquery("UPDATE {{table}} SET `bana` = '0' WHERE `banaday` < '1';",'users');
 
-?>
+    $response = Wootook::getResponse()
+        ->setRedirect(Wootook::getUrl('admin/overview.php'))
+        ->sendHeaders();
+    exit(0);
+} else {
+    message ( $lang['sys_noalloaw'], $lang['sys_noaccess'] );
+}
 

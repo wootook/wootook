@@ -107,7 +107,7 @@ while ($CurMess = $UsrMess->fetch(PDO::FETCH_BOTH)) {
 					$Sender  = $user['id'];
 					$From    = $user['username'] ." [".$user['galaxy'].":".$user['system'].":".$user['planet']."]";
 					$Subject = $_POST['subject'];
-					if($gameConfig['enable_bbcode'] == 1) {
+					if (Wootook::getGameConfig('engine/options/bbcode')) {
 										$Message = trim ( nl2br (bbcode ( image ( strip_tags ( $_POST['text'], '<br>' ) ) ) ) );
 
 					} else {
@@ -128,7 +128,7 @@ $Message = trim ( nl2br ( strip_tags ( $_POST['text'], '<br>' ) ) ); }
 			$parse['to']           = $OwnerRecord['username'] ." [".$OwnerHome['galaxy'].":".$OwnerHome['system'].":".$OwnerHome['planet']."]";
 			$parse['subject']      = (!isset($subject)) ? $lang['mess_no_subject'] : $subject ;
 			$parse['text']         = $text;
-			if($gameConfig['enable_bbcode'] == 1) {
+			if(Wootook::getGameConfig('engine/options/bbcode')) {
 			$page                 .= parsetemplate(gettemplate('messages_pm_form_bb'), $parse);
 			} else {
 						$page                 .= parsetemplate(gettemplate('messages_pm_form'), $parse); }

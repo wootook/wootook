@@ -30,46 +30,26 @@
 
 define('INSIDE' , true);
 define('INSTALL' , false);
+
 require_once dirname(__FILE__) .'/application/bootstrap.php';
 
-    includeLang('options');
+$user = Wootook_Empire_Model_User::getSingleton();
 
-    $lang['PHP_SELF'] = 'options.' . PHPEXT;
+includeLang('options');
 
-    $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
-    $mode = $_GET['mode'];
+$lang['PHP_SELF'] = 'options.' . PHPEXT;
 
-    if ($_POST && $mode == "exit") { // Array ( [db_character]
-       if (isset($_POST["exit_modus"]) && $_POST["exit_modus"] == 'on' and $user['urlaubs_until'] <= time()){
-          $urlaubs_modus = "0";
-          doquery("UPDATE {{table}} SET
-             `urlaubs_modus` = '0',
-             `urlaubs_until` = '0'
-             WHERE `id` = '".$user['id']."' LIMIT 1", "users");
+$mode = isset($_GET['mode']) ? $_GET['mode'] : null;
 
-//Remise des mines au retour du mod vacance
-
-          $query = doquery("SELECT * FROM {{table}} WHERE id_owner = '{$user['id']}'", 'planets');
-          while ($id = $query->fetch(PDO::FETCH_BOTH)){
-             doquery("UPDATE {{table}} SET
-                   energy_used = '10',
-                   energy_max = '10',
-                   metal_mine_porcent = '10',
-                   crystal_mine_porcent = '10',
-                   deuterium_sintetizer_porcent = '10',
-                   solar_plant_porcent = '10',
-                   fusion_plant_porcent = '10',
-                   solar_satelit_porcent = '10'
-                 WHERE id = '{$id['id']}' AND `planet_type` = 1 ", 'planets');}
-
-          $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
-          message($lang['succeful_save'], $lang['Options'],"options.php",1);
-       }else{
-       $urlaubs_modus = "1";
-       $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
-       message($lang['You_cant_exit_vmode'], $lan['Error'] ,"options.php",1);
+    if (!empty($_POST) && $mode == "exit") { // Array ( [db_character]
+       if (isset($_POST["exit_modus"]) && !empty($_POST["exit_modus"]) && $user->getVacation() && $user->getVacationEndDate() <= time()) {
+           $user->setVacation(false);
+           message($lang['succeful_save'], $lang['Options'],"options.php",1);
+       } else {
+           message($lang['You_cant_exit_vmode'], $lan['Error'] ,"options.php",1);
        }
     }
+
     if ($_POST && $mode == "change") { // Array ( [db_character]
        $iduser = $user["id"];
        $avatar = $_POST["avatar"];
@@ -167,44 +147,22 @@ require_once dirname(__FILE__) .'/application/bootstrap.php';
           $settings_rep = "0";
        }
        // Modo vacaciones
-       if (isset($_POST["urlaubs_modus"]) && $_POST["urlaubs_modus"] == 'on') {
-       //Selectionne si le joueur a des flottes en vol
-       	$fleet  = doquery("SELECT COUNT(fleet_owner) AS `actcnt` FROM {{table}} WHERE `fleet_owner` = '".$user['id']."';", 'fleets', true);
-       //Selectionne si le joueur a des batiments en construction
-        $build  = doquery("SELECT COUNT(id_owner) AS `building` FROM {{table}} WHERE `id_owner` = '".$user['id']."' and `b_building`!=0;", 'planets', true);
-       //Selectionne si le joueur a des techno en cours
-        $tech  = doquery("SELECT COUNT(id) AS `tech` FROM {{table}} WHERE `id` = '".$user['id']."' and `b_tech_planet`!=0;", 'users', true);
-       //Selectionne si le joueur est en train de se faire attaquer
-        $attack  = doquery("SELECT COUNT(fleet_taget_owner) AS `attack` FROM {{table}} WHERE `fleet_taget_owner` = '".$user['id']."';", 'fleets', true);
-       	if($fleet['actcnt']=='0' && $build['building']=='0' && $tech['tech']=='0' && $attack['attack']=='0') {
-          $urlaubs_modus = "1";
-          $time = time() + 172800;
-          doquery("UPDATE {{table}} SET
-             `urlaubs_modus` = '$urlaubs_modus',
-             `urlaubs_until` = '$time'
-             WHERE `id` = '$iduser' LIMIT 1", "users");
-             }  else {
-             message ( 'Verifiez vos flottes, technologies et batiments','<center><font color=\"red\">Vous avez des actions en cours</font></center>'  );
-             }
+       if (isset($_POST["urlaubs_modus"]) && !empty($_POST["urlaubs_modus"]) && !$user->getVacation()) {
+           //Selectionne si le joueur a des flottes en vol
+           $fleet  = doquery("SELECT COUNT(fleet_owner) AS `actcnt` FROM {{table}} WHERE `fleet_owner` = '".$user['id']."';", 'fleets', true);
+           //Selectionne si le joueur a des batiments en construction
+           $build  = doquery("SELECT COUNT(id_owner) AS `building` FROM {{table}} WHERE `id_owner` = '".$user['id']."' and `b_building`!=0;", 'planets', true);
+           //Selectionne si le joueur a des techno en cours
+           $tech  = doquery("SELECT COUNT(id) AS `tech` FROM {{table}} WHERE `id` = '".$user['id']."' and `b_tech_planet`!=0;", 'users', true);
+           //Selectionne si le joueur est en train de se faire attaquer
+           $attack  = doquery("SELECT COUNT(fleet_taget_owner) AS `attack` FROM {{table}} WHERE `fleet_taget_owner` = '".$user['id']."';", 'fleets', true);
 
-          $query = doquery("SELECT * FROM {{table}} WHERE id_owner = '{$user['id']}'", 'planets');
-          while ($id = $query->fetch(PDO::FETCH_BOTH)){
-             doquery("UPDATE {{table}} SET
-                   metal_perhour = '".$gameConfig['metal_basic_income']."',
-                   crystal_perhour = '".$gameConfig['metal_basic_income']."',
-                   deuterium_perhour = '".$gameConfig['metal_basic_income']."',
-                   energy_used = '0',
-                   energy_max = '0',
-                   metal_mine_porcent = '0',
-                   crystal_mine_porcent = '0',
-                   deuterium_sintetizer_porcent = '0',
-                   solar_plant_porcent = '0',
-                   fusion_plant_porcent = '0',
-                   solar_satelit_porcent = '0'
-                 WHERE id = '{$id['id']}' AND `planet_type` = 1 ", 'planets');
-          }
-       } else {
-          $urlaubs_modus = "0";
+           if ($fleet['actcnt'] == 0 && $build['building'] == 0 && $tech['tech'] == 0 && $attack['attack'] == 0) {
+               $user->setVacation();
+           } else {
+                 message(Wootook::__('Could not set to vacation mode.'),
+                     Wootook::__("You currently can't get to vacation mode, please check your flying fleets, and building queues."));
+           }
        }
 
        // Borrar cuenta
@@ -233,7 +191,6 @@ require_once dirname(__FILE__) .'/application/bootstrap.php';
        `settings_bud` = '$settings_bud',
        `settings_mis` = '$settings_mis',
        `settings_rep` = '$settings_rep',
-       `urlaubs_modus` = '$urlaubs_modus',
        `db_deaktjava` = '$db_deaktjava',
        `kolorminus` = '$kolorminus',
        `kolorplus` = '$kolorplus',

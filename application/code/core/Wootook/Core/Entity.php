@@ -1,11 +1,10 @@
 <?php
 
 abstract class Wootook_Core_Entity
-    extends Wootook_Core_Model
+    extends Wootook_Core_Database_Resource
     implements Wootook_Core_EntityInterface
 {
     protected $_idFieldName = null;
-    protected $_tableName = null;
 
     public function setIdFieldName($fieldName)
     {
@@ -17,18 +16,6 @@ abstract class Wootook_Core_Entity
     public function getIdFieldName()
     {
         return $this->_idFieldName;
-    }
-
-    public function setTableName($tableName)
-    {
-        $this->_tableName = $tableName;
-
-        return $this;
-    }
-
-    public function getTableName()
-    {
-        return $this->_tableName;
     }
 
     public function setId($id)
@@ -48,10 +35,10 @@ abstract class Wootook_Core_Entity
         $id = func_get_arg(0);
 
         $idFieldName = self::getIdFieldName();
-        $database = Wootook_Database::getSingleton();
+        $database = $this->getReadConnection();
 
         $sql =<<<SQL_EOF
-SELECT * FROM {$database->getTable(self::getTableName())}
+SELECT * FROM {$database->getTable($this->getTableName())}
     WHERE {$idFieldName}=:id
     LIMIT 1
 SQL_EOF;
@@ -89,9 +76,9 @@ SQL_EOF;
             $idFieldName = self::getIdFieldName();
             $values[$idFieldName] = $this->getId();
 
-            $database = Wootook_Database::getSingleton();
+            $database = $this->getWriteConnection();
             $sql =<<<SQL_EOF
-UPDATE {$database->getTable(self::getTableName())}
+UPDATE {$database->getTable($this->getTableName())}
     SET {$fieldsImploded}
     WHERE {$idFieldName}=:{$idFieldName}
 SQL_EOF;
@@ -113,9 +100,9 @@ SQL_EOF;
             }
             $tokensImploded = implode(', ', $tokens);
 
-            $database = Wootook_Database::getSingleton();
+            $database = $this->getWriteConnection();
             $sql =<<<SQL_EOF
-INSERT INTO {$database->getTable(self::getTableName())} ($fieldsImploded)
+INSERT INTO {$database->getTable($this->getTableName())} ($fieldsImploded)
     VALUES ({$tokensImploded})
 SQL_EOF;
             $statement = $database->prepare($sql);
@@ -140,9 +127,9 @@ SQL_EOF;
 
         $fieldsImploded = implod(', ', $fields);
         $idFieldName = self::getIdFieldName();
-        $database = Wootook_Database::getSingleton();
+        $database = $this->getWriteConnection();
         $sql =<<<SQL_EOF
-DELETE {$database->getTable(self::getTableName())}
+DELETE {$database->getTable($this->getTableName())}
     WHERE {$idFieldName}=:{$idFieldName}
 SQL_EOF;
 

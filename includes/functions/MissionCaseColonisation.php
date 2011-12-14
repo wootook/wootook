@@ -50,7 +50,15 @@ function MissionCaseColonisation ( $FleetRow ) {
 				SendSimpleMessage ( $FleetRow['fleet_owner'], '', $FleetRow['fleet_start_time'], 0, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
 				doquery("UPDATE {{table}} SET `fleet_mess` = '1' WHERE `fleet_id` = ". $FleetRow["fleet_id"], 'fleets');
 			} else {
-				$NewOwnerPlanet = CreateOnePlanetRecord($FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet'], $FleetRow['fleet_owner'], $lang['sys_colo_defaultname'], false);
+			    $user = Wootook_Empire_Model_User::factory($FleetRow['fleet_owner']);
+			    $user->createNewPlanet(
+			        intval($FleetRow['fleet_end_galaxy']),
+			        intval($FleetRow['fleet_end_system']),
+			        intval($FleetRow['fleet_end_planet']),
+			        Wootook_Empire_Model_Planet::TYPE_PLANET,
+			        Wootook::__('Colony')
+			        );
+
 				if ( $NewOwnerPlanet == true ) {
 					$TheMessage = $lang['sys_colo_arrival'] . $TargetAdress . $lang['sys_colo_allisok'];
 					SendSimpleMessage ( $FleetRow['fleet_owner'], '', $FleetRow['fleet_start_time'], 0, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);

@@ -29,7 +29,7 @@
  */
 
 function walka ($CurrentSet, $TargetSet, $CurrentTechno, $TargetTechno) {
-	global $pricelist, $CombatCaps, $gameConfig;
+	global $pricelist, $CombatCaps;
 	$runda       = array();
 	$atakujacy_n = array();
 	$wrog_n      = array();
@@ -259,11 +259,11 @@ function walka ($CurrentSet, $TargetSet, $CurrentTechno, $TargetTechno) {
 		$wygrana = "w";
 	}
 
-	$zlom['metal']    = ((($atakujacy_zlom_poczatek['metal']   - $atakujacy_zlom_koniec['metal'])   + ($wrog_zlom_poczatek['metal']   - $wrog_zlom_koniec['metal']))   * ($gameConfig['Fleet_Cdr'] / 100));
-	$zlom['crystal']  = ((($atakujacy_zlom_poczatek['crystal'] - $atakujacy_zlom_koniec['crystal']) + ($wrog_zlom_poczatek['crystal'] - $wrog_zlom_koniec['crystal'])) * ($gameConfig['Fleet_Cdr'] / 100));
+	$zlom['metal']    = ((($atakujacy_zlom_poczatek['metal']   - $atakujacy_zlom_koniec['metal'])   + ($wrog_zlom_poczatek['metal']   - $wrog_zlom_koniec['metal']))   * (Wootook::getGameConfig('game/debris/fleet') ? (Wootook::getGameConfig('game/debris/metal-percent') / 100) : 0));
+	$zlom['crystal']  = ((($atakujacy_zlom_poczatek['crystal'] - $atakujacy_zlom_koniec['crystal']) + ($wrog_zlom_poczatek['crystal'] - $wrog_zlom_koniec['crystal'])) * (Wootook::getGameConfig('game/debris/fleet') ? (Wootook::getGameConfig('game/debris/cristal-percent') / 100) : 0));
 
-	$zlom['metal']   += ((($atakujacy_zlom_poczatek['metal']   - $atakujacy_zlom_koniec['metal'])   + ($wrog_zlom_poczatek['metal']   - $wrog_zlom_koniec['metal']))   * ($gameConfig['Defs_Cdr'] / 100));
-	$zlom['crystal'] += ((($atakujacy_zlom_poczatek['crystal'] - $atakujacy_zlom_koniec['crystal']) + ($wrog_zlom_poczatek['crystal'] - $wrog_zlom_koniec['crystal'])) * ($gameConfig['Defs_Cdr'] / 100));
+	$zlom['metal']   += ((($atakujacy_zlom_poczatek['metal']   - $atakujacy_zlom_koniec['metal'])   + ($wrog_zlom_poczatek['metal']   - $wrog_zlom_koniec['metal']))   * (Wootook::getGameConfig('game/debris/defense') ? (Wootook::getGameConfig('game/debris/metal-percent') / 100) : 0));
+	$zlom['crystal'] += ((($atakujacy_zlom_poczatek['crystal'] - $atakujacy_zlom_koniec['crystal']) + ($wrog_zlom_poczatek['crystal'] - $wrog_zlom_koniec['crystal'])) * (Wootook::getGameConfig('game/debris/defense') ? (Wootook::getGameConfig('game/debris/cristal-percent') / 100) : 0));
 
 	$zlom["atakujacy"] = (($atakujacy_zlom_poczatek['metal'] - $atakujacy_zlom_koniec['metal']) + ($atakujacy_zlom_poczatek['crystal'] - $atakujacy_zlom_koniec['crystal']));
 	$zlom["wrog"]      = (($wrog_zlom_poczatek['metal']      - $wrog_zlom_koniec['metal'])      + ($wrog_zlom_poczatek['crystal']      - $wrog_zlom_koniec['crystal']) + $straty_obrona_wrog);
