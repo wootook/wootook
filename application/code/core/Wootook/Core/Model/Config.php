@@ -10,8 +10,6 @@
 class Wootook_Core_Model_Config
     extends Wootook_Core_Entity_SubTable
 {
-    private static $_singleton = null;
-
     protected $_eventPrefix = 'core.config';
     protected $_eventObject = 'config';
 

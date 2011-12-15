@@ -4,15 +4,6 @@
         'reference' => array(
             'content' => array(
                 'children' => array(
-                    'navigation' => array(
-                        'type' => 'core/html.navigation',
-                        'template' => 'page/html/navigation.phtml',
-                        'actions' => array()
-                        )
-                    )
-                ),
-            'left' => array(
-                'children' => array(
                     'status' => array(
                         'type' => 'core/template',
                         'template' => 'status.phtml'
@@ -39,7 +30,7 @@
                         'method' => 'setData',
                         'params' => array(
                             'key'   => 'step',
-                            'value' => 'intro'
+                            'value' => 0
                             )
                         )
                     )
@@ -64,7 +55,7 @@
                         'method' => 'setData',
                         'params' => array(
                             'key'   => 'step',
-                            'value' => 'system'
+                            'value' => 1
                             )
                         )
                     )
@@ -89,7 +80,7 @@
                         'method' => 'setData',
                         'params' => array(
                             'key'   => 'step',
-                            'value' => 'database'
+                            'value' => 2
                             )
                         )
                     )
@@ -114,7 +105,7 @@
                         'method' => 'setData',
                         'params' => array(
                             'key'   => 'step',
-                            'value' => 'universe'
+                            'value' => 3
                             )
                         )
                     )
@@ -139,7 +130,7 @@
                         'method' => 'setData',
                         'params' => array(
                             'key'   => 'step',
-                            'value' => 'profile'
+                            'value' => 4
                             )
                         )
                     )

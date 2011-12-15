@@ -960,7 +960,7 @@ class Wootook_Empire_Model_Planet
             $key = array_rand($positions, 1);
             $finalPosition = $positions[$key];
 
-            $user->createNewPlanet(
+            $planet = $user->createNewPlanet(
                 $systemInfo->getData('galaxy'),
                 $systemInfo->getData('system'),
                 $finalPosition,
@@ -992,10 +992,8 @@ class Wootook_Empire_Model_Planet
             ->group('galaxy.system')
         ;
 
-        $config = Wootook_Core_Model_Config::getSingleton();
-
-        if ($galaxyList === null && $config->hasData('user/registration/galaxy_list')) {
-            $galaxyList = explode(',', $config->getData('user/registration/galaxy_list'));
+        if ($galaxyList === null && Wootook::getGameConfig('user/registration/galaxy_list')) {
+            $galaxyList = explode(',', Wootook::getGameConfig('user/registration/galaxy_list'));
         }
 
         if ($galaxyList !== null) {
@@ -1003,8 +1001,8 @@ class Wootook_Empire_Model_Planet
             $collection->where('galaxy.galaxy IN(' . implode(', ', $galaxyList) . ')');
         }
 
-        if ($systemList === null && $config->hasData('user/registration/system_list')) {
-            $systemList = explode(',', $config->getData('user/registration/system_list'));
+        if ($systemList === null && Wootook::getGameConfig('user/registration/system_list')) {
+            $systemList = explode(',', Wootook::getGameConfig('user/registration/system_list'));
         }
 
         if ($systemList !== null) {

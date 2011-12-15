@@ -33,7 +33,10 @@ class Wootook_Core_Layout
             }
         }
 
-        $fileList = Wootook::getConfig('global/layout');
+        $fileList = Wootook::getConfig('layout');
+        if ($fileList instanceof Wootook_Core_Config_Node) {
+            $fileList = $fileList->toArray();
+        }
         if (!is_array($fileList) || empty($fileList)) {
             $fileList = $this->getAllDatas();
         } else {
@@ -41,8 +44,8 @@ class Wootook_Core_Layout
         }
         $this->_data = array();
 
-        $this->setPackage(Wootook::getConfig('global/package'));
-        $this->setTheme(Wootook::getConfig('global/theme'));
+        $this->setPackage(Wootook::getConfig('package'));
+        $this->setTheme(Wootook::getConfig('theme'));
 
         foreach ($fileList as $layoutFile) {
             foreach (include $this->_getLayoutPath($layoutFile) as $layoutId => $layoutConfig) {
@@ -186,12 +189,12 @@ class Wootook_Core_Layout
                 $className = $namespace . $block;
                 $fileName = $path . DIRECTORY_SEPARATOR . str_replace('_', DIRECTORY_SEPARATOR, $block) . '.php';
 
-                Wootook_Core_ErrorProfiler::sleep();
+                Wootook_Core_ErrorProfiler::getSingleton()->sleep();
                 if (!($fp = @fopen($fileName, 'r', true))) {
-                    Wootook_Core_ErrorProfiler::wakeup();
+                    Wootook_Core_ErrorProfiler::getSingleton()->wakeup();
                     continue;
                 }
-                Wootook_Core_ErrorProfiler::wakeup();
+                Wootook_Core_ErrorProfiler::getSingleton()->wakeup();
                 fclose($fp);
 
                 if (!class_exists($className, true)) {

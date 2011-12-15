@@ -34,8 +34,16 @@ abstract class Wootook_Core_Entity
     {
         $id = func_get_arg(0);
 
-        $idFieldName = self::getIdFieldName();
+        if (func_num_args() >= 2) {
+            $idFieldName = func_get_arg(1);
+        } else {
+            $idFieldName = $this->getIdFieldName();
+        }
+
         $database = $this->getReadConnection();
+        if ($database === null) {
+            throw new Wootook_Core_Exception_DataAccessException('Could not load data: no read connection configured.');
+        }
 
         $sql =<<<SQL_EOF
 SELECT * FROM {$database->getTable($this->getTableName())}
@@ -77,6 +85,10 @@ SQL_EOF;
             $values[$idFieldName] = $this->getId();
 
             $database = $this->getWriteConnection();
+            if ($database === null) {
+                throw new Wootook_Core_Exception_DataAccessException('Could not load data: no write connection configured.');
+            }
+
             $sql =<<<SQL_EOF
 UPDATE {$database->getTable($this->getTableName())}
     SET {$fieldsImploded}
@@ -101,6 +113,10 @@ SQL_EOF;
             $tokensImploded = implode(', ', $tokens);
 
             $database = $this->getWriteConnection();
+            if ($database === null) {
+                throw new Wootook_Core_Exception_DataAccessException('Could not load data: no write connection configured.');
+            }
+
             $sql =<<<SQL_EOF
 INSERT INTO {$database->getTable($this->getTableName())} ($fieldsImploded)
     VALUES ({$tokensImploded})
@@ -128,6 +144,10 @@ SQL_EOF;
         $fieldsImploded = implod(', ', $fields);
         $idFieldName = self::getIdFieldName();
         $database = $this->getWriteConnection();
+        if ($database === null) {
+            throw new Wootook_Core_Exception_DataAccessException('Could not load data: no write connection configured.');
+        }
+
         $sql =<<<SQL_EOF
 DELETE {$database->getTable($this->getTableName())}
     WHERE {$idFieldName}=:{$idFieldName}

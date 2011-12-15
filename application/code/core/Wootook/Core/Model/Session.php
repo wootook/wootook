@@ -51,15 +51,16 @@ class Wootook_Core_Model_Session
         }
 
         $this->_data = &$_SESSION[$namespace];
-        $this->_data['messages'] = array();
+        if (!isset($this->_data['messages'])) {
+            $this->_data['messages'] = array();
+        }
     }
 
     public function getMessages($clear = true)
     {
         $messages = $this->_data['messages'];
         if ($clear == true) {
-            var_dump($this->_data['messages']);
-            //$this->_data['messages'] = array();
+            $this->_data['messages'] = array();
         }
         return $messages;
     }

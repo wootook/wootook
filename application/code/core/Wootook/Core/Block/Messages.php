@@ -14,14 +14,10 @@ class Wootook_Core_Block_Messages
     {
         $messages = array();
 
-        var_dump($this->_storages);
         foreach ($this->_storages as $namespace) {
             $session = Wootook::getSession($namespace);
-            var_dump($session);
 
             foreach ($session->getMessages() as $messageLevel => $messageList) {
-                var_dump(array($messageLevel => $messageList));
-
                 if (!isset($messages[$messageLevel])) {
                     $messages[$messageLevel] = $messageList;
                 } else {

@@ -252,9 +252,9 @@ class Wootook_Empire_Model_User
             $size = mt_rand(floor($factor / 10), ceil($factor * 5 / 4)) + mt_rand(0, $fuzz);
         }
 
-        $planet = new self();
+        $planet = new Wootook_Empire_Model_Planet();
         $planet
-            ->setData('id_owner', $user->getId())
+            ->setData('id_owner', $this->getId())
             ->setData('name', $name)
             ->setData('galaxy', $galaxy)
             ->setData('system', $system)
@@ -271,12 +271,19 @@ class Wootook_Empire_Model_User
             $planet->setData($resourceData['production_field'], $resourceConfig[$resource]);
         }
 
+        $planet->save();
+
+        var_dump($planet->getId());
+        die();
+
         Wootook::dispatchEvent('planet.init', array(
             'planet' => $planet,
-            'user'   => $user
+            'user'   => $this
             ));
 
         $planet->save();
+
+        return $planet;
     }
 
     /**

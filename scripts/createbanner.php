@@ -76,11 +76,9 @@ LEFT JOIN {{table}}planets AS planets ON planets.id_owner=users.id
 WHERE users.id={$id}
 EOF;
 
-$config = Wootook_Core_Model_Config::getSingleton();
-
 $data = array_merge(
     array(
-        'game_name' => $config['game_name'],
+        'game_name' => Wootook::getGameConfig('game/general/name'),
         'date' => date('d M Y')
         ),
     doquery($sql, '', true)

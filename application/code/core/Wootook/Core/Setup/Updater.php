@@ -55,10 +55,10 @@ class Wootook_Core_Setup_Updater
 
     public function grant($tableName, $connectionName, $perms = null)
     {
-        $hostname = Wootook::getConfig("global/database/{$connectionName}/params/hostname");
-        $username = Wootook::getConfig("global/database/{$connectionName}/params/username");
-        $database = Wootook::getConfig("global/database/{$connectionName}/params/database");
-        $password = Wootook::getConfig("global/database/{$connectionName}/params/password");
+        $hostname = Wootook::getConfig("database/{$connectionName}/params/hostname");
+        $username = Wootook::getConfig("database/{$connectionName}/params/username");
+        $database = Wootook::getConfig("database/{$connectionName}/params/database");
+        $password = Wootook::getConfig("database/{$connectionName}/params/password");
 
         if ($perms === null) {
             $perms = 'ALL PRIVILEGES';
@@ -79,10 +79,10 @@ SQL_EOF;
 
     public function revoke($tableName, $connectionName, $perms = null)
     {
-        $hostname = Wootook::getConfig("global/database/{$connectionName}/params/hostname");
-        $username = Wootook::getConfig("global/database/{$connectionName}/params/username");
-        $database = Wootook::getConfig("global/database/{$connectionName}/params/database");
-        $password = Wootook::getConfig("global/database/{$connectionName}/params/password");
+        $hostname = Wootook::getConfig("database/{$connectionName}/params/hostname");
+        $username = Wootook::getConfig("database/{$connectionName}/params/username");
+        $database = Wootook::getConfig("database/{$connectionName}/params/database");
+        $password = Wootook::getConfig("database/{$connectionName}/params/password");
 
         if ($perms === null) {
             $perms = 'ALL PRIVILEGES';
@@ -111,10 +111,13 @@ SQL_EOF;
         return Wootook::getConfig($path);
     }
 
-    public function getGameConfig($path)
+    public function getWebsiteConfig($path = null, $websiteId = null)
     {
-        $config = Wootook_Core_Model_Config::getSingleton();
+        return Wootook::getWebsiteConfig($path, $websiteId);
+    }
 
-        return $config->getData($path);
+    public function getGameConfig($path = null, $gameId = null)
+    {
+        return Wootook::getGameConfig($path, $gameId);
     }
 }

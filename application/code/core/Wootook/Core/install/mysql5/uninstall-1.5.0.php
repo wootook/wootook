@@ -40,118 +40,28 @@
  *
  */
 
-$this->setSetupConnection('core_setup');
+$this->setSetupConnection('legacies_setup');
 
 $sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('aks')};
+DROP TABLE {$this->getTableName('core_website')};
 SQL_EOF;
 
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('alliance')};
+DROP TABLE {$this->getTableName('core_game_group')};
 SQL_EOF;
 
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('annonce')};
+DROP TABLE {$this->getTableName('core_game')};
 SQL_EOF;
 
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('banned')};
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('buddy')};
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('chat')};
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('declared')};
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('errors')};
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('fleets')};
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('galaxy')};
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('iraks')};
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('lunas')};
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('messages')};
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('multi')};
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('notes')};
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('planets')};
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('rw')};
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('statpoints')};
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('users')};
+DROP TABLE {$this->getTableName('core_config')};
 SQL_EOF;
 
 $this->query($sql);

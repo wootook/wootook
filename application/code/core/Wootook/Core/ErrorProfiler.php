@@ -12,7 +12,7 @@ class Wootook_Core_ErrorProfiler
 
     private static $_isTraceRegistered = false;
 
-    private static $_listen = true;
+    private $_listen = true;
 
     private $_mute = false;
 
@@ -30,7 +30,7 @@ class Wootook_Core_ErrorProfiler
 
     public function errorManager($errno, $errstr, $errfile = null, $errline = null, Array $errcontext = array())
     {
-        if (!self::$_listen) {
+        if (!$this->_listen) {
             return;
         }
 
@@ -92,10 +92,10 @@ class Wootook_Core_ErrorProfiler
 
     public function exceptionManager($exception)
     {
-        if (!self::$_listen) {
+        if (!$this->_listen) {
             return;
         }
-        $this->_exceptions[] = $exception;
+        $this->_exceptions[] = new Wootook_Core_Exception_Exception('Uncaught Exception: ' . $exception->getMessage(), null, $exception);
     }
 
     protected function _renderError($id, $error)
@@ -171,7 +171,19 @@ ERROR_EOF;
                 $index++;
                 echo "Message #{$index}". PHP_EOL;
                 echo $exception->getMessage() . PHP_EOL;
-                echo $exception->getTraceAsString();
+                echo $exception->getTraceAsString() . PHP_EOL;
+                echo PHP_EOL;
+
+                $child = 0;
+                $current = $exception;
+                while (($current = $current->getPrevious()) !== null) {
+                    $child++;
+                    echo "    Child level #{$child}". PHP_EOL;
+                    echo "    " . $current->getMessage() . PHP_EOL;
+                    echo $current->getTraceAsString() . PHP_EOL;
+                    echo PHP_EOL;
+                }
+                echo PHP_EOL;
             }
             echo '</pre>';
         }
@@ -204,13 +216,13 @@ ERROR_EOF;
         }
     }
 
-    public static function sleep()
+    public function sleep()
     {
-        self::$_listen = false;
+        $this->_listen = false;
     }
 
-    public static function wakeup()
+    public function wakeup()
     {
-        self::$_listen = true;
+        $this->_listen = true;
     }
 }

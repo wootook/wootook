@@ -45,15 +45,6 @@ $step     = isset($_GET['step']) ? intval($_GET['step']) : 1;
 $prevStep = $step - 1;
 $nextStep = $step + 1;
 
-$modules = array(
-    'Wootook_Core',
-    'Wootook_Empire',
-    'Legacies_Empire',
-    'Legacies_Officers'
-    );
-
-includeLang('install/install');
-
 $baseUrl = (isset($_SERVER["HTTPS"]) && strtolower($_SERVER["HTTPS"]) == "on" ? 'https://' : 'http://')
     . $_SERVER["SERVER_NAME"] . ($_SERVER["SERVER_PORT"] != "80" ? ":{$_SERVER["SERVER_PORT"]}" : '');
 if (isset($_SERVER['REQUEST_URI'])) {
@@ -63,17 +54,40 @@ if (isset($_SERVER['REQUEST_URI'])) {
         $baseUrl .= dirname(dirname($_SERVER['REQUEST_URI'])) . '/';
     }
 }
-
-Wootook::setConfig('global/web/base_url', $baseUrl);
-
-Wootook::setConfig('global/package', 'install');
-Wootook::setConfig('global/theme', 'default');
-Wootook::setconfig('global/layout', array(
-    'page' => 'page.php',
-    'install' => 'install.php'
-    ));
-
 $session = Wootook::getSession('install');
+
+$website = new Wootook_Core_Model_Website();
+$website->setId(0)->setData('code', Wootook_Core_Model_Website::DEFAULT_CODE);
+Wootook::setWebsite(0, $website);
+
+$game = new Wootook_Core_Model_Game();
+$game->setId(0)->setData('code', Wootook_Core_Model_Game::DEFAULT_CODE);
+Wootook::setWebsite(0, $game);
+
+$configRewrites = array(
+    'default' => array(
+        'web' => array(
+            'base_url' => $baseUrl
+            ),
+        'package' => 'install',
+        'theme' => 'default',
+        'layout' => array(
+            'page' => 'page.php',
+            'install' => 'install.php'
+            ),
+        'storyline' => array(
+            'universe' => 'legacies',
+            'episode'  => 'default',
+            )
+        )
+    );
+
+$config = unserialize($session->getData('config'));
+if (!is_array($config)) {
+    $config = array();
+}
+Wootook::loadConfig(array_merge_recursive($config, $configRewrites));
+
 $layout = new Wootook_Core_Layout();
 $request = new Wootook_Core_Controller_Request_Http();
 $response = new Wootook_Core_Controller_Response_Http();
@@ -284,10 +298,18 @@ case 'install':
                         )
                     ),
                 );
-            Wootook::writeConfig($config);
+            $session->setData('config', serialize($config));
+            $writer = new Wootook_Core_Config_Adapter_Array();
+            $writer->setData($config);
+            $writer->save(ROOT_PATH . 'config.php');
+
+            Wootook::loadConfig(array_merge_recursive($writer->toArray(), $configRewrites));
+
+            $galaxyCount = Wootook::getConfig('engine/universe/galaxies');
+            $systemCount = Wootook::getConfig('engine/universe/systems');
 
             $gameplays = include dirname(__FILE__) . DIRECTORY_SEPARATOR . 'gameplays.php';
-            $gameplayKey = $config['global']['storyline']['universe'];
+            $gameplayKey = Wootook::getConfig('storyline/universe');
             if (!isset($gameplays[$gameplayKey])) {
                 $gameplayKey = key($gameplays);
             }
@@ -313,28 +335,18 @@ case 'install':
                     }
                 } catch (Wootook_Core_Setup_Exception_VersionStageError $e) {
                     Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
-
-                    $session->addError($e->getMessage());
-                    $session->setData('step', STEP_UNIVERSE);
-                    $response->setRedirect(Wootook::getUrl('install/index.php', array('mode' => 'install', 'step' => STEP_UNIVERSE)));
-                    $response->sendHeaders();
                     continue;
                 } catch (Wootook_Core_Setup_Exception_VersionValueError $e) {
                     Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
-
-                    $session->addError($e->getMessage());
-                    $session->setData('step', STEP_UNIVERSE);
-                    $response->setRedirect(Wootook::getUrl('install/index.php', array('mode' => 'install', 'step' => STEP_UNIVERSE)));
-                    $response->sendHeaders();
                     continue;
                 } catch (Wootook_Core_Setup_Exception_RuntimeException $e) {
+                    $session->addError($e->getMessage());
                     Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
 
-                    $session->addError($e->getMessage());
-                    $session->setData('step', STEP_UNIVERSE);
                     $response->setRedirect(Wootook::getUrl('install/index.php', array('mode' => 'install', 'step' => STEP_UNIVERSE)));
                     $response->sendHeaders();
-                    continue;
+                    exit(0);
+                    break;
                 }
             }
             $path = APPLICATION_PATH . DIRECTORY_SEPARATOR . 'gamedata'  . DIRECTORY_SEPARATOR
