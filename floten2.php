@@ -66,7 +66,7 @@ $fleetArray = $session['fleet'];
 $missionTypes = array();
 // Determinons les type de missions possibles par rapport a la planete cible
 
-if ($position == (MAX_PLANET_IN_SYSTEM + 1)) {
+if ($position == (Wootook::getGameConfig('engine/universe/positions') + 1)) {
     $missionTypes[Legacies_Empire::ID_MISSION_EXPEDITION] = $lang['type_mission'][Legacies_Empire::ID_MISSION_EXPEDITION];
 } else {
     if ($planettype == Wootook_Empire_Model_Planet::TYPE_DEBRIS) {
@@ -98,7 +98,7 @@ if ($position == (MAX_PLANET_IN_SYSTEM + 1)) {
             (isset($fleetArray[Legacies_Empire::ID_SHIP_BATTLESHIP])      && $fleetArray[Legacies_Empire::ID_SHIP_BATTLESHIP] > 0) ||
             (isset($fleetArray[Legacies_Empire::ID_SHIP_COLONY_SHIP])     && $fleetArray[Legacies_Empire::ID_SHIP_COLONY_SHIP] > 0) ||
             (isset($fleetArray[Legacies_Empire::ID_SHIP_RECYCLER])        && $fleetArray[Legacies_Empire::ID_SHIP_RECYCLER] > 0) ||
-            (isset($fleetArray[Legacies_Empire::ID_SHIP_SPY_DRONE])       && $fleetArray[Legacies_Empire::ID_SHIP_SPY_DRONE] > 0 && ALLOW_SPY_DRONE_ATTACKS) ||
+            (isset($fleetArray[Legacies_Empire::ID_SHIP_SPY_DRONE])       && $fleetArray[Legacies_Empire::ID_SHIP_SPY_DRONE] > 0 && Wootook::getGameConfig('engine/combat/allow_spy_drone_attacks')) ||
             (isset($fleetArray[Legacies_Empire::ID_SHIP_BOMBER])          && $fleetArray[Legacies_Empire::ID_SHIP_BOMBER] > 0) ||
             (isset($fleetArray[Legacies_Empire::ID_SHIP_DESTRUCTOR])      && $fleetArray[Legacies_Empire::ID_SHIP_DESTRUCTOR] > 0) ||
             (isset($fleetArray[Legacies_Empire::ID_SHIP_DEATH_STAR])      && $fleetArray[Legacies_Empire::ID_SHIP_DEATH_STAR] > 0) ||
@@ -144,7 +144,7 @@ $session['type']        = $planettype;
 
 $MissionSelector  = "";
 if (count($missionTypes) > 0) {
-    if ($planet == (MAX_PLANET_IN_SYSTEM + 1)) {
+    if ($planet == (Wootook::getGameConfig('engine/universe/positions') + 1)) {
         $MissionSelector .= "<tr height=\"20\">";
         $MissionSelector .= "<th>";
         $MissionSelector .= "<input type=\"radio\" name=\"mission\" value=\"15\" checked=\"checked\">". $lang['type_mission'][Legacies_Empire::ID_MISSION_EXPEDITION] ."<br /><br />";
@@ -265,7 +265,7 @@ $page .= "<th colspan=\"3\"><a href=\"javascript:maxResources()\">". $lang['fl_a
 $page .= "</tr><tr height=\"20\">\n";
 $page .= "<th colspan=\"3\">&nbsp;</th>\n";
 $page .= "</tr>\n";
-if ($planet == (MAX_PLANET_IN_SYSTEM + 1)) {
+if ($planet == (Wootook::getGameConfig('engine/universe/positions') + 1)) {
     $page .= "<tr height=\"20\">";
     $page .= "<td class=\"c\" colspan=\"3\">". $lang['fl_expe_staytime'] ."</td>";
     $page .= "</tr>";

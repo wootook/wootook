@@ -54,13 +54,13 @@ $s = isset($_POST['system']) ? intval($_POST['system']) : 0;
 $p = isset($_POST['planet']) ? intval($_POST['planet']) : 0;
 $t = isset($_POST['planet_type']) ? intval($_POST['planet_type']) : 0;
 
-if ($g <= 0 || $g > MAX_GALAXY_IN_WORLD) {
+if ($g <= 0 || $g > Wootook::getGameConfig('engine/universe/galaxies')) {
     $g = $planetrow['galaxy'];
 }
-if ($s <= 0 || $s > MAX_SYSTEM_IN_GALAXY) {
+if ($s <= 0 || $s > Wootook::getGameConfig('engine/universe/systems')) {
     $s = $planetrow['system'];
 }
-if ($p <= 0 || $p > MAX_PLANET_IN_SYSTEM) {
+if ($p <= 0 || $p > Wootook::getGameConfig('engine/universe/positions')) {
     $p = $planetrow['planet'];
 }
 $allowedPlanetTypes = array(

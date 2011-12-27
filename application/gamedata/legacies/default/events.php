@@ -8,17 +8,13 @@
     'logout.success' => array(),
     'register.before' => array(),
     'register.failure' => array(),
-    'register.success' => array(
-        array('Wootook_Empire_Model_Planet', 'registrationListener')
-        ),
+    'register.success' => array(),
     'planet.update' => array(
         array('Wootook_Empire_Model_Planet', 'planetUpdateListener'),
         array('Legacies_Empire_Model_Planet_Building_Shipyard', 'planetUpdateListener'),
         array('Legacies_Officers_Model_Observer', 'planetUpdateListener')
         ),
-    'user.init' => array(
-        array('Wootook_Empire_Model_Planet', 'registrationListener')
-        ),
+    'user.init' => array(),
     'planet.init' => array(
         array('Wootook_Empire_Model_Galaxy_Position', 'initPlanetListerner')
         ),

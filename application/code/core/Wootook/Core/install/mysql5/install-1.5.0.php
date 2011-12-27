@@ -166,6 +166,12 @@ INSERT IGNORE INTO {$this->getTableName('core_config')} (`website_id`, `game_id`
     (0, 0, 'web/cookie/domain', ''),
     (0, 0, 'web/cookie/path', ''),
 
+    (1, 1, 'web/cookie/name', '__wtk_1_1'),
+
+    (0, 0, 'web/session/time', '900'),
+    (0, 0, 'web/session/domain', '.wootook.org'),
+    (0, 0, 'web/session/path', '/'),
+
     (0, 0, 'engine/options/bbcode', '1'),
     (0, 0, 'engine/options/ga', '1'),
     (0, 0, 'engine/options/announces', '0'),
@@ -184,12 +190,18 @@ INSERT IGNORE INTO {$this->getTableName('core_config')} (`website_id`, `game_id`
     (0, 0, 'engine/bot/name', 'Woot'),
     (0, 0, 'engine/bot/email', 'contact@wootook.org');
 SQL_EOF;
-/**
- * TODO: change these paths
- *    (0, 0, 'BuildLabWhileRun', '0')
- *    (0, 0, 'ExtCopyFrame', '0')
- *    (0, 0, 'ExtCopyOwner', '')
- *    (0, 0, 'ExtCopyFunct', '')
- */
+
+$this->query($sql);
+
+$sql = <<<SQL_EOF
+CREATE TABLE IF NOT EXISTS {$this->getTableName('errors')} (
+    `error_id`              BIGINT UNSIGNED     NOT NULL    AUTO_INCREMENT,
+    `error_sender`          VARCHAR(32)         NOT NULL,
+    `error_time`            TIMESTAMP           NOT NULL,
+    `error_type`            VARCHAR(32)         NOT NULL    DEFAULT 'unknown',
+    `error_text`            TEXT,
+    PRIMARY KEY (`error_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+SQL_EOF;
 
 $this->query($sql);

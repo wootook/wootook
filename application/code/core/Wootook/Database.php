@@ -22,6 +22,11 @@ class Wootook_Database
         return self::getConnection(self::DEFAULT_CONNECTION_NAME);
     }
 
+    public function quoteIdentifier($identifier)
+    {
+        return "`$identifier`";
+    }
+
     public static function getConnection($connectionName)
     {
         if (empty($connectionName) || $connectionName === null) {

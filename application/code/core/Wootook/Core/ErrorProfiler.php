@@ -90,6 +90,11 @@ class Wootook_Core_ErrorProfiler
         return true;
     }
 
+    public function addException($exception)
+    {
+        $this->_exceptions[] = $exception;
+    }
+
     public function exceptionManager($exception)
     {
         if (!$this->_listen) {

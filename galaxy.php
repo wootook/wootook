@@ -69,36 +69,36 @@ if ($mode == 0) {
     $system = $CurrentSystem;
 } elseif ($mode == 1 || $mode == 3) {
     if (isset($_POST["galaxyLeft"])) {
-        if (!isset($_POST["galaxy"]) || $_POST["galaxy"] <= 1 || $_POST["galaxy"] > MAX_GALAXY_IN_WORLD) {
+        if (!isset($_POST["galaxy"]) || $_POST["galaxy"] <= 1 || $_POST["galaxy"] > Wootook::getGameConfig('engine/universe/galaxies')) {
             $galaxy = 1;
         } else {
             $galaxy = intval($_POST["galaxy"]) - 1;
         }
     } elseif (isset($_POST["galaxyRight"])) {
-        if (!isset($_POST["galaxy"]) || $_POST["galaxy"] >= MAX_GALAXY_IN_WORLD) {
-            $galaxy = MAX_GALAXY_IN_WORLD;
+        if (!isset($_POST["galaxy"]) || $_POST["galaxy"] >= Wootook::getGameConfig('engine/universe/galaxies')) {
+            $galaxy = Wootook::getGameConfig('engine/universe/galaxies');
         } else {
             $galaxy = intval($_POST["galaxy"]) + 1;
         }
-    } else if (!isset($_POST["galaxy"]) || $_POST["galaxy"] <= 1 || $_POST["galaxy"] > MAX_GALAXY_IN_WORLD) {
+    } else if (!isset($_POST["galaxy"]) || $_POST["galaxy"] <= 1 || $_POST["galaxy"] > Wootook::getGameConfig('engine/universe/galaxies')) {
         $galaxy = 1;
     } else {
         $galaxy = intval($_POST["galaxy"]);
     }
 
     if (isset($_POST["systemLeft"])) {
-        if (!isset($_POST["system"]) || $_POST["system"] <= 1 || $_POST["system"] > MAX_SYSTEM_IN_GALAXY) {
+        if (!isset($_POST["system"]) || $_POST["system"] <= 1 || $_POST["system"] > Wootook::getGameConfig('engine/universe/systems')) {
             $system = 1;
         } else {
             $system = intval($_POST["system"]) - 1;
         }
     } elseif (isset($_POST["systemRight"])) {
-        if (!isset($_POST["system"]) || $_POST["system"] >= MAX_SYSTEM_IN_GALAXY) {
-            $system = MAX_SYSTEM_IN_GALAXY;
+        if (!isset($_POST["system"]) || $_POST["system"] >= Wootook::getGameConfig('engine/universe/systems')) {
+            $system = Wootook::getGameConfig('engine/universe/systems');
         } else {
             $system = intval($_POST["system"]) + 1;
         }
-    } else if (!isset($_POST["system"]) || $_POST["system"] <= 1 || $_POST["system"] > MAX_SYSTEM_IN_GALAXY) {
+    } else if (!isset($_POST["system"]) || $_POST["system"] <= 1 || $_POST["system"] > Wootook::getGameConfig('engine/universe/systems')) {
         $system = 1;
     } else {
         $system = intval($_POST["system"]);
@@ -106,24 +106,24 @@ if ($mode == 0) {
 } elseif ($mode == 2) {
     if (!isset($_POST["galaxy"]) || $_POST["galaxy"] <= 0) {
         $galaxy = 1;
-    } else if ($_POST["galaxy"] >= MAX_GALAXY_IN_WORLD) {
-        $galaxy = MAX_GALAXY_IN_WORLD;
+    } else if ($_POST["galaxy"] >= Wootook::getGameConfig('engine/universe/galaxies')) {
+        $galaxy = Wootook::getGameConfig('engine/universe/galaxies');
     } else {
         $galaxy = intval($_POST["galaxy"]) + 1;
     }
 
     if (!isset($_POST["system"]) || $_POST["system"] <= 0) {
         $system = 1;
-    } else if ($_POST["system"] >= MAX_SYSTEM_IN_GALAXY) {
-        $system = MAX_SYSTEM_IN_GALAXY;
+    } else if ($_POST["system"] >= Wootook::getGameConfig('engine/universe/systems')) {
+        $system = Wootook::getGameConfig('engine/universe/systems');
     } else {
         $system = intval($_POST["system"]) + 1;
     }
 
     if (!isset($_POST["planet"]) || $_POST["planet"] <= 0) {
         $planet = 1;
-    } else if ($_POST["planet"] >= MAX_PLANET_IN_SYSTEM) {
-        $planet = MAX_PLANET_IN_SYSTEM;
+    } else if ($_POST["planet"] >= Wootook::getGameConfig('engine/universe/positions')) {
+        $planet = Wootook::getGameConfig('engine/universe/positions');
     } else {
         $planet = intval($_POST["planet"]) + 1;
     }

@@ -23,18 +23,48 @@ class Wootook_Empire_Model_User
     protected $_currentPlanet = null;
 
     const SESSION_KEY     = 'user';
-    const COOKIE_NAME     = 'Wootook';
+    const COOKIE_NAME     = '__wtk';
     const COOKIE_LIFETIME = 2592000;
+
+    const COOKIE_NAME_CONFIG_KEY     = 'web/cookie/name';
+    const COOKIE_LIFETIME_CONFIG_KEY = 'web/cookie/time';
+    const COOKIE_DOMAIN_CONFIG_KEY   = 'web/cookie/domain';
+    const COOKIE_PATH_CONFIG_KEY     = 'web/cookie/path';
 
     const PLANET_SORT_DATE     = 0;
     const PLANET_SORT_POSITION = 1;
     const PLANET_SORT_NAME     = 2;
 
-    protected static $_cookieName = self::COOKIE_NAME;
-
-    public static function setCookieName($name)
+    public static function getCookieName()
     {
-        self::$_cookieName = $name;
+        $cookieName = Wootook::getWebsiteConfig(self::COOKIE_NAME_CONFIG_KEY);
+
+        if (is_null($cookieName)) {
+            return self::COOKIE_NAME;
+        }
+
+        return $cookieName;
+    }
+
+    public static function getCookieLifetime()
+    {
+        $cookieLifetime = Wootook::getWebsiteConfig(self::COOKIE_LIFETIME_CONFIG_KEY);
+
+        if (is_null($cookieLifetime)) {
+            return self::COOKIE_LIFETIME;
+        }
+
+        return $cookieLifetime;
+    }
+
+    public static function getCookieDomain()
+    {
+        return Wootook::getWebsiteConfig(self::COOKIE_DOMAIN_CONFIG_KEY);
+    }
+
+    public static function getCookiePath()
+    {
+        return Wootook::getWebsiteConfig(self::COOKIE_PATH_CONFIG_KEY);
     }
 
     public static function factory($id)
@@ -64,8 +94,7 @@ class Wootook_Empire_Model_User
             $session = Wootook::getSession(self::SESSION_KEY);
             if ($session->hasData('user_id')) {
                 $id = intval($session->getData('user_id'));
-            } else if (Wootook::getRequest() !== null && ($cookieData = Wootook::getRequest()->getCookie(self::$_cookieName)) !== null) {
-                //$cookieData = unserialize(stripslashes($cookie));
+            } else if (Wootook::getRequest() !== null && ($cookieData = Wootook::getRequest()->getCookie(self::getCookieName())) !== null) {
                 if (is_array($cookieData)) {
                     $collection = new Wootook_Core_Collection(array('user' => 'users'));
                     $cookieData = array(
@@ -86,6 +115,9 @@ class Wootook_Empire_Model_User
                         $session->addError('Your session has expired, please login.');
                         return null;
                     }
+                } else {
+                    $session->addError('Your session has expired, please login.');
+                    return null;
                 }
             } else {
                 $session->addError('Your session has expired, please login.');
@@ -132,7 +164,7 @@ class Wootook_Empire_Model_User
 
     public function logout()
     {
-        Wootook::getResponse()->unsetCookie(self::$_cookieName);
+        Wootook::getResponse()->unsetCookie(self::getCookieName());
         Wootook_Core_Model_Session::destroy();
     }
 
@@ -184,7 +216,13 @@ class Wootook_Empire_Model_User
             }
 
             if (isset($_POST["rememberme"]) && Wootook::getResponse() !== null) {
-                Wootook::getResponse()->setCookie(self::$_cookieName, array('id' => $login['id'], 'key' => $login['login_rememberme']), self::COOKIE_LIFETIME);
+                Wootook::getResponse()->setCookie(
+                    self::getCookieName(),
+                    array('id' => $login['id'], 'key' => $login['login_rememberme']),
+                    self::getCookieLifetime(),
+                    self::getCookiePath(),
+                    self::getCookieDomain()
+                    );
             }
 
             return self::setLoggedIn(self::factory($login['id']));
@@ -223,7 +261,59 @@ class Wootook_Empire_Model_User
                 'user_agent'    => $request->getServer('HTTP_USER_AGENT')
                 ));
 
+            $user->getWriteConnection()->beginTransaction();
+
             $user->save();
+
+            $collection = Wootook_Empire_Model_Planet::searchMostFreeSystems();
+            $collection->limit(1)->load();
+
+            if ($collection->count() == 0) {
+                throw new Wootook_Empire_Exception_RuntimeException('No more planet to colonize!'); // Oops, no more free place
+            }
+
+            $systemInfo = $collection->current();
+            if ($systemInfo->getData('count') >= Wootook::getGameConfig('engine/universe/positions')) {
+                throw new Wootook_Empire_Exception_RuntimeException('No more planet to colonize!'); // Oops, no more free place
+            }
+
+            $collection = new Wootook_Core_Collection(array('planet' => 'planets'));
+            $collection
+                ->column(array('position' => 'planet.planet'))
+                ->where('planet.planet_type=1')
+                ->where('planet.galaxy=:galaxy')
+                ->where('planet.system=:system')
+                ->load(array(
+                    'galaxy' => $systemInfo->getData('galaxy'),
+                    'system' => $systemInfo->getData('system'),
+                    ))
+            ;
+            $positions = range(1, Wootook::getGameConfig('engine/universe/positions'));
+            foreach ($collection as $planet) {
+                $key = array_search($planet->getData('position'), $positions);
+                if ($key !== false) {
+                    unset($positions[$key]);
+                }
+            }
+            $key = array_rand($positions, 1);
+            $finalPosition = $positions[$key];
+
+            $planet = $user->createNewPlanet(
+                $systemInfo->getData('galaxy'),
+                $systemInfo->getData('system'),
+                $finalPosition,
+                Wootook_Empire_Model_Planet::TYPE_PLANET,
+                Wootook::getRequest()->getParam('planet'),
+                Wootook::getGameConfig('resource/initial/fields')
+                );
+
+            $user
+                ->setData('id_planet', $planet->getId())
+                ->setData('current_planet', $planet->getId())
+                ->setData('galaxy', $planet->getGalaxy())
+                ->setData('system', $planet->getSystem())
+                ->setData('planet', $planet->getPosition())
+            ;
 
             Wootook::dispatchEvent('user.init', array(
                 'user' => $user
@@ -231,12 +321,21 @@ class Wootook_Empire_Model_User
 
             $user->save();
         } catch (Wootook_Core_Exception_DataAccessException $e) {
+            $user->getWriteConnection()->rollback();
+            $session = Wootook_Core_Model_Session::factory(Wootook_Empire_Model_User::SESSION_KEY);
+
+            Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
+            $session->addError($e->getMessage());
+            return null;
+        } catch (Wootook_Empire_Exception_RuntimeException $e) {
+            $user->getWriteConnection()->rollback();
             $session = Wootook_Core_Model_Session::factory(Wootook_Empire_Model_User::SESSION_KEY);
 
             Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
             $session->addError($e->getMessage());
             return null;
         }
+        $user->getWriteConnection()->commit();
 
         return $user;
     }
@@ -265,16 +364,17 @@ class Wootook_Empire_Model_User
             ->setData('field_current', 0)
         ;
 
-        $resourceConfig = Wootook::getGameConfig('resource/initial');
         $resourceList = Wootook_Empire_Model_Game_Resources::getSingleton();
+        $resourceConfig = Wootook::getGameConfig('resource/initial');
+        foreach ($resourceList as $resource => $resourceData) {
+            $planet->setData($resourceData['storage_field'], $resourceConfig[$resource]);
+        }
+        $resourceConfig = Wootook::getGameConfig('resource/base-income');
         foreach ($resourceList as $resource => $resourceData) {
             $planet->setData($resourceData['production_field'], $resourceConfig[$resource]);
         }
 
         $planet->save();
-
-        var_dump($planet->getId());
-        die();
 
         Wootook::dispatchEvent('planet.init', array(
             'planet' => $planet,
@@ -607,6 +707,10 @@ class Wootook_Empire_Model_User
         }
         $layout = $eventData['layout'];
         $navigation = $layout->getBlock('navigation');
+
+        if ($navigation === null) {
+            return;
+        }
 
         if (!defined('IN_ADMIN')) {
             $navigation->addLink('tools/admin', 'Admin Panel', 'Admin Panel', 'admin/overview.php', array(), array('admin'));

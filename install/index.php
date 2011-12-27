@@ -28,17 +28,69 @@
  *
  */
 
-define('INSIDE' , true);
-define('INSTALL', false);
-define('IN_INSTALL', true);
-
 define('STEP_SYSTEM',   1);
 define('STEP_DATABASE', 2);
 define('STEP_UNIVERSE', 3);
 define('STEP_PROFILE',  4);
 define('STEP_CONFIG',   5);
 
-require_once dirname(dirname(__FILE__)) . '/application/bootstrap.php';
+if (!defined('DEBUG') && ($env = getenv('DEBUG')) !== false && in_array(strtolower($env), array('1', 'on', 'true'))) {
+    define('DEBUG', true);
+} else if (!defined('DEBUG') && isset($_SERVER['DEBUG']) && in_array(strtolower($_SERVER['DEBUG']), array('1', 'on', 'true'))) {
+    define('DEBUG', true);
+}
+
+if (!defined('DEPRECATION') && ($env = getenv('DEPRECATION')) !== false && in_array(strtolower($env), array('1', 'on', 'true'))) {
+    define('DEPRECATION', true);
+} else if (!defined('DEPRECATION') && isset($_SERVER['DEPRECATION']) && in_array(strtolower($_SERVER['DEPRECATION']), array('1', 'on', 'true'))) {
+    define('DEPRECATION', true);
+}
+
+if (!defined('BCNUMBERS') && ($env = getenv('BCNUMBERS')) !== false && in_array(strtolower($env), array('1', 'on', 'true'))) {
+    define('BCNUMBERS', true);
+} else if (!defined('BCNUMBERS') && isset($_SERVER['BCNUMBERS']) && in_array(strtolower($_SERVER['BCNUMBERS']), array('1', 'on', 'true'))) {
+    define('BCNUMBERS', true);
+}
+
+if (!defined('DEBUG')) {
+    @ini_set('display_errors', false);
+} else {
+    @ini_set('display_errors', true);
+    @error_reporting(E_ALL | E_STRICT);
+}
+
+defined('ROOT_PATH') || define('ROOT_PATH', dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR);
+defined('APPLICATION_PATH') || define('APPLICATION_PATH', ROOT_PATH . 'application' . DIRECTORY_SEPARATOR);
+
+defined('PHPEXT') || define('PHPEXT', 'php');
+
+defined('VERSION') || define('VERSION', '1.5.0-beta2');
+
+set_include_path(implode(PATH_SEPARATOR, array(
+    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'libraries',
+    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'local',
+    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'community',
+    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'core',
+    get_include_path()
+    )));
+
+function __autoload($class) {
+    include_once str_replace('_', '/', $class) . '.php';
+}
+
+$website = new Wootook_Core_Model_Website();
+$website->setId(1)->setData('code', Wootook_Core_Model_Website::DEFAULT_CODE);
+Wootook::setWebsite(1, $website);
+
+$game = new Wootook_Core_Model_Game();
+$game->setId(1)->setData('website_id', $website->getId())->setData('code', Wootook_Core_Model_Game::DEFAULT_CODE);
+Wootook::setGame(1, $game);
+
+include ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . 'constants.php';
+
+Wootook_Core_Time::init();
+Wootook_Core_ErrorProfiler::register();
+Wootook_Core_Model_Config_Events::registerEvents();
 
 $mode     = isset($_GET['mode']) ? strval($_GET['mode']) : 'intro';
 $step     = isset($_GET['step']) ? intval($_GET['step']) : 1;
@@ -86,6 +138,7 @@ $config = unserialize($session->getData('config'));
 if (!is_array($config)) {
     $config = array();
 }
+
 Wootook::loadConfig(array_merge_recursive($config, $configRewrites));
 
 $layout = new Wootook_Core_Layout();
@@ -419,6 +472,8 @@ case 'install':
                 Wootook_Empire_Model_User::setLoggedIn($user);
 
                 $user->setData('authlevel', LEVEL_ADMIN)->save();
+
+                $user->getHomePlanet()->setName(Wootook::__('Planet'))->save();
             }
 
             $session->setData('step', STEP_CONFIG);

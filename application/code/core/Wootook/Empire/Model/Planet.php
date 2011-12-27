@@ -918,67 +918,6 @@ class Wootook_Empire_Model_Planet
         return $this->getBuildingQueue()->getBuildingTime($buildingId, $level);
     }
 
-    public static function registrationListener($eventData)
-    {
-        if (isset($eventData['user'])) {
-            $user = $eventData['user'];
-
-            if ($user === null || !$user instanceof Wootook_Empire_Model_User || !$user->getId()) {
-                return;
-            }
-
-            $collection = self::searchMostFreeSystems();
-            $collection->limit(1)->load();
-
-            if ($collection->count() == 0) {
-                throw new Exception('No more planet to colonize!'); // Oops, no more free place
-            }
-
-            $systemInfo = $collection->current();
-            if ($systemInfo->getData('count') >= MAX_PLANET_IN_SYSTEM) {
-                throw new Exception('No more planet to colonize!'); // Oops, no more free place
-            }
-
-            $collection = new Wootook_Core_Collection(array('planet' => 'planets'));
-            $collection
-                ->column(array('position' => 'planet.planet'))
-                ->where('planet.planet_type=1')
-                ->where('planet.galaxy=:galaxy')
-                ->where('planet.system=:system')
-                ->load(array(
-                    'galaxy' => $systemInfo->getData('galaxy'),
-                    'system' => $systemInfo->getData('system'),
-                    ))
-            ;
-            $positions = range(1, MAX_PLANET_IN_SYSTEM);
-            foreach ($collection as $planet) {
-                $key = array_search($planet->getData('position'), $positions);
-                if ($key !== false) {
-                    unset($positions[$key]);
-                }
-            }
-            $key = array_rand($positions, 1);
-            $finalPosition = $positions[$key];
-
-            $planet = $user->createNewPlanet(
-                $systemInfo->getData('galaxy'),
-                $systemInfo->getData('system'),
-                $finalPosition,
-                Wootook_Empire_Model_Planet::TYPE_PLANET,
-                Wootook::getRequest()->getParam('planet'),
-                Wootook::getGameConfig('resource/initial/fields')
-                );
-
-            $user
-                ->setData('id_planet', $planet->getId())
-                ->setData('current_planet', $planet->getId())
-                ->setData('galaxy', $planet->getGalaxy())
-                ->setData('system', $planet->getSystem())
-                ->setData('planet', $planet->getPosition())
-            ;
-        }
-    }
-
     public static function searchMostFreeSystems($galaxyList = null, $systemList = null)
     {
         $collection = new Wootook_Core_Collection(array('galaxy' => 'galaxy'));
@@ -1011,15 +950,15 @@ class Wootook_Empire_Model_Planet
         }
 
         $orders = array(
-            "COUNT(*) / {$collection->quote(MAX_PLANET_IN_SYSTEM)}",
-            "1 + ABS(galaxy.galaxy - CEIL({$collection->quote(MAX_GALAXY_IN_WORLD)} / 2))",
-            "1 + 2 * ABS(galaxy.system - CEIL({$collection->quote(MAX_SYSTEM_IN_GALAXY)} / 2))",
+            "COUNT(*) / {$collection->quote(Wootook::getGameConfig('engine/universe/positions'))}",
+            "1 + ABS(galaxy.galaxy - CEIL({$collection->quote(Wootook::getGameConfig('engine/universe/galaxies'))} / 2))",
+            "1 + 2 * ABS(galaxy.system - CEIL({$collection->quote(Wootook::getGameConfig('engine/universe/systems'))} / 2))",
             "RAND() / 1000",
             );
         $collection
             ->order('((' . implode(') * (', $orders) . '))', 'ASC')
-            //->order("ABS(galaxy.system - CEIL({$collection->quote(MAX_SYSTEM_IN_GALAXY)} / 2))", 'ASC')
-            //->order("ABS(galaxy.galaxy - CEIL({$collection->quote(MAX_GALAXY_IN_WORLD)} / 2))", 'ASC')
+            //->order("ABS(galaxy.system - CEIL({$collection->quote(Wootook::getGameConfig('engine/universe/systems'))} / 2))", 'ASC')
+            //->order("ABS(galaxy.galaxy - CEIL({$collection->quote(Wootook::getGameConfig('engine/universe/galaxies'))} / 2))", 'ASC')
             //->order("1.5 / COUNT(*)", 'ASC')
             ->order('RAND()', 'ASC');
 

@@ -18,5 +18,4 @@
 	<th width="278">UGamela<br >Britania </th>
 	<th width="279"><?php echo $this->getData('cred_based')?><br><?php echo $this->getData('cred_start')?></th>
 </tr>
-<?php echo $this->getData('ExtCopyFrame')?>
 </table>

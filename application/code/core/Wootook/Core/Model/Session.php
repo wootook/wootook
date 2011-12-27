@@ -21,6 +21,10 @@ class Wootook_Core_Model_Session
 
     protected static $_levels = null;
 
+    const COOKIE_LIFETIME_CONFIG_KEY = 'web/session/time';
+    const COOKIE_DOMAIN_CONFIG_KEY   = 'web/session/domain';
+    const COOKIE_PATH_CONFIG_KEY     = 'web/session/path';
+
     public static function factory($namespace)
     {
         $namespace = (string) $namespace;
@@ -43,6 +47,7 @@ class Wootook_Core_Model_Session
     public function __construct($namespace)
     {
         if (session_id() == '') {
+            session_set_cookie_params($this->getCookieLifetime(), $this->getCookiePath(), $this->getCookieDomain(), false, true);
             session_start();
         }
 
@@ -54,6 +59,26 @@ class Wootook_Core_Model_Session
         if (!isset($this->_data['messages'])) {
             $this->_data['messages'] = array();
         }
+    }
+
+    public function getCookieLifetime()
+    {
+        $lifetime = Wootook::getWebsiteConfig(self::COOKIE_LIFETIME_CONFIG_KEY);
+        if ($lifetime <= 0) {
+            return 900;
+        }
+
+        return $lifetime;
+    }
+
+    public function getCookieDomain()
+    {
+        return Wootook::getWebsiteConfig(self::COOKIE_DOMAIN_CONFIG_KEY);
+    }
+
+    public function getCookiePath()
+    {
+        return Wootook::getWebsiteConfig(self::COOKIE_PATH_CONFIG_KEY);
     }
 
     public function getMessages($clear = true)

@@ -85,12 +85,6 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-DROP TABLE {$this->getTableName('errors')};
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
 DROP TABLE {$this->getTableName('fleets')};
 SQL_EOF;
 

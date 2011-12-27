@@ -136,7 +136,7 @@ if ($destination->getUserId() == $user['id']) {
 
 $missionTypes = array();
 // Determinons les type de missions possibles par rapport a la planete cible
-if ($position == (MAX_PLANET_IN_SYSTEM + 1)) {
+if ($position == (Wootook::getGameConfig('engine/universe/positions') + 1)) {
     $missionTypes[Legacies_Empire::ID_MISSION_EXPEDITION] = $lang['type_mission'][Legacies_Empire::ID_MISSION_EXPEDITION];
 } else {
     if ($type == Wootook_Empire_Model_Planet::TYPE_DEBRIS) {
@@ -168,7 +168,7 @@ if ($position == (MAX_PLANET_IN_SYSTEM + 1)) {
             (isset($fleetArray[Legacies_Empire::ID_SHIP_BATTLESHIP])      && $fleetArray[Legacies_Empire::ID_SHIP_BATTLESHIP] > 0) ||
             (isset($fleetArray[Legacies_Empire::ID_SHIP_COLONY_SHIP])     && $fleetArray[Legacies_Empire::ID_SHIP_COLONY_SHIP] > 0) ||
             (isset($fleetArray[Legacies_Empire::ID_SHIP_RECYCLER])        && $fleetArray[Legacies_Empire::ID_SHIP_RECYCLER] > 0) ||
-            (isset($fleetArray[Legacies_Empire::ID_SHIP_SPY_DRONE])       && $fleetArray[Legacies_Empire::ID_SHIP_SPY_DRONE] > 0 && ALLOW_SPY_DRONE_ATTACKS) ||
+            (isset($fleetArray[Legacies_Empire::ID_SHIP_SPY_DRONE])       && $fleetArray[Legacies_Empire::ID_SHIP_SPY_DRONE] > 0 && Wootook::getGameConfig('engine/combat/allow_spy_drone_attacks')) ||
             (isset($fleetArray[Legacies_Empire::ID_SHIP_BOMBER])          && $fleetArray[Legacies_Empire::ID_SHIP_BOMBER] > 0) ||
             (isset($fleetArray[Legacies_Empire::ID_SHIP_DESTRUCTOR])      && $fleetArray[Legacies_Empire::ID_SHIP_DESTRUCTOR] > 0) ||
             (isset($fleetArray[Legacies_Empire::ID_SHIP_DEATH_STAR])      && $fleetArray[Legacies_Empire::ID_SHIP_DEATH_STAR] > 0) ||
@@ -295,15 +295,15 @@ if (!in_array($speed, $possibleSpeeds)) {
 
 $error = 0;
 $errorlist = "";
-if ($galaxy > MAX_GALAXY_IN_WORLD || $galaxy < 1) {
+if ($galaxy > Wootook::getGameConfig('engine/universe/galaxies') || $galaxy < 1) {
     $error++;
     $errorlist .= $lang['fl_limit_galaxy'];
 }
-if ($system > MAX_SYSTEM_IN_GALAXY || $system < 1) {
+if ($system > Wootook::getGameConfig('engine/universe/systems') || $system < 1) {
     $error++;
     $errorlist .= $lang['fl_limit_system'];
 }
-if ($position > (MAX_PLANET_IN_SYSTEM + 1) || $position < 1) {
+if ($position > (Wootook::getGameConfig('engine/universe/positions') + 1) || $position < 1) {
     $error++;
     $errorlist .= $lang['fl_limit_planet'];
 }

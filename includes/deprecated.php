@@ -39,7 +39,7 @@
  */
 function AddBuildingToQueue($currentPlanet, $currentUser, $buildingId, $AddMode = true)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
         trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
@@ -59,7 +59,7 @@ function AddBuildingToQueue($currentPlanet, $currentUser, $buildingId, $AddMode 
  */
 function BuildingSavePlanetRecord($currentPlanet)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
         trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
@@ -77,7 +77,7 @@ function BuildingSavePlanetRecord($currentPlanet)
  */
 function BuildingSaveUserRecord($currentUser)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     if (!$currentUser instanceof Wootook_Empire_Model_User) {
         trigger_error('$currentUser should be an instance of Wootook_Empire_Model_User', E_USER_WARNING);
@@ -94,7 +94,7 @@ function BuildingSaveUserRecord($currentUser)
  */
 function CheckPlanetBuildingQueue($currentPlanet, $currentUser)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
         trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
@@ -116,7 +116,7 @@ function CheckPlanetBuildingQueue($currentPlanet, $currentUser)
  */
 function CheckPlanetUsedFields($currentPlanet)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
         trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
@@ -137,7 +137,7 @@ function CheckPlanetUsedFields($currentPlanet)
  */
 function GetBuildingPrice($currentUser, $currentPlanet, $buildingId, $incremental = true, $destroy = false)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
         trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
@@ -190,7 +190,7 @@ function GetBuildingPrice($currentUser, $currentPlanet, $buildingId, $incrementa
  */
 function GetBuildingTime($currentUser, $currentPlanet, $buildingId)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
         trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
@@ -225,7 +225,7 @@ function GetBuildingTime($currentUser, $currentPlanet, $buildingId)
  */
 function GetBuildingTimeLevel($currentUser, $currentPlanet, $buildingId, $level)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
         trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
@@ -260,7 +260,7 @@ function GetBuildingTimeLevel($currentUser, $currentPlanet, $buildingId, $level)
  */
 function GetElementPrice($currentUser, $currentPlanet, $buildingId, $userfactor = true)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
         trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
@@ -318,7 +318,7 @@ function GetElementPrice($currentUser, $currentPlanet, $buildingId, $userfactor 
  */
 function GetElementRessources($elementId, $count)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     $currentUser = Wootook_Empire_Model_User::getSingleton();
     $currentPlanet = $currentUser->getCurrentPlanet();
@@ -337,7 +337,7 @@ function GetElementRessources($elementId, $count)
  */
 function HandleElementBuildingQueue($currentUser, $currentPlanet, $productionTime)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     return array();
 }
@@ -351,7 +351,7 @@ function HandleElementBuildingQueue($currentUser, $currentPlanet, $productionTim
  */
 function CheckCookies($isUserChecked)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     $user = Wootook_Empire_Model_User::getSingleton();
 
@@ -377,7 +377,7 @@ function CheckCookies($isUserChecked)
  */
 function CheckTheUser($isUserChecked)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     $result = CheckCookies($isUserChecked);
 
@@ -398,7 +398,7 @@ function CheckTheUser($isUserChecked)
  */
 function UpdatePlanetBatimentQueueList($currentPlanet, $currentUser)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
         trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
@@ -417,7 +417,7 @@ function UpdatePlanetBatimentQueueList($currentPlanet, $currentUser)
  */
 function CalculateMaxPlanetFields($currentPlanet)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
         trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
@@ -436,7 +436,7 @@ function CalculateMaxPlanetFields($currentPlanet)
  */
 function AbandonColony($currentUser, $currentPlanet)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
         trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
@@ -459,7 +459,7 @@ function AbandonColony($currentUser, $currentPlanet)
  */
 function CheckFleets($currentPlanet)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
         trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
@@ -477,7 +477,7 @@ function CheckFleets($currentPlanet)
  */
 function CancelBuildingFromQueue($currentPlanet, $currentUser)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     if (!$currentPlanet instanceof Wootook_Empire_Model_Planet) {
         trigger_error('$currentPlanet should be an instance of Wootook_Empire_Model_Planet', E_USER_WARNING);
@@ -529,7 +529,7 @@ class Deprecated
  */
 function display($page, $title = '', $topnav = true, $metatags = '', $adminPage = false)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     // TODO: implement extra meta tags
     $layout = Deprecated::getLayout($adminPage);
@@ -563,7 +563,7 @@ function display($page, $title = '', $topnav = true, $metatags = '', $adminPage 
  */
 function parsetemplate($template, $array)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     static $baseUrl = null;
     if ($baseUrl === null) {
@@ -589,7 +589,7 @@ function parsetemplate($template, $array)
  */
 function ReadFromFile($filename)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     return file_get_contents($filename);
 }
@@ -603,7 +603,7 @@ function ReadFromFile($filename)
  */
 function saveToFile($filename, $content)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     file_put_contents($filename, $content);
 }
@@ -616,7 +616,7 @@ function saveToFile($filename, $content)
  */
 function getTemplate($templateName)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     return $templateName;
 }
@@ -632,7 +632,7 @@ function getTemplate($templateName)
  */
 function doquery($query, $table, $fetch = false)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     /**
      * @var Wootook_Database $database
@@ -666,7 +666,7 @@ function doquery($query, $table, $fetch = false)
  */
 function ResetThisFuckingCheater($userId)
 {
-    defined('DEPRECATION') || trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     $user = Wootook_Empire_Model_User::factory($userId);
     $username = $user->getData('username');

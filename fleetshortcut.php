@@ -64,9 +64,9 @@ if ($mode) {
 
         $r = array();
         $r[0] = preg_replace('#[^[:alnum:]\s\-\_\']#', '', $name);
-        $r[1] = (isset($_POST['g']) && intval($_POST['g']) > 0 && intval($_POST['g']) <= MAX_GALAXY_IN_WORLD) ? intval($_POST['g']) : '1';
-        $r[2] = (isset($_POST['s']) && intval($_POST['s']) > 0 && intval($_POST['s']) <= MAX_SYSTEM_IN_GALAXY) ? intval($_POST['s']) : '1';
-        $r[3] = (isset($_POST['p']) && intval($_POST['p']) > 0 && intval($_POST['p']) <= MAX_PLANET_IN_SYSTEM) ? intval($_POST['p']) : '1';
+        $r[1] = (isset($_POST['g']) && intval($_POST['g']) > 0 && intval($_POST['g']) <= Wootook::getGameConfig('engine/universe/galaxies')) ? intval($_POST['g']) : '1';
+        $r[2] = (isset($_POST['s']) && intval($_POST['s']) > 0 && intval($_POST['s']) <= Wootook::getGameConfig('engine/universe/systems')) ? intval($_POST['s']) : '1';
+        $r[3] = (isset($_POST['p']) && intval($_POST['p']) > 0 && intval($_POST['p']) <= Wootook::getGameConfig('engine/universe/positions')) ? intval($_POST['p']) : '1';
         $r[4] = (isset($_POST['t']) && intval($_POST['t']) > 0 && in_array(intval($_POST['t']), $planetTypes)) ? intval($_POST['t']) : '1';
 
         $user['fleet_shortcut'] .= implode(",", $r);
@@ -123,9 +123,9 @@ if ($mode) {
                 Wootook_Empire_Model_Planet::TYPE_MOON
                 );
             $r[0] = preg_replace('#[^[:alnum:]\s\-\_\']#', '', $name);
-            $r[1] = (isset($_POST['g']) && intval($_POST['g']) > 0 && intval($_POST['g']) <= MAX_GALAXY_IN_WORLD) ? intval($_POST['g']) : $r[1];
-            $r[2] = (isset($_POST['s']) && intval($_POST['s']) > 0 && intval($_POST['s']) <= MAX_SYSTEM_IN_GALAXY) ? intval($_POST['s']) : $r[2];
-            $r[3] = (isset($_POST['p']) && intval($_POST['p']) > 0 && intval($_POST['p']) <= MAX_PLANET_IN_SYSTEM) ? intval($_POST['p']) : $r[3];
+            $r[1] = (isset($_POST['g']) && intval($_POST['g']) > 0 && intval($_POST['g']) <= Wootook::getGameConfig('engine/universe/galaxies')) ? intval($_POST['g']) : $r[1];
+            $r[2] = (isset($_POST['s']) && intval($_POST['s']) > 0 && intval($_POST['s']) <= Wootook::getGameConfig('engine/universe/systems')) ? intval($_POST['s']) : $r[2];
+            $r[3] = (isset($_POST['p']) && intval($_POST['p']) > 0 && intval($_POST['p']) <= Wootook::getGameConfig('engine/universe/positions')) ? intval($_POST['p']) : $r[3];
             $r[4] = (isset($_POST['t']) && intval($_POST['t']) > 0 && in_array(intval($_POST['t']), $planetTypes)) ? intval($_POST['t']) : $r[4];
 
             $scarray[$a] = implode(",", $r);

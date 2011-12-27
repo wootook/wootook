@@ -40,7 +40,7 @@
  *
  */
 
-$this->setSetupConnection('legacies_setup');
+$this->setSetupConnection('core_setup');
 
 $sql = <<<SQL_EOF
 DROP TABLE {$this->getTableName('core_website')};
@@ -62,6 +62,12 @@ $this->query($sql);
 
 $sql = <<<SQL_EOF
 DROP TABLE {$this->getTableName('core_config')};
+SQL_EOF;
+
+$this->query($sql);
+
+$sql = <<<SQL_EOF
+DROP TABLE {$this->getTableName('errors')};
 SQL_EOF;
 
 $this->query($sql);

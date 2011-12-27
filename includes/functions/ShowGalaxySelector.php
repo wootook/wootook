@@ -37,14 +37,14 @@
 function ShowGalaxySelector ( $Galaxy, $System ) {
 	global $lang;
 
-	if ($Galaxy > MAX_GALAXY_IN_WORLD) {
-		$Galaxy = MAX_GALAXY_IN_WORLD;
+	if ($Galaxy > Wootook::getGameConfig('engine/universe/galaxies')) {
+		$Galaxy = Wootook::getGameConfig('engine/universe/galaxies');
 	}
 	if ($Galaxy < 1) {
 		$Galaxy = 1;
 	}
-	if ($System > MAX_SYSTEM_IN_GALAXY) {
-		$System = MAX_SYSTEM_IN_GALAXY;
+	if ($System > Wootook::getGameConfig('engine/universe/systems')) {
+		$System = Wootook::getGameConfig('engine/universe/systems');
 	}
 	if ($System < 1) {
 		$System = 1;

@@ -35,8 +35,10 @@ require_once dirname(__FILE__) . '/application/bootstrap.php';
 
 includeLang('login');
 
-if (!empty($_POST) && isset($_POST['username']) && isset($_POST['password'])) {
-    $user = Wootook_Empire_Model_User::login($_POST['username'], $_POST['password'], isset($_POST['rememberme']) && !empty($_POST['rememberme']));
+$request = Wootook::getRequest();
+
+if ($request->isPost() && $request->getPost('username') !== null && $request->getPost('password') !== null) {
+    $user = Wootook_Empire_Model_User::login($request->getPost('username'), $request->getPost('password'), (bool) $request->getPost('rememberme'));
 
     $session = Wootook::getSession(Wootook_Empire_Model_User::SESSION_KEY);
     if ($user !== null && $user->getId()) {
@@ -70,6 +72,7 @@ $onlinePlayersStatement->execute();
 $onlinePlayers = $onlinePlayersStatement->fetch(Wootook_Database::FETCH_COLUMN, 0);
 
 $layout = new Wootook_Core_Layout();
+$layout->getMessagesBlock()->prepareMessages(Wootook_Empire_Model_User::SESSION_KEY)
 $layout->load('login');
 $block = $layout->getBlock('login');
 

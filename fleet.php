@@ -73,13 +73,13 @@ $planet = $user->getCurrentPlanet();
 
 $MaxFlyingFleets = $user->getFleetCount();
 
-if ($galaxy <= 0 || $galaxy > MAX_GALAXY_IN_WORLD) {
+if ($galaxy <= 0 || $galaxy > Wootook::getGameConfig('engine/universe/galaxies')) {
     $galaxy = $planet['galaxy'];
 }
-if ($system <= 0 || $system > MAX_SYSTEM_IN_GALAXY) {
+if ($system <= 0 || $system > Wootook::getGameConfig('engine/universe/systems')) {
     $system = $planet['system'];
 }
-if ($position <= 0 || $position > MAX_PLANET_IN_SYSTEM) {
+if ($position <= 0 || $position > Wootook::getGameConfig('engine/universe/positions')) {
     $position = $planet['planet'];
 }
 

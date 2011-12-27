@@ -13,12 +13,12 @@ if (!defined('DEBUG')) {
     @error_reporting(E_ALL | E_STRICT);
 }
 
-defined('ROOT_PATH') || define('ROOT_PATH', dirname(dirname(dirname(dirname(__FILE__)))) . DIRECTORY_SEPARATOR);
-defined('APPLICATION_PATH') || define('APPLICATION_PATH', ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . 'application' . DIRECTORY_SEPARATOR);
+defined('ROOT_PATH') || define('ROOT_PATH', dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR);
+defined('APPLICATION_PATH') || define('APPLICATION_PATH', ROOT_PATH . 'application' . DIRECTORY_SEPARATOR);
 
-defined('PHPEXT') || define('PHPEXT', require ROOT_PATH . 'extension.inc');
+defined('PHPEXT') || define('PHPEXT', 'php');
 
-defined('VERSION') || define('VERSION', '2009.5');
+defined('VERSION') || define('VERSION', '1.5');
 
 set_include_path(implode(PATH_SEPARATOR, array(
     APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'core',

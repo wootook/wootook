@@ -143,19 +143,6 @@ SQL_EOF;
 $this->query($sql);
 
 $sql = <<<SQL_EOF
-CREATE TABLE IF NOT EXISTS {$this->getTableName('errors')} (
-    `error_id`              BIGINT UNSIGNED     NOT NULL    AUTO_INCREMENT,
-    `error_sender`          VARCHAR(32)         NOT NULL,
-    `error_time`            TIMESTAMP           NOT NULL,
-    `error_type`            VARCHAR(32)         NOT NULL    DEFAULT 'unknown',
-    `error_text`            TEXT,
-    PRIMARY KEY (`error_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-SQL_EOF;
-
-$this->query($sql);
-
-$sql = <<<SQL_EOF
 CREATE TABLE IF NOT EXISTS {$this->getTableName('fleets')} (
     `fleet_id`                  BIGINT UNSIGNED     NOT NULL    AUTO_INCREMENT,
     `fleet_owner`               BIGINT UNSIGNED     NOT NULL,

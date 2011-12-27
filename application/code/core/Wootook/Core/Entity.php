@@ -69,6 +69,8 @@ SQL_EOF;
 
     protected function _save()
     {
+        $database = $this->getWriteConnection();
+
         if ($this->getId() !== null) {
             $fields = array();
             $values = array();
@@ -76,7 +78,7 @@ SQL_EOF;
                 if ($field == self::getIdFieldName()) {
                     continue;
                 }
-                $fields[] = "{$field}=:{$field}";
+                $fields[] = "{$database->quoteIdentifier($field)}=:{$field}";
                 $values[$field] = $value;
             }
 
@@ -84,7 +86,6 @@ SQL_EOF;
             $idFieldName = self::getIdFieldName();
             $values[$idFieldName] = $this->getId();
 
-            $database = $this->getWriteConnection();
             if ($database === null) {
                 throw new Wootook_Core_Exception_DataAccessException('Could not load data: no write connection configured.');
             }
@@ -99,8 +100,8 @@ SQL_EOF;
             $statement->execute($values);
         } else {
             $datas = $this->getAllDatas();
-            $fieldsImploded = implode(', ', array_keys($datas));
 
+            $fields = array();
             $tokens = array();
             $values = array();
             foreach ($datas as $field => $value) {
@@ -108,24 +109,27 @@ SQL_EOF;
                     continue;
                 }
                 $tokens[] = ":{$field}";
-                $values[$field] = $value;
+                $fields[] = $database->quoteIdentifier($field);
+                $values[$field] = strval($value);
             }
             $tokensImploded = implode(', ', $tokens);
+            $fieldsImploded = implode(', ', $fields);
 
-            $database = $this->getWriteConnection();
             if ($database === null) {
                 throw new Wootook_Core_Exception_DataAccessException('Could not load data: no write connection configured.');
             }
 
+            $table = $database->getTable($this->getTableName());
             $sql =<<<SQL_EOF
-INSERT INTO {$database->getTable($this->getTableName())} ($fieldsImploded)
-    VALUES ({$tokensImploded})
+INSERT INTO {$database->quoteIdentifier($table)} ({$database->quoteIdentifier($this->getIdFieldName())}, $fieldsImploded)
+    VALUES (NULL, {$tokensImploded})
 SQL_EOF;
             $statement = $database->prepare($sql);
 
             $statement->execute($values);
 
-            $this->setId($database->lastInsertId());
+            $id = $database->lastInsertId($table);
+            $this->setId($id);
         }
 
         return $this;

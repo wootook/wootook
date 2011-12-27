@@ -400,7 +400,7 @@ class Wootook
                 self::$_websitesById[$websiteId] = $website;
                 self::$_websitesByCode[$websiteCode] = $website;
             } catch (Wootook_Core_Exception_DataAccessException $e) {
-                throw new Wootook_Core_Exception_RuntimeException('Could not load website entity.', null, $e);
+                throw new Wootook_Core_Exception_WebsiteError('Could not load website entity.', null, $e);
             }
 
             return $website;
@@ -417,7 +417,7 @@ class Wootook
                 self::$_websitesById[$websiteId] = $website;
                 self::$_websitesByCode[$websiteCode] = $website;
             } catch (Wootook_Core_Exception_DataAccessException $e) {
-                throw new Wootook_Core_Exception_RuntimeException('Could not load website entity.', null, $e);
+                throw new Wootook_Core_Exception_WebsiteError('Could not load website entity.', null, $e);
             }
 
             return $website;
@@ -438,7 +438,7 @@ class Wootook
                 self::$_gamesById[$gameId] = $game;
                 self::$_gamesByCode[$gameCode] = $game;
             } catch (Wootook_Core_Exception_DataAccessException $e) {
-                throw new Wootook_Core_Exception_RuntimeException('Could not load game entity.', null, $e);
+                throw new Wootook_Core_Exception_GameError('Could not load game entity.', null, $e);
             }
 
             return $game;
@@ -455,7 +455,7 @@ class Wootook
                 self::$_gamesById[$gameId] = $game;
                 self::$_gamesByCode[$gameCode] = $game;
             } catch (Wootook_Core_Exception_DataAccessException $e) {
-                throw new Wootook_Core_Exception_RuntimeException('Could not load game entity.', null, $e);
+                throw new Wootook_Core_Exception_GameError('Could not load game entity.', null, $e);
             }
 
             return $game;
@@ -472,8 +472,8 @@ class Wootook
     public static function setGame($gameId, $game)
     {
         $gameKey = $game->getData('code');
-        self::$_gameById[$gameId] = $game;
-        self::$_gameByCode[$gameKey] = $game;
+        self::$_gamesById[$gameId] = $game;
+        self::$_gamesByCode[$gameKey] = $game;
     }
 
     protected static function _initWebsiteConfig($websiteId)

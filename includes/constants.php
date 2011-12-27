@@ -32,12 +32,7 @@ defined('E_USER_DEPRECATED') || define('E_USER_DEPRECATED', E_USER_WARNING); // 
 
 define('ADMINEMAIL', "no-reply@wootook.org");
 
-// Definition du monde connu !
-defined('MAX_GALAXY_IN_WORLD')  || define('MAX_GALAXY_IN_WORLD', Wootook::getGameConfig('engine/universe/galaxies'));
-defined('MAX_SYSTEM_IN_GALAXY') || define('MAX_SYSTEM_IN_GALAXY', Wootook::getGameConfig('engine/universe/systems'));
-defined('MAX_PLANET_IN_SYSTEM') || define('MAX_PLANET_IN_SYSTEM', Wootook::getGameConfig('engine/universe/positions'));
-
-defined('BCNUMBERS') || define('BCNUMBERS', Wootook::getConfig('default/engine/core/use_large_numbers'));
+defined('BCNUMBERS') || define('BCNUMBERS', Wootook::getGameConfig('engine/core/use_large_numbers'));
 
 /**
  * User level constants
@@ -50,8 +45,6 @@ define('LEVEL_PLAYER', 0);
 /**
  * }}}
  */
-
-define('ALLOW_SPY_DRONE_ATTACKS', Wootook::getConfig('default/engine/combat/allow_spy_drone_attacks'));
 
 // Nombre de colones pour les rapports d'espionnage
 define('SPY_REPORT_ROW', 2);
@@ -76,9 +69,6 @@ define('SHOW_ADMIN_IN_RECORDS', false);
 
 // Valeurs de bases pour les colonies ou planetes fraichement crées
 define('BASE_STORAGE_SIZE', 100000);
-define('BUILD_METAL', 500);
-define('BUILD_CRISTAL', 500);
-define('BUILD_DEUTERIUM', 0);
 
 // Chemin vers le skin de base
 define('DEFAULT_SKINPATH', 'skin/base/default/');
