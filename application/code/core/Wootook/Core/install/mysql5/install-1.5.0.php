@@ -161,16 +161,16 @@ INSERT IGNORE INTO {$this->getTableName('core_config')} (`website_id`, `game_id`
     (1, 1, 'game/noob-protection/points-cap', '5000'),
     (1, 1, 'game/noob-protection/multiplier', '5'),
 
-    (0, 0, 'web/cookie/name', '__wtk'),
-    (0, 0, 'web/cookie/time', '2592000'),
-    (0, 0, 'web/cookie/domain', ''),
-    (0, 0, 'web/cookie/path', ''),
+--    (0, 0, 'web/cookie/name', '__wtk'),
+--    (0, 0, 'web/cookie/time', '2592000'),
+--    (0, 0, 'web/cookie/domain', ''),
+--    (0, 0, 'web/cookie/path', ''),
 
     (1, 1, 'web/cookie/name', '__wtk_1_1'),
 
-    (0, 0, 'web/session/time', '900'),
-    (0, 0, 'web/session/domain', '.wootook.org'),
-    (0, 0, 'web/session/path', '/'),
+--    (0, 0, 'web/session/time', '900'),
+--    (0, 0, 'web/session/domain', '.wootook.org'),
+--    (0, 0, 'web/session/path', '/'),
 
     (0, 0, 'engine/options/bbcode', '1'),
     (0, 0, 'engine/options/ga', '1'),

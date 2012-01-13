@@ -1,0 +1,3 @@
+<span class="<?php echo $this->escape($this->renderClasses())?> navigation-link">
+  <a href="<?php echo $this->escape($this->getLinkUrl())?>"<?php foreach ($this->getAttributes() as $attributeName => $attributeValue):?> <?php echo $attributeName?>="<?php echo $attributeValue ?>"<?php endforeach?>><?php echo $this->escape($this->getLabel())?></a>
+</span>

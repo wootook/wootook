@@ -139,7 +139,7 @@ if ($user->getData('ally_id') == 0) {
     /*
      * Creation of the alliance
      */
-        if ($yes == 1 && isset($request->isPost())) {
+        if ($yes == 1 && $request->isPost()) {
 
             if ($request->getPost('atag') !== null) {
                 message($lang['have_not_tag'], $lang['make_alliance']);

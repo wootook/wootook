@@ -11,7 +11,7 @@ class Wootook_Core_Model_Session
     extends Wootook_Object
 {
     const CRIT    = 0x80;
-    const ERROR   = 0x40;
+    const ERR     = 0x40;
     const WARN    = 0x20;
     const INFO    = 0x10;
     const DEBUG   = 0x01;
@@ -19,21 +19,26 @@ class Wootook_Core_Model_Session
 
     protected static $_instances = null;
 
-    protected static $_levels = null;
+    protected static $_levels = array(
+        self::CRIT    => 'CRIT',
+        self::ERR     => 'ERR',
+        self::WARN    => 'WARN',
+        self::INFO    => 'INFO',
+        self::DEBUG   => 'DEBUG',
+        self::SUCCESS => 'SUCCESS'
+        );
 
     const COOKIE_LIFETIME_CONFIG_KEY = 'web/session/time';
     const COOKIE_DOMAIN_CONFIG_KEY   = 'web/session/domain';
     const COOKIE_PATH_CONFIG_KEY     = 'web/session/path';
 
+    const IDENTIFIER_EXPIRES  = '__expires';
+    const IDENTIFIER_MESSAGES = '__messages';
+
     public static function factory($namespace)
     {
         $namespace = (string) $namespace;
         if (!isset(self::$_instances[$namespace])) {
-            if (self::$_levels === null) {
-                $reflection = new ReflectionClass(__CLASS__);
-                self::$_levels = array_flip($reflection->getConstants());
-            }
-
             self::$_instances[$namespace] = new self($namespace);
         }
         return self::$_instances[$namespace];
@@ -49,22 +54,26 @@ class Wootook_Core_Model_Session
         if (session_id() == '') {
             session_set_cookie_params($this->getCookieLifetime(), $this->getCookiePath(), $this->getCookieDomain(), false, true);
             session_start();
+            session_regenerate_id(true);
         }
 
-        if (!isset($_SESSION[$namespace])) {
-            $_SESSION[$namespace] = array();
+        if (!isset($_SESSION[$namespace]) || !isset($_SESSION[$namespace][self::IDENTIFIER_EXPIRES]) || $_SESSION[$namespace][self::IDENTIFIER_EXPIRES] < time()) {
+            $_SESSION[$namespace] = array(
+                self::IDENTIFIER_EXPIRES  => time() + $this->getCookieLifetime(),
+                self::IDENTIFIER_MESSAGES => array()
+                );
         }
 
         $this->_data = &$_SESSION[$namespace];
-        if (!isset($this->_data['messages'])) {
-            $this->_data['messages'] = array();
+        if (!isset($this->_data[self::IDENTIFIER_MESSAGES]) || !is_array($this->_data[self::IDENTIFIER_MESSAGES])) {
+            $this->_data[self::IDENTIFIER_MESSAGES] = array();
         }
     }
 
     public function getCookieLifetime()
     {
         $lifetime = Wootook::getWebsiteConfig(self::COOKIE_LIFETIME_CONFIG_KEY);
-        if ($lifetime <= 0) {
+        if (!is_numeric($lifetime) || $lifetime <= 0) {
             return 900;
         }
 
@@ -73,19 +82,27 @@ class Wootook_Core_Model_Session
 
     public function getCookieDomain()
     {
-        return Wootook::getWebsiteConfig(self::COOKIE_DOMAIN_CONFIG_KEY);
+        $domain = Wootook::getWebsiteConfig(self::COOKIE_DOMAIN_CONFIG_KEY);
+        if ($domain === null) {
+            return $_SERVER['SERVER_NAME'];
+        }
+        return $domain;
     }
 
     public function getCookiePath()
     {
-        return Wootook::getWebsiteConfig(self::COOKIE_PATH_CONFIG_KEY);
+        $path = Wootook::getWebsiteConfig(self::COOKIE_PATH_CONFIG_KEY);
+        if ($path === null) {
+            return '/';
+        }
+        return $path;
     }
 
     public function getMessages($clear = true)
     {
-        $messages = $this->_data['messages'];
+        $messages = $this->_data[self::IDENTIFIER_MESSAGES];
         if ($clear == true) {
-            $this->_data['messages'] = array();
+            $this->_data[self::IDENTIFIER_MESSAGES] = array();
         }
         return $messages;
     }
@@ -96,13 +113,13 @@ class Wootook_Core_Model_Session
             $type = self::DEBUG;
         }
 
-        if (!isset($this->_data['messages'])) {
-            $this->_data['messages'] = array();
+        if (!isset($this->_data[self::IDENTIFIER_MESSAGES])) {
+            $this->_data[self::IDENTIFIER_MESSAGES] = array();
         }
-        if (!isset($this->_data['messages'][self::$_levels[$type]])) {
-            $this->_data['messages'][self::$_levels[$type]] = array();
+        if (!isset($this->_data[self::IDENTIFIER_MESSAGES][self::$_levels[$type]])) {
+            $this->_data[self::IDENTIFIER_MESSAGES][self::$_levels[$type]] = array();
         }
-        $this->_data['messages'][self::$_levels[$type]][] = $message;
+        $this->_data[self::IDENTIFIER_MESSAGES][self::$_levels[$type]][] = $message;
 
         return $this;
     }
@@ -120,7 +137,7 @@ class Wootook_Core_Model_Session
         $args = func_get_args();
         array_shift($args);
 
-        return $this->addMessage(vsprintf($message, $args), self::ERROR);
+        return $this->addMessage(vsprintf($message, $args), self::ERR);
     }
 
     public function addWarning($message, $_ = null)

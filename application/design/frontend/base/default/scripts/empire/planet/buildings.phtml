@@ -1,0 +1,28 @@
+<div id="buildings" class="buildings item-list">
+    <h1><?php echo $this->__('Buildings')?></h1>
+    <?php echo $this->getPartial('item-list.items')->render()?>
+    <div class="clear"></div>
+</div>
+<script type="text/javascript">
+/*<![CDATA[*/
+(function($){
+  jQuery(document).ready(function(){
+    var items = jQuery('#buildings .item');
+    jQuery('.image', items).hover(function(e){
+      jQuery('.details', jQuery(this).parent()).show();
+      }, function(e){
+      jQuery('.details', jQuery(this).parent()).hide();
+      });
+    jQuery('.buy', items).hover(function(e){
+      jQuery('.details', jQuery(this)).addClass('hover');
+      }, function(e){
+      jQuery('.details', jQuery(this)).removeClass('hover');
+      });
+    jQuery('.buy', items).click(function(e){
+      e.preventDefault();
+      document.location.href = jQuery('a', jQuery(this)).attr('href');
+      });
+    });
+  })(jQuery);
+/*]]>*/
+</script>

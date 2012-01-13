@@ -1,0 +1,7 @@
+<div class="install">
+  <h1><?php echo $this->__('Wootook! was successfully installed.')?></h1>
+  <?php echo $this->getLayout()->getMessagesblock()->renderGroupedHtml()?>
+  <p><?php echo $this->__('You can now play at %s and tell your friends to come and play.', Wootook::getBaseUrl())?></p>
+  <p><?php echo $this->__('Feel free to ask for help at any time at <a href="%s">wootook.org</a>.', 'http://wootook.org/board/')?></p>
+  <p><button onclick="document.location.href='../'"><?php echo $this->__('Play!')?></button></p>
+</div>

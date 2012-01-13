@@ -1,12 +1,13 @@
 <?php
 
 class Wootook_Core_Controller_Request_Http
-    extends Wootook_Object
+    extends Wootook_Core_Controller_Request_Abstract
 {
-    public function __construct()
-    {
-        parent::__construct(array());
-    }
+    protected $_actionKey = 'action';
+    protected $_controllerKey = 'controller';
+    protected $_moduleKey = 'module';
+
+    protected $_isDispatched = false;
 
     public function setParam($key, $value)
     {
@@ -148,5 +149,83 @@ class Wootook_Core_Controller_Request_Http
             return true;
         }
         return false;
+    }
+
+    public function getModuleKey()
+    {
+        return $this->_moduleKey;
+    }
+
+    public function setModuleKey($key)
+    {
+        $this->_moduleKey = $key;
+
+        return $this;
+    }
+
+    public function getModuleName()
+    {
+        return $this->getParam($this->getModuleKey());
+    }
+
+    public function setModuleName($name)
+    {
+        return $this->setParam($this->getModuleKey(), $name);
+    }
+
+    public function getControllerKey()
+    {
+        return $this->_controllerKey;
+    }
+
+    public function setControllerKey($key)
+    {
+        $this->_controllerKey = $key;
+
+        return $this;
+    }
+
+    public function getControllerName()
+    {
+        return $this->getParam($this->getControllerKey(), 'index');
+    }
+
+    public function setControllerName($name)
+    {
+        return $this->setParam($this->getControllerKey(), $name);
+    }
+
+    public function getActionKey()
+    {
+        return $this->_actionKey;
+    }
+
+    public function setActionKey($key)
+    {
+        $this->_actionKey = $key;
+
+        return $this;
+    }
+
+    public function getActionName()
+    {
+        return $this->getParam($this->getActionKey(), 'index');
+    }
+
+    public function setActionName($name)
+    {
+        return $this->setParam($this->getActionKey(), $name);
+    }
+
+    public function setIsDispatched($dispatched = true)
+    {
+        $this->_isDispatched = $dispatched;
+
+        return $this;
+    }
+
+    public function isDispatched()
+    {
+        return $this->_isDispatched;
     }
 }

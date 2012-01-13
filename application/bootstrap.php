@@ -28,6 +28,12 @@
  *
  */
 
+if (!defined('PHP_VERSION_ID')) {
+    $version = explode('.',PHP_VERSION);
+    define('PHP_VERSION_ID', (((int)$version[0]) * 10000 + ((int)$version[1]) * 100 + ((int)$version[2])));
+    unset($version);
+}
+
 if (!defined('DEBUG') && ($env = getenv('DEBUG')) !== false && in_array(strtolower($env), array('1', 'on', 'true'))) {
     define('DEBUG', true);
 } else if (!defined('DEBUG') && isset($_SERVER['DEBUG']) && in_array(strtolower($_SERVER['DEBUG']), array('1', 'on', 'true'))) {
@@ -72,15 +78,28 @@ function __autoload($class) {
     include_once str_replace('_', '/', $class) . '.php';
 }
 
+if (defined('IN_ADMIN')) {
+    $website = new Wootook_Core_Model_Website();
+    $website->setId(0)->setData('code', 'admin');
+    Wootook::addWebsite($website);
+    Wootook::setDefaultWebsite($website);
+
+    $game = new Wootook_Core_Model_Game();
+    $game->setId(0)->setData('code', 'admin')->setData('website_id', $website->getId());
+    Wootook::addGame($game);
+    Wootook::setDefaultGame($game);
+}
+
 include ROOT_PATH . 'includes/constants.php';
 
 Wootook_Core_Time::init();
 Wootook_Core_ErrorProfiler::register();
 Wootook_Core_Model_Config_Events::registerEvents();
 
-if (!defined('IN_INSTALL') && 0 === filesize(ROOT_PATH . 'config.php')) {
+if (!defined('IN_INSTALL') && 0 === filesize(APPLICATION_PATH . 'config' . DIRECTORY_SEPARATOR . 'local.php')) {
     header('HTTP/1.1 307 Temporary Redirect');
-    header('Location: install/');
+    $url = Wootook::getUrl('install/');
+    header("Location: $url");
     die();
 }
 
@@ -98,53 +117,47 @@ include(ROOT_PATH . 'language/' . DEFAULT_LANG . '/lang_info.cfg');
 include(ROOT_PATH . 'includes/vars.' . PHPEXT);
 include(ROOT_PATH . 'includes/strings.' . PHPEXT);
 
-if (!defined('IN_INSTALL')) {
+$user = Wootook_Empire_Model_User::getSingleton();
 
-    $cookieName = Wootook::getGameConfig('web/cookie/name');
-    if ($cookieName !== null) {
-        Wootook_Empire_Model_User::setCookieName($cookieName);
-    }
-    $user = Wootook_Empire_Model_User::getSingleton();
-
-    if (!defined('DISABLE_IDENTITY_CHECK')) {
-        if (($user === null || !$user->getId())) {
-            header('Location: login.php');
-            exit(0);
-        }
-
-        if (Wootook::getGameConfig('game/general/active') && $user !== null && !in_array($user->getData('authlevel'), array(LEVEL_ADMIN, LEVEL_MODERATOR, LEVEL_OPERATOR))) {
-            $layout = new Wootook_Core_Layout();
-            $layout->load('message');
-
-            $block = $layout->getBlock('message');
-            $block['title'] = Wootook::__('Game is disabled.');
-            $block['message'] = Wootook::getGameConfig('game/general/closing-message');
-
-            echo $layout->render();
-            exit(0);
-        }
+if (!defined('DISABLE_IDENTITY_CHECK')) {
+    if (($user === null || !$user->getId())) {
+        $url = Wootook::getUrl('login.php');
+        header("Location: $url");
+        exit(0);
     }
 
-    includeLang('system');
-    includeLang('tech');
+    if (Wootook::getGameConfig('game/general/active') && $user !== null && !in_array($user->getData('authlevel'), array(LEVEL_ADMIN, LEVEL_MODERATOR, LEVEL_OPERATOR))) {
+        $layout = new Wootook_Core_Layout(Wootook_Core_Layout::DOMAIN_FRONTEND);
+        $layout->load('message');
 
-    if (($user !== null && $user->getId())) {
-        if (isset($_GET['cp']) && !empty($_GET['cp'])) {
-            $user->updateCurrentPlanet((int) $_GET['cp']);
-        }
+        $block = $layout->getBlock('message');
+        $block['title'] = Wootook::__('Game is disabled.');
+        $block['message'] = Wootook::getGameConfig('game/general/closing-message');
 
-        $planet = $user->getCurrentPlanet();
-
-        foreach ($user->getPlanetCollection() as $userPlanet) {
-            FlyingFleetHandler($userPlanet); // TODO: implement logic into a refactored model
-        }
-
-        /*
-         * Update planet resources and constructions
-         */
-        Wootook::dispatchEvent('planet.update', array(
-            'planet' => $planet
-            ));
-        $planet->save();
+        echo $layout->render();
+        exit(0);
     }
+}
+
+includeLang('system');
+includeLang('tech');
+
+if (($user !== null && $user->getId())) {
+    if (isset($_GET['cp']) && !empty($_GET['cp'])) {
+        $user->updateCurrentPlanet((int) $_GET['cp']);
+    }
+
+    $planet = $user->getCurrentPlanet();
+
+    foreach ($user->getPlanetCollection() as $userPlanet) {
+        FlyingFleetHandler($userPlanet); // TODO: implement logic into a refactored model
+    }
+
+    /*
+     * Update planet resources and constructions
+     */
+    Wootook::dispatchEvent('planet.update', array(
+        'planet' => $planet
+        ));
+    $planet->save();
 }

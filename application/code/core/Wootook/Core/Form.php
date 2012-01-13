@@ -2,16 +2,16 @@
 
 class Wootook_Core_Form
 {
-    protected $_fields = array();
+    protected $_elements = array();
 
     protected $_request = null;
 
     /**
      *
-     * Field class loader
-     * @var Wootook_Core_Form_FieldLoader
+     * Element class loader
+     * @var Wootook_Core_Form_ElementLoader
      */
-    protected $_fieldLoader = null;
+    protected $_elementLoader = null;
 
     /**
      *
@@ -27,30 +27,30 @@ class Wootook_Core_Form
      */
     protected $_session = null;
 
-    public function __construct(Wootook_Core_Model_Session $session, Array $fields = array())
+    public function __construct(Wootook_Core_Model_Session $session, Array $elements = array())
     {
         $this->_session = $session;
 
-        $this->_fieldLoader = new Wootook_Core_Form_FieldLoader($this, array(
-            'Wootook_Core_Form_Field_' => 'Wootook/Core/Form/Field'
+        $this->_elementLoader = new Wootook_Core_Form_ElementLoader($this, array(
+            'Wootook_Core_Form_Element_' => 'Wootook/Core/Form/Element'
             ));
 
         $this->_validatorLoader = new Wootook_Core_Form_ValidatorLoader($this, array(
             'Wootook_Core_Form_Validator_' => 'Wootook/Core/Form/Validator'
             ));
 
-        $this->addField('__formkey', 'text', array('form_key' => 'formKey'));
+        $this->addElement('__formkey', 'text', array('form_key' => 'formKey'));
 
-        foreach ($fields as $fieldName => $fieldConfig) {
-            if (is_string($fieldConfig)) {
-                $this->addField($fieldName, $fieldConfig);
-            } else if ($fieldConfig instanceof Wootook_Core_Form_FieldAbstract) {
-                $this->addField($fieldName, $fieldConfig);
+        foreach ($elements as $elementName => $elementConfig) {
+            if (is_string($elementConfig)) {
+                $this->addElement($elementName, $elementConfig);
+            } else if ($elementConfig instanceof Wootook_Core_Form_ElementAbstract) {
+                $this->addElement($elementName, $elementConfig);
             } else {
-                if (isset($fieldConfig['validators'])) {
-                    $this->addField($fieldName, $fieldConfig['type'], $fieldConfig['validators']);
+                if (isset($elementConfig['validators'])) {
+                    $this->addElement($elementName, $elementConfig['type'], $elementConfig['validators']);
                 } else {
-                    $this->addField($fieldName, $fieldConfig['type']);
+                    $this->addElement($elementName, $elementConfig['type']);
                 }
             }
         }
@@ -58,8 +58,8 @@ class Wootook_Core_Form
 
     public function validate()
     {
-        foreach ($this->_fields as $field) {
-            if (!$field->validate()) {
+        foreach ($this->_elements as $element) {
+            if (!$element->validate()) {
                 return false;
             }
         }
@@ -70,36 +70,37 @@ class Wootook_Core_Form
      *
      * Enter description here ...
      * @param string $name
-     * @param string|Wootook_Core_Form_FieldAbstract $type
+     * @param string|Wootook_Core_Form_ElementAbstract $type
      * @return Wootook_Core_Form
      */
-    public function addField($name, $type = 'text', Array $validators = array())
+    public function addElement($name, $type = 'text', Array $validators = array())
     {
-        if ($type instanceof Wootook_Core_Form_FieldAbstract) {
-            $this->_fields[$name] = $name;
-            $this->_fields[$name]->setForm($this);
+        if ($type instanceof Wootook_Core_Form_ElementAbstract) {
+            $this->_elements[$name] = $name;
+            $this->_elements[$name]->setForm($this);
         } else {
-            $field = $this->_fieldLoader->load($type);
+            $element = $this->_elementLoader->load($type);
 
-            if ($field === null) {
-                trigger_error(sprintf('Field %1$s (type: %2$s) could not be created.', $name, $type), E_USER_WARNING);
+            if ($element === null) {
+                trigger_error(sprintf('Element %1$s (type: %2$s) could not be created.', $name, $type), E_USER_WARNING);
                 return $this;
             }
-            $this->_fields[$name] = $field;
+            $this->_elements[$name] = $element;
         }
-        $this->_fields[$name]->setName($name);
+        $this->_elements[$name]->setName($name);
 
         foreach ($validators as $validatorName => $validatorType) {
-            if ($validatorType instanceof Wootook_Core_Form_FieldAbstract) {
-                $this->_fields[$name]->addValidator($validatorType, $validatorName);
+            if ($validatorType instanceof Wootook_Core_Form_ElementAbstract) {
+                $this->_elements[$name]->addValidator($validatorType, $validatorName);
             } else {
                 $validator = $this->_validatorLoader->load($validatorType);
 
                 if ($validator === null) {
-                    trigger_error(sprintf('Validator %1$s (type: %2$s) could not be created.', $validatorName, $validatorType), E_USER_WARNING);
+                    Wootook_Core_ErrorProfiler::getSingleton()
+                        ->addException(new Wootook_Core_Exception_RuntimeException(sprintf('Validator %1$s (type: %2$s) could not be created.', $validatorName, $validatorType)));
                     return $this;
                 }
-                $this->_fields[$name]->addValidator($validator, $validatorName);
+                $this->_elements[$name]->addValidator($validator, $validatorName);
             }
         }
 
@@ -110,15 +111,15 @@ class Wootook_Core_Form
      *
      * Enter description here ...
      * @param string $name
-     * @return Wootook_Core_Form_FieldAbstract
+     * @return Wootook_Core_Form_ElementAbstract
      */
-    public function getField($name)
+    public function getElement($name)
     {
-        if (!isset($this->_fields[$name])) {
+        if (!isset($this->_elements[$name])) {
             return null;
         }
 
-        return $this->_fields[$name];
+        return $this->_elements[$name];
     }
 
     /**
@@ -165,13 +166,13 @@ class Wootook_Core_Form
     {
         $request = $this->getRequest();
 
-        foreach ($this->_fields as $fieldName => $field) {
-            if (isset($datas[$fieldName])) {
-                $field->populate($datas[$fieldName]);
+        foreach ($this->_elements as $elementName => $element) {
+            if (isset($datas[$elementName])) {
+                $element->populate($datas[$elementName]);
             } else if ($request->isPost()) {
-                $field->populate($request->getPost($fieldName));
+                $element->populate($request->getPost($elementName));
             } else {
-                $field->populate($request->getQuery($fieldName));
+                $element->populate($request->getQuery($elementName));
             }
         }
     }

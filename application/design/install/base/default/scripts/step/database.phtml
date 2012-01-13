@@ -1,0 +1,65 @@
+<?php $session = Wootook::getSession('install')?>
+<div class="install">
+  <h1><?php echo $this->__('Welcome to the Wootook! installer')?></h1>
+  <h2><?php echo $this->__('Database Config')?></h2>
+  <?php echo $this->getLayout()->getMessagesblock()->renderGroupedHtml()?>
+  <form method="post" action="?mode=install&step=2" id="form:database">
+    <input type="hidden" id="form_key" name="__formkey" value="<?php echo $session->getFormKey()?>" />
+    <p>
+      <label for="datbase:host"><?php echo $this->__('Database host address:')?></label>
+      <input type="text" id="datbase:host" name="host" value="<?php echo $this->escape($session->getFormData('host', 'localhost'))?>" />
+    </p>
+    <p>
+      <label for="datbase:port"><?php echo $this->__('Database host port:')?></label>
+      <input type="text" id="datbase:port" name="port" value="<?php echo $this->escape($session->getFormData('port', '3306'))?>" />
+    </p>
+    <p>
+      <label for="datbase:user"><?php echo $this->__('Database account name:')?></label>
+      <input type="text" id="datbase:user" name="user" value="<?php echo $this->escape($session->getFormData('user', 'u_wootook'))?>" />
+    </p>
+    <p>
+      <label for="datbase:password"><?php echo $this->__('Database account password:')?></label>
+      <input type="text" id="datbase:password" name="password" value="<?php echo $this->escape($session->getFormData('password', ''))?>" />
+    </p>
+    <p>
+      <label for="datbase:dbname"><?php echo $this->__('Database name:')?></label>
+      <input type="text" id="datbase:dbname" name="dbname" value="<?php echo $this->escape($session->getFormData('dbname', 'db_wootook'))?>" />
+    </p>
+    <p>
+      <label for="datbase:prefix"><?php echo $this->__('Table name prefix:')?></label>
+      <input type="text" id="datbase:prefix" name="prefix" value="<?php echo $this->escape($session->getFormData('prefix', 'wtk_'))?>" />
+    </p>
+    <p>
+      <input type="button" id="test" value="<?php echo $this->__('Test connection')?>" />
+      <input type="submit" value="<?php echo $this->__('Next step')?>" />
+    </p>
+    <div id="install_messages"></div>
+  </form>
+</div>
+<script type="text/javascript">
+/*<![CDATA[*/
+//<!--
+(function($){
+  $('#test').click(function(e){
+    var formData = $('#form\\:database').serializeArray();
+    formData.push({name: 'test', value: 1});
+
+    $.ajax('?mode=install&step=2', {
+      data: formData,
+      type: 'post',
+      success: function(data){
+        if (!data.status) {
+          $('#install_messages').html('<?php echo $this->escapeJs($this->__('Ajax failure.'))?>').removeClass('success').addClass('failure').fadeIn(500);
+        } else if (data.status == 'success') {
+          $('#install_messages').html('<?php echo $this->escapeJs($this->__('Connection succeeded.'))?>').removeClass('failure').addClass('success').fadeIn(500);
+        } else if (data.status == 'error' && data.message) {
+          $('#install_messages').html('<?php echo $this->escapeJs($this->__('Connection error: '))?>' + data.message).removeClass('success').addClass('failure').fadeIn(500);
+        } else {
+          $('#install_messages').html('<?php echo $this->escapeJs($this->__('Ajax failure.'))?>').removeClass('success').addClass('failure').fadeIn(500);
+        }
+      }});
+    });
+  })(jQuery);
+//-->
+/*]]>*/
+</script>

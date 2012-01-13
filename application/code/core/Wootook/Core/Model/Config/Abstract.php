@@ -6,7 +6,7 @@ abstract class Wootook_Core_Model_Config_Abstract
 {
     protected function _initData($filename)
     {
-        $config = Wootook::getConfig('storyline');
+        $config = Wootook::getGameConfig('engine/storyline');
 
         if ($config === null) {
             $config = array(

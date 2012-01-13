@@ -507,11 +507,6 @@ class Deprecated
     {
         if (self::$layout === null) {
             self::$layout = new Wootook_Core_Layout();
-
-            if (defined('IN_INSTALL')) {
-                self::$layout->setPackage('install');
-                self::$layout->setTheme('default');
-            }
         }
 
         return self::$layout;
@@ -536,17 +531,11 @@ function display($page, $title = '', $topnav = true, $metatags = '', $adminPage 
     if ($adminPage === false) {
         $layout->load('empire');
     } else {
+        $layout->setDomain(Wootook_Core_Layout::DOMAIN_BACKEND);
         $layout->load('admin');
     }
 
     $content = $layout->getBlock('content');
-
-    if ($topnav) {
-        $topnav = $layout->createBlock('empire/topnav', 'topnav');
-        $topnav->setTemplate('empire/topnav.phtml');
-        $content->topnav = $topnav;
-    }
-
     $pageContent = $layout->createBlock('core/text', 'content');
     $pageContent->setContent($page);
     $content->page = $pageContent;

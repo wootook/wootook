@@ -41,7 +41,7 @@ $mode = isset($_GET['mode']) ? $_GET['mode'] : null;
 switch ($mode) {
 case 'fleet':
     if ($planet->getElement(Legacies_Empire::ID_BUILDING_SHIPYARD) < 1) {
-        $layout = new Wootook_Core_Layout();
+        $layout = new Wootook_Core_Layout(Wootook_Core_Layout::DOMAIN_FRONTEND);
         $layout->load('message');
 
         $block = $layout->getBlock('message');

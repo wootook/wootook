@@ -1,0 +1,85 @@
+<?php return array(
+    'global' => array(
+        'resource' => array(
+            'database' => array(
+                'default' => array(
+                    'engine' => 'mysql',
+                    'options' => array(
+                        ),
+                    'params' => array(
+                         'hostname' => 'localhost',
+                         'username' => 'root',
+                         'password' => '',
+                         'database' => 'db_wootook'
+                         ),
+                    'table_prefix' => 'wtk_',
+                     ),
+                 ),
+             ),
+         ),
+    'backend' => array(
+        'web' => array(
+            'url' => array(
+                'base' => 'http://testing.wootook.org/',
+                'skin' => 'http://testing.wootook.org/skin/',
+                'js'   => 'http://testing.wootook.org/js/',
+                'css'  => 'http://testing.wootook.org/css/',
+                ),
+            'session' => array(
+                'time'   => 900,
+                'domain' => 'testing.wootook.org',
+                'path'   => '/'
+                )
+            ),
+        'system' => array(
+            'path' => array(
+                'base' => ROOT_PATH,
+                'skin' => ROOT_PATH . 'skin' . DIRECTORY_SEPARATOR,
+                ),
+            'date' => array(
+                'timezone' => 'Europe/Paris'
+                ),
+            ),
+        ),
+    'frontend' => array(
+        'web' => array(
+            'url' => array(
+                'base' => 'http://testing.wootook.org/',
+                'skin' => 'http://testing.wootook.org/skin/',
+                'js'   => 'http://testing.wootook.org/js/',
+                'css'  => 'http://testing.wootook.org/css/',
+                ),
+            'session' => array(
+                'time'   => 900,
+                'domain' => 'testing.wootook.org',
+                'path'   => '/'
+                )
+            ),
+        'system' => array(
+            'path' => array(
+                'base' => ROOT_PATH,
+                'skin' => ROOT_PATH . 'skin' . DIRECTORY_SEPARATOR,
+                ),
+            'date' => array(
+                'timezone' => 'Europe/Paris'
+                ),
+            ),
+        'engine' => array(
+            'storyline' => array(
+                'universe' => 'legacies',
+                'episode'  => 'default',
+                ),
+            'core' => array(
+                'use_large_numbers' => (bool) $request->getPost('use_large_numbers')
+                ),
+            'universe' => array(
+                'galaxies'  => $request->getPost('galaxies'),
+                'systems'   => $request->getPost('systems'),
+                'positions' => $request->getPost('positions')
+                ),
+            'combat' => array(
+                'allow_spy_drone_attacks' => (bool) $request->getPost('allow_spy_drone_attacks')
+                )
+            ),
+        )
+    );

@@ -28,9 +28,4 @@
  *
  */
 
-if (filesize('config.php') == 0) {
-	header('location: install/');
-	exit();
-}
-
-header('location: overview.php');
+header('Location: overview.php');

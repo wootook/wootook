@@ -1,0 +1,15 @@
+<html>
+  <head>
+    <?php echo $this->head->render()?>
+  </head>
+  <body<?php if ($classes = $this->getBodyClasses()):?> class="<?php echo $this->escape($classes)?>"<?php endif?>>
+    <div class="global">
+      <div class="header">
+          <?php echo $this->header->render()?>
+      </div>
+      <div class="content">
+        <?php echo $this->content->render()?>
+      </div>
+    </div>
+</body>
+</html>

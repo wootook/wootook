@@ -1,7 +1,7 @@
 <?php
 
 class Wootook_Core_Controller_Response_Http
-    extends Wootook_Object
+    extends Wootook_Core_Controller_Response_Abstract
 {
     const REDIRECT_MOVED_PERMANENTLY = 301;
     const REDIRECT_FOUND             = 302;
@@ -14,11 +14,6 @@ class Wootook_Core_Controller_Response_Http
         self::REDIRECT_SEE_OTHER         => 'See Other',
         self::REDIRECT_TEMPORARY         => 'Temporary Redirect'
         );
-
-    public function __construct()
-    {
-        parent::__construct(array());
-    }
 
     public function setBody($data)
     {
@@ -46,6 +41,9 @@ class Wootook_Core_Controller_Response_Http
 
     public function sendBody()
     {
+        if (!isset($this->_data['body']) || empty($this->_data['body'])) {
+            return '';
+        }
         return implode('', $this->_data['body']);
     }
 

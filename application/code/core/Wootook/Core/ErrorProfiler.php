@@ -133,7 +133,6 @@ class Wootook_Core_ErrorProfiler
         $microsec = (int) ($error['time'][0] * 1000000);
 
         return <<<ERROR_EOF
-Message #{$id}
 On: {$date} +{$microsec}µs
 Type: {$code}
 Message: {$error['message']}
@@ -150,47 +149,66 @@ ERROR_EOF;
         }
 
         $index = 0;
-        echo '<div style="background:#FFF;border:1px solid #F00;color:#000;padding:10px;margin:20px;text-align:left;">';
-        echo '<h1>Debug profiler</h1>';
+        echo '<div style="background:#FFF;border:5px solid #933;border-top-width:15px;border-radius:5px;color:#000;padding:0;margin:20px;text-align:left;margin:50px auto;width:800px;">';
+        echo '<h1 style="margin:0;padding:0 10px;text-decoration:none;border-bottom:3px solid #933;">Debug profiler</h1>';
         if (count($this->_errors) <= 0 && count($this->_warnings) <= 0 &&
             count($this->_notices) <= 0 && count($this->_otherErrors) <= 0 &&
             count($this->_exceptions) <= 0) {
-            echo '<p>Profiler was empty.</p>';
+            echo '<p style="color:#666;font-style:italic;margin:20px 10px 10px;">Error profiler was empty.</p>';
         } else {
-            echo '<pre>';
+            echo '<div style="margin:0;overflow:auto;">';
             foreach ($this->_errors as $error) {
-                echo $this->_renderError(++$index, $error);
+                ++$index;
+                echo '<h2 style="font-size:1.2em;text-decoration:none;margin:0 5px;">Message #' . $index . '</h2>';
+                echo '<pre style="margin:0 5px;">';
+                echo $this->_renderError($index, $error);
+                echo '</pre>';
             }
             foreach ($this->_warnings as $error) {
-                echo $this->_renderError(++$index, $error);
+                ++$index;
+                echo '<h2 style="font-size:1.2em;text-decoration:none;margin:10px 5px 0;">Message #' . $index . '</h2>';
+                echo '<pre style="margin:0 5px;">';
+                echo $this->_renderError($index, $error);
+                echo '</pre>';
             }
             foreach ($this->_notices as $error) {
-                echo $this->_renderError(++$index, $error);
+                ++$index;
+                echo '<h2 style="font-size:1.2em;text-decoration:none;margin:10px 5px 0;">Message #' . $index . '</h2>';
+                echo '<pre style="margin:0 5px;">';
+                echo $this->_renderError($index, $error);
+                echo '</pre>';
             }
             foreach ($this->_otherErrors as $errorList) {
                 foreach ($errorList as $error) {
-                    echo $this->_renderError(++$index, $error);
+                    ++$index;
+                    echo '<h2 style="font-size:1.2em;text-decoration:none;margin:10px 5px 0;">Message #' . $index . '</h2>';
+                    echo '<pre style="margin:0 5px;">';
+                    echo $this->_renderError($index, $error);
+                    echo '</pre>';
                 }
             }
             foreach ($this->_exceptions as $exception) {
-                $index++;
-                echo "Message #{$index}". PHP_EOL;
+                ++$index;
+                echo '<h2 style="font-size:1.2em;text-decoration:none;margin:10px 5px 0;">Message #' . $index . '</h2>';
+                echo '<pre style="margin:0 5px;">';
                 echo $exception->getMessage() . PHP_EOL;
                 echo $exception->getTraceAsString() . PHP_EOL;
-                echo PHP_EOL;
+                echo '</pre>';
 
                 $child = 0;
                 $current = $exception;
                 while (($current = $current->getPrevious()) !== null) {
                     $child++;
-                    echo "    Child level #{$child}". PHP_EOL;
-                    echo "    " . $current->getMessage() . PHP_EOL;
+                    echo '<h3 style="font-size:1em;text-decoration:none;margin:10px 30px 0;">Message #' . $index . ', child level #' . $child . '</h3>';
+                    echo '<pre style="margin:0 30px;">';
+                    echo $current->getMessage() . PHP_EOL;
                     echo $current->getTraceAsString() . PHP_EOL;
                     echo PHP_EOL;
+                    echo '</pre>';
                 }
                 echo PHP_EOL;
             }
-            echo '</pre>';
+            echo '</div>';
         }
         echo '</div>';
     }

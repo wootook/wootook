@@ -58,11 +58,11 @@ class Wootook_Empire_Model_Planet_Builder
     {
         $types = Wootook_Empire_Model_Game_Types::getSingleton();
 
-        if ($types->is($buildingId, Legacies_Empire::TYPE_BUILDING)) {
-            return true;
+        if (!$types->is($buildingId, Legacies_Empire::TYPE_BUILDING)) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     public function getBuildingTime($buildingId, $level)

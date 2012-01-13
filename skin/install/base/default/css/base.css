@@ -1,0 +1,52 @@
+@CHARSET "UTF-8";
+
+* {font-size:10px;font-family:Arial,Tahoma,sans-serif;text-align:left;}
+body,html {background:#DDD;}
+h1 {font-size:2.3em;/*border:#6AB 0 solid;border-width:1px 10px;border-radius:20px;text-align:center;color:#58939f;background:#EEE;*/}
+/*h1:hover {color:#6AB;background:#CCC;}*/
+h2,h3 {text-decoration:underline;font-weight:bold;}
+h4,h5,h6 {font-style:italic;}
+h2 {font-size:2em;}
+h3 {font-size:1.8em;}
+h4 {font-size:1.5em;}
+h5 {font-size:1.6em;}
+h6 {font-size:1em;}
+
+input[type=text],input[type=password] {height:2em;border:#58939f 0 solid;border-width:1px;border-radius:4px;}
+input[type=submit],input[type=button],button {height:2em;border:#58939f 0 solid;border-width:1px;border-radius:4px;text-align:center;}
+input[type=checkbox],input[type=radio] {height:2em;border:#58939f 0 solid;border-width:1px;border-radius:4px;}
+select {height:2em;border:#58939f 0 solid;border-width:1px;border-radius:4px;margin:5px;}
+
+/* background-image:-moz-linear-gradient(center top, #58939F 0pt, #78B3BF 30px);*/
+.global .content .status {display:block;margin:0 auto;border:3px solid #000;height:30px;border-radius:20px;width:589px;padding:0 25px;background-color:#FFF;}
+.global .content .status .item {float:left;display:block;width:95px;text-align:center;border-right:2px solid #000;margin:0;height:12px;padding:9px 0;font-weight:bold;}
+.global .content .status .intro {border-left:2px solid #000;}
+.global .content .status .cleared {color:#FFF;background-color:grey;}
+.global .content .status .active {color:#FFF;background-color:#58939F;}
+
+.global .content .status {background-image:linear-gradient(center top, #EEE 0pt, #CCC 30px);background-image:-o-linear-gradient(center top, #EEE 0pt, #CCC 30px);background-image:-moz-linear-gradient(center top, #EEE 0pt, #CCC 30px);background-image:-webkit-linear-gradient(center top, #EEE 0pt, #CCC 30px);background-image:-ms-linear-gradient(center top, #EEE 0pt, #CCC 30px);}
+.global .content .status .cleared {background-image:linear-gradient(center top, #444 0pt, #666 30px);background-image:-o-linear-gradient(center top, #444 0pt, #666 30px);background-image:-moz-linear-gradient(center top, #444 0pt, #666 30px);background-image:-webkit-linear-gradient(center top, #444 0pt, #666 30px);background-image:-ms-linear-gradient(center top, #444 0pt, #666 30px);}
+.global .content .status .active {background-image:linear-gradient(center top, #58939F 0pt, #78B3BF 30px);background-image:-o-linear-gradient(center top, #58939F 0pt, #78B3BF 30px);background-image:-moz-linear-gradient(center top, #58939F 0pt, #78B3BF 30px);background-image:-webkit-linear-gradient(center top, #58939F 0pt, #78B3BF 30px);background-image:-ms-linear-gradient(center top, #58939F 0pt, #78B3BF 30px);}
+    
+.global .content .install {background:#FFF;width:600px;margin:50px auto 10px;padding:20px;border:2px groove #58939F;}
+.global .content .install p {width:550px;margin:0 auto;}
+.global .content .install label {width:245px;display:block;float:left;margin:5px 10px 0 25px;text-align:right;}
+.global .content .install input[type=text],.global .content .install input[type=password] {width:145px;padding:0 5px;margin:5px 0 0;}
+.global .content .install input[type=button],.global .content .install button,.global .content .install input[type=submit] {width:145px;padding:0 5px;margin:25px 0 10px;}
+.global .content .install input[type=submit] {background-color:#78B3BF;color:#FFF;}
+.global .content .install select {margin:5px 0 0;}
+.global .content .install #test {float:left;margin:25px 10px 10px 125px;}
+.global .content .install #install_messages {font-family:monospace;border: 1px solid #000;padding:5px 10px;background-color:#EFEFEF;display:none;border-left-width:3px;}
+.global .content .install #install_messages.failure {color:#D00;background-color:#FEE;border-color:#D00;}
+.global .content .install #install_messages.success {color:#063;background-color:#EFE;border-color:#063;}
+
+/**
+ * Galaxy user name display colors
+ */
+.allymember {color:lime;}
+.noob {color:darkgreen;}
+.strong {color:darkred;}
+.vacation {color:lightblue;}
+.inactive {color:grey;}
+.longinactive {color:darkgrey;}
+.banned {color:red;text-decoration:line-through;}

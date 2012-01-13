@@ -65,13 +65,7 @@ class Wootook_Core_Collection
 
     public function quote($data)
     {
-        static $database = null;
-
-        if ($database === null) {
-            $database = Wootook_Database::getSingleton();
-        }
-
-        return $database->quote($data);
+        return $this->getReadConnection()->quote($data);
     }
 
     public function column($column = '*', $alias = null)
@@ -102,11 +96,7 @@ class Wootook_Core_Collection
 
     public function join($table, $condition, $fields = array('*'), $mode = 'INNER')
     {
-        static $database = null;
-
-        if ($database === null) {
-            $database = Wootook_Database::getSingleton();
-        }
+        $database = $this->getReadConnection();
 
         if (is_array($table)) {
             $alias = key($table);
@@ -160,7 +150,7 @@ class Wootook_Core_Collection
     protected function _prepareSql()
     {
         if (empty($this->_union)) {
-            $database = Wootook_Database::getSingleton();
+            $database = $this->getReadConnection();
 
             $fields = array();
             foreach ($this->_columns as $field) {
@@ -301,7 +291,7 @@ SQL_EOF;
 
         $sql = $clone->_prepareSql();
 
-        $database = Wootook_Database::getSingleton();
+        $database = $this->getReadConnection();
         $statement = $database->prepare($sql);
 
         $args = func_get_args();

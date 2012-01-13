@@ -129,34 +129,51 @@ class Wootook_Core_View
         return Wootook::getUrl($uri, $params);
     }
 
-    public function getSkinUrl($uri, Array $params = array())
+    public function getSkinUrl($uri, Array $params = array(), $theme = null, $package = null)
     {
-        $package = $this->getLayout()->getPackage();
-        if (empty($package)) {
-            $package = Wootook_Core_Layout::DEFAULT_PACKAGE;
-        }
-
         $user = Wootook_Empire_Model_User::getSingleton();
         if ($user !== null && $user->getId()) {
             $theme = $user->getSkinPath();
         }
-        if (empty($theme)) {
+        if ($theme === null || empty($theme)) {
             $theme = $this->getLayout()->getTheme();
         }
-        if (empty($theme)) {
+        if ($theme === null || empty($theme)) {
             $theme = Wootook_Core_Layout::DEFAULT_THEME;
         }
 
-        $pattern = ROOT_PATH . DIRECTORY_SEPARATOR . 'skin/%s/%s/{$uri}';
-
-        if (Wootook::fileExists(sprintf($pattern, $package, $theme))) {
-            return Wootook::getSkinUrl($package, $theme, $uri, $params);
+        if ($package === null || empty($package)) {
+            $package = $this->getLayout()->getPackage();
         }
-        if (Wootook::fileExists(sprintf($pattern, $package, Wootook_Core_Layout::DEFAULT_THEME))) {
-            return Wootook::getSkinUrl($package, Wootook_Core_Layout::DEFAULT_THEME, $uri, $params);
+        if ($package === null || empty($package)) {
+            $package = Wootook_Core_Layout::DEFAULT_PACKAGE;
+        }
+        $domain = $this->getLayout()->getDomain();
+
+        $baseUrl = Wootook::getBaseUrl('skin');
+        $basePath = Wootook::getBasePath('skin');
+        $pathPattern = $basePath . "{$domain}/%s/%s/{$uri}";
+        $urlPattern = $baseUrl . "{$domain}/%s/%s/{$uri}";
+
+        if (count($params) > 0) {
+            $serializedParams = array();
+            foreach ($params as $paramKey => $paramValue) {
+                if ($paramValue) {
+                    $serializedParams[] = "{$paramKey}={$paramValue}";
+                }
+            }
+
+            $urlPattern .= '?' . implode('&', $serializedParams);
         }
 
-        return Wootook::getSkinUrl(Wootook_Core_Layout::DEFAULT_PACKAGE, Wootook_Core_Layout::DEFAULT_THEME, $uri, $params);
+        if (Wootook::fileExists(sprintf($pathPattern, $package, $theme))) {
+            return sprintf($urlPattern, $package, $theme);
+        }
+        if (Wootook::fileExists(sprintf($pathPattern, $package, Wootook_Core_Layout::DEFAULT_THEME))) {
+            return sprintf($urlPattern, $package, Wootook_Core_Layout::DEFAULT_THEME);
+        }
+
+        return sprintf($urlPattern, Wootook_Core_Layout::DEFAULT_PACKAGE, Wootook_Core_Layout::DEFAULT_THEME);
     }
 
     public function setPartial($name, $content)
@@ -172,6 +189,9 @@ class Wootook_Core_View
 
     public function getPartial($name)
     {
+        if (!$this->hasPartial($name)) {
+            return null;
+        }
         return $this->_partials[$name];
     }
 

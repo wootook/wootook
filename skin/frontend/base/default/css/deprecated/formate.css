@@ -1,0 +1,252 @@
+/*
+__   __ _   _
+\ \ / /| \ | |
+ \ V / |  \| | _____   ____ _
+ /   \ | . ` |/ _ \ \ / / _` |
+/ /^\ \| |\  | (_) \ V / (_| |
+\/   \/\_| \_/\___/ \_/ \__,_|
+----------- SKIN -------------
+
+*/
+
+
+* {font-family:Arial,sans-serif;font-size:10px;}
+
+img {border:none;}
+p table {border:none;}
+
+p td
+{
+  text-align           : center;
+  font-size            : 10px;
+  font-family          : Arial,sans-serif;
+}
+
+body.style {background-image:url("../../graphics/img/background1.jpg");}
+body.style table {margin:0px;border:0 auto}
+body form table th table input {width: 60px;}
+
+.content table {background-color:#FFFFFF;border:10px solid #58939F;border-radius:30px 30px 10px 10px;margin:0 auto 20px;padding:10px 30px;width:820px;}
+.content table table {border:0;border-radius:0;padding:0;width:inherit;}
+
+th, td.a, td.b, td.c, td.f, td.g, td.h, td.i,
+td.j, td.k, td.l, td.m, td.n, td.o, td.q, td.r,
+td.v, .style td, p td, table.s th img
+{
+  border               : 1px #545454 solid;
+}
+
+input, select, textarea
+{
+  border               : 1px #545454 solid;
+}
+
+th,td.a,td.b,td.c,td.f,input,select,td.g,td.h,td.i,td.j,td.k,td.m,td.o,td.q,td.r,td.v,td.s,.style td,p td {background:#FFF;color:#000;}
+
+th
+{
+  text-align           : center;
+  padding-left         : 3px;
+  padding-right        : 3px;
+}
+
+td.a
+{
+  height               : 39px;
+  text-align           : center;
+}
+
+td.b
+{
+  padding              : 3px;
+}
+
+td.c {font-weight:bold;padding:0 10px;background:#58939F;color:#FFF;font-size:1em;height:30px;}
+td.c a,td.c a:visited {color:#FFF;}
+td.c a:hover {color:#CDF;}
+
+td.f{color:#FFF;background-color:#1c1c1c;}
+
+input,select,textarea {color:#FFF;background-color:#1c1c1c;}
+
+textarea {width:100%;}
+
+td.k input
+{
+  text-align           : left;
+}
+
+td.g
+{
+  font-weight          : bold;
+  text-align           : right;
+  color                : #FFFFFF;
+}
+
+td.h
+{
+  text-align           : center;
+  color                : #FFFFFF;
+}
+
+td.i
+{
+  text-align           : center;
+  color                : #FFFFFF;
+}
+
+td.j
+{
+  text-align           : center;
+  color                : #FFFFFF;
+}
+
+td.k, td.k input
+{
+  text-align           : center;
+  color                : #FFFFFF;
+}
+
+td.l {background-color:#FFF;color:#000;vertical-align:top;padding:3px;text-align:center;}
+
+td.m
+{
+  font-weight          : bold;
+  text-align           : right;
+  width                : 86px;
+  color                : #FFFFFF;
+}
+
+td.n
+{
+  font-weight          : bold;
+  text-align           : right;
+  width                : 89px;
+  text-align           : center;
+  color                : #FFFFFF;
+}
+
+td.o
+{
+  text-align           : center;
+  color                : #FFFFFF;
+}
+
+td.q
+{
+  font-weight          : bold;
+  font-size            : 10px;
+  font-family          : Arial,sans-serif;
+  text-align           : center;
+  vertical-align       : middle;
+  color                : #FFFFFF;
+}
+
+td.r
+{
+  text-align           : right;
+  color                : #FFFFFF;
+}
+
+td.v
+{
+  font-weight          : bold;
+  text-align           : right;
+  color                : #f7f7f7;
+}
+
+td.s
+{
+  color                : #FFFFFF;
+}
+
+table.s th
+{
+  border               : 0px;
+}
+
+table.s th img
+{
+  width                : 89px;
+  height               : 89px;
+}
+
+div.z
+{
+  font-size            : 10px;
+  font-weight          : bold;
+  color                : #000;
+}
+
+a
+{
+  color                : #000;
+  text-decoration      : none;
+  font-weight          : bold;
+}
+
+a.s
+{
+  color                : #000;
+}
+
+a.t
+{
+  color                : #000;
+}
+
+a:hover
+{
+  color                : #CDD7F8;
+  text-decoration      : underline;
+}
+
+.style td
+{
+  color                : #FFFFFF;
+  border-top           : 0px;
+  font-size            : 10px;
+  font-family          : Arial,sans-serif;
+}
+
+.style div a
+{
+  padding-left         : 7px;
+  height               : 100%;
+  width                : 100%;
+  font-size            : 10px;
+  font-family          : Arial,sans-serif;
+}
+
+.style div a:link
+{
+  height               : 100%;
+  width                : 100%;
+  font-size            : 10px;
+  font-family          : Arial,sans-serif;
+}
+
+.style div a:visited
+{
+  height               : 100%;
+  width                : 100%;
+  font-size            : 10px;
+  font-family          : Arial,sans-serif;
+}
+
+.style div a:hover
+{
+  background-image     : url("../../graphics/img/link.gif");
+  background-repeat    : no-repeat;
+  background-position  : left;
+  height               : 100%;
+  width                : 108px;
+  text-decoration      : none;
+  font-size            : 10px;
+  font-family          : Arial,sans-serif;
+}
+
+.style
+{
+  margin-top           : 10px;
+}

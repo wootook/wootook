@@ -72,7 +72,7 @@ $onlinePlayersStatement->execute();
 $onlinePlayers = $onlinePlayersStatement->fetch(Wootook_Database::FETCH_COLUMN, 0);
 
 $layout = new Wootook_Core_Layout();
-$layout->getMessagesBlock()->prepareMessages(Wootook_Empire_Model_User::SESSION_KEY)
+$layout->getMessagesBlock()->prepareMessages(Wootook_Empire_Model_User::SESSION_KEY);
 $layout->load('login');
 $block = $layout->getBlock('login');
 

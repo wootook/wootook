@@ -1,0 +1,93 @@
+@CHARSET "UTF-8";
+
+* {font-size:10px;font-family:Arial,Tahoma,sans-serif;text-align:left;}
+h1 {font-size:2em;/*border:#6AB 0 solid;border-width:1px 10px;border-radius:20px;*/text-align:center;color:#156;/*background:#EEE;*/}
+h1:hover {color:#6AB;background:#CCC;}
+h2,h3 {text-decoration:underline;font-weight:bold;}
+h4,h5,h6 {font-style:italic;}
+h2 {font-size:2em;}
+h3 {font-size:2em;}
+h4 {font-size:2em;}
+h5 {font-size:2em;}
+h6 {font-size:2em;}
+
+input[type=text] {height:2em;border:#156 0 solid;border-width:.1em 1em;border-radius:.9em;}
+input[type=submit] {height:2em;border:#156 0 solid;border-width:.1em 1em;border-radius:.9em;}
+
+.global .content .navigation {margin:0pt auto;width:1000px;height:30px;display:block;padding:0 40px;position:relative;border-width:0 1px;border-style:none solid;border-color:#FFF;background-color:#933;border-radius:10px;}
+.global .content .navigation .navigation-node {margin:0;height:30px;width:250px;color:#FFF;float:left;}
+.global .content .navigation .navigation-node .title {margin:5px 20px;font-size:1.5em;}
+.global .content .navigation .navigation-link {display:none;margin:0pt 10px;width:200px;background-color:#FFF;float:left;padding:5px 10px;border:0 solid #933;border-left-width:4px;border-right-width:1px;}
+.global .content .navigation .navigation-node .last {width:225px;margin:0 10px;float:left;display:none;border:0 solid #933;border-bottom-width:1px;}
+
+.global .content .planet-carrousel {width:950px;height:100px;margin:0 auto;padding:0 30px;color:#000;background:#FFF;border:1px solid #FFF;border-top:none;box-shadow:0 -4px 8px #115566 inset, 20px 20px 40px #115566, -20px 20px 40px #115566, 0 -20px 40px #115566;border-bottom-left-radius:50px;border-bottom-right-radius:50px;}
+.global .content .planet-carrousel .items {width:900px;height:100px;overflow:hidden;float:left;}
+.global .content .planet-carrousel .arrow {height:40px;width:25px;float:left;font-size:20px;font-weight:bold;margin:30px 0;}
+.global .content .planet-carrousel div.planet {color:#000;height:100px;width:100px;float:left;}
+.global .content .planet-carrousel .selected {background-color:#EFEFEF;box-shadow:0 -4px 6px #115566 inset, 0 20px 40px #115566;}
+.global .content .planet-carrousel .planet a {color:#000;}
+.global .content .planet-carrousel .planet img {border:0;margin:0;}
+.global .content .planet-carrousel .planet a.moon img,.global .content .planet-carrousel .planet span.moon img {position:absolute;float:left;margin:0;border:1px solid #FFF;}
+.global .content .planet-carrousel .planet .planet-name {text-align:center;margin:2px 5px}
+.global .content .planet-carrousel .planet .planet-image {margin:0 25px;height:50px;}
+.global .content .planet-carrousel .planet .planet-position {text-align:center;margin:2px 5px}
+
+.global .content .resources-display {width:770px;height:40px;margin:0 auto 30px;padding:0 50px;color:#000;background:#FFF;box-shadow:0 -4px 6px #115566 inset, 0 20px 40px #115566;border:1px solid #FFF;border-top:none;border-radius: 0 0 20px 20px;}
+.global .content .resources-display .resource,.global .content .resources-display .messages {height:22px;float:left;width:140px;margin:7px 0;}
+.global .content .resources-display .resource img,.global .content .resources-display .messages img {float:left;}
+.global .content .resources-display .resource p,.global .content .resources-display .messages p {font-weight:bold;font-size:12px;margin:2px 0 2px 47px;}
+.global .content .resources-display .resource a,.global .content .resources-display .messages a {color:#000;text-decoration:underline;}
+.global .content .resources-display .resource .resource-capped {color:red;}
+.global .content .resources-display .messages {height:22px;float:left;width:110px;}
+.global .content .resources-display .energy {width:240px;}
+
+.global .content .queue {width:600px;margin:10px auto 0;background:#FFF;color:#000;border:1px solid #FFF;border-radius:5px;border-top-left-radius:20px;border-top-right-radius:20px;box-shadow:0 4px 6px #156 inset;}
+.global .content .queue h1 {color:#000;margin:10px 15px;width:570px;text-align:center;border-bottom:5px solid #9BC;}
+
+.global .content .queue .item {width:580px;margin:0 10px;border:0;box-shadow:none;border-radius:0;}
+.global .content .queue .item,.global .content .queue .item * {color:#000;}
+
+.global .content .item-list {width:640px;padding:10px 30px;margin:10px auto 0;background:#FFF;color:#000;border:1px solid #FFF;border-radius:5px;border-top-left-radius:20px;border-top-right-radius:20px;box-shadow:0 -4px 8px #115566 inset, 20px 20px 40px #115566, -20px 20px 40px #115566, 0 -20px 40px #115566;}
+.global .content .item-list h1 {width:320px;color:#FFF;border:3px solid #156;border-radius:20px;height:30px;margin:10px auto;background:#589;box-shadow:0 -4px 8px #156 inset,0 -2px 5px #000;font-size:2.3em;}
+.global .content .item-list .item-container {width:190px;float:left;margin:10px;height:230px;border:1px solid #156;box-shadow:0 -4px 6px #156 inset, 2px 2px 5px #000;border-radius:10px;}
+.global .content .item-list.countable .item-container {height:270px;}
+.global .content .item-list .item {width:170px;margin:0 10px;border:0;box-shadow:none;border-radius:0;}
+.global .content .item-list .item h2 {margin-bottom:0;}
+.global .content .item-list .item h3.level,.global .content .item-list .item h3.count {margin-top:0;}
+.global .content .item-list .item h2,.global .content .item-list .item h2 * {font-size:1.1em;}
+.global .content .item-list .item h3.level,.global .content .item-list .item h3.count {font-size:1em;color:gray;font-weight:bold;}
+.global .content .item-list .item .image {margin:0 auto;width:120px;display:block;border-radius:60px;overflow:hidden;border:3px solid #156;box-shadow:0 4px 6px #156;}
+.global .content .item-list .item,.global .content .item-list .item * {color:#000;}
+.global .content .item-list .item .buy,.global .content .item-list .item .max,.global .content .item-list .item .qty {border:1px solid #156;border-radius:10px;height:20px;margin:20px 5px;background:#589;box-shadow:0 -4px 8px #156 inset,0 -2px 5px #000;}
+.global .content .item-list .item .buy p,.global .content .item-list .item .buy p *,.global .content .item-list .item .max p,.global .content .item-list .item .max p * {margin:1px 0;text-align:center;font-size:1.2em;color:#FFF;}
+.global .content .item-list .item .qty p {margin:0 auto;}
+.global .content .item-list .item .qty p input {border:none;height:20px;margin:0 10px;color:#FFF;padding:0 10px;width:140px;text-align:center;}
+.global .content .item-list .item .details {padding:5px 10px;border-radius:30px;box-shadow:0 4px 6px #156;width:300px;background:#FFF;z-index:999;display:none;position:relative;left:-30px;top:-10px;border:3px solid #156;}
+.global .content .item-list .item .details ul {list-style:square inside;color:#156;padding-left:5px;}
+.global .content .item-list .item .details ul li .cost {font-weight:bold;color:darkgreen;}
+.global .content .item-list .item .details ul li .requirement {font-weight:bold;text-decoration:underline;}
+.global .content .item-list .item .details ul li .capped {color:darkred;}
+.global .content .item-list .item .details .time {color:gray;}
+.global .content .item-list .clear {clear:left;height:50px;}
+
+.global .content form.form {background:#FFF;width:300px;margin:10px auto;padding:10px 0;border-radius:20px;box-shadow:0 -4px 8px #156 inset, 20px 20px 40px #156, -20px 20px 40px #115566, 0 -20px 40px #156;}
+.global .content form.form h1 {font-size:2em;}
+.global .content form.form fieldset {margin:20px 30px;width:220px;border:1px solid #000;padding:4px 9px;}
+.global .content form.form fieldset legend {font-size:1.2em;font-weight:bold;}
+.global .content form.form fieldset p label {width:100px;display:block;float:left;margin:0 10px;text-align:right;}
+.global .content form.form input {width:150px;display:block;margin:10px auto;}
+.global .content form.form fieldset p input {width:100px;display:block;}
+
+.global .content .install {background:#FFF;width:600px;margin:10px auto;padding:20px;border-radius:20px;box-shadow:0 -4px 8px #115566 inset, 20px 20px 40px #115566, -20px 20px 40px #115566, 0 -20px 40px #115566;}
+
+
+/**
+ * Galaxy user name display colors
+ */
+.allymember {color:lime;}
+.noob {color:darkgreen;}
+.strong {color:darkred;}
+.vacation {color:lightblue;}
+.inactive {color:grey;}
+.longinactive {color:darkgrey;}
+.banned {color:red;text-decoration:line-through;}

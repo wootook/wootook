@@ -160,12 +160,12 @@ class Wootook_Empire_Model_Planet
 
     public function getLastUpdate()
     {
-        return $this->getData('last_update');
+        return strtotime($this->getData('last_update'));
     }
 
     public function setLastUpdate($time)
     {
-        return $this->setData('last_update', $time);
+        return $this->setData('last_update', date('Y-m-d G:i:s', $time));
     }
 
     public function getBuildingFields()
@@ -199,8 +199,8 @@ class Wootook_Empire_Model_Planet
                 continue;
             }
 
-            if ($this->getElement($resourceData['storage'])) {
-                $storageEnhancementFactor = Math::floor(Math::pow(1.6, $this->getElement($resourceData['storage'])));
+            if ($this->getElement($resourceData['storage_field'])) {
+                $storageEnhancementFactor = Math::floor(Math::pow(1.6, $this->getElement($resourceData['storage_field'])));
                 $storageEnhancement = Math::mul(BASE_STORAGE_SIZE / 2, $storageEnhancementFactor);
             } else {
                 $storageEnhancement = 0;
@@ -987,7 +987,7 @@ class Wootook_Empire_Model_Planet
 
             $planet->updateBuildingQueue($time);
             $planet->updateResources($time);
-            $planet->getShipyard()->updateQueue($time);
+            $planet->getShipyard()->updateQueue($time); // FIXME
             $planet->setLastUpdate($time);
         }
     }

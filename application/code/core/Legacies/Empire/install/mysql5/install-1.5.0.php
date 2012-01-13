@@ -291,7 +291,7 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('planets')} (
     `b_building_id`                 TEXT                    NOT NULL,
     `b_tech`                        SMALLINT UNSIGNED       NOT NULL,
     `b_tech_id`                     SMALLINT UNSIGNED       NOT NULL,
-    `b_hangar`                      SMALLINT UNSIGNED       NOT NULL,
+    `b_hangar`                      INT UNSIGNED            NOT NULL,
     `b_hangar_id`                   TEXT                    NOT NULL,
     `b_hangar_plus`                 SMALLINT UNSIGNED       NOT NULL,
     `image`                         VARCHAR(50)             NOT NULL    DEFAULT 'normaltempplanet01',

@@ -71,4 +71,4 @@ define('SHOW_ADMIN_IN_RECORDS', false);
 define('BASE_STORAGE_SIZE', 100000);
 
 // Chemin vers le skin de base
-define('DEFAULT_SKINPATH', 'skin/base/default/');
+define('DEFAULT_SKINPATH', 'skin/frontend/base/default/');

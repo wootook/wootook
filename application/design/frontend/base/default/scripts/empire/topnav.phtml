@@ -1,0 +1,95 @@
+<?php $currentPlanet = $this->getCurrentPlanet();?>
+<div class="planet-carrousel">
+  <div class="items">
+<?php foreach ($this->getPlanetCollection() as $planet):?>
+  <?php if ($planet->getId() != $currentPlanet->getId()):?>
+    <div class="planet item">
+    <p class="planet-name"><a href="<?php echo $this->getUrl('overview.php', array('cp' => $planet->getId()))?>"><?php echo $this->escape($planet->getName())?></a></p>
+      <div class="planet-image">
+        <?php if (false && ($moon = $planet->getMoon()) !== null): ?>
+        <a href="<?php echo $this->getUrl('overview.php', array('cp' => $moon->getId()))?>" class="moon">
+          <img src="<?php echo $this->getSkinUrl($moon->getImage())?>" width="20" height="20"/>
+        </a>
+        <?php endif?>
+        <a href="<?php echo $this->getUrl('overview.php', array('cp' => $planet->getId()))?>" class="planet">
+          <img src="<?php echo $this->getSkinUrl($planet->getImage())?>" width="50" height="50"/>
+        </a>
+      </div>
+      <p class="planet-position"><a href="<?php echo $this->getUrl('overview.php', array('cp' => $planet->getId()))?>">[<?php echo $this->escape($planet->getCoords())?>]</a></p>
+    </div>
+  <?php else:?>
+    <div class="planet item selected">
+      <p class="planet-name"><?php echo $this->escape($planet->getName())?></p>
+      <div class="planet-image">
+        <?php if (false && ($moon = $planet->getMoon()) !== null): ?>
+        <span class="moon">
+          <img src="<?php echo $this->getSkinUrl($moon->getImage())?>" width="20" height="20"/>
+        </span>
+        <?php endif?>
+        <span class="planet">
+          <img src="<?php echo $this->getSkinUrl($planet->getImage())?>" width="50" height="50"/>
+        </span>
+      </div>
+      <p class="planet-position">[<?php echo $this->escape($planet->getCoords())?>]</p>
+    </div>
+  <?php endif?>
+<?php endforeach?>
+  </div>
+  <div class="end"></div>
+</div>
+<div class="resources-display-container">
+  <div class="resources-display">
+    <div class="resource metal">
+      <img src="<?php echo $this->getSkinUrl('graphics/images/metall.gif')?>" border="0" height="22" width="42" alt="<?php echo $this->__('Metal')?>" title="<?php echo $this->__('Metal')?>" />
+      <p>
+      <?php if ($this->getCurrentPlanet()->isResourceCapped(Legacies_Empire::RESOURCE_METAL)):?>
+        <span class="resource-capped"><?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_METAL))?></span>
+      <?php else:?>
+        <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_METAL))?>
+      <?php endif?>
+      </p>
+    </div>
+    <div class="resource cristal">
+      <img src="<?php echo $this->getSkinUrl('graphics/images/kristall.gif')?>" border="0" height="22" width="42" alt="<?php echo $this->__('Cristal')?>" title="<?php echo $this->__('Cristal')?>" />
+      <p>
+      <?php if ($this->getCurrentPlanet()->isResourceCapped(Legacies_Empire::RESOURCE_CRISTAL)):?>
+        <span class="resource-capped"><?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_CRISTAL))?></span>
+      <?php else:?>
+        <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_CRISTAL))?>
+      <?php endif?>
+      </p>
+    </div>
+    <div class="resource deuterium">
+      <img src="<?php echo $this->getSkinUrl('graphics/images/deuterium.gif')?>" border="0" height="22" width="42" alt="<?php echo $this->__('Deuterium')?>" title="<?php echo $this->__('Deuterium')?>" />
+      <p>
+      <?php if ($this->getCurrentPlanet()->isResourceCapped(Legacies_Empire::RESOURCE_DEUTERIUM)):?>
+        <span class="resource-capped"><?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_DEUTERIUM))?></span>
+      <?php else:?>
+        <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_DEUTERIUM))?>
+      <?php endif?>
+      </p>
+    </div>
+    <div class="resource energy">
+      <img src="<?php echo $this->getSkinUrl('graphics/images/energie.gif')?>" border="0" height="22" width="42" alt="<?php echo $this->__('Energy')?>" title="<?php echo $this->__('Energy')?>" />
+      <p>
+      <?php if ($this->getCurrentPlanet()->isResourceCapped(Legacies_Empire::RESOURCE_ENERGY)):?>
+        <span class="resource-capped"><?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_ENERGY))?> / <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceCap(Legacies_Empire::RESOURCE_ENERGY))?></span>
+      <?php else:?>
+        <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceAmount(Legacies_Empire::RESOURCE_ENERGY))?> / <?php echo $this->renderNumber($this->getCurrentPlanet()->getResourceCap(Legacies_Empire::RESOURCE_ENERGY))?>
+      <?php endif?>
+      </p>
+    </div>
+    <div class="messages">
+      <img src="<?php echo $this->getSkinUrl('graphics/images/message.gif')?>" border="0" height="22" width="42" alt="<?php echo $this->__('Messages')?>" title="<?php echo $this->__('Messages')?>" />
+      <p>
+      <?php if (($count = $this->getCurrentUser()->getNewMessagesCount()) > 1):?>
+      <a href="<?php echo $this->getUrl('messages.php')?>" title="<?php echo $this->__('You have %1$d new messages.', $count)?>"><?php echo $this->__('%1$d messages.', $count)?></a>
+      <?php elseif ($count == 1):?>
+      <a href="<?php echo $this->getUrl('messages.php')?>" title="<?php echo $this->__('You have 1 new message.')?>"><?php echo $this->__('1 message.')?></a>
+      <?php else:?>
+      <a href="<?php echo $this->getUrl('messages.php')?>" title="<?php echo $this->__('You have no new message.')?>"><?php echo $this->__('No message.')?></a>
+      <?php endif?>
+      </p>
+    </div>
+  </div>
+</div>

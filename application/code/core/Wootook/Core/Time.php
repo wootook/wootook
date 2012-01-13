@@ -6,7 +6,7 @@ class Wootook_Core_Time
     public static function init($timezone = null)
     {
         if ($timezone === null) {
-            $timezone = Wootook::getConfig('date/timezone');
+            $timezone = Wootook::getConfig('system/date/timezone');
         }
         if ($timezone === null) {
             $timezone = 'GMT';

@@ -1,0 +1,28 @@
+<div class="navigation-container">
+  <div class="navigation">
+    <?php foreach ($this->getAllPartials() as $partial):?>
+    <div class="navigation-node" rel="<?php echo $this->escape($partial->getNameInLayout())?>">
+      <p class="title"><?php echo $this->escape($partial->getTitle())?></p>
+    </div>
+    <?php endforeach?>
+    <span class="last"></span>
+    <?php foreach ($this->getAllPartials() as $partial):?>
+      <?php echo $partial->render()?>
+    <?php endforeach?>
+  </div>
+  <script type="text/javascript">
+//<![CDATA[
+(function($){
+    var navigation = $('.navigation');
+    $('.navigation-node', navigation).mouseenter(function(e){
+        $('.navigation-node', $(this).parent()).removeClass('hover');
+        $(this).addClass('hover');
+
+        $('.navigation-links', $(this).parent()).hide();
+        var rel = ($(this).attr('rel')).replace(/(\.|\\|\\:|\\#)/, '\\$1');
+        $('#navigation\\:' + rel).show();
+        });
+})(jQuery);
+//]]>
+  </script>
+</div>

@@ -1,0 +1,5 @@
+<div class="navigation-links" id="navigation:<?php echo $this->escape($this->getNameInLayout())?>">
+  <?php foreach ($this->getAllPartials() as $name => $partial):?>
+    <?php echo $partial->render()?>
+  <?php endforeach?>
+</div>

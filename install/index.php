@@ -78,6 +78,8 @@ function __autoload($class) {
     include_once str_replace('_', '/', $class) . '.php';
 }
 
+Wootook::$isInstalled = false;
+/*
 $website = new Wootook_Core_Model_Website();
 $website->setId(1)->setData('code', Wootook_Core_Model_Website::DEFAULT_CODE);
 Wootook::setWebsite(1, $website);
@@ -85,7 +87,7 @@ Wootook::setWebsite(1, $website);
 $game = new Wootook_Core_Model_Game();
 $game->setId(1)->setData('website_id', $website->getId())->setData('code', Wootook_Core_Model_Game::DEFAULT_CODE);
 Wootook::setGame(1, $game);
-
+*/
 include ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . 'constants.php';
 
 Wootook_Core_Time::init();
@@ -110,22 +112,32 @@ $session = Wootook::getSession('install');
 
 $website = new Wootook_Core_Model_Website();
 $website->setId(0)->setData('code', Wootook_Core_Model_Website::DEFAULT_CODE);
-Wootook::setWebsite(0, $website);
+Wootook::setDefaultWebsite($website);
 
 $game = new Wootook_Core_Model_Game();
 $game->setId(0)->setData('code', Wootook_Core_Model_Game::DEFAULT_CODE);
-Wootook::setWebsite(0, $game);
+Wootook::setDefaultGame($game);
 
 $configRewrites = array(
     'default' => array(
         'web' => array(
-            'base_url' => $baseUrl
+            'url' => array(
+                'base' => $baseUrl,
+                'skin' => $baseUrl . 'skin/',
+                'js' => $baseUrl . 'js/',
+                'css' => $baseUrl . 'css/'
+                )
             ),
-        'package' => 'install',
+        'system' => array(
+            'path' => array(
+                'base' => ROOT_PATH,
+                'skin' => ROOT_PATH . 'skin' . DIRECTORY_SEPARATOR,
+                )
+            ),
+        'package' => 'default',
         'theme' => 'default',
         'layout' => array(
-            'page' => 'page.php',
-            'install' => 'install.php'
+            'page' => 'page.php'
             ),
         'storyline' => array(
             'universe' => 'legacies',
@@ -135,13 +147,11 @@ $configRewrites = array(
     );
 
 $config = unserialize($session->getData('config'));
-if (!is_array($config)) {
-    $config = array();
-}
+$config = array_merge_recursive($config, $configRewrites);
+Wootook::loadConfig($config);
 
-Wootook::loadConfig(array_merge_recursive($config, $configRewrites));
+$layout = new Wootook_Core_Layout('install');
 
-$layout = new Wootook_Core_Layout();
 $request = new Wootook_Core_Controller_Request_Http();
 $response = new Wootook_Core_Controller_Response_Http();
 
@@ -178,21 +188,49 @@ case 'install':
                 exit(0);
             }
 
+            $urlPath = $request->getPost('url_path');
+
             $config = array(
                 'global' => array(
-                    'storyline' => array(
-                        'universe' => 'legacies',
-                        'episode'  => 'default',
-                        ),
+                    'resource' => array()
+                    ),
+                'frontend' => array(
                     'web' => array(
-                        'base_url' => $request->getPost('url_path')
+                        'url' => array(
+                            'base' => $request->getPost('url_path'),
+                            'skin' => $request->getPost('url_path') . 'skin/',
+                            'js'   => $request->getPost('url_path') . 'js/',
+                            'css'  => $request->getPost('url_path') . 'css/',
+                            )
                         ),
-                    'date' => array(
-                        'timezone' => $request->getPost('timezone')
+                    'system' => array(
+                        'path' => array(
+                            'base' => ROOT_PATH,
+                            'skin' => ROOT_PATH . 'skin' . DIRECTORY_SEPARATOR,
+                            ),
+                        'date' => array(
+                            'timezone' => $request->getPost('timezone')
+                            )
+                        ),
+                    'engine' => array(
+                        'storyline' => array(
+                            'universe' => 'legacies',
+                            'episode'  => 'default',
+                            ),
+                        'core' => array(
+                            'use_large_numbers' => true
+                            ),
+                        'universe' => array(
+                            'galaxies'  => 3,
+                            'systems'   => 100,
+                            'positions' => 15
+                            ),
+                        'combat' => array(
+                            'allow_spy_drone_attacks' => true
+                            )
                         ),
                     'layout' => array(
                         'page'   => 'page.php',
-                        'admin'  => 'admin.php',
                         'empire' => 'empire.php'
                         ),
                     'locales' => array(
@@ -201,7 +239,7 @@ case 'install':
                         'en'    => 'en_US',
                         'en_US' => 'en_US'
                         )
-                    ),
+                    )
                 );
             $session->setData('config', serialize($config));
 
@@ -278,7 +316,7 @@ case 'install':
             }
 
             $config = unserialize($session->getData('config'));
-            $config['global']['database'] = array(
+            $config['global']['resource']['database'] = array(
                 'default' => array(
                     'engine' => 'mysql',
                     'options' => array(
@@ -354,7 +392,7 @@ case 'install':
             $session->setData('config', serialize($config));
             $writer = new Wootook_Core_Config_Adapter_Array();
             $writer->setData($config);
-            $writer->save(ROOT_PATH . 'config.php');
+            $writer->save(APPLICATION_PATH . 'config' . DIRECTORY_SEPARATOR . 'local.php');
 
             Wootook::loadConfig(array_merge_recursive($writer->toArray(), $configRewrites));
 

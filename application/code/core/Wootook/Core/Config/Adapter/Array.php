@@ -12,6 +12,9 @@ class Wootook_Core_Config_Adapter_Array
 
     public function load($filename)
     {
+        if (!file_exists($filename)) {
+            throw new Wootook_Core_Exception_DataAccessException(sprintf('Could not load config file "%s"', $filename));
+        }
         $data = include $filename;
 
         if (!is_array($data)) {

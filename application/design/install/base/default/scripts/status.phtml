@@ -1,0 +1,9 @@
+<div class="status">
+  <?php $status = $this->getData('step')?>
+  <p class="item intro<?php if ($status == 0):?> active<?php elseif ($status >= 1):?> cleared<?php endif?>"><?php echo $this->__('Welcome')?></p>
+  <p class="item system<?php if ($status == 1):?> active<?php elseif ($status >= 2):?> cleared<?php endif?>"><?php echo $this->__('System')?></p>
+  <p class="item database<?php if ($status == 2):?> active<?php elseif ($status >= 3):?> cleared<?php endif?>"><?php echo $this->__('Database')?></p>
+  <p class="item universe<?php if ($status == 3):?> active<?php elseif ($status >= 4):?> cleared<?php endif?>"><?php echo $this->__('Universe')?></p>
+  <p class="item profile<?php if ($status == 4):?> active<?php elseif ($status >= 5):?> cleared<?php endif?>"><?php echo $this->__('Admin profile')?></p>
+  <p class="item summary<?php if ($status > 4):?> active<?php endif?>"><?php echo $this->__('Summary')?></p>
+</div>

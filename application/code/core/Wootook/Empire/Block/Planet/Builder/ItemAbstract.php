@@ -98,7 +98,7 @@ abstract class Wootook_Empire_Block_Planet_Builder_ItemAbstract
             $lang = includeLang('imperium');
         }
         if ($resourceId == 'cristal') {
-            $resourceId = 'crystal';
+            $resourceId = 'crystal'; // FIXME: backward compatibility
         }
 
         if (isset($lang[$resourceId])) {

@@ -1,0 +1,31 @@
+<div class="shipyard item-list countable" id="shipyard">
+    <h1><?php echo $this->__('Shipyard')?></h1>
+    <form action="<?php echo $this->getUrl('buildings.php', array('mode' => 'fleet'))?>" method="post" id="shipyard-form">
+        <?php echo $this->getPartial('item-list.items')->render()?>
+        <input type="submit" value="<?php echo $this->__('Build')?>">
+    </form>
+    <div class="clear"></div>
+    <script type="text/javascript">
+/*<![CDATA[*/
+(function($){
+  $(document).ready(function(){
+    $('.shipyard .max a').click(function(){
+      var rel = this.rel.replace(/\:/, '\\\\:');
+      $('#' + rel).val($('#' + rel + '\\:max').val());
+      var hidden = $('#' + rel + '\\:max');
+      var input = $('#' + rel);
+      $('#shipyard-form').submit();
+      });
+    });
+    var items = jQuery('#shipyard .item');
+    $('.image', items).hover(function(e){
+      $('.details', $(this).parent()).show();
+      }, function(e){
+      $('.details', $(this).parent()).hide();
+      });
+  })(jQuery);
+jQuery(document).ready(function(){
+  });
+/*]]>*/
+    </script>
+</div>

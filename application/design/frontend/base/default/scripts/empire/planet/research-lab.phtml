@@ -1,0 +1,19 @@
+<div class="shipyard item-list" id="reasearch-lab">
+    <h1><?php echo $this->__('Research Laboratory')?></h1>
+    <?php echo $this->getPartial('item-list.items')->render()?>
+    <div class="clear"></div>
+</div>
+<script type="text/javascript">
+/*<![CDATA[*/
+(function($){
+  $(document).ready(function(){
+    var items = jQuery('#reasearch-lab .item');
+    jQuery('.image', items).hover(function(e){
+      jQuery('.details', jQuery(this).parent()).show();
+      }, function(e){
+      jQuery('.details', jQuery(this).parent()).hide();
+      });
+    });
+  })(jQuery);
+/*]]>*/
+</script>

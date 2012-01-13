@@ -70,7 +70,7 @@ abstract class Wootook_Core_Model
             call_user_func_array(array($this, '_afterLoad'), $params);
             $this->_setOriginalData($this->_data);
         } catch (PDOException $e) {
-            throw new Wootook_Core_Exception_DataAccessException('Could not load data: ' . $e->getMessage(), 0);
+            throw new Wootook_Core_Exception_DataAccessException('Could not load data: ' . $e->getMessage(), 0, $e);
         }
         return $this;
     }

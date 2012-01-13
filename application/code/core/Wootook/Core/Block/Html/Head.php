@@ -3,6 +3,7 @@
 class Wootook_Core_Block_Html_Head
     extends Wootook_Core_Block_Template
 {
+    const TYPE_GLOBAL_CSS = 'global_css';
     const TYPE_GLOBAL_JS  = 'global_js';
 
     const TYPE_SKIN_CSS   = 'skin_css';
@@ -19,7 +20,7 @@ class Wootook_Core_Block_Html_Head
 
     protected $_title = '';
     protected $_titleDefaultConcat = self::TITLE_CONCAT_AFTER;
-    protected $_titleSeparator = ' | ';
+    protected $_titleSeparator = ' ¤ ';
 
     protected $_titleConcatTypes = array(
         self::TITLE_CONCAT_AFTER,
@@ -85,33 +86,52 @@ class Wootook_Core_Block_Html_Head
         return $this;
     }
 
-    public function addJs($script, $type = 'text/javascript', Array $options = array())
+    public function addJs($script, $type = 'text/javascript', Array $options = array(), $theme = null, $package = null)
     {
         $options['type'] = $type;
         $options['path'] = $script;
+        $options['theme'] = $theme;
+        $options['package'] = $package;
 
         $this->addItem(self::TYPE_GLOBAL_JS, $options);
 
         return $this;
     }
 
-    public function addCss($stylesheet, $type = 'text/css', $condition = null, Array $options = array())
+    public function addCss($stylesheet, $type = 'text/css', $condition = null, Array $options = array(), $theme = null, $package = null)
     {
         $options['type'] = $type;
         $options['path'] = $stylesheet;
         $options['condition'] = $condition;
+        $options['theme'] = $theme;
+        $options['package'] = $package;
 
-        $this->addItem(self::TYPE_SKIN_CSS, $options);
+        $this->addItem(self::TYPE_GLOBAL_CSS, $options);
 
         return $this;
     }
 
-    public function addSkinJs($script, $type = 'text/javascript', Array $options = array())
+    public function addSkinJs($script, $type = 'text/javascript', Array $options = array(), $theme = null, $package = null)
     {
         $options['type'] = $type;
         $options['path'] = $script;
+        $options['theme'] = $theme;
+        $options['package'] = $package;
 
         $this->addItem(self::TYPE_SKIN_JS, $options);
+
+        return $this;
+    }
+
+    public function addSkinCss($stylesheet, $type = 'text/css', $condition = null, Array $options = array(), $theme = null, $package = null)
+    {
+        $options['type'] = $type;
+        $options['path'] = $stylesheet;
+        $options['condition'] = $condition;
+        $options['theme'] = $theme;
+        $options['package'] = $package;
+
+        $this->addItem(self::TYPE_SKIN_CSS, $options);
 
         return $this;
     }
@@ -129,7 +149,6 @@ class Wootook_Core_Block_Html_Head
     public function addInlineCss($content, $type = 'text/css', Array $options = array())
     {
         $options['type'] = $type;
-        $options['path'] = $path;
         $options['content'] = $content;
 
         $this->addItem(self::TYPE_INLINE_CSS, $options);
@@ -138,6 +157,14 @@ class Wootook_Core_Block_Html_Head
     }
 
     public function getCss()
+    {
+        if (isset($this->_items[self::TYPE_GLOBAL_CSS])) {
+            return $this->_items[self::TYPE_GLOBAL_CSS];
+        }
+        return array();
+    }
+
+    public function getSkinCss()
     {
         if (isset($this->_items[self::TYPE_SKIN_CSS])) {
             return $this->_items[self::TYPE_SKIN_CSS];
@@ -184,8 +211,35 @@ class Wootook_Core_Block_Html_Head
             if (!isset($css['media'])) {
                 $css['media'] = 'all';
             }
+            $url = $this->getUrl($css['path'], array());
             $render .=<<<HTML_EOF
-<link rel="stylesheet" type="{$css['type']}" src="{$css['path']}" media="{$css['media']}" />
+<link rel="stylesheet" type="{$css['type']}" src="{$url}" media="{$css['media']}" />
+HTML_EOF;
+        }
+    }
+
+    public function renderSkinCss()
+    {
+        $render = '';
+        foreach ($this->getSkinCss() as $css) {
+            if (!isset($css['media'])) {
+                $css['media'] = 'all';
+            }
+            $url = $this->getSkinUrl($css['path'], array(), $css['theme'], $css['package']);
+            $render .=<<<HTML_EOF
+<link rel="stylesheet" type="{$css['type']}" src="{$url}" media="{$css['media']}" />
+HTML_EOF;
+        }
+    }
+
+    public function renderInlineCss()
+    {
+        foreach ($this->getInlineCss() as $css) {
+            if (!isset($css['media'])) {
+                $css['media'] = 'all';
+            }
+            $render .=<<<HTML_EOF
+<style type="{$css['type']}">/*<![CDATA[*/{$css['content']}/*]]>*/</style>
 HTML_EOF;
         }
         return $render;
@@ -198,8 +252,34 @@ HTML_EOF;
             if (!isset($js['type'])) {
                 $js['type'] = 'text/javascript';
             }
+            $url = $this->getUrl($js['path']);
             $render .=<<<HTML_EOF
-<script type="{$js['type']}" src="{$js['path']}"></script>
+<script type="{$js['type']}" src="{$url}"></script>
+HTML_EOF;
+        }
+        return $render;
+    }
+
+    public function renderSkinJs()
+    {
+        $render = '';
+        foreach ($this->getJs() as $js) {
+            if (!isset($js['type'])) {
+                $js['type'] = 'text/javascript';
+            }
+            $url = $this->getSkinUrl($js['path'], array(), $js['theme'], $js['package']);
+            $render .=<<<HTML_EOF
+<script type="{$js['type']}" src="{$url}"></script>
+HTML_EOF;
+        }
+        return $render;
+    }
+
+    public function renderInlineJs()
+    {
+        foreach ($this->getInlineJs() as $js) {
+            $render .=<<<HTML_EOF
+<script type="{$js['type']}">/*<![CDATA[*/{$js['content']}/*]]>*/</script>
 HTML_EOF;
         }
         return $render;

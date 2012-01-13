@@ -6,6 +6,9 @@ class Wootook_Core_Layout
     const DEFAULT_PACKAGE = 'base';
     const DEFAULT_THEME = 'default';
 
+    const DOMAIN_FRONTEND = 'frontend';
+    const DOMAIN_BACKEND = 'backend';
+
     protected $_blocks = array();
 
     protected $_messageBlock = null;
@@ -14,14 +17,36 @@ class Wootook_Core_Layout
     protected $_eventPrefix = 'layout';
     protected $_eventObject = 'layout';
 
+    protected $_domain = self::DOMAIN_FRONTEND;
     protected $_package = self::DEFAULT_PACKAGE;
     protected $_theme = self::DEFAULT_THEME;
 
     protected $_namespaces = array(
         'core' => array(
-            'Wootook_Core_Block_' => 'Wootook/core/Block'
+            'Wootook_Core_Block_' => 'Wootook/Core/Block'
             )
         );
+
+    public function __construct($domain = null, $package = null, $theme = null, Array $data = array())
+    {
+        if ($domain === null) {
+            if (Wootook::getDefaultWebsite()->getId() == 0) {
+                $this->_domain = self::DOMAIN_BACKEND;
+            } else {
+                $this->_domain = self::DOMAIN_FRONTEND;
+            }
+        } else {
+            $this->_domain = $domain;
+        }
+        if ($package !== null) {
+            $this->setPackage($package);
+        }
+        if ($theme !== null) {
+            $this->setTheme($theme);
+        }
+
+        parent::__construct($data);
+    }
 
     public function _init()
     {
@@ -33,22 +58,31 @@ class Wootook_Core_Layout
             }
         }
 
-        $fileList = Wootook::getConfig('layout');
+        $fileList = Wootook::getGameConfig('layout');
         if ($fileList instanceof Wootook_Core_Config_Node) {
             $fileList = $fileList->toArray();
         }
         if (!is_array($fileList) || empty($fileList)) {
-            $fileList = $this->getAllDatas();
-        } else {
-            $fileList = array_merge($fileList, $this->getAllDatas());
+            $fileList = array();
         }
         $this->_data = array();
 
-        $this->setPackage(Wootook::getConfig('package'));
-        $this->setTheme(Wootook::getConfig('theme'));
+        $this->setPackage(Wootook::getWebsiteConfig('package'));
+        $this->setTheme(Wootook::getGameConfig('theme'));
 
         foreach ($fileList as $layoutFile) {
-            foreach (include $this->_getLayoutPath($layoutFile) as $layoutId => $layoutConfig) {
+            try {
+                $layoutData = include $this->_getLayoutPath($layoutFile);
+            } catch (Wootook_Core_Exception_LayoutException $e) {
+                Wootook_Core_ErrorProfiler::getSingleton()->addException($e);
+                continue;
+            }
+
+            if (!is_array($layoutData)) {
+                continue;
+            }
+
+            foreach ($layoutData as $layoutId => $layoutConfig) {
                 if ($this->hasData($layoutId)) {
                     $declared = $this->getData($layoutId);
 
@@ -326,7 +360,7 @@ class Wootook_Core_Layout
                         $callParamaters[$paramterPosition] = $parameter->getDefaultValue();
                     //} else if (!$parameter->isOptionnal()) {
                     } else if ($paramterPosition <= $requiredParameterCount) {
-                        throw new Wootook_Core_Exception_RuntimeException(Wootook::__('Method %s requires parameter %d ($%s) to be defined.',
+                        throw new Wootook_Core_Exception_LayoutException(Wootook::__('Method %s requires parameter %d ($%s) to be defined.',
                             $reflectionMethod->getName(), $paramterPosition + 1, $paramterName));
                     }
                 }
@@ -340,6 +374,19 @@ class Wootook_Core_Layout
                 continue;
             }
         }
+    }
+
+    public function getDomain()
+    {
+        return $this->_domain;
+    }
+
+    public function setDomain($domain)
+    {
+        $this->_domain = $domain;
+        $this->_init();
+
+        return $this;
     }
 
     public function getPackage()
@@ -368,7 +415,7 @@ class Wootook_Core_Layout
 
     public function getScriptPath()
     {
-        return APPLICATION_PATH . DIRECTORY_SEPARATOR . 'design';
+        return APPLICATION_PATH . 'design' . DIRECTORY_SEPARATOR . $this->getDomain();
     }
 
     public function getBlock($code)
@@ -382,7 +429,7 @@ class Wootook_Core_Layout
     public function render()
     {
         if (!$this->_view instanceof Wootook_Core_View) {
-            throw new Wootook_Core_Exception_RuntimeException(Wootook::__('No root view declared.'));
+            throw new Wootook_Core_Exception_LayoutException(Wootook::__('No root view declared.'));
         }
 
         $scriptPath = $this->getScriptPath();
@@ -403,14 +450,18 @@ class Wootook_Core_Layout
         $theme = $this->getTheme();
         $pattern = "{$this->getScriptPath()}/%s/%s/layouts/{$file}";
 
-        $path = sprintf($pattern, $package, $theme);
-        if (Wootook::fileExists($path)) {
-            return $path;
+        if ($package !== null && $theme !== null) {
+            $path = sprintf($pattern, $package, $theme);
+            if (Wootook::fileExists($path)) {
+                return $path;
+            }
         }
 
-        $path = sprintf($pattern, $package, self::DEFAULT_THEME);
-        if (Wootook::fileExists($path)) {
-            return $path;
+        if ($package !== null) {
+            $path = sprintf($pattern, $package, self::DEFAULT_THEME);
+            if (Wootook::fileExists($path)) {
+                return $path;
+            }
         }
 
         $path = sprintf($pattern, self::DEFAULT_PACKAGE, self::DEFAULT_THEME);
@@ -418,9 +469,7 @@ class Wootook_Core_Layout
             return $path;
         }
 
-        trigger_error(Wootook::__("Layout file '%s' does not exist.", $file), E_USER_NOTICE);
-
-        return null;
+        throw new Wootook_Core_Exception_LayoutException(sprintf("Layout file '%s' does not exist.", $file));
     }
 
     /**
