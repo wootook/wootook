@@ -10,18 +10,18 @@ class Wootook_Core_Form_Validator_Regex
         $this->_expression = $expression;
     }
 
-    public function validate(Wootook_Core_Form_FieldAbstract $field, $data)
+    public function validate(Wootook_Core_Form_ElementAbstract $element, $data)
     {
-        if (!$this->_validate($field, $data)) {
-            $this->_getSession($field)
-                ->addError('Field "%s" does not match the validation pattern.', $field->getName());
+        if (!$this->_validate($element, $data)) {
+            $this->_getSession($element)
+                ->addError('Field "%s" does not match the validation pattern.', $element->getName());
 
             return false;
         }
         return true;
     }
 
-    protected function _validate(Wootook_Core_Form_FieldAbstract $field, $data)
+    protected function _validate(Wootook_Core_Form_ElementAbstract $element, $data)
     {
         return preg_match($this->_expression, $data);
     }

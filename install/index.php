@@ -137,7 +137,8 @@ $configRewrites = array(
         'package' => 'default',
         'theme' => 'default',
         'layout' => array(
-            'page' => 'page.php'
+            'page' => 'page.xml',
+            'install' => 'install.php'
             ),
         'storyline' => array(
             'universe' => 'legacies',
@@ -147,8 +148,11 @@ $configRewrites = array(
     );
 
 $config = unserialize($session->getData('config'));
-$config = array_merge_recursive($config, $configRewrites);
-Wootook::loadConfig($config);
+if (is_array($config)) {
+    Wootook::loadConfig(array_merge_recursive($config, $configRewrites));
+} else {
+    Wootook::loadConfig($configRewrites);
+}
 
 $layout = new Wootook_Core_Layout('install');
 
@@ -228,10 +232,6 @@ case 'install':
                         'combat' => array(
                             'allow_spy_drone_attacks' => true
                             )
-                        ),
-                    'layout' => array(
-                        'page'   => 'page.php',
-                        'empire' => 'empire.php'
                         ),
                     'locales' => array(
                         'fr'    => 'fr_FR',

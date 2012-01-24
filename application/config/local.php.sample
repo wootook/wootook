@@ -70,15 +70,15 @@
                 'episode'  => 'default',
                 ),
             'core' => array(
-                'use_large_numbers' => (bool) $request->getPost('use_large_numbers')
+                'use_large_numbers' => true
                 ),
             'universe' => array(
-                'galaxies'  => $request->getPost('galaxies'),
-                'systems'   => $request->getPost('systems'),
-                'positions' => $request->getPost('positions')
+                'galaxies'  => 3,
+                'systems'   => 100,
+                'positions' => 15
                 ),
             'combat' => array(
-                'allow_spy_drone_attacks' => (bool) $request->getPost('allow_spy_drone_attacks')
+                'allow_spy_drone_attacks' => true
                 )
             ),
         )

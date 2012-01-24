@@ -3,9 +3,9 @@
 class Wootook_Core_Form_Validator_FormKey
     extends Wootook_Core_Form_ValidatorAbstract
 {
-    public function validate(Wootook_Core_Form_FieldAbstract $field, $data)
+    public function validate(Wootook_Core_Form_ElementAbstract $element, $data)
     {
-        $form = $field->getForm();
+        $form = $element->getForm();
         $session = $form->getSession();
 
         if ($session->getFormKey(false) == $data) {

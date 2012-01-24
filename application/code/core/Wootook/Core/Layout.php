@@ -70,9 +70,14 @@ class Wootook_Core_Layout
         $this->setPackage(Wootook::getWebsiteConfig('package'));
         $this->setTheme(Wootook::getGameConfig('theme'));
 
+        $parser = new Wootook_Core_Layout_Parser();
         foreach ($fileList as $layoutFile) {
             try {
-                $layoutData = include $this->_getLayoutPath($layoutFile);
+                if (preg_match('#\.php$#', $layoutFile)) {
+                    $layoutData = include $this->_getLayoutPath($layoutFile);
+                } else {
+                    $layoutData = $parser->parse($this->_getLayoutPath($layoutFile), $this->_getLayoutCachePath($layoutFile), 3600);
+                }
             } catch (Wootook_Core_Exception_LayoutException $e) {
                 Wootook_Core_ErrorProfiler::getSingleton()->addException($e);
                 continue;
@@ -442,6 +447,22 @@ class Wootook_Core_Layout
         unset($block);
 
         return $this->_view->render();
+    }
+
+    protected function _getLayoutCachePath($file)
+    {
+        $package = $this->getPackage();
+        $theme = $this->getTheme();
+        $pattern = APPLICATION_PATH . "cache/" . __CLASS__ . "--{$this->getDomain()}-%s-%s-{$file}.cache";
+
+        if (empty($package)) {
+            $package = self::DEFAULT_PACKAGE;
+        }
+        if (empty($theme)) {
+            $theme = self::DEFAULT_THEME;
+        }
+
+        return sprintf($pattern, $package, $theme);
     }
 
     protected function _getLayoutPath($file)

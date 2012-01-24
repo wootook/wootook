@@ -76,15 +76,17 @@ class Wootook_Core_Form
     public function addElement($name, $type = 'text', Array $validators = array())
     {
         if ($type instanceof Wootook_Core_Form_ElementAbstract) {
-            $this->_elements[$name] = $name;
+            $this->_elements[$name] = $type;
             $this->_elements[$name]->setForm($this);
         } else {
             $element = $this->_elementLoader->load($type);
 
             if ($element === null) {
-                trigger_error(sprintf('Element %1$s (type: %2$s) could not be created.', $name, $type), E_USER_WARNING);
+                    Wootook_Core_ErrorProfiler::getSingleton()
+                        ->addException(new Wootook_Core_Exception_RuntimeException(sprintf('Element %1$s (type: %2$s) could not be created.', $name, $type)));
                 return $this;
             }
+            $element->setForm($this);
             $this->_elements[$name] = $element;
         }
         $this->_elements[$name]->setName($name);

@@ -77,7 +77,7 @@ class Wootook_Database
 
         $dsn = "mysql:dbname={$params->database};host={$params->hostname}";
         if (is_numeric($params->port)) {
-            $dsn .= ";port={$params->database}";
+            $dsn .= ";port={$params->port}";
         }
 
         $event = Wootook::dispatchEvent('database.prepare-options', array(

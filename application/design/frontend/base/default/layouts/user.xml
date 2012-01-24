@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<layout version="1.0">
+    <handle name="login">
+        <update name="1column" />
+
+        <reference name="content">
+            <block name="login" type="core/template" template="user/login.phtml" />
+        </reference>
+
+        <reference name="head">
+            <action method="addCss">
+                <params>
+                    <param name="template">css/deprecated/styles.css</param>
+                </params>
+            </action>
+            <action method="addCss">
+                <params>
+                    <param name="template">css/deprecated/about.css</param>
+                </params>
+            </action>
+        </reference>
+    </handle>
+
+    <handle name="registration">
+        <update name="1column" />
+
+        <reference name="content">
+            <block name="registration" type="core/template" template="user/registration.phtml" />
+        </reference>
+
+        <reference name="head">
+            <action method="addCss">
+                <params>
+                    <param name="template">css/deprecated/styles.css</param>
+                </params>
+            </action>
+            <action method="addCss">
+                <params>
+                    <param name="template">css/deprecated/about.css</param>
+                </params>
+            </action>
+        </reference>
+    </handle>
+</layout>

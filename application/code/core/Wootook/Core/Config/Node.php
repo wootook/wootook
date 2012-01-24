@@ -40,6 +40,11 @@ class Wootook_Core_Config_Node
         return $this;
     }
 
+    public function getParent()
+    {
+        return $this->_parent;
+    }
+
     public function setConfig($path, $value)
     {
         $explodedPath = explode('/', $path);
@@ -131,6 +136,9 @@ class Wootook_Core_Config_Node
 
     private function _resolveAttributeName($key)
     {
+        if (is_numeric($key)) {
+            return $key;
+        }
         if (!isset(self::$_attributeNameCache[$key])) {
             self::$_attributeNameCache[$key] = str_replace(' ', '-', strtolower(preg_replace('#[A-Z]#', ' \\1', $key)));
         }
@@ -183,7 +191,11 @@ class Wootook_Core_Config_Node
 
     public function offsetSet($offset, $value)
     {
-        $this->_children[$offset] = $value;
+        if ($offset === null) {
+             $this->_children[] = $value;
+        } else {
+            $this->_children[$offset] = $value;
+        }
 
         return $value;
     }

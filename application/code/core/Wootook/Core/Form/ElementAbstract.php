@@ -17,7 +17,7 @@ abstract class Wootook_Core_Form_ElementAbstract
         }
 
         $this->setName($name);
-        $this->setParams($params);
+        $this->setAllParams($params);
     }
 
     abstract public function getType();

@@ -8,11 +8,11 @@ class Wootook_Core_Form_Validator_Email
         parent::__construct('#^[[:alnum:]\._\-]@[[:alnum:]\._\-]\.[a-z]{2,}$#');
     }
 
-    public function validate(Wootook_Core_Form_FieldAbstract $field, $data)
+    public function validate(Wootook_Core_Form_ElementAbstract $element, $data)
     {
-        if (!$this->_validate($field, $data)) {
-            $this->_getSession($field)
-                ->addError('Field "%s" should contain an email.', $field->getName());
+        if (!$this->_validate($element, $data)) {
+            $this->_getSession($element)
+                ->addError('Field "%s" should contain an email.', $element->getName());
 
             return false;
         }

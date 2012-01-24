@@ -9,11 +9,11 @@ class Wootook_Core_Form_Validator_Hex
         parent::__construct('#(?:0x)?[^0-9a-f]#i');
     }
 
-    public function validate(Wootook_Core_Form_FieldAbstract $field, $data)
+    public function validate(Wootook_Core_Form_ElementAbstract $element, $data)
     {
-        if ($this->_validate($field, $data)) {
-            $this->_getSession($field)
-                ->addError('Field "%s" should only contain numeric characters.', $field->getName());
+        if ($this->_validate($element, $data)) {
+            $this->_getSession($element)
+                ->addError('Field "%s" should only contain numeric characters.', $element->getName());
 
             return false;
         }

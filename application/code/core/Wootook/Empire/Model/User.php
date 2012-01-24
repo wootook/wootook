@@ -376,6 +376,17 @@ class Wootook_Empire_Model_User
 
         $planet->save();
 
+        if ($planet->isPlanet()) {
+            $galaxy = new Wootook_Empire_Model_Galaxy_Position();
+            $galaxy
+                ->setData('galaxy', $planet->getGalaxy())
+                ->setData('system', $planet->getSystem())
+                ->setData('planet', $planet->getPosition())
+                ->setData('id_planet', $planet->getId())
+                ->save()
+            ;
+        }
+
         Wootook::dispatchEvent('planet.init', array(
             'planet' => $planet,
             'user'   => $this

@@ -47,46 +47,15 @@
             ),
         ),
     'frontend' => array(
-        'web' => array(
-            'url' => array(
-                'base' => null,
-                'skin' => null,
-                'js'   => null,
-                'css'  => null,
-                )
-            ),
-        'system' => array(
-            'path' => array(
-                'base' => null,
-                'skin' => null,
-                'js'   => null,
-                'css'  => null,
-                )
-            ),
         'layout' => array(
-            'page'   => 'page.php',
+            'page'   => 'page.xml',
+            'user'   => 'user.xml',
             'empire' => 'empire.php'
             ),
         ),
     'backend' => array(
-        'web' => array(
-            'url' => array(
-                'base' => null,
-                'skin' => null,
-                'js'   => null,
-                'css'  => null,
-                )
-            ),
-        'system' => array(
-            'path' => array(
-                'base' => null,
-                'skin' => null,
-                'js'   => null,
-                'css'  => null,
-                )
-            ),
         'layout' => array(
-            'page'  => 'page.php',
+            'page'  => 'page.xml',
             'admin' => 'admin.php'
             ),
         )
