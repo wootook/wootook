@@ -1,0 +1,34 @@
+<title><?php echo $this->escape($this->getTitle())?></title>
+<link rel="shortcut icon" href="<?php echo $this->getStaticUrl('favicon.ico')?>">
+<?php foreach ($this->getCss() as $css):?>
+<link rel="stylesheet" type="<?php echo $css['type']?>" href="<?php echo $this->getSkinUrl($css['path'])?>" />
+<?php endforeach?>
+<?php foreach ($this->getInlineCss() as $css):?>
+<style type="<?php echo $css['type']?>">
+/*<![CDATA[*/
+<?php echo $css['content']?>
+/*]]>*/
+</style>
+<?php endforeach?>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<?php foreach ($this->getJs() as $js):?>
+<script type="<?php echo $js['type']?>" src="<?php echo $this->getStaticUrl($js['path'])?>"></script>
+<?php endforeach?>
+<?php foreach ($this->getSkinJs() as $js):?>
+<script type="<?php echo $js['type']?>" src="<?php echo $this->getSkinUrl($js['path'])?>"></script>
+<?php endforeach?>
+<?php foreach ($this->getInlineJs() as $js):?>
+<script type="<?php echo $js['type']?>">
+/*<![CDATA[*/
+<?php echo $js['content']?>
+/*]]>*/
+</script>
+<?php endforeach?>
+<script type="text/javascript">
+  var uvOptions = {};
+  (function() {
+    var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
+    uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/xj6xRUd7fa3bVDgFEVevg.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
+  })();
+</script>

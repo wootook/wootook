@@ -1,0 +1,14 @@
+<div class="public-topbar">
+  <div class="container">
+    <?php if (!$this->isLoggedIn()):?>
+    <span class="login"><a href="<?php echo $this->getUrl('player/account/login')?>"><?php echo $this->__('Login')?></a></span>
+    <span class="register"><a href="<?php echo $this->getUrl('player/account/new')?>"><?php echo $this->__('Register')?></a></span>
+    <span class="user-count"><?php echo $this->__('There are %d registered players', $this->getPlayerCount())?></span>
+    <?php else:?>
+    <span class="name"><?php echo $this->__('Logged in as %s', $this->escape($this->getPlayer()->getUsername()))?></span>
+    <span class="logout"><a href="<?php echo $this->getUrl('player/account/logout')?>"><?php echo $this->__('Logout')?></a></span>
+    <span class="back"><a href="<?php echo $this->getUrl('player/overview')?>"><?php echo $this->__('Back to the game')?></a></span>
+    <?php endif?>
+    <span class="online-user-count"><?php echo $this->__('There are %d online players', $this->getOnlinePlayerCount())?></span>
+  </div>
+</div>

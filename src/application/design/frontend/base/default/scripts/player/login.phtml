@@ -1,0 +1,23 @@
+<form id="login-form" name="login-form" action="<?php echo $this->getUrl('player/account/login-post')?>" method="post" class="main-form">
+  <fieldset>
+    <legend><?php echo $this->__('Login')?></legend>
+    <p class="form text">
+      <label for="login:username"><?php echo $this->__('Username')?></label>
+      <input name="username" id="login:username" value="" type="text" class="input-text" />
+    </p>
+    <p class="form password">
+      <label for="login:password"><?php echo $this->__('Password')?></label>
+      <input name="password" id="login:password" value="" type="password" class="input-password" />
+    </p>
+    <p class="form checkbox">
+      <label for="login:remember-me"><?php echo $this->__('Remember me')?></label>
+      <input name="rememberme" id="login:remember-me" type="checkbox" class="input-checkbox" />
+    </p>
+    <p class="form lost-password">
+      <a href="<?php echo $this->getStaticUrl('lostpassword.php')?>" title="<?php echo $this->__('I have lost my password.')?>"><?php echo $this->__('I have lost my password.')?></a>
+    </p>
+  </fieldset>
+  <p class="form submit">
+    <input id="login:submit" value="<?php echo $this->__('Log in!')?>" type="submit">
+  </p>
+</form>

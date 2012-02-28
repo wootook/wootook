@@ -1,0 +1,39 @@
+<form id="register-form" name="register-form" action="<?php echo $this->getStaticUrl('player/account/register-post')?>" method="post" class="main-form">
+  <h1><?php echo $this->__('Register')?></h1>
+  <fieldset>
+    <legend><?php echo $this->__('User data:')?></legend>
+    <p class="form text">
+      <label for="register:username"><?php echo $this->__('Username:')?></label>
+      <input type="text" name="username" id="register:username" />
+    </p>
+    <p class="form text">
+      <label for="register:email"><?php echo $this->__('Email:')?></label>
+      <input type="text" name="email" id="register:email" />
+    </p>
+    <p class="form text">
+      <label for="register:email_confirm"><?php echo $this->__('Confirm email:')?></label>
+      <input type="text" name="email_confirm" id="register:email_confirm" />
+    </p>
+  </fieldset>
+  <fieldset>
+    <legend><?php echo $this->__('Password:')?></legend>
+    <p class="form password">
+      <label for="register:username"><?php echo $this->__('Password:')?></label>
+      <input type="password" name="password" id="register:password" />
+    </p>
+    <p class="form password">
+      <label for="register:username"><?php echo $this->__('Confirm password:')?></label>
+      <input type="password" name="password_confirm" id="register:password_confirm" />
+    </p>
+  </fieldset>
+  <fieldset>
+    <legend><?php echo $this->__('Planet:')?></legend>
+    <p class="form text">
+      <label for="register:planet_name"><?php echo $this->__('Planet name:')?></label>
+      <input type="text" name="planet_name" id="register:planet_name" />
+    </p>
+  </fieldset>
+  <p class="form submit">
+    <input id="register:submit" value="<?php echo $this->__('Register!')?>" type="submit">
+  </p>
+</form>

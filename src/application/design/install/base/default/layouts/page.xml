@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<layout version="1.0">
+    <handle name="1column">
+        <update name="default" />
+    </handle>
+    <handle name="2columns-left">
+        <update name="default" />
+
+        <reference name="root">
+            <action method="setTemplate">
+                <param name="template">page/2columns-left.phtml</param>
+            </action>
+            <block name="left" type="core/concat" />
+        </reference>
+    </handle>
+    <handle name="2columns-right">
+        <update name="default" />
+
+        <reference name="root">
+            <action method="setTemplate">
+                <param name="template">page/2columns-right.phtml</param>
+            </action>
+            <block name="right" type="core/concat" />
+        </reference>
+    </handle>
+    <handle name="3columns">
+        <update name="default" />
+
+        <reference name="root">
+            <action method="setTemplate">
+                <param name="template">page/3columns.phtml</param>
+            </action>
+            <block name="left" type="core/concat" />
+            <block name="right" type="core/concat" />
+        </reference>
+    </handle>
+    <handle name="default">
+        <block name="root" type="core/html.page" template="page/1column.phtml">
+            <block name="head" type="core/html.head" template="page/html/head.phtml">
+                <action method="addCss">
+                    <param name="stylesheet">css/base.css</param>
+                </action>
+                <action method="addJs">
+                    <param name="script">scripts/jquery/jquery-1.6.4.js</param>
+                </action>
+            </block>
+            <block name="header" type="core/concat" />
+            <block name="content" type="core/concat" />
+            <block name="footer" type="core/template" />
+        </block>
+    </handle>
+    <handle name="ajax">
+        <block name="root" type="core/html.page" template="page/empty.phtml">
+            <block name="content" type="core/concat" />
+        </block>
+    </handle>
+    <handle name="empty">
+        <block name="root" type="core/html.page" template="page/empty.phtml">
+            <block name="head" type="core/html.head" template="page/html/head.phtml" />
+            <block name="content" type="core/concat" />
+        </block>
+    </handle>
+    <handle name="message">
+        <update name="default" />
+
+        <reference name="content">
+            <block name="message" type="core/template" template="page/html/message.phtml" />
+        </reference>
+    </handle>
+</layout>
