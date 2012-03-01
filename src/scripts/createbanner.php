@@ -61,7 +61,7 @@ $textColor = array(
     Wootook_Core_Model_Image_Png::COLOR_BLUE  => 0xEF
     );
 
-$db = Wootook_Core_Database::getSingleton();
+$db = Wootook_Core_Database_ConnectionManager::getSingleton()->getConnection(Wootook_Core_Database_ConnectionManager::DEFAULT_CONNECTION_NAME);
 $sql = <<<EOF
 SELECT
   users.username AS username,

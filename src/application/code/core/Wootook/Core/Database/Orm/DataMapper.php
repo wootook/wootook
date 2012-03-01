@@ -1,7 +1,7 @@
 <?php
 
 class Wootook_Core_Database_Orm_DataMapper
-    extends Wootook_Core_PluginLoader_Abstract
+    extends Wootook_Core_PluginLoader_PluginLoader
 {
     protected $_rules = array();
 

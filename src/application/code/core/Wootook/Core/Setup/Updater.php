@@ -13,7 +13,7 @@ class Wootook_Core_Setup_Updater
     public function setSetupConnection($connection)
     {
         if (is_string($connection)) {
-            $this->_setupConnection = Wootook_Core_Database::getConnection($connection);
+            $this->_setupConnection = Wootook_Core_Database_Adapter_Pdo_Mysql::getConnection($connection);
         } else {
             $this->_setupConnection = $connection;
         }
@@ -24,7 +24,7 @@ class Wootook_Core_Setup_Updater
     /**
      *
      * Enter description here ...
-     * @return Wootook_Core_Database
+     * @return Wootook_Core_Database_Adapter_Pdo_Mysql
      */
     public function getSetupConnection()
     {

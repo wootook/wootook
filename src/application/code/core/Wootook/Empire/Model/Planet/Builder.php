@@ -99,7 +99,7 @@ class Wootook_Empire_Model_Planet_Builder
      */
     public function checkAvailability($buildingId)
     {
-        $types = Wootook_Empire_Model_Game_Types::getSingleton();
+        $types = Wootook_Empire_Helper_Config_Types::getSingleton();
 
         if (!$types->is($buildingId, Legacies_Empire::TYPE_BUILDING)) {
             return false;
@@ -116,7 +116,7 @@ class Wootook_Empire_Model_Planet_Builder
      */
     public function getBuildingTime($buildingId, $level)
     {
-        $prices = Wootook_Empire_Model_Game_Prices::getSingleton();
+        $prices = Wootook_Empire_Helper_Config_Prices::getSingleton();
 
         Math::setPrecision(50);
         $firstLevelTime = $prices[$buildingId][Legacies_Empire::BASE_BUILDING_TIME];
@@ -149,8 +149,8 @@ class Wootook_Empire_Model_Planet_Builder
      */
     public function getResourcesNeeded($buildingId, $level)
     {
-        $prices = Wootook_Empire_Model_Game_Prices::getSingleton();
-        $resources = Wootook_Empire_Model_Game_Resources::getSingleton();
+        $prices = Wootook_Empire_Helper_Config_Prices::getSingleton();
+        $resources = Wootook_Empire_Helper_Config_Resources::getSingleton();
 
         if (!isset($prices[$buildingId])) {
             return array();
@@ -176,7 +176,7 @@ class Wootook_Empire_Model_Planet_Builder
      */
     public function updateQueue(Wootook_Core_DateTime $time)
     {
-        $fields = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
+        $fields = Wootook_Empire_Helper_Config_FieldsAlias::getSingleton();
 
         $startingTime = clone $this->_currentPlanet->getData('b_building');
 
@@ -239,7 +239,7 @@ class Wootook_Empire_Model_Planet_Builder
             return $this;
         }
 
-        $types = Wootook_Empire_Model_Game_Types::getSingleton();
+        $types = Wootook_Empire_Helper_Config_Types::getSingleton();
 
         if (!Math::isPositive($level)) {
             return $this;

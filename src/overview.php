@@ -71,14 +71,14 @@ if (isset($_POST) && !empty($_POST)) {/*
     exit(0);*/
 } else if ($action == 'rename') {/*
     die('a');
-    $layout = new Wootook_Core_Layout();
+    $layout = new Wootook_Core_Model_Layout();
     $layout->load('overview.rename-planet');
 
     echo $layout->render();
     exit(0);*/
 } else if ($action == 'destroy') {/*
     die('a');
-    $layout = new Wootook_Core_Layout();
+    $layout = new Wootook_Core_Model_Layout();
     $layout->load('overview.destroy-planet');
 
     echo $layout->render();
@@ -88,7 +88,7 @@ if (isset($_POST) && !empty($_POST)) {/*
 includeLang('resources');
 includeLang('overview');
 
-$layout = new Wootook_Core_Layout();
+$layout = new Wootook_Core_Model_Layout();
 $layout->load('overview');
 
 if ($user->getId()) {
@@ -289,7 +289,7 @@ if ($user->getId()) {
 
     $latestPlayerStatement = $user->getReadConnection()->prepare("SELECT user.username AS `latest_player` FROM {$user->getReadConnection()->getTable('users')} AS user WHERE user.authlevel IN({$displayedPlayerLevels}) ORDER BY user.`register_time` DESC LIMIT 1");
     $latestPlayerStatement->execute();
-    $latestPlayer = $latestPlayerStatement->fetch(Wootook_Core_Database::FETCH_COLUMN, 0);
+    $latestPlayer = $latestPlayerStatement->fetch(Wootook_Core_Database_Adapter_Pdo_Mysql::FETCH_COLUMN, 0);
 
     $collection = new Wootook_Player_Resource_Entity_Collection($user->getReadConnection());
     $collection->addAuthlevelToFilter(array(LEVEL_ADMIN), true);

@@ -5,7 +5,7 @@ class Wootook_Core_App
     /**
      *
      * Enter description here ...
-     * @var Wootook_Core_Config_Adapter_Abstract
+     * @var Wootook_Core_Config_Adapter_Adapter
      */
     private $_globalConfig = null;
 

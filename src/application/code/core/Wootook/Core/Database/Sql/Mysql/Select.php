@@ -3,24 +3,42 @@
 class Wootook_Core_Database_Sql_Mysql_Select
     extends Wootook_Core_Database_Sql_Select
 {
-    protected function _prepareSql()
+    public function renderColumns()
+    {
+        $fields = array();
+        foreach ($this->_parts[self::COLUMNS] as $field) {
+            if ($field['field'] instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
+                $field['field']->process($this);
+
+                if ($field['alias'] !== null) {
+                    $fields[] = "{$field['field']} AS {$field['alias']}";
+                } else {
+                    $fields[] = "{$field['field']}";
+                }
+            } else if ($field['alias'] !== null) {
+                if ($field['table'] !== null) {
+                    $fields[] = "{$field['table']}.{$field['field']} AS {$field['alias']}";
+                } else {
+                    $fields[] = "{$field['field']} AS {$field['alias']}";
+                }
+            } else if ($field['table'] !== null) {
+                $fields[] = "{$field['table']}.{$field['field']}";
+            } else {
+                $fields[] = "{$field['field']}";
+            }
+        }
+
+        if (!empty($fields)) {
+            return implode(", ", $fields);
+        }
+        return '*';
+    }
+
+    public function render()
     {
         if (empty($this->_parts[self::UNION])) {
-            $fields = array();
-            foreach ($this->_parts[self::COLUMNS] as $field) {
-                $fieldName = current($field);
-                $fieldAlias = key($field);
-                if (is_string($fieldAlias)) {
-                    $fields[] = "{$fieldName} AS {$fieldAlias}";
-                } else {
-                    $fields[] = $fieldName;
-                }
-            }
-            if (!empty($fields)) {
-                $fields = implode(", ", $fields);
-            } else {
-                $fields = '*';
-            }
+            $fields = $this->renderColumns();
+
             if (!empty($this->_parts[self::WHERE])) {
                 $where = 'WHERE (' . implode(") AND (", $this->_parts[self::WHERE]) . ')';
             } else {

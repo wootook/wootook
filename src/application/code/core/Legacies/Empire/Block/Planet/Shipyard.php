@@ -97,7 +97,7 @@ class Legacies_Empire_Block_Planet_Shipyard
 
     public function _initChildBlocks()
     {
-        $types = Wootook_Empire_Model_Game_Types::getSingleton();
+        $types = Wootook_Empire_Helper_Config_Types::getSingleton();
 
         /** @var Wootook_Core_Block_Concat $parentBlock */
         $parentBlock = $this->getLayout()->getBlock('item-list.items');

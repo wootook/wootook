@@ -37,7 +37,7 @@ function MissionCaseSpy($FleetRow)
 {
     global $lang;
 
-    $resource = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
+    $resource = Wootook_Empire_Helper_Config_FieldsAlias::getSingleton();
 
     if ($FleetRow['fleet_start_time'] <= time()) {
 // refactored parts

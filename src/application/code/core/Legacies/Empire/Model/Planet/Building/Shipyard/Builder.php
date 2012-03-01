@@ -88,7 +88,7 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
      */
     public function checkAvailability($shipId)
     {
-        $types = Wootook_Empire_Model_Game_Types::getSingleton();
+        $types = Wootook_Empire_Helper_Config_Types::getSingleton();
 
         if (!$types->is($shipId, Legacies_Empire::TYPE_SHIP) && !$types->is($shipId, Legacies_Empire::TYPE_DEFENSE)) {
             return false;
@@ -106,9 +106,9 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
      */
     public function getMaximumBuildableElementsCount($shipId)
     {
-        $prices = Wootook_Empire_Model_Game_Prices::getSingleton();
-        $fields = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
-        $resources = Wootook_Empire_Model_Game_Resources::getSingleton();
+        $prices = Wootook_Empire_Helper_Config_Prices::getSingleton();
+        $fields = Wootook_Empire_Helper_Config_FieldsAlias::getSingleton();
+        $resources = Wootook_Empire_Helper_Config_Resources::getSingleton();
 
         $qty = 0;
         foreach ($resources as $resourceId => $_) {
@@ -182,7 +182,7 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
      */
     public function getBuildingTime($shipId, $qty)
     {
-        $prices = Wootook_Empire_Model_Game_Prices::getSingleton();
+        $prices = Wootook_Empire_Helper_Config_Prices::getSingleton();
 
         Math::setPrecision(50);
         $buildingTime = Math::mul($prices[$shipId][Legacies_Empire::BASE_BUILDING_TIME], $qty);
@@ -210,8 +210,8 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
      */
     public function getResourcesNeeded($shipId, $qty)
     {
-        $prices = Wootook_Empire_Model_Game_Prices::getSingleton();
-        $resources = Wootook_Empire_Model_Game_Resources::getSingleton();
+        $prices = Wootook_Empire_Helper_Config_Prices::getSingleton();
+        $resources = Wootook_Empire_Helper_Config_Resources::getSingleton();
 
         if (!isset($prices[$shipId])) {
             return array();
@@ -249,7 +249,7 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
      */
     public function updateQueue(Wootook_Core_DateTime $time)
     {
-        $fields = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
+        $fields = Wootook_Empire_Helper_Config_FieldsAlias::getSingleton();
 
         $elapsedTime = $time->getTimestamp() - $this->_currentPlanet->getData('b_hangar')->getTimestamp();
 
@@ -297,7 +297,7 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
             return $this;
         }
 
-        $types = Wootook_Empire_Model_Game_Types::getSingleton();
+        $types = Wootook_Empire_Helper_Config_Types::getSingleton();
         if (!$types->is($shipId, Legacies_Empire::TYPE_SHIP) && !$types->is($shipId, Legacies_Empire::TYPE_DEFENSE)) {
             return $this;
         }

@@ -250,7 +250,7 @@ class Wootook_Player_Model_Entity
             ->setData('b_building', $now)
         ;
 
-        $resourceList = Wootook_Empire_Model_Game_Resources::getSingleton();
+        $resourceList = Wootook_Empire_Helper_Config_Resources::getSingleton();
         $resourceConfig = Wootook::getGameConfig('resources/initial');
         foreach ($resourceList as $resource => $resourceData) {
             if ($resourceData['field'] === null || !isset($resourceConfig[$resource])) {
@@ -496,21 +496,21 @@ class Wootook_Player_Model_Entity
 
     public function getElement($elementId)
     {
-        $fields = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
+        $fields = Wootook_Empire_Helper_Config_FieldsAlias::getSingleton();
 
         return $this->getData($fields[$elementId]);
     }
 
     public function setElement($elementId, $level)
     {
-        $fields = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
+        $fields = Wootook_Empire_Helper_Config_FieldsAlias::getSingleton();
 
         return $this->setData($fields[$elementId], $level);
     }
 
     public function hasElement($elementId, $levelRequired = 0)
     {
-        $fields = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
+        $fields = Wootook_Empire_Helper_Config_FieldsAlias::getSingleton();
 
         return $this->hasData($fields[$elementId]) && Math::comp($this->getElement($elementId), $levelRequired) > 0;
     }
@@ -565,7 +565,7 @@ class Wootook_Player_Model_Entity
             return;
         }
 
-        if (!isset($eventData['layout']) || !$eventData['layout'] instanceof Wootook_Core_Layout) {
+        if (!isset($eventData['layout']) || !$eventData['layout'] instanceof Wootook_Core_Model_Layout) {
             return;
         }
         $layout = $eventData['layout'];

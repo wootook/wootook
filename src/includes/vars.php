@@ -46,14 +46,14 @@ $messfields = array (
     100 => "new_message"
     );
 
-$resource = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
+$resource = Wootook_Empire_Helper_Config_FieldsAlias::getSingleton();
 
-$requirements = Wootook_Empire_Model_Game_Requirements::getSingleton();
+$requirements = Wootook_Empire_Helper_Config_Requirements::getSingleton();
 
-$pricelist = Wootook_Empire_Model_Game_Prices::getSingleton();
+$pricelist = Wootook_Empire_Helper_Config_Prices::getSingleton();
 
-$CombatCaps = Wootook_Empire_Model_Game_Combat::getSingleton();
+$CombatCaps = Wootook_Empire_Helper_Config_Combat::getSingleton();
 
-$ProdGrid = Wootook_Empire_Model_Game_Production::getSingleton();
+$ProdGrid = Wootook_Empire_Helper_Config_Production::getSingleton();
 
-$reslist = Wootook_Empire_Model_Game_Types::getSingleton();
+$reslist = Wootook_Empire_Helper_Config_Types::getSingleton();

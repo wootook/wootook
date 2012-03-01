@@ -81,14 +81,14 @@ class Wootook
     /**
      *
      * Enter description here ...
-     * @var Wootook_Core_Config_Adapter_Abstract
+     * @var Wootook_Core_Helper_Config_ConfigHandler
      */
     private static $_config = null;
 
     /**
      *
      * Enter description here ...
-     * @var Wootook_Core_Config_Adapter_Abstract
+     * @var Wootook_Core_Helper_Config_ConfigHandler
      */
     private static $_globalConfig = null;
 
@@ -296,12 +296,12 @@ class Wootook
     }
 
     /**
-     * @return Wootook_Core_Controller_Request_Http
+     * @return Wootook_Core_Mvc_Controller_Request_Http
      */
     public static function getRequest()
     {
         if (self::$_request === null) {
-            self::$_request = new Wootook_Core_Controller_Request_Http();
+            self::$_request = new Wootook_Core_Mvc_Controller_Request_Http();
         }
         return self::$_request;
     }
@@ -312,12 +312,12 @@ class Wootook
     }
 
     /**
-     * @return Wootook_Core_Controller_Response_Http
+     * @return Wootook_Core_Mvc_Controller_Response_Http
      */
     public static function getResponse()
     {
         if (self::$_response === null) {
-            self::$_response = new Wootook_Core_Controller_Response_Http();
+            self::$_response = new Wootook_Core_Mvc_Controller_Response_Http();
         }
         return self::$_response;
     }
@@ -376,7 +376,7 @@ class Wootook
             return $config;
         }
 
-        $adapter = Wootook_Core_Database::getConnection('core_read');
+        $adapter = Wootook_Core_Database_Adapter_Pdo_Mysql::getConnection('core_read');
         $select = $adapter->select('core_config');
 
         switch ($type) {

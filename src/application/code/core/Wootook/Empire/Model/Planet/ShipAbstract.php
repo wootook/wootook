@@ -5,7 +5,7 @@ abstract class Wootook_Empire_Model_Planet_ShipAbstract
 {
     public function getBaseSpeed(Wootook_Player_Model_Entity $player)
     {
-        $prices = Wootook_Empire_Model_Game_Prices::getSingleton();
+        $prices = Wootook_Empire_Helper_Config_Prices::getSingleton();
 
         return $prices[Legacies_Empire::ID_SHIP_SUPERNOVA][Legacies_Empire::SHIPS_CELERITY_PRIMARY];
     }

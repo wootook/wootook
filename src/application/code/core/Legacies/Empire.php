@@ -147,7 +147,7 @@ class Legacies_Empire
 
     public static function getFieldName($id)
     {
-        $fieldsAlias = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
+        $fieldsAlias = Wootook_Empire_Helper_Config_FieldsAlias::getSingleton();
 
         if (!isset($fieldsAlias[$id])) {
             return null;

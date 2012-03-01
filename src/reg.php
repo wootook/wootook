@@ -65,7 +65,7 @@ if (!empty($_POST) && isset($_POST['username']) && isset($_POST['planet_name']) 
     exit(0);
 }
 
-$layout = new Wootook_Core_Layout();
+$layout = new Wootook_Core_Model_Layout();
 $layout->load('registration');
 $block = $layout->getBlock('registration');
 

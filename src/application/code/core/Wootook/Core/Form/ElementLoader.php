@@ -1,7 +1,7 @@
 <?php
 
 class Wootook_Core_Form_ElementLoader
-    extends Wootook_Core_PluginLoader_Abstract
+    extends Wootook_Core_PluginLoader_PluginLoader
 {
     protected $_form = null;
 

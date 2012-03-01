@@ -36,9 +36,9 @@ function MissionCaseAttack($FleetRow)
 {
     global $lang;
 
-    $pricelist = Wootook_Empire_Model_Game_Prices::getSingleton();
-    $resource = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
-    $CombatCaps = Wootook_Empire_Model_Game_Combat::getSingleton();
+    $pricelist = Wootook_Empire_Helper_Config_Prices::getSingleton();
+    $resource = Wootook_Empire_Helper_Config_FieldsAlias::getSingleton();
+    $CombatCaps = Wootook_Empire_Helper_Config_Combat::getSingleton();
 
     if ($FleetRow['fleet_mess'] == 0 && $FleetRow['fleet_start_time'] <= time()) {
 

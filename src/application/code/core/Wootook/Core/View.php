@@ -186,14 +186,14 @@ class Wootook_Core_View
             $theme = $this->getLayout()->getTheme();
         }
         if ($theme === null || empty($theme)) {
-            $theme = Wootook_Core_Layout::DEFAULT_THEME;
+            $theme = Wootook_Core_Model_Layout::DEFAULT_THEME;
         }
 
         if ($package === null || empty($package)) {
             $package = $this->getLayout()->getPackage();
         }
         if ($package === null || empty($package)) {
-            $package = Wootook_Core_Layout::DEFAULT_PACKAGE;
+            $package = Wootook_Core_Model_Layout::DEFAULT_PACKAGE;
         }
         $domain = $this->getLayout()->getDomain();
 
@@ -216,11 +216,11 @@ class Wootook_Core_View
         if (Wootook::fileExists(sprintf($pathPattern, $package, $theme))) {
             return sprintf($urlPattern, $package, $theme);
         }
-        if (Wootook::fileExists(sprintf($pathPattern, $package, Wootook_Core_Layout::DEFAULT_THEME))) {
-            return sprintf($urlPattern, $package, Wootook_Core_Layout::DEFAULT_THEME);
+        if (Wootook::fileExists(sprintf($pathPattern, $package, Wootook_Core_Model_Layout::DEFAULT_THEME))) {
+            return sprintf($urlPattern, $package, Wootook_Core_Model_Layout::DEFAULT_THEME);
         }
 
-        return sprintf($urlPattern, Wootook_Core_Layout::DEFAULT_PACKAGE, Wootook_Core_Layout::DEFAULT_THEME);
+        return sprintf($urlPattern, Wootook_Core_Model_Layout::DEFAULT_PACKAGE, Wootook_Core_Model_Layout::DEFAULT_THEME);
     }
 
     public function setPartial($name, $content)
@@ -292,7 +292,7 @@ class Wootook_Core_View
 
     /**
      *
-     * @return Wootook_Core_Layout
+     * @return Wootook_Core_Model_Layout
      */
     public function getLayout()
     {

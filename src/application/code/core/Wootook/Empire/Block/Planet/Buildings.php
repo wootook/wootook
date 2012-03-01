@@ -24,7 +24,7 @@ class Wootook_Empire_Block_Planet_Buildings
 
     public function _initChildBlocks()
     {
-        $types = Wootook_Empire_Model_Game_Types::getSingleton();
+        $types = Wootook_Empire_Helper_Config_Types::getSingleton();
         $type = Legacies_Empire::TYPE_BUILDING_PLANET;
         if ($this->getPlanet()->isMoon()) {
             $type = Legacies_Empire::TYPE_BUILDING_MOON;

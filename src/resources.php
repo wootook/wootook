@@ -76,9 +76,9 @@ function BuildRessourcePage($CurrentUser, $CurrentPlanet ) {
     $parse['resource_row']               = "";
     $BuildTemp                           = $CurrentPlanet[ 'temp_max' ];
 
-    $types = Wootook_Empire_Model_Game_Types::getSingleton();
-    $productions = Wootook_Empire_Model_Game_Production::getSingleton();
-    $fields = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
+    $types = Wootook_Empire_Helper_Config_Types::getSingleton();
+    $productions = Wootook_Empire_Helper_Config_Production::getSingleton();
+    $fields = Wootook_Empire_Helper_Config_FieldsAlias::getSingleton();
     foreach ($types['prod'] as $element) {
         // $ProdID => $element
         // $ProdGrid => $productions

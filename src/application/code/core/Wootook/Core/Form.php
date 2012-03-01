@@ -169,7 +169,7 @@ class Wootook_Core_Form
         return $this->_session;
     }
 
-    public function setRequest(Wootook_Core_Controller_Request_Http $request)
+    public function setRequest(Wootook_Core_Mvc_Controller_Request_Http $request)
     {
         $this->_request = $request;
 
@@ -179,7 +179,7 @@ class Wootook_Core_Form
     /**
      *
      * Enter description here ...
-     * @return Wootook_Core_Controller_Request_Http
+     * @return Wootook_Core_Mvc_Controller_Request_Http
      */
     public function getRequest()
     {

@@ -110,7 +110,7 @@ EOF;
     }
 }
 
-$layout = new Wootook_Core_Layout();
+$layout = new Wootook_Core_Model_Layout();
 $layout->getMessagesBlock()->prepareMessages(Wootook_Player_Model_Entity::SESSION_KEY);
 $layout->load('lost-password');
 echo $layout->render();

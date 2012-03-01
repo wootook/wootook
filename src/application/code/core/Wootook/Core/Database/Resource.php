@@ -37,7 +37,7 @@ abstract class Wootook_Core_Database_Resource
     public function getReadConnection()
     {
         if ($this->_readConnection === null) {
-            $this->_readConnection = Wootook_Core_Database::getConnection('core_read');
+            $this->_readConnection = $this->getConnection('core_read');
         }
 
         return $this->_readConnection;
@@ -45,10 +45,10 @@ abstract class Wootook_Core_Database_Resource
 
     public function setReadConnection($connection)
     {
-        if ($connection instanceof Wootook_Core_Database) {
+        if ($connection instanceof Wootook_Core_Database_Adapter_Pdo_Mysql) {
             $this->_readConnection = $connection;
         } else if (is_string($connection)) {
-            $this->_readConnection = Wootook_Core_Database::getConnection($connection);
+            $this->_readConnection = $this->getConnection($connection);
         } else {
             throw new Wootook_Core_Exception_RuntimeException(
                 'First parameter should be either a database connection object or a string identifier.');
@@ -60,17 +60,17 @@ abstract class Wootook_Core_Database_Resource
     public function getWriteConnection()
     {
         if ($this->_writeConnection === null) {
-            $this->_writeConnection = Wootook_Core_Database::getConnection('core_write');
+            $this->_writeConnection = $this->getConnection('core_write');
         }
         return $this->_writeConnection;
     }
 
     public function setWriteConnection($connection)
     {
-        if ($connection instanceof Wootook_Core_Database) {
+        if ($connection instanceof Wootook_Core_Database_Adapter_Pdo_Mysql) {
             $this->_readConnection = $connection;
         } else if (is_string($connection)) {
-            $this->_readConnection = Wootook_Core_Database::getConnection($connection);
+            $this->_readConnection = $this->getConnection($connection);
         } else {
             throw new Wootook_Core_Exception_RuntimeException(
                 'First parameter should be either a database connection object or a string identifier.');

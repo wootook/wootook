@@ -1,7 +1,7 @@
 <?php
 
 class Wootook_Core_Config_Adapter_Array
-    extends Wootook_Core_Config_Adapter_Abstract
+    extends Wootook_Core_Config_Adapter_Adapter
 {
     public function __construct($filename = null)
     {

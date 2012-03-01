@@ -199,7 +199,7 @@ class Wootook_Empire_Model_Planet
     public function updateStorages($time = null)
     {
         Math::setPrecision(50);
-        $resources = Wootook_Empire_Model_Game_Resources::getSingleton();
+        $resources = Wootook_Empire_Helper_Config_Resources::getSingleton();
         foreach ($resources->getAllDatas() as $resource => $resourceData) {
             if (!isset($resourceData['storage']) || $resourceData['storage'] === null) {
                 continue;
@@ -232,7 +232,7 @@ class Wootook_Empire_Model_Planet
 
     public function updateBuildingFields()
     {
-        $types = Wootook_Empire_Model_Game_Types::getSingleton();
+        $types = Wootook_Empire_Helper_Config_Types::getSingleton();
 
         if ($this->isPlanet()) {
             $filter = Legacies_Empire::TYPE_BUILDING_PLANET;
@@ -254,9 +254,9 @@ class Wootook_Empire_Model_Planet
 
     public function updateResourceProduction()
     {
-        $types = Wootook_Empire_Model_Game_Types::getSingleton();
-        $resources = Wootook_Empire_Model_Game_Resources::getSingleton();
-        $production = Wootook_Empire_Model_Game_Production::getSingleton();
+        $types = Wootook_Empire_Helper_Config_Types::getSingleton();
+        $resources = Wootook_Empire_Helper_Config_Resources::getSingleton();
+        $production = Wootook_Empire_Helper_Config_Production::getSingleton();
 
         if (!$this->isPlanet()) {
             return $this;
@@ -382,7 +382,7 @@ class Wootook_Empire_Model_Planet
 
     public function updateResources(Wootook_Core_DateTime $time = null)
     {
-        $resources = Wootook_Empire_Model_Game_Resources::getSingleton();
+        $resources = Wootook_Empire_Helper_Config_Resources::getSingleton();
 
         if ($time === null) {
             $time = new Wootook_Core_DateTime();
@@ -407,7 +407,7 @@ class Wootook_Empire_Model_Planet
 
     public static function getProductionElementInstance($buildingId)
     {
-        $production = Wootook_Empire_Model_Game_Production::getSingleton();
+        $production = Wootook_Empire_Helper_Config_Production::getSingleton();
 
         if (!isset(self::$_productionInstances[$buildingId])) {
             if (!isset($production[$buildingId])) {
@@ -647,29 +647,29 @@ class Wootook_Empire_Model_Planet
 
     public function getElement($elementId)
     {
-        $fields = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
+        $fields = Wootook_Empire_Helper_Config_FieldsAlias::getSingleton();
 
         return $this->getData($fields[$elementId]);
     }
 
     public function setElement($elementId, $level)
     {
-        $fields = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
+        $fields = Wootook_Empire_Helper_Config_FieldsAlias::getSingleton();
 
         return $this->setData($fields[$elementId], $level);
     }
 
     public function hasElement($elementId, $levelRequired = 0)
     {
-        $fields = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
+        $fields = Wootook_Empire_Helper_Config_FieldsAlias::getSingleton();
 
         return $this->hasData($fields[$elementId]) && Math::comp($this->getElement($elementId), $levelRequired) > 0;
     }
 
     public function appendBuildingQueue($buildingId, $destroy = false, Wootook_Core_DateTime $time = null)
     {
-        $types = Wootook_Empire_Model_Game_Types::getSingleton();
-        $prices = Wootook_Empire_Model_Game_Prices::getSingleton();
+        $types = Wootook_Empire_Helper_Config_Types::getSingleton();
+        $prices = Wootook_Empire_Helper_Config_Prices::getSingleton();
 
         if ($time === null) {
             $time = new Wootook_Core_DateTime();
@@ -922,7 +922,7 @@ class Wootook_Empire_Model_Planet
 
     public function getResourceAmount($resourceType)
     {
-        $resources = Wootook_Empire_Model_Game_Resources::getSingleton();
+        $resources = Wootook_Empire_Helper_Config_Resources::getSingleton();
 
         $resourceConfig = $resources->getData($resourceType);
         if ($resourceConfig === null) {
@@ -933,7 +933,7 @@ class Wootook_Empire_Model_Planet
 
     public function getResourceCap($resourceType)
     {
-        $resources = Wootook_Empire_Model_Game_Resources::getSingleton();
+        $resources = Wootook_Empire_Helper_Config_Resources::getSingleton();
 
         $resourceConfig = $resources->getData($resourceType);
         if ($resourceConfig === null) {

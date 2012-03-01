@@ -41,7 +41,7 @@ class Legacies_Empire_Model_Planet_Ship_LargeTransport
 
     public function getBaseSpeed(Wootook_Player_Model_Entity $player)
     {
-        $prices = Wootook_Empire_Model_Game_Prices::getSingleton();
+        $prices = Wootook_Empire_Helper_Config_Prices::getSingleton();
 
         return $prices[Legacies_Empire::ID_SHIP_LARGE_TRANSPORT][Legacies_Empire::SHIPS_CELERITY_PRIMARY];
     }

@@ -141,8 +141,8 @@ abstract class Wootook_Empire_Model_BuilderAbstract
      */
     public function checkAvailability($typeId)
     {
-        $types = Wootook_Empire_Model_Game_Types::getSingleton();
-        $requirements = Wootook_Empire_Model_Game_Requirements::getSingleton();
+        $types = Wootook_Empire_Helper_Config_Types::getSingleton();
+        $requirements = Wootook_Empire_Helper_Config_Requirements::getSingleton();
 
         if (!isset($requirements[$typeId]) || empty($requirements[$typeId])) {
             return true;

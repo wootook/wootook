@@ -21,7 +21,7 @@ abstract class Wootook_Core_Resource_CollectionAbstract
 
     protected $_items = array();
 
-    public function __construct(Wootook_Core_Database $connection = null)
+    public function __construct(Wootook_Core_Database_Adapter_Pdo_Mysql $connection = null)
     {
         $this->setReadConnection($connection);
 
@@ -65,19 +65,15 @@ abstract class Wootook_Core_Resource_CollectionAbstract
 
     public function getReadConnection()
     {
-        if ($this->_connection === null) {
-            $this->_connection = Wootook_Core_Database::getConnection('core_read');
-        }
-
         return $this->_connection;
     }
 
     public function setReadConnection($connection)
     {
-        if ($connection instanceof Wootook_Core_Database) {
+        if ($connection instanceof Wootook_Core_Database_Adapter_Pdo_Mysql) {
             $this->_connection = $connection;
         } else if (is_string($connection)) {
-            $this->_connection = Wootook_Core_Database::getConnection($connection);
+            $this->_connection = Wootook_Core_Database_Adapter_Pdo_Mysql::getConnection($connection);
         } else {
             throw new Wootook_Core_Exception_RuntimeException(
                 'First parameter should be either a database connection object or a string identifier.');
@@ -251,9 +247,37 @@ abstract class Wootook_Core_Resource_CollectionAbstract
 
         $adapter = $this->getReadConnection();
 
+        $simpleOperatorList = array(
+            'eq'   => '=',
+            'neq'  => '!=',
+            'lt'   => '<',
+            'gt'   => '>',
+            'lteq' => '<=',
+            'gteq' => '>='
+            );
+
+        if (in_array($operator, $simpleOperatorList)) {
+            if ($value === true) {
+                return "{$adapter->quoteIdentifier($field)}{$simpleOperatorList[$operator]}TRUE";
+            } else if ($value === false) {
+                return "{$adapter->quoteIdentifier($field)}{$simpleOperatorList[$operator]}FALSE";
+            } else {
+                return "{$adapter->quoteIdentifier($field)}{$simpleOperatorList[$operator]}{$adapter->quote($value)}";
+            }
+        }
+
         switch (strtolower($operator)) {
+        case 'null':
+            if ($value == false) {
+                return "{$adapter->quoteIdentifier($field)} IS NOT NULL";
+            } else {
+                return "{$adapter->quoteIdentifier($field)} IS NULL";
+            }
+            break;
+
         case 'and':
         case 'or':
+        case 'xor':
             $where = array();
             foreach ($value as $valueItem) {
                 $subOperator = key($valueItem);
@@ -283,24 +307,7 @@ abstract class Wootook_Core_Resource_CollectionAbstract
                 return '((' . implode(') ' . strtoupper($operator) . ' (', $where) . '))';
             }
             break;
-        case 'eq':
-            return "{$adapter->quoteIdentifier($field)}={$adapter->quote($value)}";
-            break;
-        case 'neq':
-            return "{$adapter->quoteIdentifier($field)}!={$adapter->quote($value)}";
-            break;
-        case 'lt':
-            return "{$adapter->quoteIdentifier($field)}<{$adapter->quote($value)}";
-            break;
-        case 'gt':
-            return "{$adapter->quoteIdentifier($field)}>{$adapter->quote($value)}";
-            break;
-        case 'lteq':
-            return "{$adapter->quoteIdentifier($field)}<={$adapter->quote($value)}";
-            break;
-        case 'gteq':
-            return "{$adapter->quoteIdentifier($field)}>={$adapter->quote($value)}";
-            break;
+
         case 'in':
             $valueList = array();
             foreach ($value as $setValue) {
@@ -309,6 +316,7 @@ abstract class Wootook_Core_Resource_CollectionAbstract
             $implodedList = implode(',', $valueList);
             return "{$adapter->quoteIdentifier($field)} IN({$implodedList})";
             break;
+
         case 'nin':
             $valueList = array();
             foreach ($value as $setValue) {
@@ -317,18 +325,29 @@ abstract class Wootook_Core_Resource_CollectionAbstract
             $implodedList = implode(',', $valueList);
             return "{$adapter->quoteIdentifier($field)} NOT IN({$implodedList})";
             break;
+
         case 'finset':
-            return "0 < FIND_IN_SET({$adapter->quote($value)}, {$adapter->quoteIdentifier($field)})";
+            if (is_array($value)) {
+                $subField = current($value);
+                $subOperator = key($value);
+
+                if (in_array($subOperator, $simpleOperatorList)) {
+                    return "FIND_IN_SET({$adapter->quote($value)}, {$adapter->quoteIdentifier($field)}){$simpleOperatorList[$operator]}{$adapter->quoteIdentifier($subField)}";
+                }
+            } else {
+                return "0 < FIND_IN_SET({$adapter->quote($value)}, {$adapter->quoteIdentifier($field)})";
+            }
             break;
+
         case 'nfinset':
             return "0 = FIND_IN_SET({$adapter->quote($value)}, {$adapter->quoteIdentifier($field)})";
             break;
+
         case 'date':
             $dateValues = array();
-            $mapper = $this->getDataMapper()->load('DateTime');
             if (isset($value['from'])) {
                 if ($value['from'] instanceof Wootook_Core_DateTime) {
-                    $dateValues['from'] = "{$adapter->quoteIdentifier($field)} >= {$adapter->quote($mapper->encode($value['from']))}";
+                    $dateValues['from'] = "{$adapter->quoteIdentifier($field)} >= {$adapter->quote($this->getDataMapper()->load('DateTime')->encode($value['from']))}";
                 } else if (is_string($value['from'])) {
                     $dateValues['from'] = "{$adapter->quoteIdentifier($field)} >= {$adapter->quote($value['from'])}";
                 } else if (is_numeric($value['from'])) {
@@ -337,7 +356,7 @@ abstract class Wootook_Core_Resource_CollectionAbstract
             }
             if (isset($value['to'])) {
                 if ($value['to'] instanceof Wootook_Core_DateTime) {
-                    $dateValues['to'] = "{$adapter->quoteIdentifier($field)} <= {$adapter->quote($mapper->encode($value['to']))}";
+                    $dateValues['to'] = "{$adapter->quoteIdentifier($field)} <= {$adapter->quote($this->getDataMapper()->load('DateTime')->encode($value['to']))}";
                 } else if (is_string($value['to'])) {
                     $dateValues['to'] = "{$adapter->quoteIdentifier($field)} <= {$adapter->quote($value['to'])}";
                 } else if (is_numeric($value['to'])) {
@@ -348,6 +367,7 @@ abstract class Wootook_Core_Resource_CollectionAbstract
             return '(' . implode(' AND ', $dateValues) . ')';
             break;
         }
+
         return null;
     }
 

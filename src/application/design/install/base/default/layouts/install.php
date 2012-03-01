@@ -1,6 +1,6 @@
 <?php return array(
     'install' => array(
-        'update' => '2columns-left',
+        'update' => array('2columns-left'),
         'reference' => array(
             'content' => array(
                 'children' => array(
@@ -14,7 +14,7 @@
         ),
 
     'install.intro' => array(
-        'update' => 'install',
+        'update' => array('install'),
         'reference' => array(
             'content' => array(
                 'children' => array(
@@ -39,7 +39,7 @@
         ),
 
     'install.step.system' => array(
-        'update' => 'install',
+        'update' => array('install'),
         'reference' => array(
             'content' => array(
                 'children' => array(
@@ -64,7 +64,7 @@
         ),
 
     'install.step.database' => array(
-        'update' => 'install',
+        'update' => array('install'),
         'reference' => array(
             'content' => array(
                 'children' => array(
@@ -89,7 +89,7 @@
         ),
 
     'install.step.universe' => array(
-        'update' => 'install',
+        'update' => array('install'),
         'reference' => array(
             'content' => array(
                 'children' => array(
@@ -114,7 +114,7 @@
         ),
 
     'install.step.profile' => array(
-        'update' => 'install',
+        'update' => array('install'),
         'reference' => array(
             'content' => array(
                 'children' => array(
@@ -139,7 +139,7 @@
         ),
 
     'install.summary' => array(
-        'update' => 'install',
+        'update' => array('install'),
         'reference' => array(
             'content' => array(
                 'children' => array(

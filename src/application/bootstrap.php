@@ -96,11 +96,11 @@ if (defined('IN_ADMIN')) {
 include ROOT_PATH . 'includes/constants.php';
 
 Wootook_Core_ErrorProfiler::register();
-Wootook_Core_Model_Config_Events::registerEvents();
+Wootook_Core_Helper_Config_Events::registerEvents();
 
-if (!defined('IN_INSTALL') && 0 === filesize(APPLICATION_PATH . 'configs' . DIRECTORY_SEPARATOR . 'local.php')) {
+if (!defined('IN_INSTALL') && !Wootook::fileExists(APPLICATION_PATH . 'configs' . DIRECTORY_SEPARATOR . 'local.php')) {
     Wootook::getResponse()
-        ->setRedirect(Wootook::getStaticUrl('install/'), Wootook_Core_Controller_Response_Http::REDIRECT_TEMPORARY)
+        ->setRedirect(Wootook::getStaticUrl('install/'), Wootook_Core_Mvc_Controller_Response_Http::REDIRECT_TEMPORARY)
         ->sendHeaders();
     exit(0);
 }
@@ -130,7 +130,7 @@ if (!defined('DISABLE_IDENTITY_CHECK')) {
     }
 
     if (!Wootook::getGameConfig('game/general/active') && !in_array($user->getData('authlevel'), array(LEVEL_ADMIN, LEVEL_MODERATOR, LEVEL_OPERATOR))) {
-        $layout = new Wootook_Core_Layout(Wootook_Core_Layout::DOMAIN_FRONTEND);
+        $layout = new Wootook_Core_Model_Layout(Wootook_Core_Model_Layout::DOMAIN_FRONTEND);
         $layout->load('message');
 
         $block = $layout->getBlock('message');

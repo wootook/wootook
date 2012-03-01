@@ -16,15 +16,15 @@ class Wootook_Core_Block_Template
             $package = $this->getLayout()->getPackage();
             $theme = $this->getLayout()->getTheme();
 
-            if ($package !== Wootook_Core_Layout::DEFAULT_PACKAGE) {
-                if ($theme !== Wootook_Core_Layout::DEFAULT_THEME) {
+            if ($package !== Wootook_Core_Model_Layout::DEFAULT_PACKAGE) {
+                if ($theme !== Wootook_Core_Model_Layout::DEFAULT_THEME) {
                     $path = sprintf($pattern, $package, $theme);
                     if (Wootook::fileExists($path)) {
                         return $path;
                     }
                 }
 
-                $path = sprintf($pattern, $package, Wootook_Core_Layout::DEFAULT_THEME);
+                $path = sprintf($pattern, $package, Wootook_Core_Model_Layout::DEFAULT_THEME);
                 if (Wootook::fileExists($path)) {
                     return $path;
                 }
@@ -34,7 +34,7 @@ class Wootook_Core_Block_Template
                 ->addException(new Wootook_Core_Exception_RuntimeException("No layout defined."));
         }
 
-        $path = sprintf($pattern, Wootook_Core_Layout::DEFAULT_PACKAGE, Wootook_Core_Layout::DEFAULT_THEME);
+        $path = sprintf($pattern, Wootook_Core_Model_Layout::DEFAULT_PACKAGE, Wootook_Core_Model_Layout::DEFAULT_THEME);
         if (Wootook::fileExists($path)) {
             return $path;
         }

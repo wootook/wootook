@@ -41,7 +41,7 @@ $mode = isset($_GET['mode']) ? $_GET['mode'] : null;
 switch ($mode) {
 case 'fleet':
     if ($planet->getElement(Legacies_Empire::ID_BUILDING_SHIPYARD) < 1) {
-        $layout = new Wootook_Core_Layout(Wootook_Core_Layout::DOMAIN_FRONTEND);
+        $layout = new Wootook_Core_Model_Layout(Wootook_Core_Model_Layout::DOMAIN_FRONTEND);
         $layout->load('message');
 
         $block = $layout->getBlock('message');
@@ -69,7 +69,7 @@ case 'fleet':
         exit(0);
     }
 
-    $layout = new Wootook_Core_Layout();
+    $layout = new Wootook_Core_Model_Layout();
     $layout->load('planet.shipyard');
 
     echo $layout->render();
@@ -77,7 +77,7 @@ case 'fleet':
 
 case 'research':
     if ($planet->getElement(Legacies_Empire::ID_BUILDING_RESEARCH_LAB) < 1) {
-        $layout = new Wootook_Core_Layout();
+        $layout = new Wootook_Core_Model_Layout();
         $layout->load('message');
 
         $block = $layout->getBlock('message');
@@ -108,7 +108,7 @@ case 'research':
         exit(0);
     }
 
-    $layout = new Wootook_Core_Layout();
+    $layout = new Wootook_Core_Model_Layout();
     $layout->load('planet.research-lab');
 
     echo $layout->render();
@@ -116,7 +116,7 @@ case 'research':
 
 case 'defense':
     if ($planet->getElement(Legacies_Empire::ID_BUILDING_SHIPYARD) < 1) {
-        $layout = new Wootook_Core_Layout();
+        $layout = new Wootook_Core_Model_Layout();
         $layout->load('message');
 
         $block = $layout->getBlock('message');
@@ -144,7 +144,7 @@ case 'defense':
         exit(0);
     }
 
-    $layout = new Wootook_Core_Layout();
+    $layout = new Wootook_Core_Model_Layout();
     $layout->load('planet.defense');
 
     /** @var Legacies_Empire_Block_Planet_Shipyard $block */
@@ -174,7 +174,7 @@ default:
         exit(0);
     }
 
-    $layout = new Wootook_Core_Layout();
+    $layout = new Wootook_Core_Model_Layout();
     $layout->load('planet.buildings');
     echo $layout->render();
     break;

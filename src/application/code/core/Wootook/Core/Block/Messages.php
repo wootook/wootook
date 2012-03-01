@@ -17,7 +17,11 @@ class Wootook_Core_Block_Messages
         foreach ($this->_storages as $namespace) {
             $session = Wootook::getSession($namespace);
 
-            foreach ($session->getMessages() as $messageLevel => $messageList) {
+            $messageList = $session->getMessages();
+            if (!is_array($messageList)) {
+                continue;
+            }
+            foreach ($messageList as $messageLevel => $messageList) {
                 if (!isset($messages[$messageLevel])) {
                     $messages[$messageLevel] = $messageList;
                 } else {

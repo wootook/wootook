@@ -90,9 +90,8 @@ Wootook::setGame(1, $game);
 */
 include ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . 'constants.php';
 
-Wootook_Core_Time::init();
 Wootook_Core_ErrorProfiler::register();
-Wootook_Core_Model_Config_Events::registerEvents();
+Wootook_Core_Helper_Config_Events::registerEvents();
 
 $mode     = isset($_GET['mode']) ? strval($_GET['mode']) : 'intro';
 $step     = isset($_GET['step']) ? intval($_GET['step']) : 1;
@@ -101,13 +100,18 @@ $nextStep = $step + 1;
 
 $baseUrl = (isset($_SERVER["HTTPS"]) && strtolower($_SERVER["HTTPS"]) == "on" ? 'https://' : 'http://')
     . $_SERVER["SERVER_NAME"] . ($_SERVER["SERVER_PORT"] != "80" ? ":{$_SERVER["SERVER_PORT"]}" : '');
+
+$_SERVER['REQUEST_URI'] = '/test/test3/install/index.php';
 if (isset($_SERVER['REQUEST_URI'])) {
+    var_dump(strrpos($_SERVER['REQUEST_URI'], '/'), (strlen($_SERVER['REQUEST_URI']) - 1));
     if (strrpos($_SERVER['REQUEST_URI'], '/') == (strlen($_SERVER['REQUEST_URI']) - 1)) {
-        $baseUrl .= dirname($_SERVER['REQUEST_URI']) . '/';
+        $baseUrl .= substr($_SERVER['REQUEST_URI'], 0, strpos(substr($_SERVER['REQUEST_URI'], 0, -1), '/'));
     } else {
-        $baseUrl .= dirname(dirname($_SERVER['REQUEST_URI'])) . '/';
+        //$baseUrl .= substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/', 1))) . '/';
     }
 }
+var_dump($baseUrl);
+die();
 $session = Wootook::getSession('install');
 
 $website = new Wootook_Core_Model_Website();
@@ -123,6 +127,7 @@ $configRewrites = array(
         'web' => array(
             'url' => array(
                 'base' => $baseUrl,
+                'link' => $baseUrl,
                 'skin' => $baseUrl . 'skin/',
                 'js' => $baseUrl . 'js/',
                 'css' => $baseUrl . 'css/'
@@ -131,7 +136,7 @@ $configRewrites = array(
         'system' => array(
             'path' => array(
                 'base'   => ROOT_PATH,
-                'design' => ROOT_PATH . 'design' . DIRECTORY_SEPARATOR,
+                'design' => APPLICATION_PATH . 'design' . DIRECTORY_SEPARATOR,
                 'skin'   => ROOT_PATH . 'skin' . DIRECTORY_SEPARATOR,
                 )
             ),
@@ -176,10 +181,10 @@ if (is_array($config)) {
     Wootook::loadConfig($configRewrites);
 }
 
-$layout = new Wootook_Core_Layout('install');
+$layout = new Wootook_Core_Model_Layout('install');
 
-$request = new Wootook_Core_Controller_Request_Http();
-$response = new Wootook_Core_Controller_Response_Http();
+$request = new Wootook_Core_Mvc_Controller_Request_Http();
+$response = new Wootook_Core_Mvc_Controller_Response_Http();
 
 switch ($mode) {
 case 'intro':
@@ -191,7 +196,7 @@ case 'intro':
 case 'install':
     if ($step > $session->getData('step')) {
         $session->setData('step', 0);
-        $response->setRedirect("?mode=intro", Wootook_Core_Controller_Response_Http::REDIRECT_TEMPORARY);
+        $response->setRedirect("?mode=intro", Wootook_Core_Mvc_Controller_Response_Http::REDIRECT_TEMPORARY);
         $response->sendHeaders();
         exit(0);
     }
@@ -321,7 +326,7 @@ case 'install':
                     $database = $request->getPost('dbname');
                     $port = $request->getPost('port');
 
-                    $connection = new Wootook_Core_Database("mysql:dbname={$database};host={$hostname};port={$port}", $username, $password);
+                    $connection = new Wootook_Core_Database_Adapter_Pdo_Mysql("mysql:dbname={$database};host={$hostname};port={$port}", $username, $password);
                     $data['status'] = 'success';
                 } catch (PDOException $e) {
                     $data['status'] = 'error';

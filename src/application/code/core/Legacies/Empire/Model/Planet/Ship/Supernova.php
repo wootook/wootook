@@ -49,7 +49,7 @@ class Legacies_Empire_Model_Planet_Ship_Supernova
 
     public function getBaseSpeed(Wootook_Player_Model_Entity $player)
     {
-        $prices = Wootook_Empire_Model_Game_Prices::getSingleton();
+        $prices = Wootook_Empire_Helper_Config_Prices::getSingleton();
 
         if ($player->getElement(Legacies_Empire::ID_RESEARCH_HYPERSPACE_DRIVE) < self::REQUIREMENT_TO_UPGRADE_CELERITY__RESEARCH_HYPERSPACE_DRIVE &&
             $player->getElement(Legacies_Empire::ID_RESEARCH_HYPERSPACE_TECHNOLOGY) < self::REQUIREMENT_TO_UPGRADE_CELERITY__RESEARCH_HYPERSPACE_TECHNOLOGY) {

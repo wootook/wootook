@@ -149,7 +149,7 @@ function GetBuildingPrice($currentUser, $currentPlanet, $buildingId, $incrementa
         $currentUser = Wootook_Player_Model_Entity::factory($currentUser['id']);
     }
 
-    $types = Wootook_Empire_Model_Game_Types::getSingleton();
+    $types = Wootook_Empire_Helper_Config_Types::getSingleton();
 
     if ($types->is($buildingId, Legacies_Empire::TYPE_BUILDING)) {
         $level = $currentPlanet->getElement($buildingId);
@@ -202,7 +202,7 @@ function GetBuildingTime($currentUser, $currentPlanet, $buildingId)
         $currentUser = Wootook_Player_Model_Entity::factory($currentUser['id']);
     }
 
-    $types = Wootook_Empire_Model_Game_Types::getSingleton();
+    $types = Wootook_Empire_Helper_Config_Types::getSingleton();
 
     if ($types->is($buildingId, Legacies_Empire::TYPE_BUILDING)) {
         return $currentPlanet->getBuildingTime($buildingId, 1);
@@ -237,7 +237,7 @@ function GetBuildingTimeLevel($currentUser, $currentPlanet, $buildingId, $level)
         $currentUser = Wootook_Player_Model_Entity::factory($currentUser['id']);
     }
 
-    $types = Wootook_Empire_Model_Game_Types::getSingleton();
+    $types = Wootook_Empire_Helper_Config_Types::getSingleton();
 
     if ($types->is($buildingId, Legacies_Empire::TYPE_BUILDING)) {
         return $currentPlanet->getBuildingTime($buildingId, $level);
@@ -274,8 +274,8 @@ function GetElementPrice($currentUser, $currentPlanet, $buildingId, $userfactor 
 
     global $lang;
 
-    $prices = Wootook_Empire_Model_Game_Prices::getSingleton();
-    $types = Wootook_Empire_Model_Game_Types::getSingleton();
+    $prices = Wootook_Empire_Helper_Config_Prices::getSingleton();
+    $types = Wootook_Empire_Helper_Config_Types::getSingleton();
 
     $array = array(
         Legacies_Empire::RESOURCE_METAL     => $lang["Metal"],
@@ -496,17 +496,17 @@ function CancelBuildingFromQueue($currentPlanet, $currentUser)
 class Deprecated
 {
     /**
-     * @var Wootook_Core_Layout $layout
+     * @var Wootook_Core_Model_Layout $layout
      */
     public static $layout = null;
 
     /**
-     * @return Wootook_Core_Layout
+     * @return Wootook_Core_Model_Layout
      */
     public static function getLayout($adminPage = false)
     {
         if (self::$layout === null) {
-            self::$layout = new Wootook_Core_Layout();
+            self::$layout = new Wootook_Core_Model_Layout();
         }
 
         return self::$layout;
@@ -531,7 +531,7 @@ function display($page, $title = '', $topnav = true, $metatags = '', $adminPage 
     if ($adminPage === false) {
         $layout->load('empire');
     } else {
-        $layout->setDomain(Wootook_Core_Layout::DOMAIN_BACKEND);
+        $layout->setDomain(Wootook_Core_Model_Layout::DOMAIN_BACKEND);
         $layout->load('admin');
     }
 
@@ -627,9 +627,9 @@ function doquery($query, $table, $fetch = false)
     defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
 
     /**
-     * @var Wootook_Core_Database $database
+     * @var Wootook_Core_Database_Adapter_Pdo_Mysql $database
      */
-    $database = Wootook_Core_Database::getSingleton();
+    $database = Wootook_Core_Database_ConnectionManager::getSingleton()->getConnection(Wootook_Core_Database_ConnectionManager::DEFAULT_CONNECTION_NAME);
 
     $sql = str_replace("{{table}}", $database->getTable($table), $query);
 

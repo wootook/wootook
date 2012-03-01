@@ -31,7 +31,7 @@
 define('DISABLE_IDENTITY_CHECK', true);
 require_once dirname(__FILE__) .'/application/bootstrap.php';
 
-$frontController = new Wootook_Core_Controller_Front(Wootook::getRequest(), Wootook::getResponse());
+$frontController = new Wootook_Core_Mvc_Controller_Front(Wootook::getRequest(), Wootook::getResponse());
 
 $frontController
     ->dispatch()

@@ -100,7 +100,7 @@ class Legacies_Empire_Model_Planet_Building_ResearchLab_Builder
      */
     public function checkAvailability($technologyId)
     {
-        $types = Wootook_Empire_Model_Game_Types::getSingleton();
+        $types = Wootook_Empire_Helper_Config_Types::getSingleton();
 
         if (!$types->is($technologyId, Legacies_Empire::TYPE_RESEARCH)) {
             return false;
@@ -117,7 +117,7 @@ class Legacies_Empire_Model_Planet_Building_ResearchLab_Builder
      */
     public function getBuildingTime($technologyId, $level)
     {
-        $prices = Wootook_Empire_Model_Game_Prices::getSingleton();
+        $prices = Wootook_Empire_Helper_Config_Prices::getSingleton();
 
         Math::setPrecision(50);
         $firstLevelTime = $prices[$technologyId][Legacies_Empire::BASE_BUILDING_TIME];
@@ -150,8 +150,8 @@ class Legacies_Empire_Model_Planet_Building_ResearchLab_Builder
      */
     public function getResourcesNeeded($technologyId, $level)
     {
-        $prices = Wootook_Empire_Model_Game_Prices::getSingleton();
-        $resources = Wootook_Empire_Model_Game_Resources::getSingleton();
+        $prices = Wootook_Empire_Helper_Config_Prices::getSingleton();
+        $resources = Wootook_Empire_Helper_Config_Resources::getSingleton();
 
         if (!isset($prices[$technologyId])) {
             return array();
@@ -178,7 +178,7 @@ class Legacies_Empire_Model_Planet_Building_ResearchLab_Builder
      */
     public function updateQueue(Wootook_Core_DateTime $time)
     {
-        $fields = Wootook_Empire_Model_Game_FieldsAlias::getSingleton();
+        $fields = Wootook_Empire_Helper_Config_FieldsAlias::getSingleton();
 
         $startingTime = clone $this->_currentPlanet->getData(self::FIELD_DATETIME);
 
@@ -242,7 +242,7 @@ class Legacies_Empire_Model_Planet_Building_ResearchLab_Builder
             return $this;
         }
 
-        $types = Wootook_Empire_Model_Game_Types::getSingleton();
+        $types = Wootook_Empire_Helper_Config_Types::getSingleton();
 
         if (!Math::isPositive($level)) {
             return $this;

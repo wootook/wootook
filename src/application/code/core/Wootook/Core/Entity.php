@@ -45,6 +45,9 @@ abstract class Wootook_Core_Entity
             throw new Wootook_Core_Exception_DataAccessException('Could not load data: no read connection configured.');
         }
 
+        $select = $database->select()
+            ->from($database->getTable($this->getTableName()))
+            ->where($idFieldName)
         $sql =<<<SQL_EOF
 SELECT * FROM {$database->getTable($this->getTableName())}
     WHERE {$idFieldName}=:id

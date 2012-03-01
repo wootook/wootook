@@ -28,7 +28,7 @@
  *
  */
 
-$CombatCaps = Wootook_Empire_Model_Game_Combat::getSingleton();
+$CombatCaps = Wootook_Empire_Helper_Config_Combat::getSingleton();
 
 $AtFleet = array ( 203 => 2 );
 $AtTechn = array ( 109 => 3, 110 => 5, 111 => 3 );

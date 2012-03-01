@@ -1,7 +1,7 @@
 <?php
 
 class Wootook_Empire_Model_Planet_PluginLoader
-    extends Wootook_Core_PluginLoader_Abstract
+    extends Wootook_Core_PluginLoader_PluginLoader
 {
     protected $_currentPlayer = null;
     protected $_currentPlanet = null;
