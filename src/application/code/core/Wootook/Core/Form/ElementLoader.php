@@ -18,7 +18,7 @@ class Wootook_Core_Form_ElementLoader
         }
     }
 
-    protected function _load($className, $useSingleton)
+    protected function _load($className, $useSingleton, Array $constructorParams = array())
     {
         $reflection = new ReflectionClass($className);
         if ($useSingleton && $reflection->implementsInterface('Wootook_Core_Singleton')) {

@@ -1,7 +1,7 @@
 <?php
 
 class Wootook_Core_Database_Orm_DataMapper_Config
-    extends Wootook_Core_Database_Orm_DataMapper_Array
+    extends Wootook_Core_Database_Orm_DataMapper_FieldMapper
 {
     public function encode($value)
     {

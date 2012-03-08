@@ -5,7 +5,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  * @see http://wootook.org/
  *
- * Copyright (c) 2009-2011, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-2011, XNova Support Team <http://wootook.org>
  * Copyright (c) 2011-Present, Wootook Contributors <http://wootook.org>
  * All rights reserved.
  *

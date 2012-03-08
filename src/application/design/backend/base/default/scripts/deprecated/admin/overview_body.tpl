@@ -5,7 +5,7 @@
 	<td class="c" colspan="2"><?php echo $this->getData('adm_ov_infos')?></td>
 </tr><tr>
 	<td class="b" style="color:#FFFFFF"><?php echo $this->getData('adm_ov_yourv')?>: <strong><?php echo $this->getData('adm_ov_data_yourv')?></strong></td>
-	<td class="b" style="color:#FFFFFF"><?php echo $this->getData('adm_ov_lastv')?>: <b><a style="color:orange;" href="http://www.xnova-ng.org/"><?php echo $this->getData('adm_ov_here')?></a></b></td>
+	<td class="b" style="color:#FFFFFF"><?php echo $this->getData('adm_ov_lastv')?>: <b><a style="color:orange;" href="http://wootook.org/"><?php echo $this->getData('adm_ov_here')?></a></b></td>
 </tr>
 </table>
 <br>

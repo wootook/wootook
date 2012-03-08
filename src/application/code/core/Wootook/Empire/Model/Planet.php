@@ -841,7 +841,8 @@ class Wootook_Empire_Model_Planet
 
     public static function searchMostFreeSystems($galaxyList = null, $systemList = null)
     {
-        $adapter = $this->getReadConnection();
+        $adapter = Wootook_Core_Database_ConnectionManager::getSingleton()
+            ->getConnection('core_read');
         $select = $adapter->select(array('galaxy' => 'galaxy'));
         $select
             ->column(array(
@@ -859,7 +860,7 @@ class Wootook_Empire_Model_Planet
 
         if ($galaxyList !== null) {
             array_walk($galaxyList, array(__CLASS__, '_cleanItemRanges'));
-            $collection->where('galaxy.galaxy IN(' . implode(', ', $galaxyList) . ')');
+            $select->where('galaxy.galaxy IN(' . implode(', ', $galaxyList) . ')');
         }
 
         if ($systemList === null && Wootook::getGameConfig('user/registration/system_list')) {
@@ -868,7 +869,7 @@ class Wootook_Empire_Model_Planet
 
         if ($systemList !== null) {
             array_walk($systemList, array(__CLASS__, '_cleanItemRanges'));
-            $collection->where('galaxy.system IN(' . implode(', ', $systemList) . ')');
+            $select->where('galaxy.system IN(' . implode(', ', $systemList) . ')');
         }
 
         $orders = array(
@@ -877,14 +878,14 @@ class Wootook_Empire_Model_Planet
             "1 + 2 * ABS(galaxy.system - CEIL({$adapter->quote(Wootook::getGameConfig('engine/universe/systems'))} / 2))",
             "RAND() / 1000",
             );
-        $collection
+        $select
             ->order('((' . implode(') * (', $orders) . '))', 'ASC')
             //->order("ABS(galaxy.system - CEIL({$collection->quote(Wootook::getGameConfig('engine/universe/systems'))} / 2))", 'ASC')
             //->order("ABS(galaxy.galaxy - CEIL({$collection->quote(Wootook::getGameConfig('engine/universe/galaxies'))} / 2))", 'ASC')
             //->order("1.5 / COUNT(*)", 'ASC')
             ->order('RAND()', 'ASC');
 
-        return $adapter;
+        return $select;
     }
 
     private static function _cleanItemRanges(&$value, $index, $userdata = null)

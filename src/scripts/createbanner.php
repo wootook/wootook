@@ -2,7 +2,7 @@
 /**
  * Wootook Legacies
  *
- * @license http://www.xnova-ng.org/license-legacies
+ * @license http://wootook.org/license-legacies
  * @see http://wootook.org/
  *
  * Copyright (c) 2009-Present, Wootook Support Team

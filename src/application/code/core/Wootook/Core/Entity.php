@@ -46,14 +46,11 @@ abstract class Wootook_Core_Entity
         }
 
         $select = $database->select()
-            ->from($database->getTable($this->getTableName()))
-            ->where($idFieldName)
-        $sql =<<<SQL_EOF
-SELECT * FROM {$database->getTable($this->getTableName())}
-    WHERE {$idFieldName}=:id
-    LIMIT 1
-SQL_EOF;
-        $statement = $database->prepare($sql);
+            ->from(array('main_table' => $database->getTable($this->getTableName())))
+            ->where("{$database->quoteIdentifier($idFieldName)}=:id")
+            ->limit(1);
+
+        $statement = $database->prepare($select);
         $statement->execute(array(
             'id' => $id
             ));

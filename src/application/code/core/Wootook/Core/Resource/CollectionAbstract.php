@@ -73,7 +73,8 @@ abstract class Wootook_Core_Resource_CollectionAbstract
         if ($connection instanceof Wootook_Core_Database_Adapter_Pdo_Mysql) {
             $this->_connection = $connection;
         } else if (is_string($connection)) {
-            $this->_connection = Wootook_Core_Database_Adapter_Pdo_Mysql::getConnection($connection);
+            $this->_connection = Wootook_Core_Database_ConnectionManager::getSingleton()
+                ->getConnection($connection);
         } else {
             throw new Wootook_Core_Exception_RuntimeException(
                 'First parameter should be either a database connection object or a string identifier.');

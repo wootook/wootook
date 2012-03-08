@@ -51,7 +51,7 @@ class Wootook_Core_Database_Orm_DataMapper
         return $this;
     }
 
-    protected function _load($className, $useSingleton)
+    protected function _load($className, $useSingleton, Array $constructorParams = array())
     {
         $reflection = new ReflectionClass($className);
         if ($useSingleton && $reflection->implementsInterface('Wootook_Core_Singleton')) {
@@ -60,7 +60,7 @@ class Wootook_Core_Database_Orm_DataMapper
         }
 
         try {
-            return $reflection->newInstance();
+            return $reflection->newInstance($this);
         } catch (ReflectionException $e) {
             Wootook_Core_ErrorProfiler::getSingleton()
                 ->addException($e);

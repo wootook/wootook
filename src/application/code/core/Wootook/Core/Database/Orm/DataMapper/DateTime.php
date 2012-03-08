@@ -1,7 +1,7 @@
 <?php
 
 class Wootook_Core_Database_Orm_DataMapper_DateTime
-    extends Wootook_Core_Database_Orm_DataMapper_FieldAbstract
+    extends Wootook_Core_Database_Orm_DataMapper_FieldMapper
 {
     const DATE_FORMAT_MYSQL = 'Y-m-d G:i:s';
 

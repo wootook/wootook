@@ -11,11 +11,13 @@ abstract class Wootook_Core_PluginLoader_PluginLoader
             return $this->_pluginInstances[$pluginName];
         }
 
+        $pluginName = str_replace(' ', '_', ucwords(str_replace('.', ' ', $pluginName)));
         $pluginName = str_replace(' ', '', ucwords(str_replace('-', ' ', $pluginName)));
 
         foreach ($this->_namespaces as $namespace => $path) {
             $className = $namespace . $pluginName;
-            $fileName = $path . DIRECTORY_SEPARATOR . $pluginName . '.php';
+            $fileName = $path . DIRECTORY_SEPARATOR .
+                str_replace('_', DIRECTORY_SEPARATOR, $pluginName) . '.php';
 
             if (!Wootook::fileExists($fileName)) {
                 continue;

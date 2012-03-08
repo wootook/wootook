@@ -3,35 +3,120 @@
 class Wootook_Core_Database_Adapter_Pdo_Mysql
     extends Wootook_Core_Database_Adapter_Adapter
 {
-    protected $_tablePrefix = null;
-    protected $_dsn = null;
-    protected $_username = null;
-    protected $_password = null;
+    /**
+     *
+     * Enter description here ...
+     * @param Wootook_Core_Config_Node $config
+     * @param array $params
+     */
+    public function __construct(Wootook_Core_Config_Node $config, Array $options = array())
+    {
+        $dsn = "mysql:host={$config->hostname};dbname={$config->database}";
+        if (is_numeric($config->port)) {
+            $dsn .= ";port={$config->database}";
+        }
 
+        try {
+            $this->_handler = new PDO($dsn, $config->username, $config->password, $options);
+        } catch (PDOException $e) {
+            throw new Wootook_Core_Exception_Database_AdapterError($this, $e->getMessage(), null, $e);
+        }
+    }
+
+    /**
+     * (non-PHPdoc)
+     * @see Wootook_Core_Database_Adapter_Adapter::quoteIdentifier()
+     */
     public function quoteIdentifier($identifier)
     {
         return "`$identifier`";
     }
 
-    public function setTablePrefix($prefix)
+    public function quote($data)
     {
-        $this->_tablePrefix = $prefix;
-
-        return $this;
+        try {
+            return $this->_handler->quote($data);
+        } catch (PDOException $e) {
+            throw new Wootook_Core_Exception_Database_AdapterError($this, $e->getMessage(), null, $e);
+        }
+        return null;
     }
 
-    public function getTablePrefix()
-    {
-        return $this->_tablePrefix;
-    }
-
+    /**
+     *
+     * @param string $name
+     * @return string
+     */
     public function getTable($name)
     {
         return $this->getTablePrefix() . $name;
     }
 
+    /**
+     * @see Wootook_Core_Database_Adapter_Adapter::select()
+     */
     public function select($tableName = null)
     {
         return new Wootook_Core_Database_Sql_Mysql_Select($this, $tableName);
+    }
+
+    /**
+     * @return Wootook_Core_Database_Statement_Statement
+     */
+    public function prepare($sql)
+    {
+        return new Wootook_Core_Database_Statement_Pdo_Mysql($this, $sql);
+    }
+
+    /**
+     * @return bool
+     */
+    public function beginTransaction()
+    {
+        try {
+            return $this->_handler->beginTransaction();
+        } catch (PDOException $e) {
+            throw new Wootook_Core_Exception_Database_AdapterError($this, $e->getMessage(), null, $e);
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function commit()
+    {
+        try {
+            return $this->_handler->commit();
+        } catch (PDOException $e) {
+            throw new Wootook_Core_Exception_Database_AdapterError($this, $e->getMessage(), null, $e);
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function rollback()
+    {
+        try {
+            return $this->_handler->rollback();
+        } catch (PDOException $e) {
+            throw new Wootook_Core_Exception_Database_AdapterError($this, $e->getMessage(), null, $e);
+        }
+        return false;
+    }
+
+    /**
+     * @return int
+     */
+    public function lastInsertId()
+    {
+        try {
+            return $this->_handler->lastInsertId();
+        } catch (PDOException $e) {
+            throw new Wootook_Core_Exception_Database_AdapterError($this, $e->getMessage(), null, $e);
+        }
+        return false;
     }
 }

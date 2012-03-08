@@ -5,7 +5,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  * @see http://wootook.org/
  *
- * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://wootook.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -27,6 +27,9 @@
  * documentation for further information about customizing Wootook.
  *
  */
+
+define('DEBUG', true);
+define('DEPRECATION', true);
 
 define('STEP_SYSTEM',   1);
 define('STEP_DATABASE', 2);
@@ -101,17 +104,14 @@ $nextStep = $step + 1;
 $baseUrl = (isset($_SERVER["HTTPS"]) && strtolower($_SERVER["HTTPS"]) == "on" ? 'https://' : 'http://')
     . $_SERVER["SERVER_NAME"] . ($_SERVER["SERVER_PORT"] != "80" ? ":{$_SERVER["SERVER_PORT"]}" : '');
 
-$_SERVER['REQUEST_URI'] = '/test/test3/install/index.php';
 if (isset($_SERVER['REQUEST_URI'])) {
-    var_dump(strrpos($_SERVER['REQUEST_URI'], '/'), (strlen($_SERVER['REQUEST_URI']) - 1));
-    if (strrpos($_SERVER['REQUEST_URI'], '/') == (strlen($_SERVER['REQUEST_URI']) - 1)) {
-        $baseUrl .= substr($_SERVER['REQUEST_URI'], 0, strpos(substr($_SERVER['REQUEST_URI'], 0, -1), '/'));
+	$offset = strrpos($_SERVER['REQUEST_URI'], '/');
+    if ($offset == (strlen($_SERVER['REQUEST_URI']) - 1)) {
+        $baseUrl .= substr($_SERVER['REQUEST_URI'], 0, strpos(substr($_SERVER['REQUEST_URI'], 0, -1), '/')) . '/';
     } else {
-        //$baseUrl .= substr($_SERVER['REQUEST_URI'], 0, strrpos($_SERVER['REQUEST_URI'], '/', 1))) . '/';
+        $baseUrl .= substr($_SERVER['REQUEST_URI'], 0, strrpos(substr($_SERVER['REQUEST_URI'], 0, $offset), '/', strlen($_SERVER['REQUEST_URI']) - $offset - 1)) . '/';
     }
 }
-var_dump($baseUrl);
-die();
 $session = Wootook::getSession('install');
 
 $website = new Wootook_Core_Model_Website();
@@ -180,6 +180,7 @@ if (is_array($config)) {
 } else {
     Wootook::loadConfig($configRewrites);
 }
+unset($config);
 
 $layout = new Wootook_Core_Model_Layout('install');
 
@@ -345,7 +346,7 @@ case 'install':
             $config = unserialize($session->getData('config'));
             $config['global']['resource']['database'] = array(
                 'default' => array(
-                    'engine' => 'mysql',
+                    'engine' => 'pdo.mysql',
                     'options' => array(
                         ),
                     'params' => array(
@@ -419,7 +420,7 @@ case 'install':
             $session->setData('config', serialize($config));
             $writer = new Wootook_Core_Config_Adapter_Array();
             $writer->setData($config);
-            $writer->save(APPLICATION_PATH . 'config' . DIRECTORY_SEPARATOR . 'local.php');
+            $writer->save(APPLICATION_PATH . 'configs' . DIRECTORY_SEPARATOR . 'local.php');
 
             Wootook::loadConfig(array_merge_recursive($writer->toArray(), $configRewrites));
 
@@ -526,7 +527,7 @@ case 'install':
             } catch (Wootook_Empire_Exception_RuntimeException $e) {
             }
             $layout->getMessagesBlock()->prepareMessages('user');
-            if (!$user->getId()) {
+            if (!$user || !$user->getId()) {
                 $session->setData('step', STEP_PROFILE);
                 $session->setFormData($request->getData());
                 $session->addError(Wootook::__('Could not create user.'));
@@ -576,5 +577,4 @@ case 'summary':
     $layout->getMessagesBlock()->prepareMessages('install');
     break;
 }
-
 echo $layout->render();

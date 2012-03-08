@@ -372,11 +372,18 @@ class Wootook
 
     private static function _appendDatabaseConfig(Wootook_Core_Config_Node $config, $type = 'global', $model = null)
     {
-        if (self::$_ignoreDatabaseConfig) {
+        if (self::$_ignoreDatabaseConfig || !self::$isInstalled) {
             return $config;
         }
 
-        $adapter = Wootook_Core_Database_Adapter_Pdo_Mysql::getConnection('core_read');
+        try {
+        $adapter = Wootook_Core_Database_ConnectionManager::getSingleton()
+                ->getConnection('core_read');
+        } catch (Wootook_Core_Exception_Database_AdapterError $e) {
+            self::$isInstalled = false;
+            return $config;
+        }
+
         $select = $adapter->select('core_config');
 
         switch ($type) {
@@ -400,7 +407,7 @@ class Wootook
             break;
         }
 
-        foreach ($statement->fetch() as $row) {
+        foreach ($statement as $row) {
             $config->setConfig($row['config_path'], $row['config_value']);
         }
 
@@ -547,6 +554,13 @@ class Wootook
 
         try {
             $website = self::getWebsite($websiteId);
+        } catch (Wootook_Core_Exception_WebsiteError $e) {
+            self::$isInstalled = false;
+
+            $website = new Wootook_Core_Model_Website();
+            $website->setId(0)->setData('code', 'install');
+            self::addWebsite($website);
+            self::setDefaultWebsite($website);
         } catch (Wootook_Core_Exception_RuntimeException $e) {
             Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
             return null;
@@ -593,6 +607,13 @@ class Wootook
 
         try {
             $game = self::getGame($gameId);
+        } catch (Wootook_Core_Exception_GameError $e) {
+            self::$isInstalled = false;
+
+            $game = new Wootook_Core_Model_Game();
+            $game->setId(0)->setData('code', 'install')->setData('website_id', self::getDefaultWebsite()->getId());
+            self::addGame($game);
+            self::setDefaultGame($game);
         } catch (Wootook_Core_Exception_RuntimeException $e) {
             Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
             return null;

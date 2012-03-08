@@ -14,7 +14,7 @@ class Wootook_Empire_Model_Planet_PluginLoader
         $this->registerNamespace('Legacies_Empire_Model_Planet_Building_');
     }
 
-    protected function _load($className, $useSingleton)
+    protected function _load($className, $useSingleton, Array $constructorParams = array())
     {
         $reflection = new ReflectionClass($className);
         if ($useSingleton && $reflection->implementsInterface('Wootook_Core_Singleton')) {

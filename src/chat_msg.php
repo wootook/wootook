@@ -5,7 +5,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  * @see http://wootook.org/
  *
- * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://wootook.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ while($v=mysql_fetch_object($query)){
 	$msg=preg_replace("#:\(#isU","<img src=\"images/smileys/sad.png\" align=\"absmiddle\" title=\":(\" alt=\":(\">",$msg);
 	$msg=preg_replace("#;\)#isU","<img src=\"images/smileys/wink.png\" align=\"absmiddle\" title=\";)\" alt=\";)\">",$msg);
 	$msg=preg_replace("#:s#isU","<img src=\"images/smileys/shit.png\" align=\"absmiddle\" title=\":s\" alt=\":s\">",$msg);
-	$msg=preg_replace("#xnova#","<a href=\"http://www.xnova-ng.org\">Wootook</a>",$msg);
+	$msg=preg_replace("#xnova#","<a href=\"http://wootook.org\">Wootook</a>",$msg);
 
 	// Affichage du message
 	$msg="<div align=\"left\">".$nick." > ".$msg."<br></div>";

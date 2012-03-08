@@ -146,7 +146,7 @@ class Wootook_Player_Model_Entity
             $select->limit(1);
 
             try {
-                $statement = $adapter->prepare($select);
+                $statement = $select->prepare();
                 if (!$statement->execute()) {
                     throw new Wootook_Empire_Exception_RuntimeException('No more planet to colonize!'); // Oops, no more free place
                 }
@@ -203,7 +203,6 @@ class Wootook_Player_Model_Entity
             $player->getWriteConnection()->rollback();
             $session = Wootook_Core_Model_Session::factory(Wootook_Player_Model_Entity::SESSION_KEY);
 
-            $this->getWriteConnection()->rollback();
             Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
             $session->addError($e->getMessage());
             return null;
@@ -211,7 +210,6 @@ class Wootook_Player_Model_Entity
             $player->getWriteConnection()->rollback();
             $session = Wootook_Core_Model_Session::factory(Wootook_Player_Model_Entity::SESSION_KEY);
 
-            $this->getWriteConnection()->rollback();
             Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
             $session->addError($e->getMessage());
             return null;

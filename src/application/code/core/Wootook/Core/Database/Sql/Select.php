@@ -1,7 +1,7 @@
 <?php
 
 abstract class Wootook_Core_Database_Sql_Select
-    implements Wootook_Core_Database_Sql_Dml
+    extends Wootook_Core_Database_Sql_DmlQuery
 {
     const COLUMNS = 'COLUMNS';
     const FROM    = 'FROM';
@@ -54,11 +54,12 @@ abstract class Wootook_Core_Database_Sql_Select
                 self::FROM    => array(),
                 self::JOIN    => array(),
                 self::WHERE   => array(),
-                self::ORDER   => array(),
                 self::UNION   => array(),
                 self::LIMIT   => array(),
                 self::OFFSET  => array(),
                 self::GROUP   => array(),
+                self::HAVING  => array(),
+                self::ORDER   => array(),
                 );
         } else if (isset($this->_parts[$part])) {
             $this->_parts[$part] = array();
@@ -114,25 +115,23 @@ abstract class Wootook_Core_Database_Sql_Select
         return $this;
     }
 
-    public function join($table, $condition, $fields = array('*'), $mode = self::JOIN_INNER)
+    public function join($table, $condition, $fields = array('*'), $mode = self::JOIN_INNER, $schema = null)
     {
-        $database = $this->getConnection();
-
+        $this->column($fields);
         if (is_array($table)) {
             $alias = key($table);
             $table = current($table);
 
-            foreach ($fields as $fieldAlias => $fieldName) {
-                $this->column("{$alias}.{$field}", $fieldAlias);
+            if ($schema !== null) {
+                $this->_parts[self::JOIN][] = "\n{$mode} JOIN {$this->_connection->quoteIdentifier($schema)}{$this->_connection->quoteIdentifier($this->_connection->getTable($table))} AS {$this->_connection->quoteIdentifier($alias)}"
+                    . "\n  ON {$condition}";
+            } else {
+                $this->_parts[self::JOIN][] = "\n{$mode} JOIN {$this->_connection->quoteIdentifier($this->_connection->getTable($table))} AS {$this->_connection->quoteIdentifier($alias)}"
+                    . "\n  ON {$condition}";
             }
-
-            $this->_parts[self::JOIN][] = "{$mode} JOIN {$database->getTable($table)} AS {$alias} ON {$condition}";
         } else {
-            foreach ($fields as $field) {
-                $this->column("{$field}");
-            }
-
-            $this->_parts[self::JOIN][] = "{$mode} JOIN {$database->getTable($table)} ON {$condition}";
+            $this->_parts[self::JOIN][] = "\n{$mode} JOIN {$this->_connection->quoteIdentifier($this->_connection->getTable($table))}"
+                . "\n  ON {$condition}";
         }
 
         return $this;
@@ -223,11 +222,128 @@ abstract class Wootook_Core_Database_Sql_Select
         return null;
     }
 
-    abstract public function renderColumns();
-    abstract public function renderFrom();
-    abstract public function renderJoin();
-    abstract public function renderOrder();
-    abstract public function renderUnion();
-    abstract public function renderGroup();
-    abstract public function renderHaving();
+    public function renderColumns()
+    {
+        $fields = array();
+        foreach ($this->_parts[self::COLUMNS] as $field) {
+            if ($field['field'] instanceof Wootook_Core_Database_Sql_Dml) {
+                if ($field['alias'] !== null) {
+                    $fields[] = "({$field['field']}) AS {$field['alias']}";
+                } else {
+                    $fields[] = "({$field['field']})";
+                }
+            } else if ($field['field'] instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
+                $field['field']->prepare($this);
+
+                if ($field['alias'] !== null) {
+                    $fields[] = "({$field['field']}) AS {$field['alias']}";
+                } else {
+                    $fields[] = "({$field['field']})";
+                }
+            } else if ($field['alias'] !== null) {
+                if ($field['table'] !== null) {
+                    $fields[] = "{$field['table']}.{$field['field']} AS {$field['alias']}";
+                } else {
+                    $fields[] = "{$field['field']} AS {$field['alias']}";
+                }
+            } else if ($field['table'] !== null) {
+                $fields[] = "{$field['table']}.{$field['field']}";
+            } else {
+                $fields[] = "{$field['field']}";
+            }
+        }
+
+        if (!empty($fields)) {
+            return 'SELECT ' . implode(", ", $fields);
+        }
+        return '*';
+    }
+
+    public function renderFrom()
+    {
+        $tables = array();
+        foreach ($this->_parts[self::FROM] as $table) {
+            if ($table['table'] instanceof Wootook_Core_Database_Sql_Dml) {
+                if ($table['alias'] !== null) {
+                    $tables[] = "({$table['table']}) AS {$this->_connection->quoteIdentifier($table['alias'])}";
+                } else {
+                    $tables[] = "({$table['table']})";
+                }
+            } else if ($table['alias'] !== null) {
+                if ($table['schema'] !== null) {
+                    $tables[] = "{$this->_connection->quoteIdentifier($table['schema'])}.{$this->_connection->quoteIdentifier($table['table'])} AS {$this->_connection->quoteIdentifier($table['alias'])}";
+                } else {
+                    $tables[] = "{$this->_connection->quoteIdentifier($table['table'])} AS {$this->_connection->quoteIdentifier($table['alias'])}";
+                }
+            } else if ($table['schema'] !== null) {
+                $tables[] = "{$this->_connection->quoteIdentifier($table['schema'])}.{$this->_connection->quoteIdentifier($table['table'])}";
+            } else {
+                $tables[] = "({$this->_connection->quoteIdentifier($table['table'])})";
+            }
+        }
+
+        return "\nFROM " . implode(', ', $tables);
+    }
+
+    public function renderJoin()
+    {
+        return implode('', $this->_parts[self::JOIN]);
+    }
+
+    public function renderOrder()
+    {
+        if (count($this->_parts[self::ORDER]) <= 0) {
+            return null;
+        }
+        return "\n  ORDER BY " . implode(', ', $this->_parts[self::ORDER]);
+    }
+
+    public function renderUnion()
+    {
+        $statements = array();
+        foreach ($this->_parts[self::UNION] as $statement) {
+            $statements[] = $statement->render();
+        }
+
+        return "(" . implode(")\nUNION\n(", $statements) . ")";
+    }
+
+    public function renderGroup()
+    {
+        if (count($this->_parts[self::GROUP]) <= 0) {
+            return null;
+        }
+        return "\n  GROUP BY " . implode(', ', $this->_parts[self::GROUP]);
+    }
+
+    public function renderHaving()
+    {
+        if (count($this->_parts[self::HAVING]) <= 0) {
+            return null;
+        }
+        return "\n  HAVING " . implode(', ', $this->_parts[self::HAVING]);
+    }
+
+    public function render()
+    {
+        if (empty($this->_parts[self::UNION])) {
+            return implode('', array(
+                $this->renderColumns(),
+                $this->renderFrom(),
+                $this->renderJoin(),
+                $this->renderWhere(),
+                $this->renderGroup(),
+                $this->renderHaving(),
+                $this->renderOrder(),
+                $this->renderLimit()
+                ));
+        } else {
+            return implode('', array(
+                $this->renderUnion(),
+                $this->renderWhere(),
+                $this->renderOrder(),
+                $this->renderLimit()
+                ));
+        }
+    }
 }

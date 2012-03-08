@@ -268,7 +268,6 @@ class Wootook_Core_DateTime
 
             foreach ($rule as $part => $regex) {
                 if (!preg_match($regex, $datetime, $matches, null, $offset)) {
-                    var_dump($datetime);
                     continue;
                 }
 

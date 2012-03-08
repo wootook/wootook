@@ -6,7 +6,7 @@
 	<td colspan="2" class="c"><b><?php echo $this->getData('cred_link')?></b></td>
 </tr><tr>
 	<th width="278"><?php echo $this->getData('cred_site')?>:<br><?php echo $this->getData('cred_forum')?>:</th>
-	<th width="279"><a href="http://www.xnova-ng.org" target="_blank">www.xnova-ng.org</a><br><a href="http://www.xnova-ng.org/forum" target="_blank">www.xnova-ng.org/forum</a></th>
+	<th width="279"><a href="http://wootook.org" target="_blank">www.xnova-ng.org</a><br><a href="http://wootook.org/forum" target="_blank">www.xnova-ng.org/forum</a></th>
 </tr><tr>
 	 <td colspan="2" class="c"><b><?php echo $this->getData('cred_credit')?></b></td>
 </tr><tr>

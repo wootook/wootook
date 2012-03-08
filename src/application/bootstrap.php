@@ -5,7 +5,7 @@
  * @license http://www.gnu.org/licenses/gpl-3.0.txt
  * @see http://wootook.org/
  *
- * Copyright (c) 2009-Present, Wootook Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-Present, Wootook Support Team <http://wootook.org>
  * All rights reserved.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -98,7 +98,7 @@ include ROOT_PATH . 'includes/constants.php';
 Wootook_Core_ErrorProfiler::register();
 Wootook_Core_Helper_Config_Events::registerEvents();
 
-if (!defined('IN_INSTALL') && !Wootook::fileExists(APPLICATION_PATH . 'configs' . DIRECTORY_SEPARATOR . 'local.php')) {
+if (!Wootook::$isInstalled) {
     Wootook::getResponse()
         ->setRedirect(Wootook::getStaticUrl('install/'), Wootook_Core_Mvc_Controller_Response_Http::REDIRECT_TEMPORARY)
         ->sendHeaders();

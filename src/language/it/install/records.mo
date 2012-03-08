@@ -9,7 +9,7 @@
 * @see http://www.wootook.com/
  
 *
- * Copyright (c) 2009-2011, XNova Support Team <http://www.xnova-ng.org>
+ * Copyright (c) 2009-2011, XNova Support Team <http://wootook.org>
  
 * All rights reserved.
  

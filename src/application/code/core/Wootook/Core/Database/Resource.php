@@ -37,7 +37,8 @@ abstract class Wootook_Core_Database_Resource
     public function getReadConnection()
     {
         if ($this->_readConnection === null) {
-            $this->_readConnection = $this->getConnection('core_read');
+            $this->_readConnection = Wootook_Core_Database_ConnectionManager::getSingleton()
+                ->getConnection('core_read');
         }
 
         return $this->_readConnection;
@@ -60,7 +61,8 @@ abstract class Wootook_Core_Database_Resource
     public function getWriteConnection()
     {
         if ($this->_writeConnection === null) {
-            $this->_writeConnection = $this->getConnection('core_write');
+            $this->_writeConnection = Wootook_Core_Database_ConnectionManager::getSingleton()
+                ->getConnection('core_write');
         }
         return $this->_writeConnection;
     }

@@ -78,7 +78,7 @@ parent.frames['Hauptframe'].location.replace("overview.php");
 </tr><tr>
 	<td><div><a href="errors.php" accesskey="e" target="<?php echo $this->getData('mf')?>"><?php echo $this->getData('adm_error')?></a></div></td>
 </tr><tr>
-	<td><div><a href="http://www.xnova-ng.org/forum/index.php" accesskey="3" target="<?php echo $this->getData('mf')?>"><?php echo $this->getData('adm_help')?></a></div></td>
+	<td><div><a href="http://wootook.org/forum/index.php" accesskey="3" target="<?php echo $this->getData('mf')?>"><?php echo $this->getData('adm_help')?></a></div></td>
 </tr><tr>
 	<td><div><a href="../frames.php" accesskey="i" target="_top" style="color:red"><?php echo $this->getData('adm_back')?></a></div></td>
 </tr><tr>

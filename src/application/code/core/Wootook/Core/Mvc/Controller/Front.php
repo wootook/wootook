@@ -5,12 +5,13 @@ class Wootook_Core_Mvc_Controller_Front
     const ROUTE_DEFAULT = 'default';
     const ROUTE_ERROR = 'error';
 
+    // FIXME: Create a router class to manage all this
     protected $_routes = array(
         self::ROUTE_ERROR => array(
             'modules' => array(
                 'core' => array(
-                    'class' => 'Wootook_Core_',
-                    'path'  => 'Wootook/Core'
+                    'class' => 'Wootook_Core_Controller_',
+                    'path'  => 'Wootook/Core/Controller'
                     )
                 ),
             'defaults' => array(
@@ -22,20 +23,20 @@ class Wootook_Core_Mvc_Controller_Front
         self::ROUTE_DEFAULT => array(
             'modules' => array(
                 'core' => array(
-                    'class' => 'Wootook_Core_',
-                    'path'  => 'Wootook/Core'
+                    'class' => 'Wootook_Core_Controller_',
+                    'path'  => 'Wootook/Core/Controller'
                     ),
                 'admin' => array(
-                    'class' => 'Wootook_Admin_',
-                    'path'  => 'Wootook/Admin'
+                    'class' => 'Wootook_Admin_Controller_',
+                    'path'  => 'Wootook/Admin/Controller'
                     ),
                 'player' => array(
-                    'class' => 'Wootook_Player_',
-                    'path'  => 'Wootook/Player'
+                    'class' => 'Wootook_Player_Controller_',
+                    'path'  => 'Wootook/Player/Controller'
                     ),
                 'empire' => array(
-                    'class' => 'Wootook_Empire_',
-                    'path'  => 'Wootook/Empire'
+                    'class' => 'Wootook_Empire_Controller_',
+                    'path'  => 'Wootook/Empire/Controller'
                     )
                 ),
             'defaults' => array(
@@ -78,7 +79,16 @@ class Wootook_Core_Mvc_Controller_Front
 
     protected function _camelizeClass($string)
     {
-        return str_replace(' ', '_', ucwords(str_replace('-', ' ', $string)));
+        $string = strtolower($string);
+        $string = str_replace(' ', '_', ucwords(str_replace('.', ' ', $string)));
+        return str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
+    }
+
+    protected function _camelizePath($string)
+    {
+        $string = strtolower($string);
+        $string = str_replace(' ', DIRECTORY_SEPARATOR, ucwords(str_replace('.', ' ', $string)));
+        return str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
     }
 
     protected function _camelizeMethod($string)
@@ -86,20 +96,46 @@ class Wootook_Core_Mvc_Controller_Front
         return lcfirst(str_replace(' ', '', ucwords(str_replace('-', ' ', $string))));
     }
 
-    protected function _getControllerClass($modulePrefix, $controllerKey)
+    protected function _getControllerClass($route, $module, $controllerKey)
     {
+        if (!isset($this->_routes[$route])) {
+            return null;
+        }
+        if (!isset($this->_routes[$route]['modules'][$module])) {
+            return null;
+        }
+        $modulePrefix = $this->_routes[$route]['modules'][$module]['class'];
         return $modulePrefix . $this->_camelizeClass($controllerKey) . 'Controller';
     }
 
-    protected function _getControllerPath($modulePath, $controllerKey)
+    protected function _getControllerFilename($route, $module, $controllerKey)
     {
-        return $modulePath . DIRECTORY_SEPARATOR . 'controllers' . DIRECTORY_SEPARATOR
-            . $this->_camelizeClass($controllerKey) . 'Controller.php';
+        if (!isset($this->_routes[$route])) {
+            return null;
+        }
+        if (!isset($this->_routes[$route]['modules'][$module])) {
+            return null;
+        }
+        $modulePath = $this->_routes[$route]['modules'][$module]['path'];
+
+        return $modulePath . DIRECTORY_SEPARATOR . $this->_camelizePath($controllerKey) . 'Controller.php';
     }
 
     protected function _getActionMethod($actionKey)
     {
         return $this->_camelizeMethod($actionKey) . 'Action';
+    }
+
+    protected function _forward($action, $controller = null, $module = null)
+    {
+        $this->_request->setActionName($action);
+        if ($controller !== null) {
+            $this->_request->setControllerName($controller);
+            if ($module != null) {
+                $this->_request->setModuleName($module);
+            }
+        }
+        $this->_response->setIsDispatched(false);
     }
 
     public function dispatch($route = null)
@@ -115,51 +151,42 @@ class Wootook_Core_Mvc_Controller_Front
         $loop = 0;
         while ($loop++ < 100) {
             $moduleKey = $this->_request->getModuleName();
-            $controllerKey = $this->_request->getControllerName();
-            $actionKey = $this->_request->getActionName();
-
             if (empty($moduleKey)) {
-                $this->_setDefaultRouteAction($route, $moduleKey, $controllerKey, $actionKey);
+                $this->_forward('no-route', 'error', 'core');
+                continue;
             }
 
             if (!isset($this->_routes[$route]['modules'][$moduleKey])) {
-                $this->_setNoRouteAction($route, $moduleKey, $controllerKey, $actionKey);
+                $this->_forward('no-route', 'error', 'core');
+                continue;
             }
 
+            $controllerKey = $this->_request->getControllerName();
             if (empty($controllerKey)) {
                 $controllerKey = $this->_routes[$route]['defaults']['controller'];
             }
 
-            $controllerClass = $this->_getControllerClass($this->_routes[$route]['modules'][$moduleKey]['class'], $controllerKey);
-            $controllerPath = $this->_getControllerPath($this->_routes[$route]['modules'][$moduleKey]['path'], $controllerKey);
+            $controllerClass = $this->_getControllerClass($route, $moduleKey, $controllerKey);
+            $controllerPath = $this->_getControllerFilename($route, $moduleKey, $controllerKey);
 
             if (!class_exists($controllerClass, false) && Wootook::fileExists($controllerPath)) {
                 include_once $controllerPath;
             }
 
             if (!class_exists($controllerClass, false)) {
-                $this->_setNoRouteAction($route, $moduleKey, $controllerKey, $actionKey);
-
-                $controllerClass = $this->_getControllerClass($this->_routes[$route]['modules'][$moduleKey]['class'], $controllerKey);
-                $controllerPath = $this->_getControllerPath($this->_routes[$route]['modules'][$moduleKey]['path'], $controllerKey);
-
-                include_once $controllerPath;
+                $this->_forward('no-route', 'error', 'core');
+                continue;
             }
 
+            $actionKey = $this->_request->getActionName();
             if (empty($actionKey)) {
                 $actionKey = $this->_routes[$route]['defaults']['action'];
             }
 
             $actionMethod = $this->_getActionMethod($actionKey);
             if (!method_exists($controllerClass, $actionMethod)) {
-                $this->_setNoRouteAction($route, $moduleKey, $controllerKey, $actionKey);
-
-                $controllerClass = $this->_getControllerClass($this->_routes[$route]['modules'][$moduleKey]['class'], $controllerKey);
-                $controllerPath = $this->_getControllerPath($this->_routes[$route]['modules'][$moduleKey]['path'], $controllerKey);
-
-                include_once $controllerPath;
-
-                $actionMethod = $this->_getActionMethod($actionKey);
+                $this->_forward('no-route', 'error', 'core');
+                continue;
             }
 
             $controller = new $controllerClass($this->_request, $this->_response);
@@ -173,6 +200,11 @@ class Wootook_Core_Mvc_Controller_Front
             }
 
             $controller->$actionMethod();
+
+            if (!$this->_response->isDispatched()) {
+                continue;
+            }
+
             $controller->postDispatch();
 
             if ($this->_response->isDispatched()) {
