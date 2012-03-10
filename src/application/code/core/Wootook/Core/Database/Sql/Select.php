@@ -87,6 +87,10 @@ abstract class Wootook_Core_Database_Sql_Select
                 }
             }
         } else {
+            if ($column instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
+                $this->_placeholders[] = $column;
+            }
+
             $this->_parts[self::COLUMNS][] = array(
                 'table' => $table,
                 'alias' => null,
@@ -120,17 +124,17 @@ abstract class Wootook_Core_Database_Sql_Select
         $this->column($fields);
         if (is_array($table)) {
             $alias = key($table);
-            $table = current($table);
+            $table = $this->_connection->getTable(current($table));
 
             if ($schema !== null) {
-                $this->_parts[self::JOIN][] = "\n{$mode} JOIN {$this->_connection->quoteIdentifier($schema)}{$this->_connection->quoteIdentifier($this->_connection->getTable($table))} AS {$this->_connection->quoteIdentifier($alias)}"
+                $this->_parts[self::JOIN][] = "\n{$mode} JOIN {$this->_connection->quoteIdentifier($schema)}{$this->_connection->quoteIdentifier($table)} AS {$this->_connection->quoteIdentifier($alias)}"
                     . "\n  ON {$condition}";
             } else {
-                $this->_parts[self::JOIN][] = "\n{$mode} JOIN {$this->_connection->quoteIdentifier($this->_connection->getTable($table))} AS {$this->_connection->quoteIdentifier($alias)}"
+                $this->_parts[self::JOIN][] = "\n{$mode} JOIN {$this->_connection->quoteIdentifier($table)} AS {$this->_connection->quoteIdentifier($alias)}"
                     . "\n  ON {$condition}";
             }
         } else {
-            $this->_parts[self::JOIN][] = "\n{$mode} JOIN {$this->_connection->quoteIdentifier($this->_connection->getTable($table))}"
+            $this->_parts[self::JOIN][] = "\n{$mode} JOIN {$this->_connection->quoteIdentifier($table)}"
                 . "\n  ON {$condition}";
         }
 
@@ -233,8 +237,6 @@ abstract class Wootook_Core_Database_Sql_Select
                     $fields[] = "({$field['field']})";
                 }
             } else if ($field['field'] instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
-                $field['field']->prepare($this);
-
                 if ($field['alias'] !== null) {
                     $fields[] = "({$field['field']}) AS {$field['alias']}";
                 } else {
@@ -256,7 +258,7 @@ abstract class Wootook_Core_Database_Sql_Select
         if (!empty($fields)) {
             return 'SELECT ' . implode(", ", $fields);
         }
-        return '*';
+        return 'SELECT *';
     }
 
     public function renderFrom()

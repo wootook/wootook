@@ -9,6 +9,12 @@ class Wootook_Core_Mvc_Controller_Request_Http
     protected $_controllerKey = 'controller';
     protected $_moduleKey = 'module';
 
+    protected $_queryVars = array();
+    protected $_postVars = array();
+    protected $_cookieVars = array();
+    protected $_serverVars = array();
+    protected $_postFiles = array();
+
     public function __construct(Array $options = array())
     {
         parent::__construct($options);
@@ -64,6 +70,22 @@ class Wootook_Core_Mvc_Controller_Request_Http
         }
     }
 
+    public function init()
+    {
+        $this->_queryVars = $_GET;
+        $this->_postVars = $_POST;
+        $this->_cookieVars = $_COOKIE;
+        $this->_serverVars = $_SERVER;
+        $this->_postFiles = $_FILES;
+
+        $this->clearData();
+
+        $this->addData($this->_serverVars);
+        $this->addData($this->_cookieVars);
+        $this->addData($this->_queryVars);
+        $this->addData($this->_postVars);
+    }
+
     public function setParam($key, $value)
     {
         return $this->setData($key, $value);
@@ -74,86 +96,103 @@ class Wootook_Core_Mvc_Controller_Request_Http
         if ($this->hasData($key)) {
             return $this->getData($key);
         }
-        if (isset($_POST[$key])) {
-            return $_POST[$key];
+        if ($this->hasPost($key)) {
+            return $this->getPost($key);
         }
-        if (isset($_GET[$key])) {
-            return $_GET[$key];
+        if ($this->hasQuery($key)) {
+            return $this->getQuery($key);
         }
-        if (isset($_FILES[$key])) {
-            return $_FILES[$key];
+        if ($this->hasCookie($key)) {
+            return $this->getCookie($key);
         }
-        if (isset($_COOKIE[$key])) {
-            return $_COOKIE[$key];
-        }
-        if (isset($_SERVER[$key])) {
-            return $_SERVER[$key];
-        }
-        return $default;
+
+        return $this->getServer($key, $default);
     }
 
     public function getQuery($key, $default = null)
     {
-        if (!isset($_GET[$key])) {
+        if (!isset($this->_queryVars[$key])) {
             return $default;
         }
-        return $_GET[$key];
-    }
-
-    public function getFile($key, $default = null)
-    {
-        if (!isset($_FILES[$key])) {
-            return $default;
-        }
-        return $_FILES[$key];
-    }
-
-    public function getCookie($key, $default = null)
-    {
-        if (!isset($_COOKIE[$key])) {
-            return $default;
-        }
-        return unserialize(stripslashes($_COOKIE[$key]));
-    }
-
-    public function getRawCookie($key, $default = null)
-    {
-        if (!isset($_COOKIE[$key])) {
-            return $default;
-        }
-        return $_COOKIE[$key];
-    }
-
-    public function getPost($key, $default = null)
-    {
-        if (!isset($_POST[$key])) {
-            return $default;
-        }
-        return $_POST[$key];
-    }
-
-    public function getServer($key, $default = null)
-    {
-        if (!isset($_SERVER[$key])) {
-            return $default;
-        }
-        return $_SERVER[$key];
+        return $this->_queryVars[$key];
     }
 
     public function getAllQueryData()
     {
-        return $_GET;
+        return $this->_queryVars;
     }
 
-    public function getAllFilesData()
+    public function hasQuery($key)
     {
-        return $_FILES;
+        return isset($this->_queryVars[$key]);
+    }
+
+    public function setQuery($key, $value)
+    {
+        $this->_queryVars[$key] = (string) $value;
+
+        return $this;
+    }
+
+    public function unsetQuery($key)
+    {
+        unset($this->_queryVars[$key]);
+
+        return $this;
+    }
+
+    public function getPost($key, $default = null)
+    {
+        if (!isset($this->_postVars[$key])) {
+            return $default;
+        }
+        return $this->_postVars[$key];
+    }
+
+    public function getAllPostData()
+    {
+        return $this->_postVars;
+    }
+
+    public function hasPost($key)
+    {
+        return isset($this->_postVars[$key]);
+    }
+
+    public function setPost($key, $value)
+    {
+        $this->_postVars[$key] = (string) $value;
+
+        return $this;
+    }
+
+    public function unsetPost($key)
+    {
+        unset($this->_postVars[$key]);
+
+        return $this;
+    }
+
+    public function getCookie($key, $default = null)
+    {
+        if (!isset($this->_cookieVars[$key])) {
+            return $default;
+        }
+        return unserialize(stripslashes($this->_cookieVars[$key]));
+    }
+
+    public function getRawCookie($key, $default = null)
+    {
+        if (!isset($this->_cookieVars[$key])) {
+            return $default;
+        }
+        return $this->_cookieVars[$key];
     }
 
     public function getAllCookieData()
     {
         $data = array();
-        foreach ($_COOKIE as $key => $value) {
+        foreach ($this->_cookieVars as $key => $value) {
             $data[$key] = unserialize(stripslashes($value));
         }
         return $data;
@@ -161,17 +200,59 @@ class Wootook_Core_Mvc_Controller_Request_Http
 
     public function getAllRawCookieData()
     {
-        return $_COOKIE;
+        return $this->_cookieVars;
     }
 
-    public function getAllPostData()
+    public function hasCookie($key)
     {
-        return $_POST;
+        return isset($this->_cookieVars[$key]);
+    }
+
+    public function setCookie($key, $value)
+    {
+        $this->_cookieVars[$key] = addslashes(serialize((string) $value));
+
+        return $this;
+    }
+
+    public function setRawCookie($key, $value)
+    {
+        $this->_cookieVars[$key] = (string) $value;
+
+        return $this;
+    }
+
+    public function unsetCookie($key)
+    {
+        unset($this->_cookieVars[$key]);
+
+        return $this;
+    }
+
+    public function getServer($key, $default = null)
+    {
+        if (!isset($this->_serverVars[$key])) {
+            return $default;
+        }
+        return $this->_serverVars[$key];
     }
 
     public function getAllServerData()
     {
-        return $_SERVER;
+        return $this->_serverVars;
+    }
+
+    public function getFile($key, $default = null)
+    {
+        if (!isset($this->_postFiles[$key])) {
+            return $default;
+        }
+        return $this->_postFiles[$key];
+    }
+
+    public function getAllFilesData()
+    {
+        return $this->_postFiles;
     }
 
     public function isPost()

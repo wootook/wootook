@@ -177,7 +177,15 @@ class Wootook_Core_Database_ConnectionManager
 
         $options = $event->getData('options');
 
-        $connection = $this->load($engine, false, array($params, $options));
+        try {
+            $connection = $this->load($engine, false, array($params, $options));
+        } catch (Wootook_Core_Exception_Database_AdapterError $e) {
+            //Wootook_Core_ErrorProfiler::getSingleton()->addException($e);
+            return null;
+        }
+        if (!$connection) {
+            throw new Wootook_Core_Exception_DataAccessException('Could not find data connection handler.');
+        }
 
         if (($prefix = Wootook::getConfig("resource/database/{$connectionName}/table_prefix")) !== null) {
             $connection->setTablePrefix($prefix);

@@ -119,7 +119,6 @@ $session['speed'] = $speedArray;
 $session['consumption'] = $consumptionArray;
 $session['capacity'] = $capacityArray;
 
-var_dump($_SESSION);
 if (empty($fleetArray)) {
     message($lang['fl_unselectall'], $lang['fl_error'], "fleet." . PHPEXT, 1);
 } else {

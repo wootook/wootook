@@ -1,7 +1,7 @@
 <?php
 
 class Wootook_Empire_Resource_Fleet_Collection
-    extends Wootook_Core_Resource_CollectionAbstract
+    extends Wootook_Core_Resource_EntityCollection
 {
     protected function _construct()
     {

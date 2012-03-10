@@ -67,18 +67,16 @@ SQL_EOF;
         $idValues = func_get_arg(0);
         $database = $this->getReadConnection();
 
+        $select = $database->select()
+            ->from(array('main_table' => $database->getTable($this->getTableName())))
+            ->limit(1);
+
         $idFields = array();
         foreach ($this->_idFieldNames as $field) {
-            $idFields[] = "{$field}=:{$field}";
+            $select->where("{$database->quoteIdentifier($field)}=:{$field}");
         }
-        $idFields = '(' . implode(') AND (', $idFields) . ')';
 
-        $sql =<<<SQL_EOF
-SELECT * FROM {$database->getTable(self::getTableName())}
-    WHERE $idFields
-    LIMIT 1
-SQL_EOF;
-        $statement = $database->prepare($sql);
+        $statement = $database->prepare($select);
         $statement->execute($idValues);
 
         $datas = $statement->fetch(PDO::FETCH_ASSOC);
@@ -86,7 +84,9 @@ SQL_EOF;
             throw new Wootook_Core_Exception_DataAccessException('Could not load data: this id combination could not be found.');
         }
 
-        $this->_data = $datas;
+        $this->_data = array();
+        $this->getDataMapper()->decode($this, $datas);
+
         $this->_isLoaded = true;
 
         return $this;

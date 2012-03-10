@@ -1,7 +1,7 @@
 <?php
 
 class Wootook_Player_Resource_Entity_Collection
-    extends Wootook_Core_Resource_CollectionAbstract
+    extends Wootook_Core_Resource_EntityCollection
 {
     public function _construct()
     {

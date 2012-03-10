@@ -132,7 +132,6 @@ $mission = isset($_POST['target_mission']) ? $_POST['target_mission'] : 0;
 
 $SpeedFactor   = GetGameSpeedFactor();
 $AllFleetSpeed = GetFleetMaxSpeed($fleetArray, 0, $user);
-var_dump($AllFleetSpeed, $fleetArray);
 $MaxFleetSpeed = min($AllFleetSpeed);
 
 $distance    = GetTargetDistance($planetrow->getGalaxy(), $galaxy, $planetrow->getSystem(), $system, $planetrow->getPosition(), $planet);

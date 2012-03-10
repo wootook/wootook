@@ -3,6 +3,13 @@
 abstract class Wootook_Core_Mvc_Controller_Request_Request
     extends Wootook_Object
 {
+    public function __construct(Array $data = array())
+    {
+        $this->init();
+
+        parent::__construct($data);
+    }
+
     public function setParam($key, $value)
     {
         return $this->setData($key, $value);
@@ -15,6 +22,8 @@ abstract class Wootook_Core_Mvc_Controller_Request_Request
         }
         return $default;
     }
+
+    abstract public function init();
 
     abstract public function getModuleName();
     abstract public function getControllerName();

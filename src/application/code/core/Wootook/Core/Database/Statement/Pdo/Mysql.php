@@ -241,4 +241,66 @@ class Wootook_Core_Database_Statement_Pdo_Mysql
         }
         return null;
     }
+
+    /**
+     * @return bool
+     */
+    public function closeCursor()
+    {
+        try {
+            return $this->_handler->closeCursor();
+        } catch (PDOException $e) {
+            throw new Wootook_Core_Exception_Database_AdapterError($this, $e->getMessage(), null, $e);
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function nextRowset()
+    {
+        try {
+            return $this->_handler->nextRowset();
+        } catch (PDOException $e) {
+            throw new Wootook_Core_Exception_Database_AdapterError($this, $e->getMessage(), null, $e);
+        }
+        return false;
+    }
+
+    /**
+     * @return string
+     */
+    public function errorCode()
+    {
+        return $this->_handler->errorCode();
+    }
+
+    /**
+     * @return array
+     */
+    public function errorInfo()
+    {
+        return $this->_handler->errorInfo();
+    }
+
+    /**
+     * @return string
+     */
+    public function errorMessage()
+    {
+        $info = $this->_handler->errorInfo();
+
+        return $info[2];
+    }
+
+    /**
+     * @return string
+     */
+    public function errorState()
+    {
+        $info = $this->_handler->errorInfo();
+
+        return $info[0];
+    }
 }

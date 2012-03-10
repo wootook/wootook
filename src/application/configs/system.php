@@ -3,7 +3,7 @@
         'resource' => array(
             'database' => array(
                 'default' => array(
-                    'engine' => 'mysql',
+                    'engine' => 'pdo_mysql',
                     'options' => array(
                         ),
                     'params' => array(

@@ -137,9 +137,39 @@ abstract class Wootook_Core_Database_Statement_Statement
     abstract public function columnCount();
 
     /**
+     * @return string
+     */
+    abstract public function errorCode();
+
+    /**
+     * @return string
+     */
+    abstract public function errorMessage();
+
+    /**
+     * @return array
+     */
+    abstract public function errorInfo();
+
+    /**
+     * @return string
+     */
+    abstract public function errorState();
+
+    /**
      * @return int
      */
     abstract public function rowCount();
+
+    /**
+     * @return bool
+     */
+    abstract public function closeCursor();
+
+    /**
+     * @return bool
+     */
+    abstract public function nextRowset();
 
     public function current()
     {

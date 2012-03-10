@@ -109,7 +109,7 @@ if (isset($_SERVER['REQUEST_URI'])) {
     if ($offset == (strlen($_SERVER['REQUEST_URI']) - 1)) {
         $baseUrl .= substr($_SERVER['REQUEST_URI'], 0, strpos(substr($_SERVER['REQUEST_URI'], 0, -1), '/')) . '/';
     } else {
-        $baseUrl .= substr($_SERVER['REQUEST_URI'], 0, strrpos(substr($_SERVER['REQUEST_URI'], 0, $offset), '/', strlen($_SERVER['REQUEST_URI']) - $offset - 1)) . '/';
+        $baseUrl .= substr($_SERVER['REQUEST_URI'], 0, strpos(substr($_SERVER['REQUEST_URI'], 0, $offset), '/', strlen($_SERVER['REQUEST_URI']) - $offset - 1)) . '/';
     }
 }
 $session = Wootook::getSession('install');
@@ -230,6 +230,7 @@ case 'install':
                     'web' => array(
                         'url' => array(
                             'base' => $request->getPost('url_path'),
+                            'link' => $request->getPost('url_path'),
                             'skin' => $request->getPost('url_path') . 'skin/',
                             'js'   => $request->getPost('url_path') . 'js/',
                             'css'  => $request->getPost('url_path') . 'css/',
@@ -237,8 +238,9 @@ case 'install':
                         ),
                     'system' => array(
                         'path' => array(
-                            'base' => ROOT_PATH,
-                            'skin' => ROOT_PATH . 'skin' . DIRECTORY_SEPARATOR,
+                            'base'   => ROOT_PATH,
+                            'skin'   => ROOT_PATH . 'skin' . DIRECTORY_SEPARATOR,
+                            'design' => ROOT_PATH . 'application' . DIRECTORY_SEPARATOR . 'design' . DIRECTORY_SEPARATOR,
                             ),
                         'date' => array(
                             'timezone' => $request->getPost('timezone')
@@ -515,7 +517,7 @@ case 'install':
 
             if ($request->getPost('email') != $request->getPost('email_confirm')) {
                 $session->setData('step', STEP_PROFILE);
-                $session->setFormData($request->getData());
+                $session->setFormData($request->getAllDatas());
                 $session->addError(Wootook::__('Both e-mails does not match.'));
                 $response->setRedirect(Wootook::getStaticUrl('install/index.php', array('mode' => 'install', 'step' => STEP_PROFILE)));
                 $response->sendHeaders();
@@ -526,16 +528,17 @@ case 'install':
                 $user = Wootook_Player_Model_Entity::register($request->getPost('username'), $request->getPost('email'), $request->getPost('password'));
             } catch (Wootook_Empire_Exception_RuntimeException $e) {
             }
+
             $layout->getMessagesBlock()->prepareMessages('user');
             if (!$user || !$user->getId()) {
                 $session->setData('step', STEP_PROFILE);
-                $session->setFormData($request->getData());
+                $session->setFormData($request->getAllDatas());
                 $session->addError(Wootook::__('Could not create user.'));
                 $response->setRedirect(Wootook::getStaticUrl('install/index.php', array('mode' => 'install', 'step' => STEP_PROFILE)));
                 $response->sendHeaders();
                 exit(0);
             } else {
-                Wootook_Player_Model_Entity::setLoggedIn($user);
+                Wootook_Player_Model_Session::getSingleton()->setLoggedIn($user);
 
                 $user->setData('authlevel', LEVEL_ADMIN)->save();
 
@@ -543,7 +546,7 @@ case 'install':
             }
 
             $session->setData('step', STEP_CONFIG);
-            //$response->setRedirect(Wootook::getStaticUrl('install/index.php', array('mode' => 'install', 'step' => STEP_CONFIG)));
+            $response->setRedirect(Wootook::getStaticUrl('install/index.php', array('mode' => 'install', 'step' => STEP_CONFIG)));
             $response->setRedirect(Wootook::getStaticUrl('install/index.php', array('mode' => 'summary')));
             $response->sendHeaders();
             exit(0);

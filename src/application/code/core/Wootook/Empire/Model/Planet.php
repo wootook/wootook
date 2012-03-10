@@ -122,6 +122,15 @@ class Wootook_Empire_Model_Planet
         return self::factory($planetId);
     }
 
+    public function __construct(Array $data = array(), Wootook_Player_Model_Entity $player = null)
+    {
+        parent::__construct($data);
+
+        if ($player !== null) {
+            $this->setPlayer($player);
+        }
+    }
+
     public function _init()
     {
         $this->_tableName = 'planets';
@@ -258,7 +267,7 @@ class Wootook_Empire_Model_Planet
         $resources = Wootook_Empire_Helper_Config_Resources::getSingleton();
         $production = Wootook_Empire_Helper_Config_Production::getSingleton();
 
-        if (!$this->isPlanet()) {
+        if (!$this->isPlanet() || !$this->getPlayer()) {
             return $this;
         }
 
@@ -437,7 +446,8 @@ class Wootook_Empire_Model_Planet
     public function getPlayer()
     {
         if ($this->_player === null && $this->getPlayerId()) {
-            $this->_player = Wootook_Player_Model_Entity::factory($this->getPlayerId());
+            $this->_player = new Wootook_Player_Model_Entity();
+            $this->_player->load($this->getPlayerId());
         }
         return $this->_player;
     }
@@ -445,6 +455,7 @@ class Wootook_Empire_Model_Planet
     public function setPlayer(Wootook_Player_Model_Entity $player)
     {
         $this->_player = $player;
+        $this->setData('id_owner', $player->getId());
 
         return $this;
     }
@@ -756,7 +767,7 @@ class Wootook_Empire_Model_Planet
      */
     public function getBuildingQueue()
     {
-        if ($this->_builder === null) {
+        if ($this->_builder === null && $this->getPlayer()) {
             $this->_builder = new Wootook_Empire_Model_Planet_Builder($this, $this->getPlayer());
         }
         return $this->_builder;
@@ -843,12 +854,12 @@ class Wootook_Empire_Model_Planet
     {
         $adapter = Wootook_Core_Database_ConnectionManager::getSingleton()
             ->getConnection('core_read');
-        $select = $adapter->select(array('galaxy' => 'galaxy'));
+        $select = $adapter->select(array('galaxy' => $adapter->getTable('galaxy')));
         $select
             ->column(array(
-                'galaxy' => 'galaxy.galaxy',
-                'system' => 'galaxy.system',
-                'count'  => 'COUNT(*)'
+                'galaxy' => 'galaxy',
+                'system' => 'system',
+                'count'  => new Wootook_Core_Database_Sql_Placeholder_Expression('COUNT(*)')
                 ))
             ->group('galaxy.galaxy')
             ->group('galaxy.system')
@@ -860,7 +871,7 @@ class Wootook_Empire_Model_Planet
 
         if ($galaxyList !== null) {
             array_walk($galaxyList, array(__CLASS__, '_cleanItemRanges'));
-            $select->where('galaxy.galaxy IN(' . implode(', ', $galaxyList) . ')');
+            $select->where('galaxy', array(array(Wootook_Core_Database_Sql_Select::OPERATOR_IN => $galaxyList)));
         }
 
         if ($systemList === null && Wootook::getGameConfig('user/registration/system_list')) {
@@ -869,7 +880,7 @@ class Wootook_Empire_Model_Planet
 
         if ($systemList !== null) {
             array_walk($systemList, array(__CLASS__, '_cleanItemRanges'));
-            $select->where('galaxy.system IN(' . implode(', ', $systemList) . ')');
+            $select->where('system', array(array(Wootook_Core_Database_Sql_Select::OPERATOR_IN => $systemList)));
         }
 
         $orders = array(
@@ -879,7 +890,7 @@ class Wootook_Empire_Model_Planet
             "RAND() / 1000",
             );
         $select
-            ->order('((' . implode(') * (', $orders) . '))', 'ASC')
+            ->order(new Wootook_Core_Database_Sql_Placeholder_Expression('((' . implode(') * (', $orders) . '))'), 'ASC')
             //->order("ABS(galaxy.system - CEIL({$collection->quote(Wootook::getGameConfig('engine/universe/systems'))} / 2))", 'ASC')
             //->order("ABS(galaxy.galaxy - CEIL({$collection->quote(Wootook::getGameConfig('engine/universe/galaxies'))} / 2))", 'ASC')
             //->order("1.5 / COUNT(*)", 'ASC')

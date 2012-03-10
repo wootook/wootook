@@ -37,6 +37,9 @@ abstract class Wootook_Core_Database_Sql_DmlQuery
         $this->_init($tableName);
     }
 
+    /**
+     * @return Wootook_Core_Database_Adapter_Adapter
+     */
     public function getConnection()
     {
         return $this->_connection;
@@ -265,7 +268,7 @@ abstract class Wootook_Core_Database_Sql_DmlQuery
     public function beforePrepare(Wootook_Core_Database_Statement_Statement $statement)
     {
         foreach ($this->_placeholders as $placeholder) {
-            $placeholder->befrePrepare($statement);
+            $placeholder->beforePrepare($statement);
         }
 
         return $this;

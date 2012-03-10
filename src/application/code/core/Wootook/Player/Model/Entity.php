@@ -138,7 +138,7 @@ class Wootook_Player_Model_Entity
                 'user_agent'    => $request->getServer('HTTP_USER_AGENT')
                 ));
 
-            $player->getWriteConnection()->beginTransaction();
+            //$player->getWriteConnection()->beginTransaction();
 
             $player->save();
 
@@ -150,9 +150,9 @@ class Wootook_Player_Model_Entity
                 if (!$statement->execute()) {
                     throw new Wootook_Empire_Exception_RuntimeException('No more planet to colonize!'); // Oops, no more free place
                 }
-            } catch (PDOException $e) {
-                Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
-                $this->getWriteConnection()->rollback();
+            } catch (Wootook_Core_Exception_Database_Error $e) {
+                Wootook_Core_ErrorProfiler::getSingleton()->addException($e);
+                //$this->getWriteConnection()->rollback();
                 return null;
             }
 
@@ -161,7 +161,7 @@ class Wootook_Player_Model_Entity
                 throw new Wootook_Empire_Exception_RuntimeException('No more planet to colonize!'); // Oops, no more free place
             }
 
-            $collection = new Wootook_Empire_Resource_Planet_Collection($player->getReadConneciton());
+            $collection = new Wootook_Empire_Resource_Planet_Collection($player->getReadConnection());
             $collection->addTypeToFilter(Wootook_Empire_Model_Planet::TYPE_PLANET)
                 ->addFieldToFilter('galaxy', $systemInfo['galaxy'])
                 ->addFieldToFilter('system', $systemInfo['system'])
@@ -178,8 +178,8 @@ class Wootook_Player_Model_Entity
             $finalPosition = $positions[$key];
 
             $planet = $player->createNewPlanet(
-                $systemInfo->getData('galaxy'),
-                $systemInfo->getData('system'),
+                $systemInfo['galaxy'],
+                $systemInfo['system'],
                 $finalPosition,
                 Wootook_Empire_Model_Planet::TYPE_PLANET,
                 Wootook::getRequest()->getParam('planet'),
@@ -200,21 +200,21 @@ class Wootook_Player_Model_Entity
 
             $player->save();
         } catch (Wootook_Core_Exception_DataAccessException $e) {
-            $player->getWriteConnection()->rollback();
+            //$player->getWriteConnection()->rollback();
             $session = Wootook_Core_Model_Session::factory(Wootook_Player_Model_Entity::SESSION_KEY);
 
-            Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
+            Wootook_Core_ErrorProfiler::getSingleton()->addException($e);
             $session->addError($e->getMessage());
             return null;
         } catch (Wootook_Empire_Exception_RuntimeException $e) {
-            $player->getWriteConnection()->rollback();
+            //$player->getWriteConnection()->rollback();
             $session = Wootook_Core_Model_Session::factory(Wootook_Player_Model_Entity::SESSION_KEY);
 
-            Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
+            Wootook_Core_ErrorProfiler::getSingleton()->addException($e);
             $session->addError($e->getMessage());
             return null;
         }
-        $player->getWriteConnection()->commit();
+        //$player->getWriteConnection()->commit();
 
         return $player;
     }
@@ -230,10 +230,9 @@ class Wootook_Player_Model_Entity
             $size = mt_rand(floor($factor / 10), ceil($factor * 5 / 4)) + mt_rand(0, $fuzz);
         }
 
-        $now = time();
-        $planet = new Wootook_Empire_Model_Planet();
+        $now = new Wootook_Core_DateTime();
+        $planet = new Wootook_Empire_Model_Planet(array(), $this);
         $planet
-            ->setData('id_owner', $this->getId())
             ->setData('name', $name)
             ->setData('galaxy', $galaxy)
             ->setData('system', $system)

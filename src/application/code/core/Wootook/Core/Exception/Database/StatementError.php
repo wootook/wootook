@@ -1,6 +1,6 @@
 <?php
 
-abstract class Wootook_Core_Exception_Database_StatementError
+class Wootook_Core_Exception_Database_StatementError
     extends Wootook_Core_Exception_RuntimeException
     implements Wootook_Core_Exception_Database_Error
 {

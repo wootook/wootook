@@ -32,6 +32,14 @@ abstract class Wootook_Core_Database_Adapter_Adapter
     }
 
     /**
+     * @return string
+     */
+    public function getTable($table)
+    {
+        return $this->getTablePrefix() . $table;
+    }
+
+    /**
      * @return Wootook_Core_Database_Sql_Select
      */
     public function select()
@@ -123,7 +131,8 @@ abstract class Wootook_Core_Database_Adapter_Adapter
     {
         $statement = $this->prepare($sql);
         if (!$statement->execute()) {
-            throw new Wootook_Core_Exception_Database_AdapterError($this, 'Could not execute query.');
+            $message = sprintf('[SQLSTATE %s] Could not execute query: %s', $statement->errorState(), $statement->errorMessage());
+            throw new Wootook_Core_Exception_Database_StatementError($statement, $message);
         }
 
         return $statement;

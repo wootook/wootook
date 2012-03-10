@@ -1,6 +1,6 @@
 <?php
 
-abstract class Wootook_Core_Resource_CollectionAbstract
+abstract class Wootook_Core_Resource_EntityCollection
     implements Iterator, Countable
 {
     protected $_connection = null;
@@ -39,7 +39,8 @@ abstract class Wootook_Core_Resource_CollectionAbstract
     public function getSelect()
     {
         if ($this->_select === null) {
-            $this->_select = $this->getReadConnection()->select($this->_entityTable);
+            $this->_select = $this->getReadConnection()
+                ->select(array('main_table' => $this->getReadConnection()->getTable($this->_entityTable)));
 
             $this->_prepareSelect($this->_select);
         }
