@@ -12,7 +12,7 @@
         </div>
         <?php else:?>
         <div class="buy">
-            <p><a class="build" href="<?php echo $this->getStaticUrl('buildings.php', array('building' => $this->getItemId()))?>"><?php echo $this->__('Build next level (%s)', $this->renderNumber($this->getNextLevel()))?></a></p>
+            <p><a class="build" href="<?php echo $this->getUrl('empire/buildings/build', array('id' => $this->getItemId()))?>"><?php echo $this->__('Build next level (%s)', $this->renderNumber($this->getNextLevel()))?></a></p>
         </div>
         <?php endif?>
         <div class="details">

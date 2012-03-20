@@ -8,7 +8,7 @@
  * @uses Legacies_Empire
  */
 class Wootook_Core_Model_Config
-    extends Wootook_Core_Entity_SubTable
+    extends Wootook_Core_Mvc_Model_Entity_SubTable
 {
     protected $_eventPrefix = 'core.config';
     protected $_eventObject = 'config';

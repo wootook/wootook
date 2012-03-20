@@ -119,4 +119,40 @@ class Wootook_Core_Database_Adapter_Pdo_Mysql
         }
         return false;
     }
+
+    /**
+     * @return string
+     */
+    public function errorCode()
+    {
+        return $this->_handler->errorCode();
+    }
+
+    /**
+     * @return array
+     */
+    public function errorInfo()
+    {
+        return $this->_handler->errorInfo();
+    }
+
+    /**
+     * @return string
+     */
+    public function errorMessage()
+    {
+        $info = $this->_handler->errorInfo();
+
+        return $info[2];
+    }
+
+    /**
+     * @return string
+     */
+    public function errorState()
+    {
+        $info = $this->_handler->errorInfo();
+
+        return $info[0];
+    }
 }

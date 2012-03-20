@@ -46,6 +46,7 @@ class Wootook_Player_Controller_AccountController
         }
 
         $this->loadLayout('player.login');
+        $this->_prepareLayoutMessages(Wootook_Player_Model_Entity::SESSION_KEY);
         $this->renderLayout();
     }
 

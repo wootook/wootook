@@ -89,7 +89,7 @@ abstract class Wootook_Core_Database_Adapter_Adapter
      */
     public function quoteInto($string, $values)
     {
-        $parts = preg_split('#(\?|:[\w_]+)#', $identifier, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $parts = preg_split('#(\?|:[\w_]+)#', $string, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
         $result = '';
         if (is_array($values)) {
@@ -171,4 +171,24 @@ abstract class Wootook_Core_Database_Adapter_Adapter
      * @return bool
      */
     abstract public function lastInsertId();
+
+    /**
+     * @return string
+     */
+    abstract public function errorCode();
+
+    /**
+     * @return string
+     */
+    abstract public function errorMessage();
+
+    /**
+     * @return array
+     */
+    abstract public function errorInfo();
+
+    /**
+     * @return string
+     */
+    abstract public function errorState();
 }

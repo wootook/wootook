@@ -536,7 +536,7 @@ function display($page, $title = '', $topnav = true, $metatags = '', $adminPage 
     }
 
     $content = $layout->getBlock('content');
-    if (!$content instanceof Wootook_Core_View) {
+    if (!$content instanceof Wootook_Core_Mvc_View_View) {
         exit(0);
     }
     $pageContent = $layout->createBlock('core/text', 'content');

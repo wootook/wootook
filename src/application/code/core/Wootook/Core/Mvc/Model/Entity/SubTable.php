@@ -6,7 +6,7 @@
  * @uses Legacies_Empire
  * @uses Wootook_Player_Model_Entity
  */
-abstract class Wootook_Core_Entity_SubTable
+abstract class Wootook_Core_Mvc_Model_Entity_SubTable
     extends Wootook_Core_Database_Resource
 {
     private $_isLoaded = false;

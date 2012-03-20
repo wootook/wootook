@@ -8,7 +8,7 @@
  * @uses Legacies_Empire
  */
 class Wootook_Core_Model_Game
-    extends Wootook_Core_Entity
+    extends Wootook_Core_Mvc_Model_Entity
 {
     const DEFAULT_CODE = 'default';
 

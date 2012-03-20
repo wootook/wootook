@@ -182,7 +182,7 @@ class Wootook
      *
      * Enter description here ...
      * @param unknown_type $namespace
-     * @return Legacies_Core_Model_Session
+     * @return Wootook_Core_Model_Session
      */
     public static function getSession($namespace)
     {
@@ -759,17 +759,29 @@ class Wootook
     {
         $baseUrl = self::getBaseUrl();
 
+        $queryParams = array();
+        if (isset($params['_query'])) {
+            $queryParams = $params['_query'];
+        }
+
         $serializedParams = array();
         foreach ($params as $paramKey => $paramValue) {
             if ($paramValue) {
-                $serializedParams[] = "{$paramKey}={$paramValue}";
+                $serializedParams[] = "{$paramKey}/{$paramValue}";
             }
         }
 
-        if (count($serializedParams) > 0) {
-            return $baseUrl . $uri . '?' . implode('&', $serializedParams);
+        $serializedQueryParams = array();
+        foreach ($queryParams as $paramKey => $paramValue) {
+            if ($paramValue) {
+                $serializedQueryParams[] = "{$paramKey}={$paramValue}";
+            }
         }
-        return $baseUrl . $uri;
+
+        if (count($serializedQueryParams) > 0) {
+            return $baseUrl . $uri . '/' . implode('/', $serializedParams) . '?' . implode('&', $serializedQueryParams);
+        }
+        return $baseUrl . $uri . '/' . implode('/', $serializedParams);
     }
 
     public static function getStaticUrl($uri, Array $params = array())

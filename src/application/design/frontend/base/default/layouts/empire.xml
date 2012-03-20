@@ -29,114 +29,111 @@
                     <param name="name">planet/overview</param>
                     <param name="label">Overview</param>
                     <param name="title">Overview</param>
-                    <param name="uri">overview.php</param>
+                    <param name="uri">player/overview</param>
                 </action>
                 <action method="addLink">
                     <param name="name">planet/buildings</param>
                     <param name="label">Buildings</param>
                     <param name="title">Buildings</param>
-                    <param name="uri">buildings.php</param>
+                    <param name="uri">empire/buildings</param>
                 </action>
                 <action method="addLink">
                     <param name="name">planet/research-lab</param>
                     <param name="label">Research Lab</param>
                     <param name="title">Research Lab</param>
-                    <param name="uri">buildings.php</param>
-                    <param name="params"><mode>research</mode></param>
+                    <param name="uri">legacies-empire/research-lab</param>
                 </action>
                 <action method="addLink">
                     <param name="name">planet/shipyard</param>
                     <param name="label">Shipyard</param>
                     <param name="title">Shipyard</param>
-                    <param name="uri">buildings.php</param>
-                    <param name="params"><mode>fleet</mode></param>
+                    <param name="uri">legacies-empire/shipyard</param>
                 </action>
                 <action method="addLink">
                     <param name="name">planet/defenses</param>
                     <param name="label">Defenses</param>
                     <param name="title">Defenses</param>
-                    <param name="uri">buildings.php</param>
-                    <param name="params"><mode>defense</mode></param>
+                    <param name="uri">legacies-empire/defense</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">universe/galaxy</param>
                     <param name="label">Check out the Galaxy</param>
                     <param name="title">Check out the Galaxy</param>
                     <param name="uri">galaxy.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">universe/fleet</param>
                     <param name="label">Send a Fleet</param>
                     <param name="title">Send a Fleet</param>
                     <param name="uri">fleet.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">universe/retailer</param>
                     <param name="label">Retailer</param>
                     <param name="title">Retailer</param>
                     <param name="uri">marchand.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">universe/records</param>
                     <param name="label">All Records</param>
                     <param name="title">All Records</param>
                     <param name="uri">records.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">universe/statistics</param>
                     <param name="label">My Stats</param>
                     <param name="title">My Stats</param>
                     <param name="uri">stat.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">universe/search-player</param>
                     <param name="label">Search a Player</param>
                     <param name="title">Search a Player</param>
                     <param name="uri">search.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">universe/empire</param>
                     <param name="label">Empire</param>
                     <param name="title">Empire</param>
                     <param name="uri">imperium.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">account/officers</param>
                     <param name="label">Officers</param>
                     <param name="title">Officers</param>
                     <param name="uri">officier.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">account/alliance</param>
                     <param name="label">My Alliance</param>
                     <param name="title">My Alliance</param>
                     <param name="uri">alliance.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">account/messages</param>
                     <param name="label">My Messages</param>
                     <param name="title">My Messages</param>
                     <param name="uri">messages.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">account/resources</param>
                     <param name="label">My Resources Production</param>
                     <param name="title">My Resources Production</param>
                     <param name="uri">resources.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">account/tech-tree</param>
                     <param name="label">Technology Tree</param>
                     <param name="title">Technology Tree</param>
                     <param name="uri">techtree.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">tools/notes</param>
                     <param name="label">Note Pad</param>
                     <param name="title">Note Pad</param>
                     <param name="uri">notes.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">tools/options</param>
                     <param name="label">Account Options</param>
                     <param name="title">Account Options</param>
@@ -146,7 +143,7 @@
                     <param name="name">tools/logout</param>
                     <param name="label">Log Out</param>
                     <param name="title">Log Out</param>
-                    <param name="uri">logout.php</param>
+                    <param name="uri">player/account/logout</param>
                 </action>
                 <action method="addExternalLink">
                     <param name="name">community/board</param>
@@ -154,37 +151,37 @@
                     <param name="title">Forum board</param>
                     <param name="url">http://wootook.org/board/</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">community/chat</param>
                     <param name="label">Chat</param>
                     <param name="title">Chat</param>
                     <param name="uri">chat.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">community/announcement</param>
                     <param name="label">Announcements</param>
                     <param name="title">Announcements</param>
                     <param name="uri">annonce.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">community/multi</param>
                     <param name="label">Declare Multi-account</param>
                     <param name="title">Declare Multi-account</param>
                     <param name="uri">delclare_multi.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">community/rules</param>
                     <param name="label">Rules</param>
                     <param name="title">Rules</param>
                     <param name="uri">rules.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">community/contact</param>
                     <param name="label">Contact Admin</param>
                     <param name="title">Contact Admin</param>
                     <param name="uri">contact.php</param>
                 </action>
-                <action method="addLink">
+                <action method="addStaticLink">
                     <param name="name">community/banned</param>
                     <param name="label">Banned Players</param>
                     <param name="title">Banned Players</param>

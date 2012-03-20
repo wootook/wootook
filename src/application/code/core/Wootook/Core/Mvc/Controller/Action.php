@@ -73,8 +73,20 @@ abstract class Wootook_Core_Mvc_Controller_Action
 
     protected function _redirect($uri, Array $params = array(), $code = Wootook_Core_Mvc_Controller_Response_Http::REDIRECT_FOUND)
     {
+        $parts = explode('/', $uri);
+        $partsCount = count($parts);
+        if ($partsCount > 0 && $parts[0] == '*') {
+            $parts[0] = $this->getRequest()->getModuleName();
+            if ($partsCount > 1 && $parts[1] == '*') {
+                $parts[1] = $this->getRequest()->getControllerName();
+                if ($partsCount > 2 && $parts[2] == '*') {
+                    $parts[2] = $this->getRequest()->getActionName();
+                }
+            }
+        }
+        $uri = implode('/', array_slice($parts, 0, 3));
+
         $this->getResponse()
-            ->setIsDispatched(false)
             ->setRedirect(Wootook::getUrl($uri, $params), $code);
 
         Wootook_Core_ErrorProfiler::unregister(true);
@@ -137,6 +149,15 @@ abstract class Wootook_Core_Mvc_Controller_Action
             return $this;
         }
         $this->getResponse()->setBody($content);
+
+        return $this;
+    }
+
+    protected function _prepareLayoutMessages($namespace)
+    {
+        $this->getLayout()
+            ->getMessagesBlock()
+            ->prepareMessages($namespace);
 
         return $this;
     }

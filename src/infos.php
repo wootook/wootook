@@ -327,7 +327,7 @@ function ShowBuildingInfoPage ($CurrentUser, $CurrentPlanet, $BuildID) {
 			// ---- Destruction
 			$NeededRessources     = GetBuildingPrice ($CurrentUser, $CurrentPlanet, $BuildID, true, true);
 			$DestroyTime          = GetBuildingTime  ($CurrentUser, $CurrentPlanet, $BuildID) / 2;
-			$parse['destroyurl']  = "buildings.php?cmd=destroy&building=".$BuildID; // Non balisé les balises sont dans le tpl
+			$parse['destroyurl']  = Wootook::getUrl('empire/buildings/destroy', array('id' => $BuildID)); // Non balisé les balises sont dans le tpl
 			$parse['levelvalue']  = $CurrentPlanet[$resource[$BuildID]]; // Niveau du batiment a detruire
 			$parse['nfo_metal']   = $lang['Metal'];
 			$parse['nfo_crysta']  = $lang['Crystal'];

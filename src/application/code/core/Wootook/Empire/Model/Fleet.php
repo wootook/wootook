@@ -7,7 +7,7 @@
  * @uses Legacies_Empire
  */
 class Wootook_Empire_Model_Fleet
-    extends Wootook_Core_Entity
+    extends Wootook_Core_Mvc_Model_Entity
 {
     protected static $_instances = array();
 

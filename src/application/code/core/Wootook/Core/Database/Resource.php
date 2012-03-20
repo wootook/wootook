@@ -1,7 +1,7 @@
 <?php
 
 abstract class Wootook_Core_Database_Resource
-    extends Wootook_Core_Model
+    extends Wootook_Core_Mvc_Model_Model
 {
     protected $_readConnection = null;
     protected $_writeConnection = null;
@@ -34,6 +34,9 @@ abstract class Wootook_Core_Database_Resource
         return $this->_tableName;
     }
 
+    /**
+     * @return Wootook_Core_Database_Adapter_Adapter
+     */
     public function getReadConnection()
     {
         if ($this->_readConnection === null) {
@@ -58,6 +61,9 @@ abstract class Wootook_Core_Database_Resource
         return $this;
     }
 
+    /**
+     * @return Wootook_Core_Database_Adapter_Adapter
+     */
     public function getWriteConnection()
     {
         if ($this->_writeConnection === null) {

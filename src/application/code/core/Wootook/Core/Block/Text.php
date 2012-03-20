@@ -1,7 +1,7 @@
 <?php
 
 class Wootook_Core_Block_Text
-    extends Wootook_Core_View
+    extends Wootook_Core_Mvc_View_View
 {
     protected $_content = null;
 

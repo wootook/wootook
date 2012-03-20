@@ -43,7 +43,7 @@ class Wootook_Core_Block_Html_Navigation_Link
         return $this->_title;
     }
 
-    public function setUrl($uri, $params = array())
+    public function setStaticUrl($uri, $params = array())
     {
         if ($uri === null) {
             return $this;
@@ -52,6 +52,19 @@ class Wootook_Core_Block_Html_Navigation_Link
         $this->_uri = $uri;
         $this->_params = $params;
         $this->_url = $this->getStaticUrl($uri, $params);
+
+        return $this;
+    }
+
+    public function setUrl($uri, $params = array())
+    {
+        if ($uri === null) {
+            return $this;
+        }
+
+        $this->_uri = $uri;
+        $this->_params = $params;
+        $this->_url = $this->getUrl($uri, $params);
 
         return $this;
     }
@@ -144,10 +157,18 @@ class Wootook_Core_Block_Html_Navigation_Link
 
         if (isset($data['url'])) {
             if (is_array($data['url']) && isset($data['url']['uri'])) {
-                if (isset($data['url']['params'])) {
-                    $this->setUrl($data['url']['uri'], $data['url']['params']);
+                if (isset($data['url']['static']) && $data['url']['static']) {
+                    if (isset($data['url']['params'])) {
+                        $this->setStaticUrl($data['url']['uri'], $data['url']['params']);
+                    } else {
+                        $this->setStaticUrl($data['url']['uri']);
+                    }
                 } else {
-                    $this->setUrl($data['url']['uri']);
+                    if (isset($data['url']['params'])) {
+                        $this->setUrl($data['url']['uri'], $data['url']['params']);
+                    } else {
+                        $this->setUrl($data['url']['uri']);
+                    }
                 }
             } else {
                 $this->setExternalUrl($data['url']);

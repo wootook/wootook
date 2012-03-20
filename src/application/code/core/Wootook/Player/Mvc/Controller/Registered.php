@@ -8,6 +8,16 @@ class Wootook_Player_Mvc_Controller_Registered
         return Wootook_Player_Model_Session::getSingleton();
     }
 
+    public function getPlayer()
+    {
+        return $this->getSession()->getPlayer();
+    }
+
+    public function getCurrentPlanet()
+    {
+        return $this->getPlayer()->getCurrentPlanet();
+    }
+
     public function preDispatch()
     {
         if (!$this->getSession()->isLoggedIn()) {

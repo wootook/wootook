@@ -1,6 +1,6 @@
 <div class="shipyard item-list countable" id="shipyard">
     <h1><?php echo $this->__('Shipyard')?></h1>
-    <form action="<?php echo $this->getStaticUrl('buildings.php', array('mode' => 'fleet'))?>" method="post" id="shipyard-form">
+    <form action="<?php echo $this->getUrl('empire/shipyard/build')?>" method="post" id="shipyard-form">
         <?php echo $this->getPartial('item-list.items')->render()?>
         <input type="submit" value="<?php echo $this->__('Build')?>">
     </form>

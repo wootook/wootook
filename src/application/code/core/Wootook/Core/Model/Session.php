@@ -108,10 +108,11 @@ class Wootook_Core_Model_Session
 
     public function getMessages($clear = true)
     {
+        $messages = $this->_messages;
         if ($clear == true) {
             $this->_messages = array();
         }
-        return $this->_messages;
+        return $messages;
     }
 
     public function addMessage($message, $type = self::DEBUG)

@@ -34,7 +34,7 @@
  * @author Greg
  *
  */
-interface Wootook_Core_EntityInterface
+interface Wootook_Core_Mvc_Model_EntityInterface
 {
     public function getId();
     public function setId($id);

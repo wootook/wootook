@@ -34,7 +34,7 @@
  * @author Greg
  *
  */
-abstract class Wootook_Core_Model
+abstract class Wootook_Core_Mvc_Model_Model
     extends Wootook_Object
 {
     protected $_originalData = array();
@@ -47,14 +47,27 @@ abstract class Wootook_Core_Model
         $this->_data = $data;
 
         $this->_init();
-        $this->_setOriginalData($this->_data);
+        $this->_setOriginalData();
     }
 
     abstract protected function _init();
 
-    protected function _setOriginalData(Array $data)
+    protected function _setOriginalData()
     {
-        $this->_originalData = $data;
+        $this->_originalData = $this->_data;
+    }
+
+    public function getChangedDatas()
+    {
+        return array_diff_assoc($this->_data, $this->_originalData);
+    }
+
+    public function hasChangedDatas()
+    {
+        if (count($this->getChangedDatas()) > 0) {
+            return true;
+        }
+        return false;
     }
 
     final public function save()

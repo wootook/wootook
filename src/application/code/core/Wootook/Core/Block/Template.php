@@ -1,7 +1,7 @@
 <?php
 
 class Wootook_Core_Block_Template
-    extends Wootook_Core_View
+    extends Wootook_Core_Mvc_View_View
 {
     protected function _getTemplatePath($file)
     {

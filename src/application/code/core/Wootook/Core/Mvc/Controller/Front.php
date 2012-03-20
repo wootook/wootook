@@ -5,7 +5,7 @@ class Wootook_Core_Mvc_Controller_Front
     const ROUTE_DEFAULT = 'default';
     const ROUTE_ERROR = 'error';
 
-    // FIXME: Create a router class to manage all this
+    // FIXME: Create a router class to manage all this mess
     protected $_routes = array(
         self::ROUTE_ERROR => array(
             'modules' => array(
@@ -37,6 +37,10 @@ class Wootook_Core_Mvc_Controller_Front
                 'empire' => array(
                     'class' => 'Wootook_Empire_Controller_',
                     'path'  => 'Wootook/Empire/Controller'
+                    ),
+                'legacies-empire' => array(
+                    'class' => 'Legacies_Empire_Controller_',
+                    'path'  => 'Legacies/Empire/Controller'
                     )
                 ),
             'defaults' => array(
@@ -152,7 +156,7 @@ class Wootook_Core_Mvc_Controller_Front
         while ($loop++ < 100) {
             $moduleKey = $this->_request->getModuleName();
             if (empty($moduleKey)) {
-                $this->_forward('no-route', 'error', 'core');
+                $this->_forward('index', 'index', 'core');
                 continue;
             }
 

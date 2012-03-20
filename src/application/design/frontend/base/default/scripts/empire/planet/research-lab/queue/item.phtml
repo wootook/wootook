@@ -6,6 +6,6 @@
     </p>
     <p class="time"><?php echo $this->__('Lasts %s', $this->renderTime($this->getBuildingRemainingTime()))?></p>
     <div class="cancel">
-        <p><a class="build" href="<?php echo $this->getStaticUrl('buildings.php', array('cancel' => $this->getItem()->getIndex()))?>"><?php echo $this->__('Cancel')?></a></p>
+        <p><a class="build" href="<?php echo $this->getUrl('empire/research-lab/cancel', array('id' => $this->getItem()->getIndex()))?>"><?php echo $this->__('Cancel')?></a></p>
     </div>
 </div>

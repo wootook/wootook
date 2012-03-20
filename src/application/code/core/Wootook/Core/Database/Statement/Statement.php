@@ -90,13 +90,13 @@ abstract class Wootook_Core_Database_Statement_Statement
      * @param array $config
      * @return Wootook_Object
      */
-    public function fetchEntity($class = 'Wootook_Core_Entity', Array $constructorArgs = array())
+    public function fetchEntity($class = 'Wootook_Core_Mvc_Model_Entity', Array $constructorArgs = array())
     {
         $reflection = new ReflectionClass($class);
         $object = $reflection->newInstanceArgs($constructorArgs);
 
         if (!$object instanceof Wootook_Object) {
-            throw new Wootook_Core_Exception_Database_StatementError($this, 'Destination object should be a Wootook_Core_Entity instance.');
+            throw new Wootook_Core_Exception_Database_StatementError($this, 'Destination object should be a Wootook_Core_Mvc_Model_Entity instance.');
         }
 
         $data = $this->fetch(Wootook_Core_Database_ConnectionManager::FETCH_ASSOC);

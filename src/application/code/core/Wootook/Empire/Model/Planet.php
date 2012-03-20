@@ -7,7 +7,7 @@
  * @uses Wootook_Player_Model_Entity
  */
 class Wootook_Empire_Model_Planet
-    extends Wootook_Core_Entity
+    extends Wootook_Core_Mvc_Model_Entity
 {
     const TYPE_PLANET = 1;
     const TYPE_DEBRIS = 2;

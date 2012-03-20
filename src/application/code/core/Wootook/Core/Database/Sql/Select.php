@@ -1,7 +1,7 @@
 <?php
 
-abstract class Wootook_Core_Database_Sql_Select
-    extends Wootook_Core_Database_Sql_DmlQuery
+class Wootook_Core_Database_Sql_Select
+    extends Wootook_Core_Database_Sql_DmlFilterableQuery
 {
     const COLUMNS = 'COLUMNS';
     const FROM    = 'FROM';
@@ -23,27 +23,6 @@ abstract class Wootook_Core_Database_Sql_Select
         }
 
         return $this;
-    }
-
-    /**
-     * @param string $tableName
-     * @deprecated
-     */
-    public function setTableName($tableName)
-    {
-        $this->from($tableName);
-
-        return $this;
-    }
-
-    /**
-     * @deprecated
-     */
-    public function getTableName()
-    {
-        $table = current($this->_parts[self::FROM]);
-
-        return $table['table'];
     }
 
     public function reset($part = null)

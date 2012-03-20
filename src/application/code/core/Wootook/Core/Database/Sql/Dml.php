@@ -4,12 +4,6 @@ interface Wootook_Core_Database_Sql_Dml
 {
     function __construct(Wootook_Core_Database_Adapter_Adapter $connection, $param = null);
 
-    function where($condition);
-    function limit($limit, $offset = null);
-
-    function renderWhere();
-    function renderLimit();
-
     function render();
     function toString($part = null);
 

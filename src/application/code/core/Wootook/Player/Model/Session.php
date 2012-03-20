@@ -6,6 +6,9 @@ class Wootook_Player_Model_Session
 {
     protected static $_singleton = null;
 
+    /**
+     * @var Wootook_Player_Model_Entity
+     */
     protected $_player = null;
 
     public function __construct()
@@ -32,6 +35,14 @@ class Wootook_Player_Model_Session
         return $this->getData('player_id');
     }
 
+    public function setPlayer(Wootook_Player_Model_Entity $player)
+    {
+        $this->_player = $player;
+        $this->setData('player_id', $player->getId());
+
+        return $this;
+    }
+
     /**
      *
      * Enter description here ...
@@ -45,32 +56,33 @@ class Wootook_Player_Model_Session
             try {
                 if ($this->hasData('player_id')) {
                     $id = intval($this->getData('player_id'));
-                } else if (Wootook::getRequest() !== null && ($cookieData = Wootook::getRequest()->getCookie($this->_player->getCookieName())) !== null) {
-                    if (is_array($cookieData)) {
-                        $adapter = $this->_player->getReadConnection();
-                        $select = $adapter->select(array('user' => 'users'));
-                        $cookieData = array(
-                            'id' => (isset($cookieData['id']) ? intval($cookieData['id']) : 0),
-                            'key' => (isset($cookieData['key']) ? $collection->quote($cookieData['key']) : null)
-                            );
+                } else if (Wootook::getRequest() !== null &&
+                        ($cookieData = Wootook::getRequest()->getCookie($this->_player->getCookieName())) !== null &&
+                        is_array($cookieData)) {
 
-                        $select
-                            ->column('id')
-                            ->where('user.id=:id')
-                            ->where(':key=CONCAT((@salt:=MID(:key, 0, 4)), SHA1(CONCAT(user.username, user.password, @salt)))')
-                        ;
-                        try {
-                            $statement = $adapter->prepare($select);
-                            if (!$statement->execute($cookieData) || $statement->rowCount() <= 0) {
-                                throw new Wootook_Player_Exception_Session('Your session has expired, please login.');
-                            }
-                        } catch (PDOException $e) {
-                            throw new Wootook_Core_Exception_DataAccessException('Session error.', null, $e);
+                    $adapter = $this->_player->getReadConnection();
+                    $select = $adapter->select(array('user' => 'users'));
+                    $cookieData = array(
+                        'id' => (isset($cookieData['id']) ? intval($cookieData['id']) : 0),
+                        'key' => (isset($cookieData['key']) ? $adapter->quote($cookieData['key']) : null)
+                        );
+
+                    $select
+                        ->column('id')
+                        ->where('user.id=:id')
+                        ->where(':key=CONCAT((@salt:=MID(:key, 0, 4)), SHA1(CONCAT(user.username, user.password, @salt)))')
+                    ;
+                    try {
+                        $statement = $adapter->prepare($select);
+                        if (!$statement->execute($cookieData) || $statement->rowCount() <= 0) {
+                            throw new Wootook_Player_Exception_Session('Your session has expired, please login.');
                         }
 
-                        $this->setData(self::SESSION_KEY, $cookieData['id']);
-                    } else {
-                        throw new Wootook_Player_Exception_Session('Your session has expired, please login.');
+                        $id = $statement->fetchColumn();
+                    } catch (Wootook_Core_Exception_Database_AdapterError $e) {
+                        throw new Wootook_Core_Exception_DataAccessException('Session error.', null, $e);
+                    } catch (Wootook_Core_Exception_Database_StatementError $e) {
+                        throw new Wootook_Core_Exception_DataAccessException('Session error.', null, $e);
                     }
                 } else {
                     throw new Wootook_Player_Exception_Session('Your session has expired, please login.');
@@ -109,20 +121,26 @@ class Wootook_Player_Model_Session
     public function login($username, $password, $remember = false)
     {
         try {
-            if ($this->getPlayer()->getId()) {
+            if ($this->_player === null) {
+                $this->_player = new Wootook_Player_Model_Entity();
+            }
+
+            if ($this->_player->getId()) {
                 return $this->_player;
             }
             $adapter = $this->_player->getReadConnection();
-            $select = $adapter->select(array('user' => 'users'));
+            $select = $adapter->select(array('user' => $adapter->getTable($this->_player->getTableName())));
 
-            $passwordHash = md5($password);
+            $passwordHash = $this->_player->hash($password);
             $select
-                ->column('user.id')
-                ->column('user.username')
-                ->column('user.password')
-                ->column('user.banaday')
-                ->column('CONCAT((@salt:=MID(MD5(RAND()), 0, 4)), SHA1(CONCAT(user.username, user.password, @salt))) AS login_rememberme')
-                ->column('(CASE WHEN user.password="' . $passwordHash . '" THEN 1 ELSE 0 END) AS login_success')
+                ->column(array(
+                    'id'               => 'user.id',
+                    'username'         => 'user.username',
+                    'password_hash'    => 'user.password',
+                    'is_banned'        => 'user.banaday',
+                    'login_rememberme' => new Wootook_Core_Database_Sql_Placeholder_Expression('CONCAT((@salt:=MID(MD5(RAND()), 0, 4)), SHA1(CONCAT(user.username, user.password, @salt)))'),
+                    'login_success'    => new Wootook_Core_Database_Sql_Placeholder_Expression("(CASE WHEN user.password={$adapter->quote($passwordHash)} THEN 1 ELSE 0 END)")
+                    ))
                 ->where('user.username=:username');
 
             $statement = $adapter->prepare($select);
@@ -130,7 +148,7 @@ class Wootook_Player_Model_Session
                 $this->addError(Wootook::__('No such user.'));
                 return $this->_player;
             }
-        } catch (PDOException $e) {
+        } catch (Wootook_Core_Exception_Database_StatementError $e) {
             Wootook_Core_ErrorProfiler::getSingleton()->exceptionManager($e);
             $this->addError(Wootook::__('No such user.'));
             return $this->_player;

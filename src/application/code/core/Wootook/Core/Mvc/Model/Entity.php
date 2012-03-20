@@ -1,8 +1,8 @@
 <?php
 
-abstract class Wootook_Core_Entity
+abstract class Wootook_Core_Mvc_Model_Entity
     extends Wootook_Core_Database_Resource
-    implements Wootook_Core_EntityInterface
+    implements Wootook_Core_Mvc_Model_EntityInterface
 {
     protected $_idFieldName = null;
 
@@ -50,7 +50,7 @@ abstract class Wootook_Core_Entity
             ->where("{$database->quoteIdentifier($idFieldName)}=:id")
             ->limit(1);
 
-        $statement = $database->prepare($select);
+        $statement = $select->prepare();
         $statement->execute(array(
             'id' => $id
             ));
@@ -70,68 +70,46 @@ abstract class Wootook_Core_Entity
 
     protected function _save()
     {
-        $database = $this->getWriteConnection();
+        $adapter = $this->getWriteConnection();
+
+        if ($adapter === null) {
+            throw new Wootook_Core_Exception_DataAccessException('Could not save data: no write connection configured.');
+        }
 
         if ($this->getId() !== null) {
-            $fields = array();
-            $values = array();
-            $datas = $this->getDataMapper()->encode($this, $this->getAllDatas());
-            foreach ($datas as $field => $value) {
-                if ($field == $this->getIdFieldName()) {
-                    continue;
-                }
-                $fields[] = "{$database->quoteIdentifier($field)}=:{$field}";
-                $values[$field] = $value;
+            $update = $adapter->update()
+                ->into($adapter->getTable($this->getTableName()))
+                ->where("{$adapter->quoteIdentifier($this->getIdFieldName())}=:id");
+
+            foreach ($this->getDataMapper()->encode($this, $this->getChangedDatas()) as $field => $value) {
+                $update->set($field, new Wootook_Core_Database_Sql_Placeholder_Param($field, $value));
             }
-
-            $fieldsImploded = implode(', ', $fields);
-            $idFieldName = $this->getIdFieldName();
-            $values[$idFieldName] = $this->getId();
-
-            if ($database === null) {
-                throw new Wootook_Core_Exception_DataAccessException('Could not load data: no write connection configured.');
+            try {
+                $statement = $update->prepare();
+                $statement->execute(array('id' => $this->getId()));
+            } catch (Wootook_Core_Exception_Database_AdapterError $e) {
+                throw new Wootook_Core_Exception_DataAccessException('Could not save data: ' . $e->getMessage(), null, $e);
+            } catch (Wootook_Core_Exception_Database_StatementError $e) {
+                throw new Wootook_Core_Exception_DataAccessException('Could not save data: ' . $e->getMessage(), null, $e);
             }
-
-            $sql =<<<SQL_EOF
-UPDATE {$database->getTable($this->getTableName())}
-    SET {$fieldsImploded}
-    WHERE {$idFieldName}=:{$idFieldName}
-SQL_EOF;
-            $statement = $database->prepare($sql);
-
-            $statement->execute($values);
         } else {
-            $datas = $this->getAllDatas();
+            $insert = $adapter->insert()
+                ->into($adapter->getTable($this->getTableName()));
 
-            $fields = array();
-            $tokens = array();
-            $values = array();
-            foreach ($datas as $field => $value) {
-                if ($field == $this->getIdFieldName()) {
-                    continue;
-                }
-                $tokens[] = ":{$field}";
-                $fields[] = $database->quoteIdentifier($field);
-                $values[$field] = strval($value);
+            foreach ($this->getDataMapper()->encode($this, $this->getAllDatas()) as $field => $value) {
+                $insert->set($field, new Wootook_Core_Database_Sql_Placeholder_Param($field, $value));
             }
-            $tokensImploded = implode(', ', $tokens);
-            $fieldsImploded = implode(', ', $fields);
+            try {
+                $statement = $insert->prepare();
+                $statement->execute();
 
-            if ($database === null) {
-                throw new Wootook_Core_Exception_DataAccessException('Could not load data: no write connection configured.');
+                $id = $adapter->lastInsertId($table);
+                $this->setId($id);
+            } catch (Wootook_Core_Exception_Database_AdapterError $e) {
+                throw new Wootook_Core_Exception_DataAccessException('Could not save data: ' . $e->getMessage(), null, $e);
+            } catch (Wootook_Core_Exception_Database_StatementError $e) {
+                throw new Wootook_Core_Exception_DataAccessException('Could not save data: ' . $e->getMessage(), null, $e);
             }
-
-            $table = $database->getTable($this->getTableName());
-            $sql =<<<SQL_EOF
-INSERT INTO {$database->quoteIdentifier($table)} ({$database->quoteIdentifier($this->getIdFieldName())}, $fieldsImploded)
-    VALUES (NULL, {$tokensImploded})
-SQL_EOF;
-            $statement = $database->prepare($sql);
-
-            $statement->execute($values);
-
-            $id = $database->lastInsertId($table);
-            $this->setId($id);
         }
 
         return $this;

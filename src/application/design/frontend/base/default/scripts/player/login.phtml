@@ -1,3 +1,4 @@
+<?php echo $this->getLayout()->getMessagesBlock()->renderGroupedHtml()?>
 <form id="login-form" name="login-form" action="<?php echo $this->getUrl('player/account/login-post')?>" method="post" class="main-form">
   <fieldset>
     <legend><?php echo $this->__('Login')?></legend>

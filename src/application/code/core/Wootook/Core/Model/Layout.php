@@ -40,7 +40,7 @@
  * @category    layout
  */
 class Wootook_Core_Model_Layout
-    extends Wootook_Core_Model
+    extends Wootook_Core_Mvc_Model_Model
 {
     const DEFAULT_PACKAGE = 'base';
     const DEFAULT_THEME = 'default';
@@ -51,10 +51,10 @@ class Wootook_Core_Model_Layout
     /** @var array */
     protected $_blocks = array();
 
-    /** @var Wootook_Core_View */
+    /** @var Wootook_Core_Mvc_View_View */
     protected $_messageBlock = null;
 
-    /** @var Wootook_Core_View */
+    /** @var Wootook_Core_Mvc_View_View */
     protected $_rootView = null;
 
     /** @var string */
@@ -369,7 +369,7 @@ class Wootook_Core_Model_Layout
      * @param string $type
      * @param string $name
      * @param array $config
-     * @return Wootook_Core_View
+     * @return Wootook_Core_Mvc_View_View
      */
     public function createBlock($type, $name, $config = array())
     {
@@ -419,7 +419,7 @@ class Wootook_Core_Model_Layout
                 }
 
                 if (!isset($config['type'])) {
-                    $instance->$alias = new Wootook_Core_View($config);
+                    $instance->$alias = new Wootook_Core_Mvc_View_View($config);
                 } else {
                     $child = $this->_createBlock($config['type'], $name, $config);
                     if ($child !== null) {
@@ -555,7 +555,7 @@ class Wootook_Core_Model_Layout
 
     public function render()
     {
-        if (!$this->_rootView instanceof Wootook_Core_View) {
+        if (!$this->_rootView instanceof Wootook_Core_Mvc_View_View) {
             throw new Wootook_Core_Exception_LayoutException(Wootook::__('No root view declared.'));
         }
 

@@ -118,7 +118,7 @@
         </reference>
 
         <reference name="content">
-            <block name="login" type="core/template" template="page/home.phtml" />
+            <block name="login" type="core/template" template="page/html/home.phtml" />
         </reference>
     </handle>
 </layout>

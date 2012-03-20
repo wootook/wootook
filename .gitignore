@@ -2,4 +2,6 @@ config.php
 .buildpath
 .project
 .settings/
+.idea/
 coverage/
+src/application/cache/*

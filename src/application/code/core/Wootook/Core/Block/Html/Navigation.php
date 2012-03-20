@@ -28,6 +28,32 @@ class Wootook_Core_Block_Html_Navigation
 
         return $this;
     }
+    public function addStaticLink($name, $label, $title, $uri, Array $params = array(), Array $classes = array(), $template = null, Array $attributes = array())
+    {
+        $explodedPath = explode('/', $name);
+        $baseName = array_pop($explodedPath);
+        $parent = $this->_getNode($explodedPath);
+
+        $child = $this->getLayout()
+            ->createBlock('core/html.navigation.link', $this->getNameInLayout() . '.' . $baseName, array(
+                'url' => array(
+                    'uri'    => $uri,
+                    'params' => $params,
+                    'static' => true
+                    ),
+                'label'   => $label,
+                'title'   => $title,
+                'classes' => $classes,
+                'attributes' => $attributes
+                ));
+        $parent->setPartial($baseName, $child);
+
+        if ($template !== null) {
+            $child->setTemplate($template);
+        }
+
+        return $this;
+    }
 
     public function addExternalLink($name, $label, $title, $url, Array $classes = array(), $template = null, Array $attributes = array())
     {

@@ -1,7 +1,7 @@
 <?php
 
 abstract class Wootook_Core_Helper_Config_ConfigHandler
-    extends Wootook_Core_Model
+    extends Wootook_Core_Mvc_Model_Model
     implements Iterator, Countable
 {
     protected function _initData($filename)

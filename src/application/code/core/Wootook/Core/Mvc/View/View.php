@@ -34,7 +34,7 @@
  * @author Greg
  *
  */
-class Wootook_Core_View
+class Wootook_Core_Mvc_View_View
     extends Wootook_Object
 {
     protected $_template = null;
