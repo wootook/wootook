@@ -22,26 +22,6 @@ class Wootook_Core_Mvc_Controller_Front
             ),
         self::ROUTE_DEFAULT => array(
             'modules' => array(
-                'core' => array(
-                    'class' => 'Wootook_Core_Controller_',
-                    'path'  => 'Wootook/Core/Controller'
-                    ),
-                'admin' => array(
-                    'class' => 'Wootook_Admin_Controller_',
-                    'path'  => 'Wootook/Admin/Controller'
-                    ),
-                'player' => array(
-                    'class' => 'Wootook_Player_Controller_',
-                    'path'  => 'Wootook/Player/Controller'
-                    ),
-                'empire' => array(
-                    'class' => 'Wootook_Empire_Controller_',
-                    'path'  => 'Wootook/Empire/Controller'
-                    ),
-                'legacies-empire' => array(
-                    'class' => 'Legacies_Empire_Controller_',
-                    'path'  => 'Legacies/Empire/Controller'
-                    )
                 ),
             'defaults' => array(
                 'module'     => 'core',
@@ -156,12 +136,21 @@ class Wootook_Core_Mvc_Controller_Front
         while ($loop++ < 100) {
             $moduleKey = $this->_request->getModuleName();
             if (empty($moduleKey)) {
-                $this->_forward('index', 'index', 'core');
+                $this->_forward(
+                    $this->_routes[$route]['defaults']['action'],
+                    $this->_routes[$route]['defaults']['controller'],
+                    $this->_routes[$route]['defaults']['module']
+                );
                 continue;
             }
 
             if (!isset($this->_routes[$route]['modules'][$moduleKey])) {
-                $this->_forward('no-route', 'error', 'core');
+                $this->_forward(
+                    $this->_routes[self::ROUTE_ERROR]['defaults']['action'],
+                    $this->_routes[self::ROUTE_ERROR]['defaults']['controller'],
+                    $this->_routes[self::ROUTE_ERROR]['defaults']['module']
+                );
+                $route = self::ROUTE_ERROR;
                 continue;
             }
 
@@ -178,7 +167,12 @@ class Wootook_Core_Mvc_Controller_Front
             }
 
             if (!class_exists($controllerClass, false)) {
-                $this->_forward('no-route', 'error', 'core');
+                $this->_forward(
+                    $this->_routes[self::ROUTE_ERROR]['defaults']['action'],
+                    $this->_routes[self::ROUTE_ERROR]['defaults']['controller'],
+                    $this->_routes[self::ROUTE_ERROR]['defaults']['module']
+                );
+                $route = self::ROUTE_ERROR;
                 continue;
             }
 
@@ -189,7 +183,12 @@ class Wootook_Core_Mvc_Controller_Front
 
             $actionMethod = $this->_getActionMethod($actionKey);
             if (!method_exists($controllerClass, $actionMethod)) {
-                $this->_forward('no-route', 'error', 'core');
+                $this->_forward(
+                    $this->_routes[self::ROUTE_ERROR]['defaults']['action'],
+                    $this->_routes[self::ROUTE_ERROR]['defaults']['controller'],
+                    $this->_routes[self::ROUTE_ERROR]['defaults']['module']
+                );
+                $route = self::ROUTE_ERROR;
                 continue;
             }
 
@@ -222,5 +221,26 @@ class Wootook_Core_Mvc_Controller_Front
     public function send()
     {
         $this->_response->render();
+    }
+
+    public function addModule($frontName, $namespace, $path)
+    {
+        $this->_routes[self::ROUTE_DEFAULT]['modules'][$frontName] = array(
+            'class' => $namespace,
+            'path'  => $path
+            );
+
+        return $this;
+    }
+
+    public function setDefaults($module, $controller, $action)
+    {
+        $this->_routes[self::ROUTE_DEFAULT]['defaults'] = array(
+            'module'     => $module,
+            'controller' => $controller,
+            'action'     => $action
+            );
+
+        return $this;
     }
 }

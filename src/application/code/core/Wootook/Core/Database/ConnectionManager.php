@@ -119,6 +119,10 @@ class Wootook_Core_Database_ConnectionManager
         self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION
         );
 
+    /**
+     * @param $connectionName
+     * @return Wootook_Core_Database_Adapter_Adapter
+     */
     public function getConnection($connectionName)
     {
         if (empty($connectionName) || $connectionName === null) {

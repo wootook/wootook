@@ -21,7 +21,17 @@ class Wootook_Core_Database_Sql_Placeholder_Param
     {
         parent::beforeExcute($statement);
 
-        $statement->bindValue($this->_paramName, $this->_value);
+        if (is_numeric($this->_value)) {
+            $type = Wootook_Core_Database_ConnectionManager::PARAM_INT;
+        } else if (is_bool($this->_value)) {
+            $type = Wootook_Core_Database_ConnectionManager::PARAM_BOOL;
+        } else if (is_string($this->_value)) {
+            $type = Wootook_Core_Database_ConnectionManager::PARAM_STR;
+        } else {
+            $type = null;
+        }
+
+        $statement->bindValue($this->_paramName, $this->_value, $type);
 
         return $this;
     }

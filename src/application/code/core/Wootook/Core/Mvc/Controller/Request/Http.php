@@ -19,7 +19,7 @@ class Wootook_Core_Mvc_Controller_Request_Http
     {
         parent::__construct($options);
 
-        $this->_baseUrl = Wootook::getBaseUrl();
+        $this->_baseUrl = Wootook::getBaseUrl('link');
         $baseUri = substr($this->_baseUrl, strpos($this->_baseUrl, '/', 8)); // Get the path from the DocumentRoot
 
         $params = '';

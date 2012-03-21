@@ -79,14 +79,14 @@ abstract class Wootook_Core_Mvc_Model_Entity
         if ($this->getId() !== null) {
             $update = $adapter->update()
                 ->into($adapter->getTable($this->getTableName()))
-                ->where("{$adapter->quoteIdentifier($this->getIdFieldName())}=:id");
+                ->where(new Wootook_Core_Database_Sql_Placeholder_Expression("{$adapter->quoteIdentifier($this->getIdFieldName())}=:id", array('id' => $this->getId())));
 
             foreach ($this->getDataMapper()->encode($this, $this->getChangedDatas()) as $field => $value) {
                 $update->set($field, new Wootook_Core_Database_Sql_Placeholder_Param($field, $value));
             }
             try {
                 $statement = $update->prepare();
-                $statement->execute(array('id' => $this->getId()));
+                $statement->execute();
             } catch (Wootook_Core_Exception_Database_AdapterError $e) {
                 throw new Wootook_Core_Exception_DataAccessException('Could not save data: ' . $e->getMessage(), null, $e);
             } catch (Wootook_Core_Exception_Database_StatementError $e) {
@@ -97,13 +97,13 @@ abstract class Wootook_Core_Mvc_Model_Entity
                 ->into($adapter->getTable($this->getTableName()));
 
             foreach ($this->getDataMapper()->encode($this, $this->getAllDatas()) as $field => $value) {
-                $insert->set($field, new Wootook_Core_Database_Sql_Placeholder_Param($field, $value));
+                $insert->set($field, new Wootook_Core_Database_Sql_Placeholder_Param($field, $value, $type));
             }
             try {
                 $statement = $insert->prepare();
                 $statement->execute();
 
-                $id = $adapter->lastInsertId($table);
+                $id = $adapter->lastInsertId($adapter->getTable($this->getTableName()));
                 $this->setId($id);
             } catch (Wootook_Core_Exception_Database_AdapterError $e) {
                 throw new Wootook_Core_Exception_DataAccessException('Could not save data: ' . $e->getMessage(), null, $e);

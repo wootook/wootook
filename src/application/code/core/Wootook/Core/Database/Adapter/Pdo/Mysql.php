@@ -16,6 +16,10 @@ class Wootook_Core_Database_Adapter_Pdo_Mysql
             $dsn .= ";port={$config->database}";
         }
 
+        if (!isset($options[Wootook_Core_Database_ConnectionManager::ATTR_ERRMODE])) {
+            $options[Wootook_Core_Database_ConnectionManager::ATTR_ERRMODE] = Wootook_Core_Database_ConnectionManager::ERRMODE_EXCEPTION;
+        }
+
         try {
             $this->_handler = new PDO($dsn, $config->username, $config->password, $options);
         } catch (PDOException $e) {

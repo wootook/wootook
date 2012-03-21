@@ -34,5 +34,9 @@ require_once dirname(__FILE__) .'/application/bootstrap.php';
 $frontController = new Wootook_Core_Mvc_Controller_Front(Wootook::getRequest(), Wootook::getResponse());
 
 $frontController
+    ->addModule('core', 'Wootook_Core_Controller_', 'Wootook/Core/Controller')
+    ->addModule('player', 'Wootook_Player_Controller_', 'Wootook/Player/Controller')
+    ->addModule('empire', 'Wootook_Empire_Controller_', 'Wootook/Empire/Controller')
+    ->addModule('legacies-empire', 'Legacies_Empire_Controller_', 'Legacies/Empire/Controller')
     ->dispatch()
     ->send();

@@ -384,7 +384,7 @@ class Wootook
             return $config;
         }
 
-        $select = $adapter->select('core_config');
+        $select = $adapter->select($adapter->getTable('core_config'));
 
         switch ($type) {
         case 'website':
@@ -653,6 +653,12 @@ class Wootook
         return self::$_globalConfig;
     }
 
+    /**
+     * @static
+     * @param null $path
+     * @param null $gameKey
+     * @return Wootook_Core_Config_Node
+     */
     public static function getWebsiteConfig($path = null, $websiteKey = null)
     {
         if (self::$_config === null) {
@@ -675,6 +681,12 @@ class Wootook
         return $config;
     }
 
+    /**
+     * @static
+     * @param null $path
+     * @param null $gameKey
+     * @return Wootook_Core_Config_Node
+     */
     public static function getGameConfig($path = null, $gameKey = null)
     {
         if (self::$_config === null) {

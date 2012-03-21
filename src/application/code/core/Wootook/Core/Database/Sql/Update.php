@@ -21,6 +21,9 @@ class Wootook_Core_Database_Sql_Update
             $this->_parts = array(
                 self::INTO   => array(),
                 self::SET    => array(),
+                self::WHERE   => array(),
+                self::LIMIT   => null,
+                self::OFFSET  => null,
                 );
         } else if (isset($this->_parts[$part])) {
             $this->_parts[$part] = array();
@@ -29,16 +32,22 @@ class Wootook_Core_Database_Sql_Update
         return $this;
     }
 
-    public function set($column, $value)
+    public function set($column, $value = null)
     {
-        if ($value instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
-            $this->_placeholders[] = $column;
+        if (!is_array($column)) {
+            $column = array($column => $value);
         }
 
-        $this->_parts[self::COLUMNS][] = array(
-            'value' => $value,
-            'field' => $column
-            );
+        foreach ($column as $field => $value) {
+            if ($field instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
+                $this->_placeholders[] = $field;
+            }
+
+            $this->_parts[self::SET][] = array(
+                'value' => $value,
+                'field' => $field
+                );
+        }
 
         return $this;
     }
@@ -65,14 +74,11 @@ class Wootook_Core_Database_Sql_Update
         }
 
         switch ($part) {
-        case self::COLUMNS:
+        case self::SET:
             return $this->renderSet();
             break;
         case self::INTO:
             return $this->renderInto();
-            break;
-        case self::SELECT:
-            return $this->renderSelect();
             break;
         }
 
@@ -81,17 +87,20 @@ class Wootook_Core_Database_Sql_Update
 
     public function renderSet()
     {
+        $values = array();
         $fields = array();
         foreach ($this->_parts[self::SET] as $field) {
             if ($field['value'] instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
-                $fields[] = "{$this->_connection->quoteIdentifier($field['field'])}={$field['value']->toString()}";
+                $values[] = $field['value']->toString();
+                $fields[] = $this->_connection->quoteIdentifier($field['field']);
             } else {
-                $fields[] = "{$this->_connection->quoteIdentifier($field['field'])}={$this->_connection->quote($field['value'])}";
+                $values[] = $this->_connection->quote($field['value']);
+                $fields[] = $this->_connection->quoteIdentifier($field['field']);
             }
         }
 
         if (!empty($fields)) {
-            return "\nSET " . implode(", ", $fields);
+            return ' (' . implode(', ', $fields). ")\nVALUES (" . implode(", ", $values) . ')';
         }
     }
 
@@ -103,21 +112,16 @@ class Wootook_Core_Database_Sql_Update
            $output = "{$this->_connection->quoteIdentifier($this->_parts[self::INTO]['table'])}";
         }
 
-        return "INSERT INTO " . $output;
+        return "UPDATE " . $output;
     }
 
     public function render()
     {
-        if (empty($this->_parts[self::SELECT])) {
-            return implode('', array(
-                $this->renderInto(),
-                $this->renderColumns(),
-                ));
-        } else {
-            return implode('', array(
-                $this->renderInto(),
-                $this->renderSelect(),
-                ));
-        }
+        return implode('', array(
+            $this->renderInto(),
+            $this->renderSet(),
+            $this->renderWhere(),
+            $this->renderLimit()
+            ));
     }
 }

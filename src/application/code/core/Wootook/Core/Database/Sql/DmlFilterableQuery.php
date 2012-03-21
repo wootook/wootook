@@ -26,6 +26,7 @@ abstract class Wootook_Core_Database_Sql_DmlFilterableQuery
     public function where($condition, $value = null)
     {
         if ($condition instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
+            $this->_placeholders[] = $condition;
             $this->_parts[self::WHERE][] = $condition;
         } else if (is_string($condition)) {
             if ($value === null) {

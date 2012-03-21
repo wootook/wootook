@@ -31,16 +31,22 @@ class Wootook_Core_Database_Sql_Insert
         return $this;
     }
 
-    public function set($column, $value)
+    public function set($column, $value = null)
     {
-        if ($value instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
-            $this->_placeholders[] = $column;
+        if (!is_array($column)) {
+            $column = array($column => $value);
         }
 
-        $this->_parts[self::COLUMNS][] = array(
-            'value' => $value,
-            'field' => $column
-            );
+        foreach ($column as $field => $value) {
+            if ($field instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
+                $this->_placeholders[] = $field;
+            }
+
+            $this->_parts[self::SET][] = array(
+                'value' => $value,
+                'field' => $field
+                );
+        }
 
         return $this;
     }
