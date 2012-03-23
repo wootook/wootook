@@ -5,7 +5,7 @@ class Wootook_Player_Resource_Entity_Collection
 {
     public function _construct()
     {
-        $this->_init(array('user' => 'users'), 'Wootook_Player_Model_Entity');
+        $this->_init('users', 'Wootook_Player_Model_Entity');
     }
 
     public function addAuthlevelToFilter(Array $levels, $exclude = false)
@@ -21,8 +21,12 @@ class Wootook_Player_Resource_Entity_Collection
 
     public function addIsOnlineToFilter($onlineTime = 900)
     {
+        $onlineTime = (int) $onlineTime;
+
         if ($onlineTime > 0) {
-            $this->getSelect()->where("user.onlinetime>(UNIX_TIMESTAMP() - {$this->getReadConnection()->quote($onlineTime)}))");
+            $this->addFieldToFilter('onlinetime', array(array(
+                'gt' => new Wootook_Core_Database_Sql_Placeholder_Expression('UNIX_TIMESTAMP() - :online_time))', array('online_time' => $onlineTime))
+                )));
         }
 
         return $this;

@@ -89,7 +89,7 @@ abstract class Wootook_Core_Database_Adapter_Adapter
      */
     public function quoteInto($string, $values)
     {
-        $parts = preg_split('#(\?|:[\w_]+)#', $string, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        $parts = preg_split('#(:[\w_]+|[?])#', $string, null, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
 
         $result = '';
         if (is_array($values)) {
@@ -97,7 +97,7 @@ abstract class Wootook_Core_Database_Adapter_Adapter
             foreach ($parts as $part) {
                 if ($part == '?') {
                     $result .= $this->quote($values[$index++]);
-                } else if ($part[0] == ':') {
+                } else if (!empty($part) && $part[0] == ':') {
                     $key = substr($part, 1);
 
                     if (isset($values[$key])) {
@@ -127,9 +127,9 @@ abstract class Wootook_Core_Database_Adapter_Adapter
     /**
      * @return Wootook_Core_Database_Statement_Statement
      */
-    public function query($sql)
+    public function query($sql, Array $params = null)
     {
-        $statement = $this->prepare($sql);
+        $statement = $this->prepare($sql, $params);
         if (!$statement->execute()) {
             $message = sprintf('[SQLSTATE %s] Could not execute query: %s', $statement->errorState(), $statement->errorMessage());
             throw new Wootook_Core_Exception_Database_StatementError($statement, $message);
@@ -141,16 +141,16 @@ abstract class Wootook_Core_Database_Adapter_Adapter
     /**
      * @return bool
      */
-    public function execute($sql)
+    public function execute($sql, Array $params = null)
     {
         $statement = $this->prepare($sql);
-        return $statement->execute();
+        return $statement->execute($params);
     }
 
     /**
      * @return Wootook_Core_Database_Statement_Statement
      */
-    abstract public function prepare($sql);
+    abstract public function prepare($sql, Array $params = null);
 
     /**
      * @return bool

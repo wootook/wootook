@@ -67,9 +67,17 @@ class Wootook_Core_Database_Adapter_Pdo_Mysql
     /**
      * @return Wootook_Core_Database_Statement_Statement
      */
-    public function prepare($sql)
+    public function prepare($sql, Array $params = null)
     {
-        return new Wootook_Core_Database_Statement_Pdo_Mysql($this, $sql);
+        $statement = new Wootook_Core_Database_Statement_Pdo_Mysql($this, $sql);
+
+        if ($params !== null) {
+            foreach ($params as $paramKey => $paramValue) {
+                $statement->bindValue($paramKey, $paramValue, $statement->getParamType($paramValue));
+            }
+        }
+
+        return $statement;
     }
 
     /**

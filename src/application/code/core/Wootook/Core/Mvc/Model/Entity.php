@@ -47,7 +47,7 @@ abstract class Wootook_Core_Mvc_Model_Entity
 
         $select = $database->select()
             ->from(array('main_table' => $database->getTable($this->getTableName())))
-            ->where("{$database->quoteIdentifier($idFieldName)}=:id")
+            ->where($idFieldName, new Wootook_Core_Database_Sql_Placeholder_Param('id', $id))
             ->limit(1);
 
         $statement = $select->prepare();
@@ -97,7 +97,7 @@ abstract class Wootook_Core_Mvc_Model_Entity
                 ->into($adapter->getTable($this->getTableName()));
 
             foreach ($this->getDataMapper()->encode($this, $this->getAllDatas()) as $field => $value) {
-                $insert->set($field, new Wootook_Core_Database_Sql_Placeholder_Param($field, $value, $type));
+                $insert->set($field, new Wootook_Core_Database_Sql_Placeholder_Param($field, $value));
             }
             try {
                 $statement = $insert->prepare();
@@ -117,27 +117,24 @@ abstract class Wootook_Core_Mvc_Model_Entity
 
     protected function _delete()
     {
-        $fields = array();
-        foreach ($this->getAllDatas() as $field => $value) {
-            if ($field == $this->getIdFieldName()) {
-                continue;
-            }
-            $fields[] = "{$field}=:{$field}";
+        $adapter = $this->getWriteConnection();
+        if ($adapter === null) {
+            throw new Wootook_Core_Exception_DataAccessException('Could not delete data: no write connection configured.');
         }
+        $delete = $adapter
+            ->delete()
+            ->from($adapter->getTable($this->getTableName()))
+            ->where($this->getIdFieldName(), $this->getId())
+            ->limit(1);
 
-        $fieldsImploded = implod(', ', $fields);
-        $idFieldName = $this->getIdFieldName();
-        $database = $this->getWriteConnection();
-        if ($database === null) {
-            throw new Wootook_Core_Exception_DataAccessException('Could not load data: no write connection configured.');
+        try {
+            $statement = $adapter->prepare($delete);
+            $statement->execute();
+        } catch (Wootook_Core_Exception_Database_AdapterError $e) {
+            throw new Wootook_Core_Exception_DataAccessException('Could not delete data: ' . $e->getMessage(), null, $e);
+        } catch (Wootook_Core_Exception_Database_StatementError $e) {
+            throw new Wootook_Core_Exception_DataAccessException('Could not delete data: ' . $e->getMessage(), null, $e);
         }
-
-        $sql =<<<SQL_EOF
-DELETE {$database->getTable($this->getTableName())}
-    WHERE {$idFieldName}=:{$idFieldName}
-SQL_EOF;
-
-        $statement->execute($this->getAllDatas());
 
         return $this;
     }

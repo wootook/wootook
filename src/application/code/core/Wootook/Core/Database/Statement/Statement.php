@@ -171,6 +171,19 @@ abstract class Wootook_Core_Database_Statement_Statement
      */
     abstract public function nextRowset();
 
+    public function getParamType($value)
+    {
+        if (is_numeric($value)) {
+            return Wootook_Core_Database_ConnectionManager::PARAM_INT;
+        } else if (is_bool($value)) {
+            return Wootook_Core_Database_ConnectionManager::PARAM_BOOL;
+        } else if (is_string($value)) {
+            return Wootook_Core_Database_ConnectionManager::PARAM_STR;
+        }
+
+        return null;
+    }
+
     public function current()
     {
         return $this->_currentRow;

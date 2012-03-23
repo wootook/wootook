@@ -6,7 +6,7 @@ class Wootook_Core_Database_Sql_Placeholder_Expression
     protected $_expression = null;
     protected $_params = array();
 
-    public function __construct($expression, Array $params)
+    public function __construct($expression, Array $params = array())
     {
         $this->_expression = (string) $expression;
         $this->_params = $params;
@@ -22,7 +22,7 @@ class Wootook_Core_Database_Sql_Placeholder_Expression
         parent::beforeExecute($statement);
 
         foreach ($this->_params as $paramName => $value) {
-            $statement->bindValue($paramName, $value);
+            $statement->bindValue($paramName, $value, $statement->getParamType($value));
         }
 
         return $this;

@@ -182,7 +182,7 @@ class Wootook_Player_Model_Entity
                 $systemInfo['system'],
                 $finalPosition,
                 Wootook_Empire_Model_Planet::TYPE_PLANET,
-                Wootook::getRequest()->getParam('planet'),
+                Wootook::__('Planet'),
                 Wootook::getGameConfig('resource/initial/fields')
                 );
 

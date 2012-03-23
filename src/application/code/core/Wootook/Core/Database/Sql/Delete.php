@@ -3,11 +3,12 @@
 class Wootook_Core_Database_Sql_Delete
     extends Wootook_Core_Database_Sql_DmlFilterableQuery
 {
-    const SET    = 'SET';
-    const INTO   = 'INTO';
+    const FROM = 'FROM';
 
     protected function _init($tableName = null)
     {
+        parent::_init($tableName);
+
         if ($tableName !== null) {
             $this->into($tableName);
         }
@@ -19,8 +20,10 @@ class Wootook_Core_Database_Sql_Delete
     {
         if ($part === null) {
             $this->_parts = array(
-                self::INTO   => array(),
-                self::SET    => array(),
+                self::FROM   => null,
+                self::WHERE  => array(),
+                self::OFFSET => null,
+                self::LIMIT  => null,
                 );
         } else if (isset($this->_parts[$part])) {
             $this->_parts[$part] = array();
@@ -29,25 +32,11 @@ class Wootook_Core_Database_Sql_Delete
         return $this;
     }
 
-    public function set($column, $value)
+    public function from($table, $schema = null)
     {
-        if ($value instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
-            $this->_placeholders[] = $column;
-        }
-
-        $this->_parts[self::COLUMNS][] = array(
-            'value' => $value,
-            'field' => $column
-            );
-
-        return $this;
-    }
-
-    public function into($table, $schema = null)
-    {
-        $this->_parts[self::INTO] = array(
+        $this->_parts[self::FROM] = array(
             'table'  => $table,
-            'schema' => $schema,
+            'schema' => $schema
             );
 
         return $this;
@@ -65,56 +54,36 @@ class Wootook_Core_Database_Sql_Delete
         }
 
         switch ($part) {
-        case self::COLUMNS:
-            return $this->renderSet();
+        case self::FROM:
+            return $this->renderFrom();
             break;
-        case self::INTO:
-            return $this->renderInto();
+        case self::WHERE:
+            return $this->renderWhere();
+            break;
+        case self::WHERE:
+            return $this->renderWhere();
+            break;
+        case self::LIMIT:
+            return $this->renderLimit();
             break;
         }
 
         return null;
     }
 
-    public function renderSet()
+    public function renderFrom()
     {
-        $fields = array();
-        foreach ($this->_parts[self::SET] as $field) {
-            if ($field['value'] instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
-                $fields[] = "{$this->_connection->quoteIdentifier($field['field'])}={$field['value']->toString()}";
-            } else {
-                $fields[] = "{$this->_connection->quoteIdentifier($field['field'])}={$this->_connection->quote($field['value'])}";
-            }
+        if ($this->_parts[self::FROM]['schema'] !== null) {
+            return "DELETE FROM {$this->getConnection()->quoteIdentifier($this->_parts[self::FROM]['schema'])}.{$this->getConnection()->quoteIdentifier($this->_parts[self::FROM]['schema'])}";
         }
-
-        if (!empty($fields)) {
-            return "\nSET " . implode(", ", $fields);
-        }
-    }
-
-    public function renderInto()
-    {
-        if ($this->_parts[self::INTO]['schema'] !== null) {
-           $output = "{$this->_connection->quoteIdentifier($this->_parts[self::INTO]['schema'])}.{$this->_connection->quoteIdentifier($this->_parts[self::INTO]['table'])}";
-        } else {
-           $output = "{$this->_connection->quoteIdentifier($this->_parts[self::INTO]['table'])}";
-        }
-
-        return "INSERT INTO " . $output;
     }
 
     public function render()
     {
-        if (empty($this->_parts[self::SELECT])) {
-            return implode('', array(
-                $this->renderInto(),
-                $this->renderColumns(),
-                ));
-        } else {
-            return implode('', array(
-                $this->renderInto(),
-                $this->renderSelect(),
-                ));
-        }
+        return implode("\n", array(
+            $this->renderFrom(),
+            $this->renderWhere(),
+            $this->renderLimit(),
+            ));
     }
 }

@@ -109,9 +109,6 @@ $lang = array();
 
 define('DEFAULT_LANG', 'fr');
 
-include(ROOT_PATH . 'includes/debug.class.'.PHPEXT);
-$debug = new Debug();
-
 include(ROOT_PATH . 'includes/functions.' . PHPEXT);
 include(ROOT_PATH . 'includes/unlocalised.' . PHPEXT);
 include(ROOT_PATH . 'includes/todofleetcontrol.' . PHPEXT);

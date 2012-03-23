@@ -9,6 +9,8 @@ class Wootook_Core_Database_Sql_Insert
 
     protected function _init($tableName = null)
     {
+        parent::_init($tableName);
+
         if ($tableName !== null) {
             $this->into($tableName);
         }
@@ -38,8 +40,8 @@ class Wootook_Core_Database_Sql_Insert
         }
 
         foreach ($column as $field => $value) {
-            if ($field instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
-                $this->_placeholders[] = $field;
+            if ($value instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
+                $this->_placeholders[] = $value;
             }
 
             $this->_parts[self::SET][] = array(
@@ -108,7 +110,7 @@ class Wootook_Core_Database_Sql_Insert
         }
 
         if (!empty($fields)) {
-            return "\nSET " . implode(", ", $fields);
+            return "SET " . implode(", ", $fields);
         }
     }
 
@@ -134,12 +136,12 @@ class Wootook_Core_Database_Sql_Insert
     public function render()
     {
         if (empty($this->_parts[self::SELECT])) {
-            return implode('', array(
+            return implode("\n", array(
                 $this->renderInto(),
-                $this->renderColumns(),
+                $this->renderSet(),
                 ));
         } else {
-            return implode('', array(
+            return implode("\n", array(
                 $this->renderInto(),
                 $this->renderSelect(),
                 ));

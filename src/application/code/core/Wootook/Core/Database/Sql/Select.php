@@ -18,6 +18,8 @@ class Wootook_Core_Database_Sql_Select
 
     protected function _init($tableName = null)
     {
+        parent::_init($tableName);
+
         if ($tableName !== null) {
             $this->from($tableName);
         }
@@ -263,7 +265,7 @@ class Wootook_Core_Database_Sql_Select
             }
         }
 
-        return "\nFROM " . implode(', ', $tables);
+        return "  FROM " . implode(', ', $tables);
     }
 
     public function renderJoin()
@@ -276,7 +278,7 @@ class Wootook_Core_Database_Sql_Select
         if (count($this->_parts[self::ORDER]) <= 0) {
             return null;
         }
-        return "\n  ORDER BY " . implode(', ', $this->_parts[self::ORDER]);
+        return "  ORDER BY " . implode(', ', $this->_parts[self::ORDER]);
     }
 
     public function renderUnion()
@@ -286,7 +288,7 @@ class Wootook_Core_Database_Sql_Select
             $statements[] = $statement->render();
         }
 
-        return "(" . implode(")\nUNION\n(", $statements) . ")";
+        return "  (\n" . implode("  )\n  UNION\n  (\n", $statements) . "\n  )";
     }
 
     public function renderGroup()
@@ -294,7 +296,7 @@ class Wootook_Core_Database_Sql_Select
         if (count($this->_parts[self::GROUP]) <= 0) {
             return null;
         }
-        return "\n  GROUP BY " . implode(', ', $this->_parts[self::GROUP]);
+        return "  GROUP BY " . implode(', ', $this->_parts[self::GROUP]);
     }
 
     public function renderHaving()
@@ -302,13 +304,13 @@ class Wootook_Core_Database_Sql_Select
         if (count($this->_parts[self::HAVING]) <= 0) {
             return null;
         }
-        return "\n  HAVING " . implode(', ', $this->_parts[self::HAVING]);
+        return "  HAVING " . implode(', ', $this->_parts[self::HAVING]);
     }
 
     public function render()
     {
         if (empty($this->_parts[self::UNION])) {
-            return implode('', array(
+            return implode("\n", array(
                 $this->renderColumns(),
                 $this->renderFrom(),
                 $this->renderJoin(),
@@ -319,7 +321,7 @@ class Wootook_Core_Database_Sql_Select
                 $this->renderLimit()
                 ));
         } else {
-            return implode('', array(
+            return implode("\n", array(
                 $this->renderUnion(),
                 $this->renderWhere(),
                 $this->renderOrder(),

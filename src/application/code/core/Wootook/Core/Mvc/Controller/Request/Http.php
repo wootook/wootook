@@ -20,7 +20,15 @@ class Wootook_Core_Mvc_Controller_Request_Http
         parent::__construct($options);
 
         $this->_baseUrl = Wootook::getBaseUrl('link');
-        $baseUri = substr($this->_baseUrl, strpos($this->_baseUrl, '/', 8)); // Get the path from the DocumentRoot
+        if ($this->_baseUrl === null) {
+            $this->_baseUrl = 'http://' . $this->getServer('HTTP_HOST') . $this->getServer('REQUEST_URI');
+        }
+        $offset = strpos($this->_baseUrl, '/', 8);
+        if ($offset !== false) {
+            $baseUri = substr($this->_baseUrl, $offset); // Get the path from the DocumentRoot
+        } else {
+            $baseUri = '/';
+        }
 
         $params = '';
         if (($offset = strpos($this->getServer('REQUEST_URI'), $baseUri)) !== false) {

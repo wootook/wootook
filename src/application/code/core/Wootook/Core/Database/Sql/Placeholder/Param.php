@@ -3,12 +3,14 @@
 class Wootook_Core_Database_Sql_Placeholder_Param
     extends Wootook_Core_Database_Sql_Placeholder_Placeholder
 {
+    protected $_paramType = null;
     protected $_paramName = null;
     protected $_value = null;
 
-    public function __construct($paramName, $value)
+    public function __construct($paramName, $value, $type = null)
     {
         $this->_paramName = $paramName;
+        $this->_paramType = $type;
         $this->_value = $value;
     }
 
@@ -17,20 +19,11 @@ class Wootook_Core_Database_Sql_Placeholder_Param
         return ':' . $this->_paramName;
     }
 
-    public function beforeExcute(Wootook_Core_Database_Statement_Statement $statement)
+    public function beforeExecute(Wootook_Core_Database_Statement_Statement $statement)
     {
-        parent::beforeExcute($statement);
+        parent::beforeExecute($statement);
 
-        if (is_numeric($this->_value)) {
-            $type = Wootook_Core_Database_ConnectionManager::PARAM_INT;
-        } else if (is_bool($this->_value)) {
-            $type = Wootook_Core_Database_ConnectionManager::PARAM_BOOL;
-        } else if (is_string($this->_value)) {
-            $type = Wootook_Core_Database_ConnectionManager::PARAM_STR;
-        } else {
-            $type = null;
-        }
-
+        $type = $this->_paramType !== null ? $this->_paramType : $statement->getParamType($this->_value);
         $statement->bindValue($this->_paramName, $this->_value, $type);
 
         return $this;

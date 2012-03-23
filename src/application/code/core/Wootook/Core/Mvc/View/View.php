@@ -178,9 +178,11 @@ class Wootook_Core_Mvc_View_View
 
     public function getSkinUrl($uri, Array $params = array(), $theme = null, $package = null)
     {
-        $player = Wootook_Player_Model_Session::getSingleton()->getPlayer();
-        if ($player !== null && $player->getId()) {
-            $theme = $player->getSkinPath();
+        if (Wootook::$isInstalled) {
+            $player = Wootook_Player_Model_Session::getSingleton()->getPlayer();
+            if ($player !== null && $player->getId()) {
+                $theme = $player->getSkinPath();
+            }
         }
         if ($theme === null || empty($theme)) {
             $theme = $this->getLayout()->getTheme();

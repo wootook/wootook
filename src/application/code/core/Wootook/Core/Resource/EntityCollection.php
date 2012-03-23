@@ -40,7 +40,8 @@ abstract class Wootook_Core_Resource_EntityCollection
     {
         if ($this->_select === null) {
             $this->_select = $this->getReadConnection()
-                ->select(array('main_table' => $this->getReadConnection()->getTable($this->_entityTable)));
+                ->select()
+                ->from(array('main_table' => $this->getReadConnection()->getTable($this->_entityTable)));
 
             $this->_prepareSelect($this->_select);
         }
@@ -64,6 +65,9 @@ abstract class Wootook_Core_Resource_EntityCollection
         return $this->_dataMapper;
     }
 
+    /**
+     * @return Wootook_Core_Database_Adapter_Adapter
+     */
     public function getReadConnection()
     {
         return $this->_connection;
@@ -127,8 +131,7 @@ abstract class Wootook_Core_Resource_EntityCollection
             }
         }
 
-        $database = $this->getReadConnection();
-        $statement = $database->prepare($select);
+        $statement = $select->prepare();
 
         $args = func_get_args();
         $statement->execute(array_shift($args));
@@ -224,153 +227,11 @@ abstract class Wootook_Core_Resource_EntityCollection
         return $this;
     }
 
-    public function addFieldToFilter($field, $value)
+    public function addFieldToFilter($field, $value = null)
     {
-        $adapter = $this->getReadConnection();
-
-        if (is_array($value)) {
-            $where = $this->_translateSqlWhere($field, 'or', $value);
-
-            if ($where !== null) {
-                $this->getSelect()->where($where);
-            }
-        } else {
-            $this->getSelect()->where("{$adapter->quoteIdentifier($field)}={$adapter->quote($value)}");
-        }
+        $this->getSelect()->where($field, $value);
 
         return $this;
-    }
-
-    protected function _translateSqlWhere($field, $operator, $value)
-    {
-        if ($value === null) {
-            return null;
-        }
-
-        $adapter = $this->getReadConnection();
-
-        $simpleOperatorList = array(
-            'eq'   => '=',
-            'neq'  => '!=',
-            'lt'   => '<',
-            'gt'   => '>',
-            'lteq' => '<=',
-            'gteq' => '>='
-            );
-
-        if (in_array($operator, $simpleOperatorList)) {
-            if ($value === true) {
-                return "{$adapter->quoteIdentifier($field)}{$simpleOperatorList[$operator]}TRUE";
-            } else if ($value === false) {
-                return "{$adapter->quoteIdentifier($field)}{$simpleOperatorList[$operator]}FALSE";
-            } else {
-                return "{$adapter->quoteIdentifier($field)}{$simpleOperatorList[$operator]}{$adapter->quote($value)}";
-            }
-        }
-
-        switch (strtolower($operator)) {
-        case 'null':
-            if ($value == false) {
-                return "{$adapter->quoteIdentifier($field)} IS NOT NULL";
-            } else {
-                return "{$adapter->quoteIdentifier($field)} IS NULL";
-            }
-            break;
-
-        case 'and':
-        case 'or':
-        case 'xor':
-            $where = array();
-            foreach ($value as $valueItem) {
-                $subOperator = key($valueItem);
-                $realValue = current($valueItem);
-
-                if (is_array($realValue) && isset($realValue['field'])) {
-                    if (!isset($realValue['value'])) {
-                        continue;
-                    }
-
-                    $realField = $realValue['field'];
-                    $realValue = $realValue['value'];
-                } else {
-                    $realField = $field;
-                }
-
-                if ($realValue === null) {
-                    continue;
-                }
-                $actualValue = $this->_translateSqlWhere($realField, $subOperator, $realValue);
-                if ($actualValue !== null) {
-                    $where[] = $actualValue;
-                }
-            }
-
-            if (count($where)) {
-                return '((' . implode(') ' . strtoupper($operator) . ' (', $where) . '))';
-            }
-            break;
-
-        case 'in':
-            $valueList = array();
-            foreach ($value as $setValue) {
-                $valueList[] = $adapter->quote($setValue);
-            }
-            $implodedList = implode(',', $valueList);
-            return "{$adapter->quoteIdentifier($field)} IN({$implodedList})";
-            break;
-
-        case 'nin':
-            $valueList = array();
-            foreach ($value as $setValue) {
-                $valueList[] = $adapter->quote($setValue);
-            }
-            $implodedList = implode(',', $valueList);
-            return "{$adapter->quoteIdentifier($field)} NOT IN({$implodedList})";
-            break;
-
-        case 'finset':
-            if (is_array($value)) {
-                $subField = current($value);
-                $subOperator = key($value);
-
-                if (in_array($subOperator, $simpleOperatorList)) {
-                    return "FIND_IN_SET({$adapter->quote($value)}, {$adapter->quoteIdentifier($field)}){$simpleOperatorList[$operator]}{$adapter->quoteIdentifier($subField)}";
-                }
-            } else {
-                return "0 < FIND_IN_SET({$adapter->quote($value)}, {$adapter->quoteIdentifier($field)})";
-            }
-            break;
-
-        case 'nfinset':
-            return "0 = FIND_IN_SET({$adapter->quote($value)}, {$adapter->quoteIdentifier($field)})";
-            break;
-
-        case 'date':
-            $dateValues = array();
-            if (isset($value['from'])) {
-                if ($value['from'] instanceof Wootook_Core_DateTime) {
-                    $dateValues['from'] = "{$adapter->quoteIdentifier($field)} >= {$adapter->quote($this->getDataMapper()->load('DateTime')->encode($value['from']))}";
-                } else if (is_string($value['from'])) {
-                    $dateValues['from'] = "{$adapter->quoteIdentifier($field)} >= {$adapter->quote($value['from'])}";
-                } else if (is_numeric($value['from'])) {
-                    $dateValues['from'] = "UNIX_TIMESTAMP({$adapter->quoteIdentifier($field)}) >= {$adapter->quote($value['from'])}";
-                }
-            }
-            if (isset($value['to'])) {
-                if ($value['to'] instanceof Wootook_Core_DateTime) {
-                    $dateValues['to'] = "{$adapter->quoteIdentifier($field)} <= {$adapter->quote($this->getDataMapper()->load('DateTime')->encode($value['to']))}";
-                } else if (is_string($value['to'])) {
-                    $dateValues['to'] = "{$adapter->quoteIdentifier($field)} <= {$adapter->quote($value['to'])}";
-                } else if (is_numeric($value['to'])) {
-                    $dateValues['to'] = "UNIX_TIMESTAMP({$adapter->quoteIdentifier($field)}) <= {$adapter->quote($value['to'])}";
-                }
-            }
-
-            return '(' . implode(' AND ', $dateValues) . ')';
-            break;
-        }
-
-        return null;
     }
 
     public function setPage($curPage, $pageSize)

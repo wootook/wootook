@@ -5,7 +5,7 @@ class Wootook_Empire_Resource_Fleet_Collection
 {
     protected function _construct()
     {
-        $this->_init(array('fleet' => 'fleets'), 'Wootook_Empire_Model_Fleet');
+        $this->_init('fleets', 'Wootook_Empire_Model_Fleet');
     }
 
     public function addPlanetToFilter(Wootook_Empire_Model_Planet $planet, $time = null)

@@ -287,6 +287,10 @@ class Wootook
         return $preferredLocale;
     }
 
+    /**
+     * @static
+     * @return Wootook_Core_DateTime
+     */
     public static function now()
     {
         if (self::$_now === null) {
@@ -381,6 +385,7 @@ class Wootook
                 ->getConnection('core_read');
         } catch (Wootook_Core_Exception_Database_AdapterError $e) {
             self::$isInstalled = false;
+            Wootook_Core_ErrorProfiler::getSingleton()->addException($e);
             return $config;
         }
 
@@ -388,20 +393,20 @@ class Wootook
 
         switch ($type) {
         case 'website':
-            $select->where('website_id = :website_id');
+            $select->where(new Wootook_Core_Database_Sql_Placeholder_Expression('website_id = :website_id', array('website_id' => $model->getId())));
             $statement = $adapter->prepare($select);
-            $statement->execute(array('website_id' => $model->getId()));
+            $statement->execute();
             break;
 
         case 'game':
-            $select->where('game_id = :game_id');
+            $select->where(new Wootook_Core_Database_Sql_Placeholder_Expression('game_id = :game_id', array('game_id' => $model->getId())));
             $statement = $adapter->prepare($select);
-            $statement->execute(array('game_id' => $model->getId()));
+            $statement->execute();
             break;
 
         default:
-            $select->where('website_id = 0');
-            $select->where('game_id = 0');
+            $select->where('website_id', 0);
+            $select->where('game_id', 0);
             $statement = $adapter->prepare($select);
             $statement->execute();
             break;
@@ -556,6 +561,7 @@ class Wootook
             $website = self::getWebsite($websiteId);
         } catch (Wootook_Core_Exception_WebsiteError $e) {
             self::$isInstalled = false;
+            Wootook_Core_ErrorProfiler::getSingleton()->addException($e);
 
             $website = new Wootook_Core_Model_Website();
             $website->setId(0)->setData('code', 'install');
@@ -609,6 +615,7 @@ class Wootook
             $game = self::getGame($gameId);
         } catch (Wootook_Core_Exception_GameError $e) {
             self::$isInstalled = false;
+            Wootook_Core_ErrorProfiler::getSingleton()->addException($e);
 
             $game = new Wootook_Core_Model_Game();
             $game->setId(0)->setData('code', 'install')->setData('website_id', self::getDefaultWebsite()->getId());

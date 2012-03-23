@@ -105,12 +105,8 @@ $baseUrl = (isset($_SERVER["HTTPS"]) && strtolower($_SERVER["HTTPS"]) == "on" ? 
     . $_SERVER["SERVER_NAME"] . ($_SERVER["SERVER_PORT"] != "80" ? ":{$_SERVER["SERVER_PORT"]}" : '');
 
 if (isset($_SERVER['REQUEST_URI'])) {
-	$offset = strrpos($_SERVER['REQUEST_URI'], '/');
-    if ($offset == (strlen($_SERVER['REQUEST_URI']) - 1)) {
-        $baseUrl .= substr($_SERVER['REQUEST_URI'], 0, strpos(substr($_SERVER['REQUEST_URI'], 0, -1), '/')) . '/';
-    } else {
-        $baseUrl .= substr($_SERVER['REQUEST_URI'], 0, strpos(substr($_SERVER['REQUEST_URI'], 0, $offset), '/', strlen($_SERVER['REQUEST_URI']) - $offset - 1)) . '/';
-    }
+    $pathOffset = strrpos($_SERVER['REQUEST_URI'], 'install/');
+    $baseUrl .= substr($_SERVER['REQUEST_URI'], 0, strpos(substr($_SERVER['REQUEST_URI'], 0, -1), '/')) . '/';
 }
 $session = Wootook::getSession('install');
 
@@ -310,7 +306,7 @@ case 'install':
 
             if (!$form->validate()) {
                 $session->setData('step', STEP_DATABASE);
-                $session->setFormData($request->getData());
+                $session->setFormData($request->getAllDatas());
                 $response->setRedirect(Wootook::getStaticUrl('install/index.php', array('mode' => 'install', 'step' => STEP_DATABASE)));
                 $response->sendHeaders();
                 exit(0);
@@ -397,7 +393,7 @@ case 'install':
 
             if (!$form->validate()) {
                 $session->setData('step', STEP_UNIVERSE);
-                $session->setFormData($request->getData());
+                $session->setFormData($request->getAllDatas());
                 $response->setRedirect(Wootook::getStaticUrl('install/index.php', array('mode' => 'install', 'step' => STEP_PROFILE)));
                 $response->sendHeaders();
                 exit(0);
@@ -499,7 +495,7 @@ case 'install':
 
             if (!$form->validate()) {
                 $session->setData('step', STEP_PROFILE);
-                $session->setFormData($request->getData());
+                $session->setFormData($request->getAllDatas());
                 $session->addError(Wootook::__('Form data error.'));
                 $response->setRedirect(Wootook::getStaticUrl('install/index.php', array('mode' => 'install', 'step' => STEP_PROFILE)));
                 $response->sendHeaders();
@@ -508,7 +504,7 @@ case 'install':
 
             if ($request->getPost('password') != $request->getPost('password_confirm')) {
                 $session->setData('step', STEP_PROFILE);
-                $session->setFormData($request->getData());
+                $session->setFormData($request->getAllDatas());
                 $session->addError(Wootook::__('Passwords does not match.'));
                 $response->setRedirect(Wootook::getStaticUrl('install/index.php', array('mode' => 'install', 'step' => STEP_PROFILE)));
                 $response->sendHeaders();

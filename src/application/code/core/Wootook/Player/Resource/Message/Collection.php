@@ -5,7 +5,7 @@ class Wootook_Player_Resource_Message_Collection
 {
     public function _construct()
     {
-        $this->_init(array('message' => 'messages'), 'Wootook_Player_Model_Message');
+        $this->_init('messages', 'Wootook_Player_Model_Message');
     }
 
     public function addPlayerToFilter(Wootook_Player_Model_Entity $player)

@@ -61,11 +61,10 @@ abstract class Wootook_Core_Database_Sql_DmlQuery
 
     public function beforePrepare(Wootook_Core_Database_Statement_Statement $statement)
     {
-/*
         foreach ($this->_placeholders as $placeholder) {
             $placeholder->beforePrepare($statement);
         }
-*/
+
         return $this;
     }
 
@@ -101,8 +100,8 @@ abstract class Wootook_Core_Database_Sql_DmlQuery
         return $this->getConnection()->prepare($this);
     }
 
-    public function execute()
+    public function execute(Array $params = null)
     {
-        return $this->getConnection()->execute($this);
+        return $this->getConnection()->execute($this, $params);
     }
 }

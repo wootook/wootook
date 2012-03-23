@@ -8,6 +8,8 @@ class Wootook_Core_Database_Sql_Update
 
     protected function _init($tableName = null)
     {
+        parent::_init($tableName);
+
         if ($tableName !== null) {
             $this->into($tableName);
         }
@@ -39,8 +41,8 @@ class Wootook_Core_Database_Sql_Update
         }
 
         foreach ($column as $field => $value) {
-            if ($field instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
-                $this->_placeholders[] = $field;
+            if ($value instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
+                $this->_placeholders[] = $value;
             }
 
             $this->_parts[self::SET][] = array(
@@ -87,20 +89,17 @@ class Wootook_Core_Database_Sql_Update
 
     public function renderSet()
     {
-        $values = array();
         $fields = array();
         foreach ($this->_parts[self::SET] as $field) {
             if ($field['value'] instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
-                $values[] = $field['value']->toString();
-                $fields[] = $this->_connection->quoteIdentifier($field['field']);
+                $fields[] = "{$this->_connection->quoteIdentifier($field['field'])}={$field['value']->toString()}";
             } else {
-                $values[] = $this->_connection->quote($field['value']);
-                $fields[] = $this->_connection->quoteIdentifier($field['field']);
+                $fields[] = "{$this->_connection->quoteIdentifier($field['field'])}={$this->_connection->quote($field['value'])}";
             }
         }
 
         if (!empty($fields)) {
-            return ' (' . implode(', ', $fields). ")\nVALUES (" . implode(", ", $values) . ')';
+            return ' SET ' . implode(', ', $fields);
         }
     }
 
@@ -117,7 +116,7 @@ class Wootook_Core_Database_Sql_Update
 
     public function render()
     {
-        return implode('', array(
+        return implode("\n", array(
             $this->renderInto(),
             $this->renderSet(),
             $this->renderWhere(),

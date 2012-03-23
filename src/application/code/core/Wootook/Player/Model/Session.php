@@ -85,7 +85,8 @@ class Wootook_Player_Model_Session
                         throw new Wootook_Core_Exception_DataAccessException('Session error.', null, $e);
                     }
                 } else {
-                    throw new Wootook_Player_Exception_Session('Your session has expired, please login.');
+                    //throw new Wootook_Player_Exception_Session('Your session has expired, please login.');
+                    return $this->_player;
                 }
             } catch (Wootook_Player_Exception_Session $e) {
                 $this->addError($e->getMessage());
@@ -141,10 +142,10 @@ class Wootook_Player_Model_Session
                     'login_rememberme' => new Wootook_Core_Database_Sql_Placeholder_Expression('CONCAT((@salt:=MID(MD5(RAND()), 0, 4)), SHA1(CONCAT(user.username, user.password, @salt)))'),
                     'login_success'    => new Wootook_Core_Database_Sql_Placeholder_Expression("(CASE WHEN user.password={$adapter->quote($passwordHash)} THEN 1 ELSE 0 END)")
                     ))
-                ->where('user.username=:username');
+                ->where(new Wootook_Core_Database_Sql_Placeholder_Expression('user.username=:username', array('username' => $username)));
 
             $statement = $adapter->prepare($select);
-            if (!$statement->execute(array('username' => $username))) {
+            if (!$statement->execute()) {
                 $this->addError(Wootook::__('No such user.'));
                 return $this->_player;
             }
@@ -163,8 +164,8 @@ class Wootook_Player_Model_Session
         if (intval($login['login_success']) == 1) {
             $this->_player->load($login['id']);
 
-            if ($login['banaday'] != 0) {
-                if ($login['banaday'] <= time()) {
+            if ($login['is_banned'] != 0) {
+                if ($login['is_banned'] <= time()) {
                     $this->_player->setData('banaday', 0)
                         ->setData('bana', 0)
                         ->setData('urlaubs_modus', 0)

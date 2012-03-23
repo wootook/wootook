@@ -28,18 +28,15 @@ abstract class Wootook_Core_Database_Sql_DmlFilterableQuery
         if ($condition instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
             $this->_placeholders[] = $condition;
             $this->_parts[self::WHERE][] = $condition;
-        } else if (is_string($condition)) {
-            if ($value === null) {
-                $this->_parts[self::WHERE][] = $condition;
-            } else {
-                $adapter = $this->getReadConnection();
-                $this->_parts[self::WHERE][] = $adapter->quoteInto($condition, $value);
-            }
-        } else if (is_array($condition)) {
+        } else if (is_array($value)) {
             $where = $this->_translateSqlWhere($condition, 'or', $value);
             if ($where !== null) {
                 $this->_parts[self::WHERE][] = $where;
             }
+        } else if ($value instanceof Wootook_Core_Database_Sql_Placeholder_Placeholder) {
+            $this->_parts[self::WHERE][] = "{$this->getConnection()->quoteIdentifier($condition)}=" . $value;
+        } else {
+            $this->_parts[self::WHERE][] = $this->getConnection()->quoteInto("{$this->getConnection()->quoteIdentifier($condition)}=?", $value);
         }
 
         return $this;
@@ -59,7 +56,7 @@ abstract class Wootook_Core_Database_Sql_DmlFilterableQuery
             return '';
         }
 
-        return "\nWHERE (" . implode(') AND (', $this->_parts[self::WHERE]) . ')';
+        return "    WHERE (" . implode(")\n      AND (", $this->_parts[self::WHERE]) . ')';
     }
 
     public function renderLimit()
@@ -68,9 +65,9 @@ abstract class Wootook_Core_Database_Sql_DmlFilterableQuery
             return '';
         }
         if (!$this->_parts[self::OFFSET]) {
-            return sprintf("\nLIMIT %d", $this->_parts[self::LIMIT]);
+            return sprintf("  LIMIT %d", $this->_parts[self::LIMIT]);
         }
-        return sprintf("\nLIMIT %d,%d", $this->_parts[self::LIMIT], $this->_parts[self::OFFSET]);
+        return sprintf("  LIMIT %d,%d", $this->_parts[self::LIMIT], $this->_parts[self::OFFSET]);
     }
 
     protected function _translateSqlWhere($field, $operator, $value)
@@ -79,7 +76,7 @@ abstract class Wootook_Core_Database_Sql_DmlFilterableQuery
             return null;
         }
         $operator = strtoupper($operator);
-        $adapter = $this->getReadConnection();
+        $adapter = $this->getConnection();
 
         $basicBinayOperatorList = array(
             self::OPERATOR_EQUALS         => '=',

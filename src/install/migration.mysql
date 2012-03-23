@@ -16,3 +16,10 @@ ALTER TABLE `game_planets`
 
 ALTER TABLE `game_messages`
     ADD `message_read_at` INT UNSIGNED NOT NULL AFTER `message_time`;
+
+ALTER TABLE `game_users`
+    `last_update`       `last_update`   DATETIME    NOT NULL,
+    `b_building`        `b_building`    DATETIME    NOT NULL,
+    `b_tech`            `b_tech`        DATETIME    NOT NULL,
+    `b_tech_id`         `b_tech_id`     TEXT        NOT NULL,
+    `b_hangar`          `b_hangar`      DATETIME    NOT NULL;
