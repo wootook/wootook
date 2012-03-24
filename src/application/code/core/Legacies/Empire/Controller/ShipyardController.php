@@ -31,7 +31,7 @@ class Legacies_Empire_Controller_ShipyardController
     public function buildAction()
     {
         if (!$this->getRequest()->isPost() || !is_array($shipList = $this->getRequest()->getPost('id'))) {
-            $this->_redirect('*/*/view');
+            $this->_redirect('*/*/');
             return;
         }
 

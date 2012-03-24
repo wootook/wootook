@@ -32,7 +32,7 @@ class Wootook_Empire_Model_Planet
     protected $_planet = null;
 
     /**
-     * @var Wootook_Empire_Model_Planet_Builder
+     * @var Wootook_Empire_Model_Planet_Builder_Builder
      */
     protected $_builder = null;
 
@@ -101,25 +101,16 @@ class Wootook_Empire_Model_Planet
             $coords['type'] = $type;
         }
 
-        $database = $this->getReadConnection();
-        $select = $database->select('planets');
-        $select
-            ->column('id')
-            ->where('galaxy=:galaxy')
-            ->where('system=:system')
-            ->where('planet=:position')
-            ->where('planet_type=:type')
-            ->limit(1)
-        ;
-        $statement = $database->prepare($select);
+        $collection = new Wootook_Empire_Resource_Planet_Collection('core_read');
+        $collection->addCoordsToFilter($coords['galaxy'], $coords['system'], $coords['position'], $coords['type'])
+            ->setPage(1, 1);
 
-        if (!$statement->execute() || $statement->rowCount() <= 0) {
-            return new self();
+        $planet = $collection->getFirstItem();
+        if ($planet !== null) {
+            return $planet;
         }
 
-        $planetId = $statement->fetchCol();
-
-        return self::factory($planetId);
+        return new self;
     }
 
     public function __construct(Array $data = array(), Wootook_Player_Model_Entity $player = null)
@@ -624,16 +615,16 @@ class Wootook_Empire_Model_Planet
         }
 
         if ($this->isDestroyed()) {
-            throw new Wootook_Empire_Model_Planet_Exception(Wootook::__('Planet is already destroyed.'));
+            throw new Wootook_Empire_Exception_Planet(Wootook::__('Planet is already destroyed.'));
         }
 
         if ($this->getFleetCollection()->count() > 0) {
-            throw new Wootook_Empire_Model_Planet_Exception(Wootook::__("Could not delete planet until fleets aten't retuned."));
+            throw new Wootook_Empire_Exception_Planet(Wootook::__("Could not delete planet until fleets aten't retuned."));
         }
 
         $player = $this->getPlayer();
         if ($player->getHomePlanet()->getId() == $this->getId()) {
-            throw new Wootook_Empire_Model_Planet_Exception(Wootook::__("You can't destroy your home planet."));
+            throw new Wootook_Empire_Exception_Planet(Wootook::__("You can't destroy your home planet."));
         }
 
         if ($player->getCurrentPlanet()->getId() == $this->getId()) {
@@ -763,12 +754,12 @@ class Wootook_Empire_Model_Planet
 
     /**
      *
-     * @return Wootook_Empire_Model_Planet_Builder
+     * @return Wootook_Empire_Model_Planet_Builder_Builder
      */
     public function getBuildingQueue()
     {
         if ($this->_builder === null && $this->getPlayer()) {
-            $this->_builder = new Wootook_Empire_Model_Planet_Builder($this, $this->getPlayer());
+            $this->_builder = new Wootook_Empire_Model_Planet_Builder_Builder($this, $this->getPlayer());
         }
         return $this->_builder;
     }

@@ -7,7 +7,7 @@
     <div class="item details">
         <a href="<?php echo $this->getItemInfoUrl()?>" class="image"><img src="<?php echo $this->getItemImageUrl()?>" alt="" width="120" height="120" /></a>
         <div class="buy">
-            <p><a class="build" href="<?php echo $this->getUrl('empire/research-lab/build', array('id' => $this->getItemId()))?>"><?php echo $this->__('Build next level (%s)', $this->renderNumber($this->getNextLevel()))?></a></p>
+            <p><a class="build" href="<?php echo $this->getUrl('legacies-empire/research-lab/build', array('id' => $this->getItemId()))?>"><?php echo $this->__('Build next level (%s)', $this->renderNumber($this->getNextLevel()))?></a></p>
         </div>
         <div class="details">
             <p><?php echo $this->getDescription()?></p>

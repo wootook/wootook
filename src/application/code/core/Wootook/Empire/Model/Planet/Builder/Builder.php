@@ -34,7 +34,7 @@
  * @author Greg
  *
  */
-class Wootook_Empire_Model_Planet_Builder
+class Wootook_Empire_Model_Planet_Builder_Builder
     extends Wootook_Empire_Model_BuilderAbstract
 {
     const FIELD_SERIALIZED = 'b_building_id';
@@ -124,6 +124,7 @@ class Wootook_Empire_Model_Planet_Builder
         $levelTime = Math::sub($partialLevelTime, $firstLevelTime);
 
         $speedFactor = Wootook::getGameConfig('game/speed/general');
+
         if ($speedFactor == null) {
             $speedFactor = 1;
         }
@@ -172,7 +173,7 @@ class Wootook_Empire_Model_Planet_Builder
     /**
      * Update the contruction queue.
      *
-     * @return Wootook_Empire_Model_Planet_Builder
+     * @return Wootook_Empire_Model_Planet_Builder_Builder
      */
     public function updateQueue(Wootook_Core_DateTime $time)
     {
@@ -231,7 +232,7 @@ class Wootook_Empire_Model_Planet_Builder
      *
      * @param int|string $buildingId
      * @param int $level
-     * @return Wootook_Empire_Model_Planet_Builder
+     * @return Wootook_Empire_Model_Planet_Builder_Builder
      */
     public function appendQueue($buildingId, $level, Wootook_Core_DateTime $time)
     {
@@ -281,7 +282,7 @@ class Wootook_Empire_Model_Planet_Builder
      * Dequeues the first item to build to the construction list and removes all
      * its successors of the same type.
      *
-     * @return Wootook_Empire_Model_Planet_Builder
+     * @return Wootook_Empire_Model_Planet_Builder_Builder
      */
     public function dequeueFirstItem()
     {
@@ -296,7 +297,7 @@ class Wootook_Empire_Model_Planet_Builder
      * successors of the same type.
      *
      * @param string $itemId
-     * @return Wootook_Empire_Model_Planet_Builder
+     * @return Wootook_Empire_Model_Planet_Builder_Builder
      */
     public function dequeueItem($itemId)
     {

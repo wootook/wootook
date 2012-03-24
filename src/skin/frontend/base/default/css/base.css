@@ -118,15 +118,14 @@ input[type=submit],input[type=button] {height:2em;border:#58939f 0 solid;border-
  */
 body.public-form {width:100%;height:100%;}
 body.public-form .main-form {display:block;margin:0 auto;padding:0;width:300px;border-radius:5px;background:rgba(255,255,255,.8);border:5px solid #58939f;background-image:-moz-linear-gradient(top,#AAA 0,#FFF 100%);background-image:linear-gradient(top,#AAA 0,#FFF 100%);}
-body.public-form #login-form {height:190px;}
-body.public-form #lost-password-form {height:130px;}
-body.public-form #register-form {height:350px;}
+body.public-form #login-form {height:230px;}
+body.public-form #lost-password-form {height:170px;}
+body.public-form #register-form {height:390px;}
 body.public-form .main-form fieldset {border:none;margin:0;padding:0;}
 body.public-form #login-form fieldset legend,
 body.public-form #lost-password-form fieldset legend {display:block;width:280px;height:30px;background:#58939f;color:#FFF;font-weight:bold;font-size:2em;padding:0 10px;margin-bottom:10px;}
 body.public-form #register-form h1 {display:block;width:280px;height:30px;background:#58939f;color:#FFF;font-weight:bold;font-size:2em;padding:0 10px;margin:0 0 10px;}
 body.public-form #register-form fieldset legend {display:block;width:280px;height:15px;font-weight:bold;font-size:1.5em;padding:0 10px;margin:10px 0 5px;}
-body.public-form .main-form input[type="submit"],
 body.public-form .main-form input[type="button"],
 body.public-form .main-form input[type="text"],
 body.public-form .main-form input[type="password"] {border-width:1px;}
@@ -135,16 +134,23 @@ body.public-form .main-form p.lost-password {margin:0;padding:0;height:30px;widt
 body.public-form .main-form p.form label {margin:0;padding:0 10px;text-align:right;width:150px;height:30px;float:left;display:block;}
 body.public-form .main-form p.form input {margin:0;padding:0;width:120px;}
 body.public-form .main-form p.checkbox input {margin:0;padding:0;width:20px;}
-body.public-form .main-form p.submit input {margin:0 100px;padding:0;width:100px;text-align:center;}
-body.public-form #lost-password-form p.submit input {width:150px;margin:0 75px;}
+body.public-form .main-form p.submit input {margin:0 100px;padding:0;text-align:center;}
+body.public-form #lost-password-form p.submit input {margin:0 75px;}
 
-body.public .content .public-topbar {background:#FF;border-bottom:5px solid #000;margin:0;height:30px;padding:0 10px;width:100%;background:rgba(0,0,0,.1);}
+body.public .content .public-topbar {background:#FFF;border-bottom:5px solid #000;margin:0;height:30px;padding:0 10px;width:100%;background:rgba(0,0,0,.1);}
 body.public .content .public-topbar .container {margin:0 auto;width:780px;}
 body.public .content .public-topbar .container span {height:25px;padding:5px 15px 0;display:block;float:left;height:25px;margin:0 5px;font-size:1.5em;font-weight:bold;}
 body.public .content .public-topbar .container span:hover {background:rgba(94,175,239,0.3);border-radius:8px;}
 body.public .content .public-topbar .container span a:hover {color:#000;}
 
 body.public-form .content .public-topbar {margin-bottom:150px;}
+
+body.public-form .main-form p.form input[type=submit],
+button.register {height:45px;background:#F7A90F;border-radius:10px;font-weight:bold;font-family:Arial,sans-serif;font-variant:small-caps;font-style:oblique;border:2px solid #263D43;box-shadow:0 -8px 10px #D5640E inset, 0 2px 7px #58939F;color:#08335B;font-size:2em;text-align:center;}
+button.register {margin:25px;margin-left:345px;width:400px;}
+body.public-form .main-form p.form input[type=submit] {margin:10px 50px;width:200px;padding:5px 20px;}
+
+.global .content .home-block {width:740px;padding:10px 30px;margin:10px auto 0;background-color:rgba(255,255,255,.1);color:#FFF;border:10px solid rgba(88,147,159,.1);border-radius:10px;border-top-left-radius:30px;border-top-right-radius:30px;}
 
 /**
  * Galaxy user name display colors
