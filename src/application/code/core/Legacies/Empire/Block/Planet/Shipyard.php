@@ -99,6 +99,10 @@ class Legacies_Empire_Block_Planet_Shipyard
     {
         $types = Wootook_Empire_Helper_Config_Types::getSingleton();
 
+        if (!$this->getPlanet() || !$this->getPlanet()->getShipyard()) {
+            return $this;
+        }
+
         /** @var Wootook_Core_Block_Concat $parentBlock */
         $parentBlock = $this->getLayout()->getBlock('item-list.items');
         foreach ($types->getData($this->getType()) as $itemId) {

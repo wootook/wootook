@@ -123,7 +123,7 @@ class Wootook_Core_Database_Statement_Pdo_Mysql
      * @param int $col
      * @return mixed
      */
-    public function fetchColumn($col)
+    public function fetchColumn($col = 0)
     {
         try {
             return $this->_handler->fetchColumn($col);

@@ -23,12 +23,17 @@
     'planet.shipyard.update-queue.after' => array(),
     'planet.shipyard.append-queue.before' => array(),
     'planet.shipyard.append-queue.after' => array(),
-    'planet.building.building-time' => array(
-        array('Legacies_Empire_Model_Planet_Building_NaniteFactory', 'buildingTimeListener'),
-        array('Legacies_Empire_Model_Planet_Building_RoboticFactory', 'buildingTimeListener')
+    'planet.building.building-time' => array(),
+    'planet.shipyard.building-time' => array(),
+    'planet.building.speed-enhancement' => array(
+        array('Legacies_Empire_Model_Planet_Building_NaniteFactory', 'buildingEnhancementListener'),
+        array('Legacies_Empire_Model_Planet_Building_RoboticFactory', 'buildingEnhancementListener')
         ),
-    'planet.shipyard.building-time' => array(
-        array('Legacies_Empire_Model_Planet_Building_NaniteFactory', 'buildingTimeListener'),
-        array('Legacies_Empire_Model_Planet_Building_RoboticFactory', 'buildingTimeListener')
+    'planet.shipyard.speed-enhancement' => array(
+        array('Legacies_Empire_Model_Planet_Building_NaniteFactory', 'buildingEnhancementListener'),
+        array('Legacies_Empire_Model_Planet_Building_RoboticFactory', 'buildingEnhancementListener')
+        ),
+    'planet.research-lab.technology.speed-enhancement' => array(
+        array('Legacies_Empire_Model_Player_Technology_IntergalacticResearchNetwork', 'researchTechnologyEnhancementListener')
         )
     );

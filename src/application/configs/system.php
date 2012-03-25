@@ -47,7 +47,8 @@
             ),
         'game' => array(
             'speed' => array(
-                'general' => 1000
+                'general' => 1000,
+                'ships' => 1000
                 ),
             'home' => array(
                 'title' => 'Welcome on Wootook!',

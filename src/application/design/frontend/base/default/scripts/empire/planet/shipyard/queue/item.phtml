@@ -1,0 +1,8 @@
+<?php /** @var Legacies_Core_Block_Template $this */?>
+<div class="item queue">
+    <p>
+        <a href="<?php echo $this->getItemInfoUrl()?>" class="image"><img src="<?php echo $this->getItemImageUrl()?>" alt="" width="30" height="30" /></a>
+        <a href="<?php echo $this->getItemInfoUrl()?>"><?php echo $this->escape($this->getName())?></a> (<?php echo $this->renderNumber($this->getItemQueuedQty())?>)
+    </p>
+    <p class="time"><?php echo $this->__('Lasts %s', $this->renderTime($this->getBuildingRemainingTime()))?></p>
+</div>

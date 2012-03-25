@@ -74,7 +74,7 @@ abstract class Wootook_Core_Database_Statement_Statement
      * @param int $col
      * @return mixed
      */
-    abstract public function fetchColumn($col);
+    abstract public function fetchColumn($col = 0);
 
     /**
      *

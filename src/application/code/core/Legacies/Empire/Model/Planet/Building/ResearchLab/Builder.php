@@ -45,6 +45,11 @@ class Legacies_Empire_Model_Planet_Building_ResearchLab_Builder
      */
     protected $_maxLength = 0;
 
+    /**
+     * @var float
+     */
+    protected $_speedEnhancement = null;
+
     public function init()
     {
         $this->_unserializeQueue($this->_currentPlanet->getData(self::FIELD_SERIALIZED));
@@ -91,6 +96,21 @@ class Legacies_Empire_Model_Planet_Building_ResearchLab_Builder
             ));
     }
 
+    public function getSpeedEnhancement()
+    {
+        if ($this->_speedEnhancement === null) {
+            $event = Wootook::dispatchEvent('planet.research-lab.technology.speed-enhancement', array(
+                'player'      => $this->_currentPlanet,
+                'planet'      => $this->_currentPlanet,
+                'enhancement' => 1
+                ));
+
+            $this->_speedEnhancement = $event->getData('enhancement');
+        }
+
+        return $this->_speedEnhancement;
+    }
+
     /**
      * Check if a technology type is actually buildable on the current
      * planet, depending on the technology and buildings requirements.
@@ -128,7 +148,8 @@ class Legacies_Empire_Model_Planet_Building_ResearchLab_Builder
         if ($speedFactor == null) {
             $speedFactor = 1;
         }
-        $baseTime = $levelTime / ($speedFactor * 3600);
+
+        $baseTime = ($levelTime * 3600 / $speedFactor) / $this->getSpeedEnhancement();
 
         Math::setPrecision();
 

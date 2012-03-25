@@ -37,9 +37,9 @@
 class Legacies_Empire_Block_Planet_Shipyard_Queue_Item
     extends Wootook_Empire_Block_Planet_Builder_Queue_ItemAbstract
 {
-    protected $_itemIdField = 'research_id';
+    protected $_itemIdField = 'ship_id';
 
-    public function getLevel()
+    public function getQty()
     {
         return $this->getPlanet()->getElement($this->getItemId());
     }
@@ -49,12 +49,26 @@ class Legacies_Empire_Block_Planet_Shipyard_Queue_Item
         return $this->getPlanet()->getShipyard()->getResourcesNeeded($this->getItemId(), 1);
     }
 
+    public function getItemQueuedQty()
+    {
+        return $this->getItem()->getData('qty');
+    }
+
     public function getBuildingTime($qty)
     {
         return $this->getPlanet()->getShipyard()->getBuildingTime($this->getItemId(), $qty);
     }
 
-    public function getResourcesConfigForLevel($qty)
+    public function getBuildingRemainingTime()
+    {
+        $totalTime = $this->getPlanet()->getShipyard()
+            ->getBuildingTime($this->getItemId(), $this->getItemQueuedQty());
+        $item = $this->getItem();
+
+        return $totalTime - ($item->getData('created_at') - $item->getData('updated_at'));
+    }
+
+    public function getResourcesConfigForQty($qty)
     {
         $resources = $this->getResourcesNeeded($qty);
 

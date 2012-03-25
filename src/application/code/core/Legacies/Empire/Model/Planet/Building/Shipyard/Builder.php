@@ -42,6 +42,11 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
      */
     protected $_maxLength = 0;
 
+    /**
+     * @var float
+     */
+    protected $_speedEnhancement = null;
+
     public function init()
     {
         $this->_unserializeQueue($this->_currentPlanet->getData('b_hangar_id'));
@@ -77,6 +82,21 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
             'created_at' => $createdAt,
             'updated_at' => $updatedAt
             ));
+    }
+
+    public function getSpeedEnhancement()
+    {
+        if ($this->_speedEnhancement === null) {
+            $event = Wootook::dispatchEvent('planet.shipyard.speed-enhancement', array(
+                'player'      => $this->_currentPlanet,
+                'planet'      => $this->_currentPlanet,
+                'enhancement' => 1
+                ));
+
+            $this->_speedEnhancement = $event->getData('enhancement');
+        }
+
+        return $this->_speedEnhancement;
     }
 
     /**
@@ -187,8 +207,8 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
         Math::setPrecision(50);
         $buildingTime = Math::mul($prices[$shipId][Legacies_Empire::BASE_BUILDING_TIME], $qty);
 
-        $speedFactor = Wootook::getGameConfig('game/speed/general');
-        $baseTime = Math::div($buildingTime, $speedFactor);
+        $speedFactor = Wootook::getGameConfig('game/speed/ships') / 1000;
+        $baseTime = ($buildingTime / 5000) * 3600 / $speedFactor / $this->getSpeedEnhancement();
 
         Math::setPrecision();
 

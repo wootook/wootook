@@ -82,15 +82,7 @@ function __autoload($class) {
 }
 
 Wootook::$isInstalled = false;
-/*
-$website = new Wootook_Core_Model_Website();
-$website->setId(1)->setData('code', Wootook_Core_Model_Website::DEFAULT_CODE);
-Wootook::setWebsite(1, $website);
 
-$game = new Wootook_Core_Model_Game();
-$game->setId(1)->setData('website_id', $website->getId())->setData('code', Wootook_Core_Model_Game::DEFAULT_CODE);
-Wootook::setGame(1, $game);
-*/
 include ROOT_PATH . 'includes' . DIRECTORY_SEPARATOR . 'constants.php';
 
 Wootook_Core_ErrorProfiler::register();

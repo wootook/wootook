@@ -394,6 +394,9 @@ class Wootook_Player_Model_Entity
 
             if (!$planetId) {
                 $this->_currentPlanet = $this->getHomePlanet();
+                if ($this->_currentPlanet === null) {
+                    return null;
+                }
                 $this->setData('current_planet', $this->_currentPlanet->getId())->save();
 
                 return $this->_currentPlanet;

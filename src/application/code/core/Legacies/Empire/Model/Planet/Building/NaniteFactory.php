@@ -36,17 +36,16 @@
 class Legacies_Empire_Model_Planet_Building_NaniteFactory
     implements Wootook_Empire_Model_Planet_BuildingInterface
 {
-    public static function buildingTimeListener($event)
+    public static function buildingEnhancementListener(Wootook_Core_Event $event)
     {
+        /** @var float $enhancement */
+        $enhancement = $event->getData('enhancement');
+
+        /** @var Wootook_Empire_Model_Planet $planet */
         $planet = $event->getData('planet');
 
-        if (!$planet->getId() || ($level = $planet->getElement(Legacies_Empire::ID_BUILDING_NANITE_FACTORY)) <= 0) {
-            return;
-        }
+        $level = $planet->getElement(Legacies_Empire::ID_BUILDING_NANITE_FACTORY);
 
-        $time = $event->getData('time');
-
-        $speedFactor = pow(2, $level);
-        $event->setData('time', $time / $speedFactor);
+        $event->setData('enhancement', $enhancement * pow(.5, $level));
     }
 }

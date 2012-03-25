@@ -37,7 +37,7 @@
 class Legacies_Empire_Block_Planet_ResearchLab_Queue_Item
     extends Wootook_Empire_Block_Planet_Builder_Queue_ItemAbstract
 {
-    protected $_itemIdField = 'research_id';
+    protected $_itemIdField = 'technology_id';
 
     public function getLevel()
     {
@@ -47,11 +47,6 @@ class Legacies_Empire_Block_Planet_ResearchLab_Queue_Item
     public function getResourcesNeeded($level)
     {
         return $this->getPlanet()->getResearchLab()->getResourcesNeeded($this->getItemId(), $this->getQueuedLevel() + 1);
-    }
-
-    public function getItemQueuedLevel()
-    {
-        return $this->getItem()->getData('level');
     }
 
     public function getQueuedLevel()
@@ -70,7 +65,7 @@ class Legacies_Empire_Block_Planet_ResearchLab_Queue_Item
             ->getResearchTime($this->getItemId(), $this->getItemQueuedLevel());
         $item = $this->getItem();
 
-        return $item->getData('created_at') - $item->getData('updated_at') + $totalTime;
+        return $totalTime - ($item->getData('created_at') - $item->getData('updated_at'));
     }
 
     public function getResourcesConfigForLevel($level)

@@ -201,6 +201,9 @@ class Wootook_Core_Mvc_Controller_Front
             if (!$this->_response->isDispatched()) {
                 continue;
             }
+            if ($this->_response->isRedirect()) {
+                break;
+            }
 
             $controller->$actionMethod();
 
@@ -210,7 +213,7 @@ class Wootook_Core_Mvc_Controller_Front
 
             $controller->postDispatch();
 
-            if ($this->_response->isDispatched()) {
+            if ($this->_response->isDispatched() || $this->_response->isRedirect()) {
                 break;
             }
         }

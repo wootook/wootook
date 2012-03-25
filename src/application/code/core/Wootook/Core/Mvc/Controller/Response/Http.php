@@ -3,6 +3,8 @@
 class Wootook_Core_Mvc_Controller_Response_Http
     extends Wootook_Core_Mvc_Controller_Response_Response
 {
+    const STATUS_OK = 200;
+
     const REDIRECT_MOVED_PERMANENTLY = 301;
     const REDIRECT_FOUND             = 302;
     const REDIRECT_SEE_OTHER         = 303;
@@ -14,6 +16,8 @@ class Wootook_Core_Mvc_Controller_Response_Http
         self::REDIRECT_SEE_OTHER         => 'See Other',
         self::REDIRECT_TEMPORARY         => 'Temporary Redirect'
         );
+
+    protected $_returnCode = self::STATUS_OK;
 
     public function setBody($data)
     {
@@ -106,12 +110,9 @@ class Wootook_Core_Mvc_Controller_Response_Http
         return $this;
     }
 
-    public function setIsRedirect($value = null)
+    public function isRedirect()
     {
-        if (is_bool($value)) {
-            $this->_data['is_redirect'] = $value;
-        }
-        return $this->_data['is_redirect'];
+        return $this->_returnCode >= 300 && $this->_returnCode < 400;
     }
 
     public function setCookie($name, $value, $lifetime = null, $path = null, $domain = null)
@@ -139,10 +140,11 @@ class Wootook_Core_Mvc_Controller_Response_Http
             $code = self::REDIRECT_FOUND;
         }
 
+        $this->_returnCode = $code;
+
         $statusText = self::$_redirectCodes[$code];
         $this->setRawHeader("HTTP/1.1 {$code} {$statusText}")
-            ->setHeader('Location', $url)
-            ->setIsRedirect(true);
+            ->setHeader('Location', $url);
 
         return $this;
     }
