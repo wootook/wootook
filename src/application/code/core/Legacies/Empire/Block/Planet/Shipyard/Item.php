@@ -42,6 +42,11 @@ class Legacies_Empire_Block_Planet_Shipyard_Item
         return $this->getPlanet()->getElement($this->getItemId());
     }
 
+    public function getClass()
+    {
+        return $this->getLabel('class');
+    }
+
     public function getResourcesNeeded($qty)
     {
         return $this->getPlanet()->getShipyard()->getResourcesNeeded($this->getItemId(), $qty);

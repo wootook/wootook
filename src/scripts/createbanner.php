@@ -62,26 +62,24 @@ $textColor = array(
     );
 
 $db = Wootook_Core_Database_ConnectionManager::getSingleton()->getConnection(Wootook_Core_Database_ConnectionManager::DEFAULT_CONNECTION_NAME);
-$sql = <<<EOF
-SELECT
-  users.username AS username,
-  planets.name AS planet_name,
-  stats.build_points AS build_points,
-  stats.fleet_points AS fleet_points,
-  stats.tech_points AS tech_points,
-  stats.total_points AS total_points
-FROM {{table}}users AS users
-LEFT JOIN {{table}}statpoints AS stats ON stats.id_owner=users.id
-LEFT JOIN {{table}}planets AS planets ON planets.id_owner=users.id
-WHERE users.id={$id}
-EOF;
+$statement = $db->select()
+    ->column(array('username' => 'username'), 'user')
+    ->column(array('planet_name' => 'name'), 'planet')
+    ->column(array('build_points' => 'build_points', 'fleet_points' => 'fleet_points', 'tech_points' => 'tech_points', 'total_points' => 'total_points'), 'stats')
+    ->from(array('user' => $db->getTable('users')))
+    ->joinLeft(array('stats' => $db->getTable('statpoints')), 'stats.id_owner=users.id')
+    ->joinLeft(array('planet' => $db->getTable('planets')), 'planet.id_owner=users.id')
+    ->where('user.id', $id)
+    ->prepare()
+;
+
 
 $data = array_merge(
     array(
         'game_name' => Wootook::getGameConfig('game/general/name'),
         'date' => date('d M Y')
         ),
-    doquery($sql, '', true)
+    $statement->fetch()
     );
 
 $image = new Wootook_Core_Model_Image_Png();

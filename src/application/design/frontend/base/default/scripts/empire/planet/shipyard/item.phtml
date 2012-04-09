@@ -2,6 +2,7 @@
 <div class="item-container">
     <div class="item title">
         <h2><a href="<?php echo $this->getItemInfoUrl()?>"><?php echo $this->escape($this->getName())?></a></h2>
+        <h3 class="class"><?php echo $this->__('Class %s', $this->escape($this->getClass()))?></h3>
         <h3 class="count"><?php echo $this->__('Current count: %s', $this->renderNumber($this->getQty()))?></h3>
     </div>
     <div class="item details">

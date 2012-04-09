@@ -114,6 +114,10 @@
         Legacies_Empire::ID_RESEARCH_IMPULSE_DRIVE       => 3
         ),
 
+    Legacies_Empire::ID_RESEARCH_ORE_MINING => array(
+        Legacies_Empire::ID_BUILDING_RESEARCH_LAB => 2
+        ),
+
     Legacies_Empire::ID_RESEARCH_GRAVITON_TECHNOLOGY => array(
         Legacies_Empire::ID_BUILDING_RESEARCH_LAB => 12
         ),
@@ -206,6 +210,13 @@
         Legacies_Empire::ID_RESEARCH_HYPERSPACE_DRIVE      => 18,
         Legacies_Empire::ID_RESEARCH_HYPERSPACE_TECHNOLOGY => 14,
         Legacies_Empire::ID_RESEARCH_GRAVITON_TECHNOLOGY   => 3
+        ),
+
+    Legacies_Empire::ID_SHIP_ORE_MININER => array(
+        Legacies_Empire::ID_BUILDING_SHIPYARD              => 12,
+        Legacies_Empire::ID_RESEARCH_HYPERSPACE_DRIVE      => 8,
+        Legacies_Empire::ID_RESEARCH_GRAVITON_TECHNOLOGY   => 1,
+        Legacies_Empire::ID_RESEARCH_LASER_TECHNOLOGY      => 16
         ),
 // }}}
 

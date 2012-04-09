@@ -182,21 +182,30 @@ if ($planetrow->isPlanet()) {
     $TableTitle = "{$planetrow->getCoords()} - {$lang['fl_moon']}";
 }
 
+$readAdapter = Wootook_Core_Database_ConnectionManager::getSingleton()->getConnection('core_read');
 $maxExpedition = $user->getElement(Legacies_Empire::ID_RESEARCH_EXPEDITION_TECHNOLOGY);
 $ExpeditionEnCours = 0;
 $EnvoiMaxExpedition = 0;
 if ($maxExpedition >= 1) {
-    $maxexpde = doquery("SELECT 1 FROM {{table}} WHERE `fleet_owner` = '".$user['id']."' AND `fleet_mission` = '15';", 'fleets');
-    $ExpeditionEnCours = $maxexpde->rowCount();
-    $maxexpde->closeCursor();
+    $ExpeditionEnCours = $readAdapter->select()
+        ->column(new Wootook_Core_Database_Sql_Placeholder_Expression('COUNT(*)'))
+        ->from(array('fleet' => $readAdapter->getTable('fleets')))
+        ->where('fleet_owner', $user->getId())
+        ->where('fleet_mission', Legacies_Empire::ID_MISSION_EXPEDITION)
+        ->prepare()
+        ->fetchColumn()
+    ;
 
-    $EnvoiMaxExpedition = 1 + floor($maxExpedition / 3);
+    $EnvoiMaxExpedition = 1 + floor(sqrt($maxExpedition));
 }
 
-$maxfleet = doquery("SELECT 1 FROM {{table}} WHERE `fleet_owner` = '".$user['id']."';", 'fleets');
-
-$MaxFlyingFleets = $maxfleet->rowCount();
-$maxfleet->closeCursor();
+$MaxFlyingFleets = $readAdapter->select()
+    ->column(new Wootook_Core_Database_Sql_Placeholder_Expression('COUNT(*)'))
+    ->from(array('fleet' => $readAdapter->getTable('fleets')))
+    ->where('fleet_owner', $user->getId())
+    ->prepare()
+    ->fetchColumn()
+;
 
 $page  = "<script type=\"text/javascript\" src=\"scripts/flotten.js\">\n</script>";
 $page .= "<script type=\"text/javascript\">\n";
@@ -277,13 +286,14 @@ if ($planet == (Wootook::getGameConfig('engine/universe/positions') + 1)) {
     $page .= "<tr height=\"20\">";
     $page .= "<th colspan=\"3\">";
     $page .= "<select name=\"expeditiontime\" >";
-    $page .= "<option value=\"1\">1</option>";
-    $page .= "<option value=\"2\">2</option>";
+    for ($i = 1; $i <= 10; $i++) {
+        $page .= "<option value=\"{$i}\">{$i}h</option>";
+    }
     $page .= "</select>";
     $page .= $lang['fl_expe_hours'];
     $page .= "</th>";
     $page .= "</tr>";
-} else if (!isset($missionTypes[Legacies_Empire::ID_MISSION_STATION_ALLY])) {
+} else if (isset($missionTypes[Legacies_Empire::ID_MISSION_STATION_ALLY]) || isset($missionTypes[Legacies_Empire::ID_MISSION_ORE_MINING])) {
     $page .= "<tr height=\"20\">";
     $page .= "<td class=\"c\" colspan=\"3\">". $lang['fl_expe_staytime'] ."</td>";
     $page .= "</tr>";
@@ -291,12 +301,9 @@ if ($planet == (Wootook::getGameConfig('engine/universe/positions') + 1)) {
     $page .= "<th colspan=\"3\">";
     $page .= "<select name=\"holdingtime\" >";
     $page .= "<option value=\"0\">0</option>";
-    $page .= "<option value=\"1\">1</option>";
-    $page .= "<option value=\"2\">2</option>";
-    $page .= "<option value=\"4\">4</option>";
-    $page .= "<option value=\"8\">8</option>";
-    $page .= "<option value=\"16\">16</option>";
-    $page .= "<option value=\"32\">32</option>";
+    for ($i = 1; $i <= 32; $i++) {
+        $page .= "<option value=\"{$i}\">{$i}h</option>";
+    }
     $page .= "</select>";
     $page .= $lang['fl_expe_hours'];
     $page .= "</th>";

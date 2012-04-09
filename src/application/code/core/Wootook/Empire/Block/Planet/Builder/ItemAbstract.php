@@ -7,6 +7,13 @@ abstract class Wootook_Empire_Block_Planet_Builder_ItemAbstract
     protected $_planet = null;
     protected $_itemId = null;
 
+    protected $_labels = null;
+
+    public function __construct()
+    {
+        $this->_labels = Wootook_Empire_Helper_Config_Labels::getSingleton();
+    }
+
     public function setPlayer(Wootook_Player_Model_Entity $player)
     {
         $this->_player = $player;
@@ -56,38 +63,24 @@ abstract class Wootook_Empire_Block_Planet_Builder_ItemAbstract
         return $this->getStaticUrl('infos.php', array('gid' => $this->getItemId()));
     }
 
+    public function getLabel($type)
+    {
+        return $this->_labels[$this->getItemId()][$type];
+    }
+
     public function getItemImageUrl()
     {
-        // TODO : Upgrade theme
-        return $this->getSkinUrl('graphics/gebaeude/' . $this->getItemId() . '.gif');
+        return $this->getSkinUrl($this->getLabel('image'));
     }
 
     public function getName()
     {
-        static $lang = null;
-        if ($lang === null) {
-            // FIXME: implement a cleaner way to get names
-            $lang = includeLang('tech');
-        }
-
-        if (isset($lang['tech']) && isset($lang['tech'][$this->getItemId()])) {
-            return $this->__($lang['tech'][$this->getItemId()]);
-        }
-        return '';
+        return $this->getLabel('name');
     }
 
     public function getDescription()
     {
-        static $lang = null;
-        if ($lang === null) {
-            // FIXME: implement a cleaner way to get names
-            $lang = includeLang('tech');
-        }
-
-        if (isset($lang['res']) && isset($lang['res']['descriptions']) && isset($lang['res']['descriptions'][$this->getItemId()])) {
-            return $this->__($lang['res']['descriptions'][$this->getItemId()]);
-        }
-        return '';
+        return $this->getLabel('description');
     }
 
     public function getResourceName($resourceId)

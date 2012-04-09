@@ -671,3 +671,47 @@ function ResetThisFuckingCheater($userId)
     $user->save();
     return;
 }
+
+/**
+ * Routine Affichage d'un message avec saut vers une autre page si souhaité
+ * @deprecated
+ */
+function message($message, $title = 'Error', $dest = null, $time = '3', $color = 'orange')
+{
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
+
+    $layout = Deprecated::getLayout(false);
+    $layout->load('message');
+
+    $messageBlock = $layout->getBlock('message');
+    if (!$messageBlock instanceof Wootook_Core_Mvc_View_View) {
+        exit(0);
+    }
+    $messageBlock['title'] = $title;
+    $messageBlock['message'] = $message;
+
+    echo $layout->render();
+    exit(0);
+}
+
+/**
+ * Routine Affichage d'un message administrateur avec saut vers une autre page si souhaité
+ * @deprecated
+ */
+function AdminMessage($message, $title = 'Error', $dest = null, $time = '3', $color = 'orange')
+{
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
+
+    $layout = Deprecated::getLayout(false);
+    $layout->load('message');
+
+    $messageBlock = $layout->getBlock('message');
+    if (!$messageBlock instanceof Wootook_Core_Mvc_View_View) {
+        exit(0);
+    }
+    $messageBlock['title'] = $title;
+    $messageBlock['message'] = $message;
+
+    echo $layout->render();
+    exit(0);
+}

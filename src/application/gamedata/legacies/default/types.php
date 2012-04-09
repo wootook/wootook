@@ -75,6 +75,7 @@
         Legacies_Empire::ID_RESEARCH_PLASMA_TECHNOLOGY,
         Legacies_Empire::ID_RESEARCH_INTERGALACTIC_RESEARCH_NETWORK,
         Legacies_Empire::ID_RESEARCH_EXPEDITION_TECHNOLOGY,
+        Legacies_Empire::ID_RESEARCH_ORE_MINING,
         Legacies_Empire::ID_RESEARCH_GRAVITON_TECHNOLOGY
         ),
 // }}}
@@ -97,7 +98,8 @@
         Legacies_Empire::ID_SHIP_DESTRUCTOR,
         Legacies_Empire::ID_SHIP_DEATH_STAR,
         Legacies_Empire::ID_SHIP_BATTLECRUISER,
-        Legacies_Empire::ID_SHIP_SUPERNOVA
+        Legacies_Empire::ID_SHIP_SUPERNOVA,
+        Legacies_Empire::ID_SHIP_ORE_MININER
         ),
 // }}}
 

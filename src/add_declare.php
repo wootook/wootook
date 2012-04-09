@@ -32,37 +32,31 @@ define('INSIDE' , true);
 define('INSTALL' , false);
 require_once dirname(__FILE__) .'/application/bootstrap.php';
 
+$mode = Wootook::getRequest()->getPost('mode');
 
-		includeLang('admin');
+if ($mode == 'addit') {
+    $adapter = Wootook_Core_Database_ConnectionManager::getSingleton()->getConnection('core_write');
+    $adapter->insert()
+        ->into($adapter->getTable('declared'))
+        ->set('declarator', $user->getId())
+        ->set('declarator_name', $user->getUsername())
+        ->set('declared_1', Wootook::getRequest()->getPost('dec1'))
+        ->set('declared_2', Wootook::getRequest()->getPost('dec2'))
+        ->set('declared_3', Wootook::getRequest()->getPost('dec2'))
+        ->set('reason', Wootook::getRequest()->getPost('reason'))
+        ->execute()
+    ;
 
-		$mode      = $_POST['mode'];
+    $adapter->update()
+        ->into($adapter->getTable('users'))
+        ->set('multi_validated', 1)
+    ;
 
-		$PageTpl   = gettemplate("add_declare");
-		$parse     = $lang;
+    message("Merci, votre demande a ete prise en compte. Les autres joueurs que vous avez implique doivent egalement et imperativement suivre cette procedure aussi.", "Ajout");
+}
 
-		if ($mode == 'addit') {
-			$declarator              = $user['id'];
-			$declarator_name  = addslashes(htmlspecialchars($user['username']));
-			$decl1        	   		  = addslashes(htmlspecialchars($_POST['dec1']));
-			$decl2       		       = addslashes(htmlspecialchars($_POST['dec2']));
-			$decl3        		      = addslashes(htmlspecialchars($_POST['dec3']));
-			$reason1        	  	 = addslashes(htmlspecialchars($_POST['reason']));
+includeLang('admin');
+$Page = parsetemplate(gettemplate("add_declare"), $lang);
 
-			$QryDeclare  = "INSERT INTO {{table}} SET ";
-			$QryDeclare .= "`declarator` = '". $declarator ."', ";
-			$QryDeclare .= "`declarator_name` = '". $declarator_name ."', ";			$QryDeclare .= "`declared_1` = '". $decl1 ."', ";
-			$QryDeclare .= "`declared_2` = '". $decl2 ."', ";
-			$QryDeclare .= "`declared_3` = '". $decl3 ."', ";
-			$QryDeclare .= "`reason`     = '". $reason1 ."' ";
+display($Page, "Declaration d\'IP partagee", false, '', true);
 
-			doquery( $QryDeclare, "declared");
-			doquery("UPDATE {{table}} SET multi_validated ='1' WHERE username='{$user['username']}'","users");
-
-			AdminMessage ( "Merci, votre demande a ete prise en compte. Les autres joueurs que vous avez implique doivent egalement et imperativement suivre cette procedure aussi.", "Ajout" );
-		}
-		$Page = parsetemplate($PageTpl, $parse);
-
-		display ($Page, "Declaration d\'IP partagee", false, '', true);
-
-
-?>

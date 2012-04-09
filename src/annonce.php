@@ -31,35 +31,26 @@
 define('INSIDE' , true);
 define('INSTALL' , false);
 require_once dirname(__FILE__) .'/application/bootstrap.php';
-$users   = doquery("SELECT * FROM {{table}} WHERE id='".$user['id']."';", 'users');
-$annonce = doquery("SELECT * FROM {{table}} ", 'annonce');
-$action  = $_GET['action'];
+
+$readAdapter = Wootook_Core_Database_ConnectionManager::getSingleton()->getConnection('core_read');
+$writeAdapter = Wootook_Core_Database_ConnectionManager::getSingleton()->getConnection('core_write');
+
+$action  = isset($_GET['action']) ? $_GET['action'] : null;
 
 if ($action == 5) {
-	$metalvendre = $_POST['metalvendre'];
-	$cristalvendre = $_POST['cristalvendre'];
-	$deutvendre = $_POST['deutvendre'];
-
-	$metalsouhait = $_POST['metalsouhait'];
-	$cristalsouhait = $_POST['cristalsouhait'];
-	$deutsouhait = $_POST['deutsouhait'];
-
-	while ($v_annonce = $users->fetch(PDO::FETCH_BOTH)) {
-		$user = $v_annonce['username'];
-		$galaxie = $v_annonce['galaxy'];
-		$systeme = $v_annonce['system'];
-	}
-
-	doquery("INSERT INTO {{table}} SET
-user='{$user}',
-galaxie='{$galaxie}',
-systeme='{$systeme}',
-metala='{$metalvendre}',
-cristala='{$cristalvendre}',
-deuta='{$deutvendre}',
-metals='{$metalsouhait}',
-cristals='{$cristalsouhait}',
-deuts='{$deutsouhait}'" , "annonce");
+    $writeAdapter->insert()
+        ->into($writeAdapter->getTable('annonce'))
+        ->set('user', $user->getUsername())
+        ->set('galaxie', $planet->getGalaxy())
+        ->set('systeme', $planet->getSystem())
+        ->set('metala', Wootook::getRequest()->getParam('metalvendre'))
+        ->set('cristala', Wootook::getRequest()->getParam('cristalvendre'))
+        ->set('deuta', Wootook::getRequest()->getParam('deutvendre'))
+        ->set('metals', Wootook::getRequest()->getParam('metalsouhait'))
+        ->set('cristals', Wootook::getRequest()->getParam('cristalsouhait'))
+        ->set('deuts', Wootook::getRequest()->getParam('deutsouhait'))
+        ->execute()
+    ;
 
 	$page2 .= <<<HTML
 <center>
@@ -73,7 +64,7 @@ HTML;
 }
 
 if ($action != 5) {
-	$annonce = doquery("SELECT * FROM {{table}} ORDER BY `id` DESC ", "annonce");
+	$statement = $readAdapter->select()->from(array('annonce' => $readAdapter->getTable('annonce')))->order('id', 'DESC')->prepare();
 
 	$page2 = "<HTML>
 <center>
@@ -82,12 +73,9 @@ if ($action != 5) {
 <td class=\"c\" colspan=\"10\"><font color=\"#FFFFFF\">Petites Annonces</font></td></tr>
 <tr><th colspan=\"3\">Infos de livraison</th><th colspan=\"3\">Ressources &agrave; vendre</th><th colspan=\"3\">Ressources souhait&eacute;es</th><th>Action</th></tr>
 <tr><th>Vendeur</th><th>Galaxie</th><th>Syst&egrave;me</th><th>M&eacute;tal</th><th>Cristal</th><th>Deuterium</th><th>M&eacute;tal</th><th>Cristal</th><th>Deuterium</th><th>Delet</th></tr>
-
-
-
-
 ";
-	while ($b = $annonce->fetch(PDO::FETCH_BOTH)) {
+
+	foreach ($statement as $b) {
 		$page2 .= '<tr><th> ';
 		$page2 .= $b["user"] ;
 		$page2 .= '</th><th>';
@@ -119,4 +107,3 @@ if ($action != 5) {
 	display($page2);
 }
 
-?>

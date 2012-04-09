@@ -99,6 +99,7 @@ class Legacies_Empire
     const ID_RESEARCH_INTERGALACTIC_RESEARCH_NETWORK = 123;
     const ID_RESEARCH_EXPEDITION_TECHNOLOGY          = 124;
     const ID_RESEARCH_ASTROPHYSICS                   = 124;
+    const ID_RESEARCH_ORE_MINING                     = 125;
     const ID_RESEARCH_GRAVITON_TECHNOLOGY            = 199;
 
     const ID_SHIP_LIGHT_TRANSPORT = 202;
@@ -116,6 +117,7 @@ class Legacies_Empire
     const ID_SHIP_DEATH_STAR      = 214;
     const ID_SHIP_BATTLECRUISER   = 215;
     const ID_SHIP_SUPERNOVA       = 216;
+    const ID_SHIP_ORE_MININER     = 217;
 
     const ID_DEFENSE_ROCKET_LAUNCHER   = 401;
     const ID_DEFENSE_LIGHT_LASER       = 402;
@@ -144,6 +146,7 @@ class Legacies_Empire
     const ID_MISSION_DESTROY       = 9;
     const ID_MISSION_MISSILES      = 10;
     const ID_MISSION_EXPEDITION    = 15;
+    const ID_MISSION_ORE_MINING    = 16;
 
     public static function getFieldName($id)
     {

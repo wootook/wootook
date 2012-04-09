@@ -101,7 +101,9 @@ class Wootook_Empire_Model_Planet
             $coords['type'] = $type;
         }
 
-        $collection = new Wootook_Empire_Resource_Planet_Collection('core_read');
+        $adapter = Wootook_Core_Database_ConnectionManager::getSingleton()
+            ->getConnection('core_read');
+        $collection = new Wootook_Empire_Resource_Planet_Collection($adapter);
         $collection->addCoordsToFilter($coords['galaxy'], $coords['system'], $coords['position'], $coords['type'])
             ->setPage(1, 1);
 
@@ -196,7 +198,7 @@ class Wootook_Empire_Model_Planet
         return $this->getPlanet()->getGalaxyData();
     }
 
-    public function updateStorages($time = null)
+    public function updateStorages()
     {
         Math::setPrecision(50);
         $resources = Wootook_Empire_Helper_Config_Resources::getSingleton();
@@ -388,15 +390,14 @@ class Wootook_Empire_Model_Planet
             $time = new Wootook_Core_DateTime();
         }
 
-        $timeDiff = clone $time;
-        $timeDiff->diff($time);
+        $timeDiff = $time->diff($this->getLastUpdate());
 
         foreach ($resources->getAllDatas() as $resourceId => $resourceConfig) {
             if (!$resourceConfig['storage_field']) {
                 continue;
             }
 
-            $production = Math::mul($this->getData($resourceConfig['production_field']), $timeDiff->getTimestamp() / 3600);
+            $production = Math::mul($this->getData($resourceConfig['production_field']), $timeDiff / 3600);
             $resourceValue = Math::add($this->getData($resourceConfig['field']), $production);
             $this->setData($resourceConfig['field'], Math::min($resourceValue, $this->getData($resourceConfig['storage_field'])));
         }
@@ -413,7 +414,7 @@ class Wootook_Empire_Model_Planet
             if (!isset($production[$buildingId])) {
                 return null;
             }
-            $class = $production[$buildingId][Legacies_Empire::RESOURCE_CLASS];
+            $class = $production[$buildingId];
             $reflection = new ReflectionClass($class);
             self::$_productionInstances[$buildingId] = $reflection->newInstance();
         }

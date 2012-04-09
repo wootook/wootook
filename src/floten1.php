@@ -255,14 +255,15 @@ $page .= "<td colspan=\"2\" class=\"c\">". $lang['fl_myplanets'] ."</td>";
 $page .= "</tr>";
 
 // Gestion des raccourcis vers ses propres colonies ou planetes
-$kolonien      = SortUserPlanets ( $user );
-$currentplanet = doquery("SELECT * FROM {{table}} WHERE id = '" . $user['current_planet'] . "'", 'planets', true);
+$kolonien      = $user->getPlanetCollection();
+$currentplanet = $user->getCurrentPlanet();
 
 if ($kolonien->rowCount() > 1) {
     $i = 0;
     $w = 0;
     $tr = true;
-    while ($row = $kolonien->fetch(PDO::FETCH_BOTH)) {
+    foreach ($user->getPlanetCollection() as $userPlanet) {
+        /** @var Wootook_Empire_Model_Planet $userPlanet */
         if ($w == 0 && $tr) {
             $page .= "<tr height=\"20\">";
             $tr = false;
@@ -273,17 +274,13 @@ if ($kolonien->rowCount() > 1) {
             $tr = true;
         }
 
-        if ($row['planet_type'] == 3) {
-            $row['name'] .= " ". $lang['fl_shrtcup3'];
+        $name = $userPlanet->getName();
+        if ($userPlanet->getType() == Wootook_Empire_Model_Planet::TYPE_MOON) {
+            $name .= " " . $lang['fl_shrtcup3'];
         }
 
-        if ($currentplanet['galaxy']      == $row['galaxy'] &&
-            $currentplanet['system']      == $row['system'] &&
-            $currentplanet['planet']      == $row['planet'] &&
-            $currentplanet['planet_type'] == $row['planet_type'] ) {
-//            $page .= '<th><a href="javascript:setTarget('.$row['galaxy'].','.$row['system'].','.$row['planet'].','.$row['planet_type'].'); shortInfo();">'.$row['name'].' '.$row['galaxy'].':'.$row['system'].':'.$row['planet'].'</a></th>';
-        } else {
-            $page .= "<th><a href=\"javascript:setTarget(". $row['galaxy'] .",". $row['system'] .",". $row['planet'] .",". $row['planet_type'] ."); shortInfo();\">". $row['name'] ." ". $row['galaxy'] .":". $row['system'] .":". $row['planet'] ."</a></th>";
+        if ($currentplanet->getId() != $userPlanet->getId()) {
+            $page .= "<th><a href=\"javascript:setTarget(". $userPlanet->getGalaxy() .",". $userPlanet->getSystem() .",". $userPlanet->getPosition() .",". $userPlanet->getType() ."); shortInfo();\">". $name . " ". $userPlanet->getCoords() ."</a></th>";
             $w++;
             $i++;
         }
@@ -315,9 +312,14 @@ $maxExpedition = $user->getElement(Legacies_Empire::ID_RESEARCH_EXPEDITION_TECHN
 $ExpeditionEnCours = 0;
 $EnvoiMaxExpedition = 0;
 if ($maxExpedition >= 1) {
-    $maxexpde = doquery("SELECT 1 FROM {{table}} WHERE `fleet_owner` = '".$user['id']."' AND `fleet_mission` = '15';", 'fleets');
-    $ExpeditionEnCours = $maxexpde->rowCount();
-    $maxexpde->closeCursor();
+    $ExpeditionEnCours = $readAdapter->select()
+        ->column(new Wootook_Core_Database_Sql_Placeholder_Expression('COUNT(*)'))
+        ->from(array('fleet' => $readAdapter->getTable('fleets')))
+        ->where('fleet_owner', $user->getId())
+        ->where('fleet_mission', Legacies_Empire::ID_MISSION_EXPEDITION)
+        ->prepare()
+        ->fetchColumn()
+    ;
 
     $EnvoiMaxExpedition = 1 + floor($maxExpedition / 3);
 }

@@ -244,7 +244,7 @@ class Wootook
         }
 
         $userLocale = Wootook_Player_Model_Session::getSingleton()->getData('locale');
-        if ($userLocale !== null) {
+        if ($userLocale !== null && in_array($userLocale, $availableLocales)) {
             return $userLocale;
         }
 
@@ -270,8 +270,8 @@ class Wootook
             return self::getDefaultLocale();
         }
 
-        $preferredLocale = key($locales);
-        $preferredPriority = current($locales);
+        $preferredLocale = current($availableLocales);
+        $preferredPriority = 0;
         foreach ($locales as $locale => $piority) {
             if (!in_array($locale, $availableLocales)) {
                 continue;
@@ -281,6 +281,7 @@ class Wootook
                 $preferredLocale = $locale;
             }
         }
+        var_dump($preferredLocale);
 
         Wootook_Player_Model_Session::getSingleton()->setData('locale', $preferredLocale);
 
