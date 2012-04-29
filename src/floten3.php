@@ -310,7 +310,7 @@ if ($mission != Legacies_Empire::ID_MISSION_EXPEDITION) {
 $possibleSpeeds = array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
 
 $AllFleetSpeed  = GetFleetMaxSpeed($fleetArray, 0, $user);
-$SpeedFactor    = GetGameSpeedFactor();
+$SpeedFactor    = Wootook::getGameConfig('game/speed/general');
 $MaxFleetSpeed  = min($AllFleetSpeed);
 
 if (!in_array($speed, $possibleSpeeds)) {
@@ -349,7 +349,7 @@ if ($mission == Legacies_Empire::ID_MISSION_EXPEDITION && isset($_POST['expediti
         && ($expeditionTime = intval($_POST['expeditiontime'])) >= 1 && $expeditionTime <= 10) {
     $StayDuration    = $expeditionTime * 3600;
     $StayTime        = $startTime + $expeditionTime * 3600;
-} elseif ($mission == Legacies_Empire::ID_MISSION_STATION_ALLY || $mission == Legacies_Empire::ID_MISSION_EXPLOIT && is_int($_POST['holdingtime'])
+} elseif ($mission == Legacies_Empire::ID_MISSION_STATION_ALLY || $mission == Legacies_Empire::ID_MISSION_ORE_MINING && is_int($_POST['holdingtime'])
         && ($holdingTime = intval($_POST['holdingtime'])) >= 1 && $holdingTime <= 10) {
     $StayDuration    = $holdingTime * 3600;
     $StayTime        = $startTime + $holdingTime * 3600;
@@ -361,7 +361,7 @@ if ($mission == Legacies_Empire::ID_MISSION_EXPEDITION && isset($_POST['expediti
 /* END Refactoring */
 $endTime   = $StayDuration + (2 * $duration) + time();
 $FleetStorage   = 0;
-$FleetShipCount = sum($fleetArray);
+$FleetShipCount = array_sum($fleetArray);
 $serializedFleetArray = '';
 
 foreach ($fleetArray as $shipId => $count) {
@@ -380,28 +380,28 @@ if (!isset($_POST['resource1']) || intval($_POST['resource1']) < 1) {
     $TransMetal = 0;
 } else {
     $TransMetal = intval($_POST['resource1']);
-    if ($StockMetal < $TransMetal) {
+    if (Math::comp($StockMetal, $TransMetal) < 0) {
         $TransMetal = $StockMetal;
     }
-    $StorageNeeded += $TransMetal;
+    $StorageNeeded = Math::add($TransMetal, $StorageNeeded);
 }
 if (!isset($_POST['resource2']) || intval($_POST['resource2']) < 1) {
     $TransCrystal = 0;
 } else {
     $TransCrystal = intval($_POST['resource2']);
-    if ($StockCrystal < $TransCrystal) {
+    if (Math::comp($StockCrystal, $TransCrystal) < 0) {
         $TransCrystal = $StockCrystal;
     }
-    $StorageNeeded += $TransCrystal;
+    $StorageNeeded = Math::add($TransCrystal, $StorageNeeded);
 }
 if (!isset($_POST['resource3']) || intval($_POST['resource3']) < 1) {
     $TransDeuterium  = 0;
 } else {
     $TransDeuterium = intval($_POST['resource3']);
-    if ($StockDeuterium < $TransDeuterium) {
+    if (Math::comp($StockDeuterium, $TransDeuterium) < 0) {
         $TransDeuterium = $StockDeuterium;
     }
-    $StorageNeeded += $TransDeuterium;
+    $StorageNeeded = Math::add($TransDeuterium, $StorageNeeded);
 }
 
 if ($StorageNeeded > $FleetStorage) {
@@ -430,21 +430,20 @@ try {
         ->set('fleet_owner', $user->getId())
         ->set('fleet_mission', $mission)
         ->set('fleet_amount', $FleetShipCount)
-        ->set('fleet_array', $fleet_array)
+        ->set('fleet_array', $serializedFleetArray)
         ->set('fleet_start_time', $startTime)
         ->set('fleet_start_galaxy', $planet->getGalaxy())
         ->set('fleet_start_system', $planet->getSystem())
         ->set('fleet_start_planet', $planet->getPosition())
         ->set('fleet_start_type', $planet->getType())
         ->set('fleet_end_time', $endTime)
-        ->set('fleet_end_stay', $user->getId())
-        ->set('fleet_end_stay', $user->getId())
+        ->set('fleet_end_stay', $StayDuration)
         ->set('fleet_end_galaxy', $galaxy)
         ->set('fleet_end_system', $system)
-        ->set('fleet_end_planet', $planet)
+        ->set('fleet_end_planet', $position)
         ->set('fleet_end_type', $type)
         ->set('fleet_resource_metal', intval($TransMetal))
-        ->set('fleet_resource_cristal', intval($TransCrystal))
+        ->set('fleet_resource_crystal', intval($TransCrystal)) // FIXME: refactor field name
         ->set('fleet_resource_deuterium', intval($TransDeuterium))
         ->set('fleet_target_owner', $destination['id_owner'])
         ->set('start_time', time())

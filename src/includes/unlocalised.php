@@ -46,7 +46,6 @@ function GetTargetDistance($OrigGalaxy, $DestGalaxy, $OrigSystem, $DestSystem, $
 
 // Calcul de la durée de vol d'une flotte par rapport a sa vitesse max
 function GetMissionDuration ($GameSpeed, $MaxFleetSpeed, $Distance, $SpeedFactor) {
-    $Duration = 0;
     $Duration = round(((35000 / $GameSpeed * sqrt($Distance * 10 / $MaxFleetSpeed) + 10) / $SpeedFactor));
 
     return $Duration;
@@ -115,12 +114,13 @@ function GetFleetMaxSpeed($FleetArray, $Fleet, $Player) {
 
 // ----------------------------------------------------------------------------------------------------------------
 // Calcul de la consommation de base d'un vaisseau au regard des technologies
-function GetShipConsumption ( $Ship, $Player ) {
-    global $pricelist;
-    if ($Player['impulse_motor_tech'] >= 5) {
-        $Consumption  = $pricelist[$Ship]['consumption2'];
+function GetShipConsumption($shipId, $player)
+{
+    $pricelist = Wootook_Empire_Helper_Config_Prices::getSingleton();
+    if ($shipId == Legacies_Empire::ID_SHIP_LIGHT_TRANSPORT && $player->getElement(Legacies_Empire::ID_RESEARCH_IMPULSE_DRIVE) >= 5) {
+        $Consumption  = $pricelist[$shipId]['consumption2'];
     } else {
-        $Consumption  = $pricelist[$Ship]['consumption'];
+        $Consumption  = $pricelist[$shipId]['consumption'];
     }
 
     return $Consumption;
@@ -132,6 +132,8 @@ function GetFleetConsumption ($FleetArray, $SpeedFactor, $MissionDuration, $Miss
 
     $consumption = 0;
     $basicConsumption = 0;
+
+    var_dump($FleetArray, $SpeedFactor, $MissionDuration, $MissionDistance, $FleetMaxSpeed);
 
     foreach ($FleetArray as $Ship => $Count) {
         if ($Ship > 0) {

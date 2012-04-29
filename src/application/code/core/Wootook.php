@@ -281,7 +281,6 @@ class Wootook
                 $preferredLocale = $locale;
             }
         }
-        var_dump($preferredLocale);
 
         Wootook_Player_Model_Session::getSingleton()->setData('locale', $preferredLocale);
 

@@ -35,56 +35,6 @@ $user   = Wootook_Player_Model_Session::getSingleton()->getPlayer();
 $planet = $user->getCurrentPlanet();
 $moon   = $planet->getMoon();
 
-$action = isset($_GET['action']) ? $_GET['action'] : null;
-
-if (isset($_POST) && !empty($_POST)) {/*
-    die('a');
-    $action = isset($_POST['action']) && !empty($_POST['action']) ? $_POST['action'] : $action;
-    $formKey = isset($_POST['form_key']) && !empty($_POST['form_key']) ? $_POST['form_key'] : null;
-
-    if ($formKey == Wootook::getSession('security')->getData('form_key')) {
-        if ($action == 'rename' && isset($_POST['name']) && !empty($_POST['name'])) {
-            $planet->setData('name', $_POST['name'])->save();
-        } else if ($action == 'destroy' && isset($_POST['password']) && !empty($_POST['password']) && isset($_POST['confirm'])) {
-            if (!$user->checkPassword($_POST['password'])) {
-                Wootook::getSession('user')
-                    ->addError(Wootook::__('Password was not correct.'));
-            }
-
-            try {
-                $user->getCurrentPlanet()->destroy();
-
-                Wootook::getSession('user')
-                    ->addSucces(Wootook::__('Planet has been successfully destroyed.'));
-            } catch (Wootook_Empire_Model_Planet_Exception $e) {
-                Wootook::getSession('user')
-                    ->addError($e->getMessage());
-            }
-        }
-    } else {
-        Wootook::getSession('user')
-            ->addError(Wootook::__('Invalid security key.'));
-    }
-
-    header('HTTP/1.1 302 Found');
-    header('Location: ' . Wootook::getStaticUrl(basename(__FILE__)));
-    exit(0);*/
-} else if ($action == 'rename') {/*
-    die('a');
-    $layout = new Wootook_Core_Model_Layout();
-    $layout->load('overview.rename-planet');
-
-    echo $layout->render();
-    exit(0);*/
-} else if ($action == 'destroy') {/*
-    die('a');
-    $layout = new Wootook_Core_Model_Layout();
-    $layout->load('overview.destroy-planet');
-
-    echo $layout->render();
-    exit(0);*/
-}
-
 includeLang('resources');
 includeLang('overview');
 
@@ -195,7 +145,7 @@ if ($user->getId()) {
         $fleetList->setPartial($id, $block);
     }
 
-    $messageCollection = $user->getNewMessagesCount()
+    $messageCollection = $user->getNewMessagesCount();
 
     $newMessages = $layout->createBlock('core/deprecated', 'overview.messages');
     $newMessages->setTemplate('empire/overview/messages.phtml');

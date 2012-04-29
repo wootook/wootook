@@ -61,16 +61,14 @@ class Wootook_Player_Model_Session
                         is_array($cookieData)) {
 
                     $adapter = $this->_player->getReadConnection();
-                    $select = $adapter->select(array('user' => 'users'));
-                    $cookieData = array(
-                        'id' => (isset($cookieData['id']) ? intval($cookieData['id']) : 0),
-                        'key' => (isset($cookieData['key']) ? $adapter->quote($cookieData['key']) : null)
-                        );
+                    $select = $adapter->select(array('user' => $adapter->getTable('users')));
 
                     $select
                         ->column('id')
-                        ->where('user.id=:id')
-                        ->where(':key=CONCAT((@salt:=MID(:key, 0, 4)), SHA1(CONCAT(user.username, user.password, @salt)))')
+                        ->where('id', isset($cookieData['id']) ? intval($cookieData['id']) : 0)
+                        ->where(new Wootook_Core_Database_Sql_Placeholder_Expression(
+                            ':key=CONCAT((@salt:=MID(:key, 0, 4)), SHA1(CONCAT(user.username, user.password, @salt)))',
+                            array('key' => isset($cookieData['key']) ? $adapter->quote($cookieData['key']) : null)))
                     ;
                     try {
                         $statement = $adapter->prepare($select);

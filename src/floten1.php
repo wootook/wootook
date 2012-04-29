@@ -258,7 +258,7 @@ $page .= "</tr>";
 $kolonien      = $user->getPlanetCollection();
 $currentplanet = $user->getCurrentPlanet();
 
-if ($kolonien->rowCount() > 1) {
+if ($kolonien->getSize() > 1) {
     $i = 0;
     $w = 0;
     $tr = true;
@@ -312,6 +312,7 @@ $maxExpedition = $user->getElement(Legacies_Empire::ID_RESEARCH_EXPEDITION_TECHN
 $ExpeditionEnCours = 0;
 $EnvoiMaxExpedition = 0;
 if ($maxExpedition >= 1) {
+    $readAdapter = Wootook_Core_Database_ConnectionManager::getSingleton()->getConnection('core_read');
     $ExpeditionEnCours = $readAdapter->select()
         ->column(new Wootook_Core_Database_Sql_Placeholder_Expression('COUNT(*)'))
         ->from(array('fleet' => $readAdapter->getTable('fleets')))

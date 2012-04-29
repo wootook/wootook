@@ -31,6 +31,7 @@
 define('INSIDE' , true);
 define('INSTALL' , false);
 require_once dirname(__FILE__) .'/application/bootstrap.php';
+$labels = Wootook_Empire_Helper_Config_Labels::getSingleton();
 
 //Compteur de flotte en expéditions et nombre d'expédition maximum
 $maxExpedition = $user->getElement(Legacies_Empire::ID_RESEARCH_EXPEDITION_TECHNOLOGY);
@@ -230,11 +231,11 @@ $ShipData       = "";
 
 $have_ships = false;
 foreach ($reslist['fleet'] as $n => $i) {
-    if ($planet[$resource[$i]] > 0) {
+    if ($planet->getElement($i) > 0) {
         $page .= "<tr height=\"20\">";
-        $page .= "<th><a title=\"". $lang['fl_fleetspeed'] /*. $CurrentShipSpeed*/ ."\">" . $lang['tech'][$i] . "</a></th>";
-        $page .= "<th>". pretty_number ($planet[$resource[$i]]);
-        $ShipData .= "<input type=\"hidden\" name=\"maxship[". $i ."]\" value=\"". $planet[$resource[$i]] ."\" />";
+        $page .= "<th><a title=\"". $lang['fl_fleetspeed'] /*. $CurrentShipSpeed*/ ."\">" . $labels[$i]['name'] . "</a></th>";
+        $page .= "<th>". pretty_number ($planet->getElement($i));
+        $ShipData .= "<input type=\"hidden\" name=\"maxship[". $i ."]\" value=\"". $planet->getElement($i) ."\" />";
         $ShipData .= "<input type=\"hidden\" name=\"consumption[". $i ."]\" value=\"". GetShipConsumption ( $i, $user ) ."\" />";
         $ShipData .= "<input type=\"hidden\" name=\"speed[" .$i ."]\" value=\"" . GetFleetMaxSpeed ("", $i, $user) . "\" />";
         $ShipData .= "<input type=\"hidden\" name=\"capacity[". $i ."]\" value=\"". $pricelist[$i]['capacity'] ."\" />";
@@ -244,7 +245,7 @@ foreach ($reslist['fleet'] as $n => $i) {
             $page .= "<th></th><th></th>";
         } else {
             $page .= "<th><a href=\"javascript:maxShip('ship[". $i ."]'); shortInfo();\">".$lang['fl_selmax']."</a> </th>";
-            $page .= "<th><input name=\"ship[". $i ."]\" size=\"10\" value=\"0\" onfocus=\"javascript:if(this.value == '0') this.value='';\" onblur=\"javascript:if(this.value == '') this.value='0';\" alt=\"". $lang['tech'][$i] . $planet[$resource[$i]] ."\" onChange=\"shortInfo()\" onKeyUp=\"shortInfo()\" /></th>";
+            $page .= "<th><input name=\"ship[". $i ."]\" size=\"10\" value=\"0\" onfocus=\"javascript:if(this.value == '0') this.value='';\" onblur=\"javascript:if(this.value == '') this.value='0';\" alt=\"". $labels[$i]['name'] . $planet->getElement($i) ."\" onChange=\"shortInfo()\" onKeyUp=\"shortInfo()\" /></th>";
         }
         $page .= "</tr>";
         $have_ships = true;

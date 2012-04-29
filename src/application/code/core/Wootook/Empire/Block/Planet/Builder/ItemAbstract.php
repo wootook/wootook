@@ -70,7 +70,7 @@ abstract class Wootook_Empire_Block_Planet_Builder_ItemAbstract
 
     public function getItemImageUrl()
     {
-        return $this->getSkinUrl($this->getLabel('image'));
+        return $this->getStaticUrl($this->getLabel('image'));
     }
 
     public function getName()
