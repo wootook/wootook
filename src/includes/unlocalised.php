@@ -133,8 +133,6 @@ function GetFleetConsumption ($FleetArray, $SpeedFactor, $MissionDuration, $Miss
     $consumption = 0;
     $basicConsumption = 0;
 
-    var_dump($FleetArray, $SpeedFactor, $MissionDuration, $MissionDistance, $FleetMaxSpeed);
-
     foreach ($FleetArray as $Ship => $Count) {
         if ($Ship > 0) {
             $ShipSpeed         = GetFleetMaxSpeed ( "", $Ship, $Player );

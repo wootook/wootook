@@ -513,6 +513,9 @@ class Wootook_Core_Model_Layout
 
     public function getPackage()
     {
+        if ($this->_package === null) {
+            $this->_package = self::DEFAULT_PACKAGE;
+        }
         return $this->_package;
     }
 
@@ -525,6 +528,9 @@ class Wootook_Core_Model_Layout
 
     public function getTheme()
     {
+        if ($this->_theme === null) {
+            $this->_theme = self::DEFAULT_THEME;
+        }
         return $this->_theme;
     }
 

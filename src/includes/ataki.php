@@ -72,11 +72,11 @@ function walka ($CurrentSet, $TargetSet, $CurrentTechno, $TargetTechno) {
 
 		if (!is_null($CurrentSet)) {
 			foreach($CurrentSet as $a => $b) {
-				$CurrentSet[$a]["obrona"] = $CurrentSet[$a]['count'] * ($pricelist[$a]['metal'] + $pricelist[$a]['crystal']) / 10 * (1 + (0.1 * ($CurrentTechno["defence_tech"]) + (0.05 * $user['rpg_amiral'])));
+				$CurrentSet[$a]["obrona"] = $CurrentSet[$a]['count'] * ($pricelist[$a]['metal'] + $pricelist[$a]['crystal']) / 10 * (1 + (0.1 * $CurrentTechno["defence_tech"]));
 				$rand = rand(80, 120) / 100;
-				$CurrentSet[$a]["tarcza"] = $CurrentSet[$a]['count'] * $CombatCaps[$a]['shield'] * (1 + (0.1 * $CurrentTechno["shield_tech"]) + (0.05 * $user['rpg_amiral'])) * $rand;
+				$CurrentSet[$a]["tarcza"] = $CurrentSet[$a]['count'] * $CombatCaps[$a]['shield'] * (1 + (0.1 * $CurrentTechno["shield_tech"])) * $rand;
 				$atak_statku = $CombatCaps[$a]['attack'];
-				$technologie = (1 + (0.1 * $CurrentTechno["military_tech"]+(0.05 * $user['rpg_amiral'])));
+				$technologie = (1 + (0.1 * $CurrentTechno["military_tech"]));
 				$rand = rand(80, 120) / 100;
 				$ilosc = $CurrentSet[$a]['count'];
 				$CurrentSet[$a]["atak"] = $ilosc * $atak_statku * $technologie * $rand;
@@ -91,11 +91,11 @@ function walka ($CurrentSet, $TargetSet, $CurrentTechno, $TargetTechno) {
 
 		if (!is_null($TargetSet)) {
 			foreach($TargetSet as $a => $b) {
-				$TargetSet[$a]["obrona"] = $TargetSet[$a]['count'] * ($pricelist[$a]['metal'] + $pricelist[$a]['crystal']) / 10 * (1 + (0.1 * ($TargetTechno["defence_tech"]) + (0.05 * $user['rpg_amiral'])));
+				$TargetSet[$a]["obrona"] = $TargetSet[$a]['count'] * ($pricelist[$a]['metal'] + $pricelist[$a]['crystal']) / 10 * (1 + (0.1 * $TargetTechno["defence_tech"]));
 				$rand = rand(80, 120) / 100;
-				$TargetSet[$a]["tarcza"] = $TargetSet[$a]['count'] * $CombatCaps[$a]['shield'] * (1 + (0.1 * $TargetTechno["shield_tech"])+ (0.05 * $user['rpg_amiral'])) * $rand;
+				$TargetSet[$a]["tarcza"] = $TargetSet[$a]['count'] * $CombatCaps[$a]['shield'] * (1 + (0.1 * $TargetTechno["shield_tech"])) * $rand;
 				$atak_statku = $CombatCaps[$a]['attack'];
-				$technologie = (1 + (0.1 * $TargetTechno["military_tech"]) + (0.05 * $user['rpg_amiral']));
+				$technologie = (1 + (0.1 * $TargetTechno["military_tech"]));
 				$rand = rand(80, 120) / 100;
 				$ilosc = $TargetSet[$a]['count'];
 				$TargetSet[$a]["atak"] = $ilosc * $atak_statku * $technologie * $rand;

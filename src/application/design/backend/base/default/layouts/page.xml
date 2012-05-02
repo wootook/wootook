@@ -40,6 +40,12 @@
                 <action method="addCss">
                     <param name="stylesheet">css/base.css</param>
                 </action>
+                <action method="addCss">
+                    <param name="stylesheet">css/deprecated/default.css</param>
+                </action>
+                <action method="addCss">
+                    <param name="stylesheet">css/deprecated/formate.css</param>
+                </action>
                 <action method="addJs">
                     <param name="script">scripts/jquery/jquery-1.6.4.js</param>
                 </action>

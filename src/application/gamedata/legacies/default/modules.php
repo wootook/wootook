@@ -5,7 +5,6 @@
         'player'            => array('Wootook_Player_Block_' => 'Wootook/Player/Block'),
         'legacies-core'     => array('Legacies_Core_Block_' => 'Legacies/Core/Block'),
         'legacies-empire'   => array('Legacies_Empire_Block_' => 'Legacies/Empire/Block'),
-        'legacies-officers' => array('Legacies_Officers_Block_' => 'Legacies/Officers/Block'),
         'legacies-stats'    => array('Legacies_Stats_Block_' => 'Legacies/Stats/Block')
         )
     );

@@ -214,6 +214,27 @@ case 'install':
                 'global' => array(
                     'resource' => array()
                     ),
+                'backend' => array(
+                    'web' => array(
+                        'url' => array(
+                            'base' => $request->getPost('url_path'),
+                            'link' => $request->getPost('url_path') . 'admin/',
+                            'skin' => $request->getPost('url_path') . 'skin/',
+                            'js'   => $request->getPost('url_path') . 'js/',
+                            'css'  => $request->getPost('url_path') . 'css/',
+                            )
+                        ),
+                    'system' => array(
+                        'path' => array(
+                            'base'   => ROOT_PATH,
+                            'skin'   => ROOT_PATH . 'skin' . DIRECTORY_SEPARATOR,
+                            'design' => ROOT_PATH . 'application' . DIRECTORY_SEPARATOR . 'design' . DIRECTORY_SEPARATOR,
+                            ),
+                        'date' => array(
+                            'timezone' => $request->getPost('timezone')
+                            )
+                        ),
+                    ),
                 'frontend' => array(
                     'web' => array(
                         'url' => array(

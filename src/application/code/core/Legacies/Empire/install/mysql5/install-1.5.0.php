@@ -344,6 +344,8 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('planets')} (
     `destructor`                    DECIMAL(65,0)           NOT NULL    DEFAULT 0,
     `dearth_star`                   DECIMAL(65,0)           NOT NULL    DEFAULT 0,
     `battleship`                    DECIMAL(65,0)           NOT NULL    DEFAULT 0,
+    `supernova`                     DECIMAL(65,0)           NOT NULL    DEFAULT 0,
+    `ore_miner`                     DECIMAL(65,0)           NOT NULL    DEFAULT 0,
     `misil_launcher`                DECIMAL(65,0)           NOT NULL    DEFAULT 0,
     `small_laser`                   DECIMAL(65,0)           NOT NULL    DEFAULT 0,
     `big_laser`                     DECIMAL(65,0)           NOT NULL    DEFAULT 0,
@@ -479,6 +481,7 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('users')} (
     `intergalactic_tech`        TINYINT UNSIGNED        NOT NULL,                   -- FIXME
     `expedition_tech`           TINYINT UNSIGNED        NOT NULL,                   -- FIXME
     `graviton_tech`             TINYINT UNSIGNED        NOT NULL,                   -- FIXME
+    `ore_mining_tech`           TINYINT UNSIGNED        NOT NULL,                   -- FIXME
     `ally_id`                   BIGINT UNSIGNED         NOT NULL,
     `ally_name`                 VARCHAR(32)             NULL,                       -- FIXME
     `ally_request`              BOOL                    NOT NULL    DEFAULT FALSE,  -- FIXME
@@ -486,25 +489,9 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('users')} (
     `ally_register_time`        TIMESTAMP               NOT NULL,                   -- FIXME
     `ally_rank_id`              BIGINT UNSIGNED         NOT NULL,                   -- FIXME
     `current_luna`              INT                     NOT NULL,                   -- FIXME
-    `kolorminus`                VARCHAR(11)             NOT NULL DEFAULT 'red',
-    `kolorplus`                 VARCHAR(11)             NOT NULL DEFAULT '#00FF00',
-    `kolorpoziom`               VARCHAR(11)             NOT NULL DEFAULT 'yellow',
-    `rpg_geologue`              TINYINT UNSIGNED        NOT NULL,                   -- FIXME
-    `rpg_amiral`                TINYINT UNSIGNED        NOT NULL,                   -- FIXME
-    `rpg_ingenieur`             TINYINT UNSIGNED        NOT NULL,                   -- FIXME
-    `rpg_technocrate`           TINYINT UNSIGNED        NOT NULL,                   -- FIXME
-    `rpg_espion`                TINYINT UNSIGNED        NOT NULL,                   -- FIXME
-    `rpg_constructeur`          TINYINT UNSIGNED        NOT NULL,                   -- FIXME
-    `rpg_scientifique`          TINYINT UNSIGNED        NOT NULL,                   -- FIXME
-    `rpg_commandant`            TINYINT UNSIGNED        NOT NULL,                   -- FIXME
-    `rpg_points`                TINYINT UNSIGNED        NOT NULL,                   -- FIXME
-    `rpg_stockeur`              TINYINT UNSIGNED        NOT NULL,                   -- FIXME
-    `rpg_defenseur`             TINYINT UNSIGNED        NOT NULL,                   -- FIXME
-    `rpg_destructeur`           TINYINT UNSIGNED        NOT NULL,                   -- FIXME
-    `rpg_general`               TINYINT UNSIGNED        NOT NULL,                   -- FIXME
-    `rpg_bunker`                TINYINT UNSIGNED        NOT NULL,                   -- FIXME
-    `rpg_raideur`               TINYINT UNSIGNED        NOT NULL,                   -- FIXME
-    `rpg_empereur`              TINYINT UNSIGNED        NOT NULL,                   -- FIXME
+    `kolorminus`                VARCHAR(11)             NOT NULL    DEFAULT 'red',
+    `kolorplus`                 VARCHAR(11)             NOT NULL    DEFAULT '#00FF00',
+    `kolorpoziom`               VARCHAR(11)             NOT NULL    DEFAULT 'yellow',
     `lvl_minier`                BIGINT UNSIGNED         NOT NULL,                   -- FIXME
     `lvl_raid`                  BIGINT UNSIGNED         NOT NULL,                   -- FIXME
     `xpraid`                    BIGINT UNSIGNED         NOT NULL,                   -- FIXME

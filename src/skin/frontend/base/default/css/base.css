@@ -69,19 +69,20 @@ input[type=submit],input[type=button] {height:2em;border:#58939f 0 solid;border-
 .global .content .item-list .item {width:200px;margin:0 10px;border:0;box-shadow:none;border-radius:0;}
 .global .content .item-list .item h2,.global .content .item-list .item h3 {text-decoration:none;}
 .global .content .item-list .item h2 {margin-bottom:0;}
+.global .content .item-list .item h3.class {margin-top:0;margin-bottom:0;font-size:1em;font-weight:bold;}
 .global .content .item-list .item h3.level,.global .content .item-list .item h3.count {margin-top:0;}
-.global .content .item-list .item h2,.global .content .item-list .item h2 * {font-size:1.3em;}
+.global .content .item-list .item h2,.global .content .item-list .item h2 * {font-size:1.2em;}
 .global .content .item-list .item h3.level,.global .content .item-list .item h3.count {font-size:1em;color:#58939f;font-weight:bold;}
 .global .content .item-list .item .image {margin:0 auto;width:120px;display:block;overflow:hidden;border:1px solid #58939f;}
 .global .content .item-list .item .image img {margin:0;border:none;}
 .global .content .item-list .item,.global .content .item-list .item * {color:#000;}
-.global .content .item-list .item .buy,.global .content .item-list .item .max,.global .content .item-list .item .qty {border:1px solid #000;border-radius:3px;height:20px;margin:20px 25px;background:#666;cursor:pointer;}
+.global .content .item-list .item .buy,.global .content .item-list .item .max,.global .content .item-list .item .qty {border:1px solid #000;border-radius:3px;height:20px;margin:20px 10px;background:#666;cursor:pointer;}
 .global .content .item-list .item .buy p,.global .content .item-list .item .buy p *,.global .content .item-list .item .max p,.global .content .item-list .item .max p * {margin:4px 0;text-align:center;font-size:1em;color:#FFF;text-decoration:none;}
 .global .content .item-list .item .buy:hover,.global .content .item-list .item .buy.hover,.global .content .item-list .item .max:hover,.global .content .item-list .item .max.hover,.global .content .item-list .item .qty:hover,.global .content .item-list .item .qty.hover {background-color:#58939f;}
 .global .content .item-list .item .unavailable,.global .content .item-list .item .unavailable:hover {background:#933;border-color:#D00;}
 .global .content .item-list .item .unavailable p {color:#CCC;}
 .global .content .item-list .item .qty p {margin:0 auto;}
-.global .content .item-list .item .qty p input {border:none;height:20px;margin:0 10px;color:#FFF;padding:0 10px;width:128px;text-align:center;font-weight:bold;font-size:1.1em;}
+.global .content .item-list .item .qty p input {border:none;height:20px;margin:0 10px;color:#FFF;padding:0 10px;width:158px;text-align:center;font-weight:bold;font-size:1.1em;}
 .global .content .item-list .item .details {padding:5px 10px;border-radius:5px;width:300px;background:#FFF;z-index:999;display:none;position:relative;left:-30px;top:-10px;border:3px solid #58939f;border-left-width:15px;}
 .global .content .item-list .item .details ul {list-style:square inside;color:#58939f;padding-left:5px;}
 .global .content .item-list .item .details ul li .cost {font-weight:bold;color:darkgreen;}
@@ -89,6 +90,7 @@ input[type=submit],input[type=button] {height:2em;border:#58939f 0 solid;border-
 .global .content .item-list .item .details ul li .capped {color:darkred;}
 .global .content .item-list .item .details .time {color:gray;}
 .global .content .item-list .clear {clear:left;height:50px;}
+.global .content .item-list input[type=submit] {margin:30px 220px 0;width:300px;height:45px;background:#F7A90F;border-radius:10px;font-weight:bold;font-family:Arial,sans-serif;font-variant:small-caps;font-style:oblique;border:2px solid #263D43;box-shadow:0 -8px 10px #D5640E inset, 0 2px 7px #58939F;color:#08335B;font-size:2em;text-align:center;}
 
 .global .content form.form {background:#FFF;width:300px;margin:10px auto;padding:10px 0;border-radius:20px;box-shadow:0 -4px 8px #58939f inset, 20px 20px 40px #58939f, -20px 20px 40px #58939f, 0 -20px 40px #58939f;}
 .global .content form.form h1 {font-size:2em;}

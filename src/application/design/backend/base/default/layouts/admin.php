@@ -1,6 +1,6 @@
 <?php return array(
     'admin' => array(
-        'update' => '1column',
+        'update' => array('1column'),
         'reference' => array(
             'header' => array(
                 'children' => array(
@@ -241,7 +241,7 @@
             )
         ),
     'admin.grid' => array(
-        'update' => 'admin',
+        'update' => array('admin'),
         'reference' => array(
             'content' => array(
                 'children' => array(
@@ -264,7 +264,7 @@
             )
         ),
     'admin.user.grid' => array(
-        'update' => 'admin.grid',
+        'update' => array('admin.grid'),
         'reference' => array(
             'grid' => array(
                 'actions' => array(

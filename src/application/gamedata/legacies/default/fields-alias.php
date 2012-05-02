@@ -41,6 +41,7 @@
     Legacies_Empire::ID_RESEARCH_INTERGALACTIC_RESEARCH_NETWORK => "intergalactic_tech",
     Legacies_Empire::ID_RESEARCH_EXPEDITION_TECHNOLOGY          => "expedition_tech",
     Legacies_Empire::ID_RESEARCH_GRAVITON_TECHNOLOGY            => "graviton_tech",
+    Legacies_Empire::ID_RESEARCH_ORE_MINING                     => "ore_mining_tech",
 // }}}
 
 //
@@ -61,6 +62,7 @@
     Legacies_Empire::ID_SHIP_DEATH_STAR      => "dearth_star",
     Legacies_Empire::ID_SHIP_BATTLECRUISER   => "battleship",
     Legacies_Empire::ID_SHIP_SUPERNOVA       => "supernova",
+    Legacies_Empire::ID_SHIP_ORE_MININER     => "ore_miner",
 //
 
 //
@@ -77,25 +79,5 @@
 
     Legacies_Empire::ID_SPECIAL_ANTIBALLISTIC_MISSILE  => "interceptor_misil",
     Legacies_Empire::ID_SPECIAL_INTERPLANETARY_MISSILE => "interplanetary_misil",
-// }}}
-
-//
-// Officers
-// {{{
-    601 => "rpg_geologue",
-    602 => "rpg_amiral",
-    603 => "rpg_ingenieur",
-    604 => "rpg_technocrate",
-    605 => "rpg_constructeur",
-    606 => "rpg_scientifique",
-    607 => "rpg_stockeur",
-    608 => "rpg_defenseur",
-    609 => "rpg_bunker",
-    610 => "rpg_espion",
-    611 => "rpg_commandant",
-    612 => "rpg_destructeur",
-    613 => "rpg_general",
-    614 => "rpg_raideur",
-    615 => "rpg_empereur"
 // }}}
     );

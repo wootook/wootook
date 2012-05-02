@@ -36,7 +36,7 @@ require_once dirname(dirname(__FILE__)) .'/application/bootstrap.php';
 if (in_array($user['authlevel'], array(LEVEL_ADMIN, LEVEL_OPERATOR, LEVEL_MODERATOR))) {
 	includeLang('admin');
 
-	if ($_GET['cmd'] == 'sort') {
+	if (isset($_GET['cmd']) && isset($_GET['type']) && $_GET['cmd'] == 'sort') {
 		$TypeSort = $_GET['type'];
 	} else {
 		$TypeSort = "id";
@@ -45,14 +45,14 @@ if (in_array($user['authlevel'], array(LEVEL_ADMIN, LEVEL_OPERATOR, LEVEL_MODERA
 	$PageTPL  = gettemplate('admin/overview_body');
 	$RowsTPL  = gettemplate('admin/overview_rows');
 
-	$parse                      = $lang;
-	$parse['dpath']             = $dpath;
-	$parse['mf']                = $mf;
-	$parse['adm_ov_data_yourv'] = colorRed(VERSION);
+	$parse            = $lang;
+	$parse['version'] = VERSION;
 
 	$Last15Mins = doquery("SELECT * FROM {{table}} WHERE `onlinetime` >= '". (time() - 15 * 60) ."' ORDER BY `". $TypeSort ."` ASC;", 'users');
 	$Count      = 0;
 	$Color      = "lime";
+    $PrevIP = '';
+    $parse['adm_ov_data_table'] = '';
 	while ($TheUser = $Last15Mins->fetch(PDO::FETCH_ASSOC) ) {
 		if ($PrevIP != "") {
 			if ($PrevIP == $TheUser['user_lastip']) {
@@ -63,7 +63,6 @@ if (in_array($user['authlevel'], array(LEVEL_ADMIN, LEVEL_OPERATOR, LEVEL_MODERA
 		}
 
 		$UserPoints = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '" . $TheUser['id'] . "';", 'statpoints', true);
-		$Bloc['dpath']               = $dpath;
 		$Bloc['adm_ov_altpm']        = $lang['adm_ov_altpm'];
 		$Bloc['adm_ov_wrtpm']        = $lang['adm_ov_wrtpm'];
 		$Bloc['adm_ov_data_id']      = $TheUser['id'];

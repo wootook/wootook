@@ -98,12 +98,6 @@
                     <param name="uri">imperium.php</param>
                 </action>
                 <action method="addStaticLink">
-                    <param name="name">account/officers</param>
-                    <param name="label">Officers</param>
-                    <param name="title">Officers</param>
-                    <param name="uri">officier.php</param>
-                </action>
-                <action method="addStaticLink">
                     <param name="name">account/alliance</param>
                     <param name="label">My Alliance</param>
                     <param name="title">My Alliance</param>
@@ -251,6 +245,14 @@
         <update name="empire" />
 
         <reference name="content">
+            <block name="queue" type="legacies-empire/planet.shipyard.queue" template="empire/planet/shipyard/queue.phtml">
+                <action method="setItemTemplate">
+                    <param name="template">empire/planet/shipyard/queue/item.phtml</param>
+                </action>
+                <action method="setItemBlockType">
+                    <param name="blockType">legacies-empire/planet.shipyard.queue.item</param>
+                </action>
+            </block>
             <block name="item-list" type="legacies-empire/planet.shipyard" template="empire/planet/shipyard.phtml">
                 <block name="item-list.items" type="core/concat" />
                 <action method="setItemTemplate">
@@ -258,14 +260,6 @@
                 </action>
                 <action method="setItemBlockType">
                     <param name="blockType">legacies-empire/planet.shipyard.item</param>
-                </action>
-            </block>
-            <block name="queue" type="legacies-empire/planet.shipyard.queue" template="empire/planet/shipyard/queue.phtml">
-                <action method="setItemTemplate">
-                    <param name="template">empire/planet/shipyard/queue/item.phtml</param>
-                </action>
-                <action method="setItemBlockType">
-                    <param name="blockType">legacies-empire/planet.shipyard.queue.item</param>
                 </action>
             </block>
         </reference>

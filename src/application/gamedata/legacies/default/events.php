@@ -11,8 +11,7 @@
     'register.success' => array(),
     'planet.update' => array(
         array('Wootook_Empire_Model_Planet', 'planetUpdateListener'),
-        array('Legacies_Empire_Model_Planet_Building_Shipyard', 'planetUpdateListener'),
-        array('Legacies_Officers_Model_Observer', 'planetUpdateListener')
+        array('Legacies_Empire_Model_Planet_Building_Shipyard', 'planetUpdateListener')
         ),
     'user.init' => array(),
     'planet.init' => array(

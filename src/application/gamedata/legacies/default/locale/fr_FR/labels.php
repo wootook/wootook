@@ -28,25 +28,25 @@
 
     Legacies_Empire::ID_BUILDING_FUSION_REACTOR => array(
         'name'        => 'Réacteur à fusion nucléaire',
-        'description' => '',
+        'description' => "<p>Fruit de longues décénnies de recherche, le <strong>réacteur à fusion nucléaire</strong> est désormais une source d'énergie rentable.</p><p>Nourrie par l'énergie engendrée par la fusion des isotopes d'hydrogène, cette centrale génère plus d'énergie que toutes les autres sources d'énergie. La contrepartie à cette surgénération d'énergie, est son côut en deutérium.</p>",
         'image'       => 'medias/klore/images/building/fusion-reactor.jpg'
         ),
 
     Legacies_Empire::ID_BUILDING_ROBOTIC_FACTORY => array(
         'name'        => 'Usine de robots',
-        'description' => '',
+        'description' => "<p>L'<strong>usine de robots</strong> permet à votre empire de se développer plus rapidement en accélarant la fabrication et l'évolution de vos structures.</p>",
         'image'       => 'medias/klore/images/building/robotic-factory.jpg'
         ),
 
     Legacies_Empire::ID_BUILDING_NANITE_FACTORY => array(
         'name'        => 'Usine de nanites',
-        'description' => '',
+        'description' => "<p>Fruit de la recherche des nano-technologies, l'<strong>usine de nanites</strong> produit en masse nano-robots capable de s'assembler pour former vos futures structures.</p>",
         'image'       => 'medias/klore/images/building/nanite-factory.jpg'
         ),
 
     Legacies_Empire::ID_BUILDING_SHIPYARD => array(
         'name'        => 'Chantier spatial',
-        'description' => '',
+        'description' => "<p>Elément central de la construction de vaisseaux spaciaux et de systèmes de défenses, le <strong>chantier spatial</strong> permettra à votre empire de s'étendre et d'asseaoir sa suprématie.</p>",
         'image'       => 'medias/klore/images/building/shipyard.jpg'
         ),
 
@@ -99,19 +99,19 @@
      Legacies_Empire::ID_BUILDING_LUNAR_BASE => array(
         'name'        => 'Base lunaire',
         'description' => '',
-        'image'       => 'medias/klore/images/units/lunar-base.jpg'
+        'image'       => 'medias/klore/images/ship/lunar-base.jpg'
         ),
 
      Legacies_Empire::ID_BUILDING_SENSOR_PHALANX => array(
         'name'        => 'Phalange de capteur',
         'description' => '',
-        'image'       => 'medias/klore/images/units/sensor-phalanx.jpg'
+        'image'       => 'medias/klore/images/ship/sensor-phalanx.jpg'
         ),
 
      Legacies_Empire::ID_BUILDING_JUMP_GATE => array(
         'name'        => 'Porte de saut spatial',
         'description' => '',
-        'image'       => 'medias/klore/images/units/jump-gate.jpg'
+        'image'       => 'medias/klore/images/ship/jump-gate.jpg'
         ),
 // }}}
 
@@ -228,112 +228,112 @@
         'name'        => 'Transporteur T5',
         'class'       => 'Etalon',
         'description' => '',
-        'image'       => 'medias/klore/images/units/light-transport.jpg'
+        'image'       => 'medias/klore/images/ship/light-transport.jpg'
         ),
 
     Legacies_Empire::ID_SHIP_LARGE_TRANSPORT => array(
         'name'        => 'Transporteur T25',
         'class'       => 'Buffle',
         'description' => '',
-        'image'       => 'medias/klore/images/units/large-transport.jpg'
+        'image'       => 'medias/klore/images/ship/large-transport.jpg'
         ),
 
     Legacies_Empire::ID_SHIP_LIGHT_FIGHTER => array(
         'name'        => 'Chasseur C50',
         'class'       => 'Guêpe',
         'description' => '',
-        'image'       => 'medias/klore/images/units/light-fighter.jpg'
+        'image'       => 'medias/klore/images/ship/light-fighter.jpg'
         ),
 
     Legacies_Empire::ID_SHIP_HEAVY_FIGHTER => array(
         'name'        => 'Chasseur C150',
         'class'       => 'Frelon',
         'description' => '',
-        'image'       => 'medias/klore/images/units/heavy-fighter.jpg'
+        'image'       => 'medias/klore/images/ship/heavy-fighter.jpg'
         ),
 
     Legacies_Empire::ID_SHIP_CRUISER => array(
         'name'        => 'Croiseur V400',
         'class'       => 'Aigle',
         'description' => '',
-        'image'       => 'medias/klore/images/units/cruiser.jpg'
+        'image'       => 'medias/klore/images/ship/cruiser.jpg'
         ),
 
     Legacies_Empire::ID_SHIP_BATTLESHIP => array(
         'name'        => 'Vaisseau de bataille V1000',
         'class'       => 'Faucon',
         'description' => '',
-        'image'       => 'medias/klore/images/units/battleship.jpg'
+        'image'       => 'medias/klore/images/ship/battleship.jpg'
         ),
 
     Legacies_Empire::ID_SHIP_COLONY_SHIP => array(
         'name'        => 'Vaisseau de colonisation',
         'class'       => 'Romulus',
         'description' => '',
-        'image'       => 'medias/klore/images/units/colony-ship.jpg'
+        'image'       => 'medias/klore/images/ship/colony-ship.jpg'
         ),
 
     Legacies_Empire::ID_SHIP_RECYCLER => array(
         'name'        => 'Recycleur',
         'class'       => 'Goule',
         'description' => '',
-        'image'       => 'medias/klore/images/units/recycler.jpg'
+        'image'       => 'medias/klore/images/ship/recycler.jpg'
         ),
 
     Legacies_Empire::ID_SHIP_SPY_DRONE => array(
         'name'        => 'Sonde d\'espionnage',
         'class'       => 'Moustique',
         'description' => '',
-        'image'       => 'medias/klore/images/units/spy-drone.jpg'
+        'image'       => 'medias/klore/images/ship/spy-drone.jpg'
         ),
 
     Legacies_Empire::ID_SHIP_BOMBER => array(
         'name'        => 'Bombarider',
         'class'       => 'Vengeur',
         'description' => '',
-        'image'       => 'medias/klore/images/units/terraformer.jpg'
+        'image'       => 'medias/klore/images/ship/bomber.jpg'
         ),
 
     Legacies_Empire::ID_SHIP_SOLAR_SATELLITE => array(
         'name'        => 'Satellite solaire',
         'class'       => 'Râ',
         'description' => '',
-        'image'       => 'medias/klore/images/units/terraformer.jpg'
+        'image'       => 'medias/klore/images/ship/solar-satellite.jpg'
         ),
 
     Legacies_Empire::ID_SHIP_DESTRUCTOR => array(
         'name'        => 'Vaisseau de bataille V2000',
         'class'       => 'Destructeur',
         'description' => '',
-        'image'       => 'medias/klore/images/units/terraformer.jpg'
+        'image'       => 'medias/klore/images/ship/destructor.jpg'
         ),
 
     Legacies_Empire::ID_SHIP_DEATH_STAR => array(
         'name'        => 'Vaisseau mère M1',
         'class'       => 'Vengeur',
         'description' => '',
-        'image'       => 'medias/klore/images/units/terraformer.jpg'
+        'image'       => 'medias/klore/images/ship/death-star.jpg'
         ),
 
     Legacies_Empire::ID_SHIP_BATTLECRUISER => array(
         'name'        => 'Vaisseau de bataille V700',
-        'class'       => 'Dagon',
+        'class'       => 'Dragon',
         'description' => '',
-        'image'       => 'medias/klore/images/units/terraformer.jpg'
+        'image'       => 'medias/klore/images/ship/battlecruiser.jpg'
         ),
 
     Legacies_Empire::ID_SHIP_SUPERNOVA => array(
         'name'        => 'Vaisseau mère M5',
         'class'       => 'Annihilateur',
         'description' => '',
-        'image'       => 'medias/klore/images/units/terraformer.jpg'
+        'image'       => 'medias/klore/images/ship/supernova.jpg'
         ),
 
     Legacies_Empire::ID_SHIP_ORE_MININER => array(
         'name'        => 'Vaisseau d\'exploitation',
         'class'       => 'Onyx',
         'description' => '',
-        'image'       => 'medias/klore/images/units/terraformer.jpg'
+        'image'       => 'medias/klore/images/ship/ore-miner.jpg'
         ),
 // }}}
 
@@ -391,7 +391,7 @@
 
     Legacies_Empire::ID_DEFENSE_LARGE_SHIELD_DOME => array(
         'name'        => 'Grand bouclier planétaire',
-        'class'       => 'Protecteur',
+        'class'       => 'Gaia',
         'description' => '',
         'image'       => 'medias/klore/images/defense/large-shield-dome.jpg'
         ),
