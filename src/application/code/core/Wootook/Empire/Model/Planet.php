@@ -105,7 +105,8 @@ class Wootook_Empire_Model_Planet
             ->getConnection('core_read');
         $collection = new Wootook_Empire_Resource_Planet_Collection($adapter);
         $collection->addCoordsToFilter($coords['galaxy'], $coords['system'], $coords['position'], $coords['type'])
-            ->setPage(1, 1);
+            ->setPage(1, 1)
+            ->load();
 
         $planet = $collection->getFirstItem();
         if ($planet !== null) {
@@ -166,6 +167,9 @@ class Wootook_Empire_Model_Planet
         throw new Wootook_Core_Exception_RuntimeException(Wootook::__('Undefined method %s::%s.', get_class($this), $method));
     }
 
+    /**
+     * @return Wootook_Core_DateTime
+     */
     public function getLastUpdate()
     {
         return $this->getData('last_update');
@@ -424,7 +428,7 @@ class Wootook_Empire_Model_Planet
 
     public function getFleetCollection($time = null)
     {
-        $collection = new Wootook_Empire_Resource_Fleet_Collection();
+        $collection = new Wootook_Empire_Resource_Fleet_Collection($this->getReadConnection());
         $collection->addPlanetToFilter($this, $time);
 
         return $collection;
@@ -469,22 +473,18 @@ class Wootook_Empire_Model_Planet
 
     public function getMoon()
     {
-        static $statement = null;
-
         if ($this->isMoon()) {
             return null;
         }
 
         if ($this->_moon === null) {
-            if ($statement === null) {
-                $collection = new Wootook_Empire_Resource_Planet_Collection($this->getReadConnection());
-                $collection->addFieldToFilter('galaxy', $this->getGalaxy())
-                    ->addFieldToFilter('system', $this->getGalaxy())
-                    ->addFieldToFilter('planet', $this->getPosition())
-                    ->addFieldToFilter('planet_type', self::TYPE_MOON)
-                    ->load()
-                ;
-            }
+            $collection = new Wootook_Empire_Resource_Planet_Collection($this->getReadConnection());
+            $collection->addFieldToFilter('galaxy', $this->getGalaxy())
+                ->addFieldToFilter('system', $this->getGalaxy())
+                ->addFieldToFilter('planet', $this->getPosition())
+                ->addFieldToFilter('planet_type', self::TYPE_MOON)
+                ->load()
+            ;
 
             $this->_moon = $collection->getFirstItem();
 
@@ -606,7 +606,7 @@ class Wootook_Empire_Model_Planet
 
     public function isDestroyed()
     {
-        return (bool) $this->getData('destruyed');
+        return (bool) ($this->getData('destruyed') > 0);
     }
 
     public function destroy()
@@ -641,11 +641,19 @@ class Wootook_Empire_Model_Planet
         }
 
         $this
-            ->setData('destruyed', true)
+            ->setData('destruyed', time() + 172800)
             ->setData('id_owner', 0)
             ->save();
 
         return $this;
+    }
+
+    public function isErasable()
+    {
+        if ($this->isDestroyed() && $this->getData('destruyed') >= time()) {
+            return true;
+        }
+        return false;
     }
 
     public function getElement($elementId)
@@ -894,6 +902,32 @@ class Wootook_Empire_Model_Planet
     private static function _cleanItemRanges(&$value, $index, $userdata = null)
     {
         return intval($value);
+    }
+
+    public static function planetChangeListener($eventData)
+    {
+        if (!isset($eventData['request']) || !$eventData['request'] instanceof Wootook_Core_Mvc_Controller_Request_Http) {
+            return;
+        }
+
+        /** @var Wootook_Core_Mvc_Controller_Request_Http $request */
+        $request = $eventData['request'];
+        if (!($planetId = $request->getQuery('___planet'))) {
+            return;
+        }
+
+        $session = Wootook_Player_Model_Session::getSingleton();
+        if (!$session->isLoggedIn()) {
+            return;
+        }
+        $planet = new Wootook_Empire_Model_Planet();
+        $planet->load($planetId);
+        if (!$planet->getId()) {
+            return;
+        }
+
+        $player = $session->getPlayer();
+        $player->setCurrentPlanet($planet);
     }
 
     public static function planetUpdateListener($eventData)

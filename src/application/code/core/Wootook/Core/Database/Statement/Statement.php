@@ -100,7 +100,9 @@ abstract class Wootook_Core_Database_Statement_Statement
         }
 
         $data = $this->fetch(Wootook_Core_Database_ConnectionManager::FETCH_ASSOC);
-        $object->getDataMapper()->decode($object, $data);
+        if ($data !== false) {
+            $object->getDataMapper()->decode($object, $data);
+        }
 
         return $object;
     }
@@ -202,11 +204,12 @@ abstract class Wootook_Core_Database_Statement_Statement
 
     public function rewind()
     {
-        return $this->_currentIndex = 0;
+        return $this->_currentIndex;
     }
 
     public function valid()
     {
-        return $this->_currentRow !== null;
+        $rows = $this->rowCount();
+        return $rows > 0 && $this->_currentIndex <= $rows;
     }
 }

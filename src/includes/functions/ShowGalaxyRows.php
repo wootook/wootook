@@ -31,73 +31,91 @@
 /**
  *
  * @deprecated
- * @param unknown_type $Galaxy
- * @param unknown_type $System
+ * @param int $Galaxy
+ * @param int $System
  */
-function ShowGalaxyRows ($Galaxy, $System) {
-	global $lang, $planetcount, $CurrentRC, $dpath, $user;
+function ShowGalaxyRows($Galaxy, $System)
+{
+    global $planetcount;
+    
+    $readAdapter = Wootook_Core_Database_ConnectionManager::getSingleton()->getConnection('core_read');
 
-	$Result = "";
-	for ($Planet = 1; $Planet <= Wootook::getGameConfig('engine/universe/positions'); $Planet++) {
+    $galaxyStatement = $readAdapter->select()
+        ->column('*')
+        ->from($readAdapter->getTable('galaxy'))
+        ->where('galaxy', $Galaxy)
+        ->where('system', $System)
+        ->where('planet', new Wootook_Core_Database_Sql_Placeholder_Variable('planet'))
+        ->limit(1)
+        ->prepare()
+    ;
 
-		$GalaxyRowPlanet = array();
-		$GalaxyRowMoon = array();
-		$GalaxyRowPlayer = array();
-		$GalaxyRowAlly = array();
+    $planetStatement = $readAdapter->select()
+        ->column('*')
+        ->from($readAdapter->getTable('planets'))
+        ->where('id', new Wootook_Core_Database_Sql_Placeholder_Variable('planet_id'))
+        ->limit(1)
+        ->prepare()
+    ;
 
-		$GalaxyRow = doquery("SELECT * FROM {{table}} WHERE `galaxy` = '".$Galaxy."' AND `system` = '".$System."' AND `planet` = '".$Planet."';", 'galaxy', true);
+    $output = "";
+    for ($Planet = 1; $Planet <= Wootook::getGameConfig('engine/universe/positions'); $Planet++) {
+        if ($galaxyStatement->execute(array('planet' => $Planet))) {
+            /** @var Wootook_Empire_Model_Galaxy_Position $galaxyPosition */
+            $galaxyPosition = $galaxyStatement->fetchEntity('Wootook_Empire_Model_Galaxy_Position');
+        } else {
+            $output .= '<tr></tr>';
+            continue;
+        }
 
-		$Result .= "\n";
-		$Result .= "<tr>"; // Depart de ligne
-		if ($GalaxyRow) {
-			// Il existe des choses sur cette ligne de planete
-			if ($GalaxyRow["id_planet"] != 0) {
-				$GalaxyRowPlanet = doquery("SELECT * FROM {{table}} WHERE `id` = '". $GalaxyRow["id_planet"] ."';", 'planets', true);
+        $output .= "<tr>";
+        if ($galaxyPosition->getData('galaxy') && $galaxyPosition["id_planet"] != 0) {
+            if ($planetStatement->execute(array('planet_id' => $galaxyPosition["id_planet"]))) {
+                /** @var Wootook_Empire_Model_Planet $currentPlanet */
+                $currentPlanet = $planetStatement->fetchEntity('Wootook_Empire_Model_Planet');
+            } else {
+                $currentPlanet = new Wootook_Empire_Model_Planet();
+            }
 
-				if ($GalaxyRowPlanet['destruyed'] != 0 AND
-					$GalaxyRowPlanet['id_owner'] != '' AND
-					$GalaxyRow["id_planet"] != '') {
-					CheckAbandonPlanetState ($GalaxyRowPlanet);
-				} else {
-					$planetcount++;
-					$GalaxyRowPlayer = doquery("SELECT * FROM {{table}} WHERE `id` = '". $GalaxyRowPlanet["id_owner"] ."';", 'users', true);
-				}
+            if ($currentPlanet->getId() && !$currentPlanet->isDestroyed()) {
+                $planetcount++;
+                $currentPlayer = $currentPlanet->getPlayer();
+            } else {
+                CheckAbandonPlanetState($currentPlanet);
+                $currentPlayer = new Wootook_Player_Model_Entity();
+            }
 
-				if ($GalaxyRow["id_luna"] != 0) {
-					$GalaxyRowMoon   = doquery("SELECT * FROM {{table}} WHERE `id` = '". $GalaxyRow["id_luna"] ."';", 'lunas', true);
-					if ($GalaxyRowMoon["destruyed"] != 0) {
-						CheckAbandonMoonState ($GalaxyRowMoon);
-					}
-				}
-				$GalaxyRowPlanet = doquery("SELECT * FROM {{table}} WHERE `id` = '". $GalaxyRow["id_planet"] ."';", 'planets', true);
-				if ($GalaxyRowPlanet['id_owner'] <> 0) {
-					$GalaxyRowUser     = doquery("SELECT * FROM {{table}} WHERE `id` = '". $GalaxyRowPlanet['id_owner'] ."';", 'users', true);
-				} else {
-					$GalaxyRowUser     = array();
-				}
-			}
-		}
-		$Result .= "\n";
-		$Result .= GalaxyRowPos        ( $Planet, $GalaxyRow );
-		$Result .= "\n";
-		$Result .= GalaxyRowPlanet     ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowPlayer, $Galaxy, $System, $Planet, 1 );
-		$Result .= "\n";
-		$Result .= GalaxyRowPlanetName ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowPlayer, $Galaxy, $System, $Planet, 1 );
-		$Result .= "\n";
-		$Result .= GalaxyRowMoon       ( $GalaxyRow, $GalaxyRowMoon  , $GalaxyRowPlayer, $Galaxy, $System, $Planet, 3 );
-		$Result .= "\n";
-		$Result .= GalaxyRowDebris     ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowPlayer, $Galaxy, $System, $Planet, 2 );
-		$Result .= "\n";
-		$Result .= GalaxyRowUser       ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowPlayer, $Galaxy, $System, $Planet, 0 );
-		$Result .= "\n";
-		$Result .= GalaxyRowAlly       ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowPlayer, $Galaxy, $System, $Planet, 0 );
-		$Result .= "\n";
-		$Result .= GalaxyRowActions    ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowPlayer, $Galaxy, $System, $Planet, 0 );
-		$Result .= "\n";
-		$Result .= "</tr>";
-	}
+            if ($galaxyPosition["id_luna"] != 0) {
+                if ($planetStatement->execute(array('planet_id' => $galaxyPosition["id_luna"]))) {
+                    /** @var Wootook_Empire_Model_Planet $currentMoon */
+                    $currentMoon = $planetStatement->fetchEntity('Wootook_Empire_Model_Planet');
+                } else {
+                    $currentMoon = new Wootook_Empire_Model_Planet();
+                }
 
-	return $Result;
+                if ($currentMoon->isDestroyed()) {
+                    CheckAbandonMoonState($currentMoon);
+                }
+            } else {
+                $currentMoon = new Wootook_Empire_Model_Planet();
+            }
+        } else {
+            $currentPlanet = new Wootook_Empire_Model_Planet();
+            $currentPlayer = new Wootook_Player_Model_Entity();
+            $currentMoon = new Wootook_Empire_Model_Planet();
+        }
+        $output .= GalaxyRowPos($Planet, $galaxyPosition);
+        $output .= GalaxyRowPlanet($galaxyPosition, $currentPlanet, $currentPlayer, $Galaxy, $System, $Planet, 1);
+        $output .= GalaxyRowPlanetName($galaxyPosition, $currentPlanet, $currentPlayer, $Galaxy, $System, $Planet, 1);
+        $output .= GalaxyRowMoon($galaxyPosition, $currentMoon  , $currentPlayer, $Galaxy, $System, $Planet, 3);
+        $output .= GalaxyRowDebris($galaxyPosition, $currentPlanet, $currentPlayer, $Galaxy, $System, $Planet, 2);
+        $output .= GalaxyRowUser($currentPlanet, $currentPlayer);
+        $output .= GalaxyRowAlly($galaxyPosition, $currentPlanet, $currentPlayer, $Galaxy, $System, $Planet, 0);
+        $output .= GalaxyRowActions($galaxyPosition, $currentPlanet, $currentPlayer, $Galaxy, $System, $Planet, 0);
+        $output .= "</tr>";
+    }
+
+    return $output;
 }
 
 ?>

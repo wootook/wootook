@@ -143,14 +143,14 @@ class Wootook_Core_DateTime
         case self::SECOND:
             $current = getdate($this->_datetime);
             if ($type === self::OPERATOR_ADD) {
-                $parts = $current[$part] += $value;
+                $current[$part] += $value;
             } else if ($type === self::OPERATOR_SUB) {
-                $parts = $current[$part] -= $value;
+                $current[$part] -= $value;
             } else if ($type === self::OPERATOR_SET) {
-                $parts = $current[$part] = $value;
+                $current[$part] = $value;
             }
 
-            $this->_datetime = $this->_mktime($parts);
+            $this->_datetime = $this->_mktime($current);
             break;
 
         case self::TIMESTAMP:
@@ -171,6 +171,22 @@ class Wootook_Core_DateTime
     public function diff(self $date)
     {
         return $this->_datetime - $date->_datetime;
+    }
+
+    public function isEarlier(self $date = null)
+    {
+        if ($date === null) {
+            $date = new self();
+        }
+        return (bool) ($this->diff($date) > 0);
+    }
+
+    public function isLater(self $date = null)
+    {
+        if ($date === null) {
+            $date = new self();
+        }
+        return (bool) ($this->diff($date) < 0);
     }
 
     protected function _mktime(Array $parts)

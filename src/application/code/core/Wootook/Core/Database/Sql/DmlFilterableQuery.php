@@ -183,7 +183,7 @@ abstract class Wootook_Core_Database_Sql_DmlFilterableQuery
             $dateValues = array();
             if (isset($value['from'])) {
                 if ($value['from'] instanceof Wootook_Core_DateTime) {
-                    $dateValues['from'] = "{$adapter->quoteIdentifier($field)} >= {$adapter->quote($this->getDataMapper()->load('DateTime')->encode($value['from']))}";
+                    $dateValues['from'] = "{$adapter->quoteIdentifier($field)} >= {$adapter->quote($this->getConnection()->getDataMapper()->load('DateTime')->encode($value['from']))}";
                 } else if (is_string($value['from'])) {
                     $dateValues['from'] = "{$adapter->quoteIdentifier($field)} >= {$adapter->quote($value['from'])}";
                 } else if (is_numeric($value['from'])) {
@@ -192,7 +192,7 @@ abstract class Wootook_Core_Database_Sql_DmlFilterableQuery
             }
             if (isset($value['to'])) {
                 if ($value['to'] instanceof Wootook_Core_DateTime) {
-                    $dateValues['to'] = "{$adapter->quoteIdentifier($field)} <= {$adapter->quote($this->getDataMapper()->load('DateTime')->encode($value['to']))}";
+                    $dateValues['to'] = "{$adapter->quoteIdentifier($field)} <= {$adapter->quote($this->getConnection()->getDataMapper()->load('DateTime')->encode($value['to']))}";
                 } else if (is_string($value['to'])) {
                     $dateValues['to'] = "{$adapter->quoteIdentifier($field)} <= {$adapter->quote($value['to'])}";
                 } else if (is_numeric($value['to'])) {

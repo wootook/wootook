@@ -425,19 +425,22 @@ if ($destinationUser['authlevel'] > $user['authlevel']) {
 try {
     $writeAdapter->beginTransaction();
 
+    $mapper = $writeAdapter->getDataMapper();
+    $dateMapper = $mapper->load('date-time');
+
     $writeAdapter->insert()
         ->into($writeAdapter->getTable('fleets'))
         ->set('fleet_owner', $user->getId())
         ->set('fleet_mission', $mission)
         ->set('fleet_amount', $FleetShipCount)
         ->set('fleet_array', $serializedFleetArray)
-        ->set('fleet_start_time', $startTime)
+        ->set('fleet_start_time', $dateMapper->encode($startTime))
         ->set('fleet_start_galaxy', $planet->getGalaxy())
         ->set('fleet_start_system', $planet->getSystem())
         ->set('fleet_start_planet', $planet->getPosition())
         ->set('fleet_start_type', $planet->getType())
-        ->set('fleet_end_time', $endTime)
-        ->set('fleet_end_stay', $StayDuration)
+        ->set('fleet_end_time', $dateMapper->encode($endTime))
+        ->set('fleet_end_stay', $dateMapper->encode($StayTime))
         ->set('fleet_end_galaxy', $galaxy)
         ->set('fleet_end_system', $system)
         ->set('fleet_end_planet', $position)
@@ -446,7 +449,7 @@ try {
         ->set('fleet_resource_crystal', intval($TransCrystal)) // FIXME: refactor field name
         ->set('fleet_resource_deuterium', intval($TransDeuterium))
         ->set('fleet_target_owner', $destination['id_owner'])
-        ->set('start_time', time())
+        ->set('start_time',  $dateMapper->encode(time()))
         ->execute()
     ;
 
@@ -481,10 +484,10 @@ $page .= "<th>". $lang['fl_deute_need'] ."</th>";
 $page .= "<th>". pretty_number($consumption) ."</th>";
 $page .= "</tr><tr height=\"20\">";
 $page .= "<th>". $lang['fl_from'] ."</th>";
-$page .= "<th>". $_POST['thisgalaxy'] .":". $_POST['thissystem']. ":". $_POST['thisplanet'] ."</th>";
+$page .= "<th>". $planet->getCoords() ."</th>";
 $page .= "</tr><tr height=\"20\">";
 $page .= "<th>". $lang['fl_dest'] ."</th>";
-$page .= "<th>". $galaxy .":". $system .":". $planet ."</th>";
+$page .= "<th>". $galaxy . ':' . $system . ':' . $position ."</th>";
 $page .= "</tr><tr height=\"20\">";
 $page .= "<th>". $lang['fl_time_go'] ."</th>";
 $page .= "<th>". date("M D d H:i:s", $startTime) ."</th>";
@@ -494,10 +497,11 @@ $page .= "<th>". date("M D d H:i:s", $endTime) ."</th>";
 $page .= "</tr><tr height=\"20\">";
 $page .= "<td class=\"c\" colspan=\"2\">". $lang['fl_title'] ."</td>";
 
-foreach ($fleetArray as $Ship => $Count) {
+$helper = Wootook_Empire_Helper_Config_Labels::getSingleton();
+foreach ($fleetArray as $shipId => $shipCount) {
     $page .= "</tr><tr height=\"20\">";
-    $page .= "<th>". $lang['tech'][$Ship] ."</th>";
-    $page .= "<th>". pretty_number($Count) ."</th>";
+    $page .= "<th>". $helper[$shipId]['name'] ."</th>";
+    $page .= "<th>". pretty_number($shipCount) ."</th>";
 }
 $page .= "</tr></table></div></center>";
 

@@ -155,7 +155,7 @@ $mode = isset($_GET['mode']) ? $_GET['mode'] : null;
            //Selectionne si le joueur a des techno en cours
            $tech  = doquery("SELECT COUNT(id) AS `tech` FROM {{table}} WHERE `id` = '".$user['id']."' and `b_tech_planet`!=0;", 'users', true);
            //Selectionne si le joueur est en train de se faire attaquer
-           $attack  = doquery("SELECT COUNT(fleet_taget_owner) AS `attack` FROM {{table}} WHERE `fleet_taget_owner` = '".$user['id']."';", 'fleets', true);
+           $attack  = doquery("SELECT COUNT(fleet_target_owner) AS `attack` FROM {{table}} WHERE `fleet_target_owner` = '".$user['id']."';", 'fleets', true);
 
            if ($fleet['actcnt'] == 0 && $build['building'] == 0 && $tech['tech'] == 0 && $attack['attack'] == 0) {
                $user->setVacation();

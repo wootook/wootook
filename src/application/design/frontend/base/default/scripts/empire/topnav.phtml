@@ -7,11 +7,11 @@
     <p class="planet-name"><a href="<?php echo $this->getStaticUrl('overview.php', array('cp' => $planet->getId()))?>"><?php echo $this->escape($planet->getName())?></a></p>
       <div class="planet-image">
         <?php if (false && ($moon = $planet->getMoon()) !== null): ?>
-        <a href="<?php echo $this->getStaticUrl('overview.php', array('cp' => $moon->getId()))?>" class="moon">
+        <a href="<?php echo $this->getUrl('player/overview', array('_query' => array('___planet' => $moon->getId())))?>" class="moon">
           <img src="<?php echo $this->getSkinUrl($moon->getImage())?>" width="20" height="20"/>
         </a>
         <?php endif?>
-        <a href="<?php echo $this->getStaticUrl('overview.php', array('cp' => $planet->getId()))?>" class="planet">
+        <a href="<?php echo $this->getUrl('player/overview', array('_query' => array('___planet' => $planet->getId())))?>" class="planet">
           <img src="<?php echo $this->getSkinUrl($planet->getImage())?>" width="50" height="50"/>
         </a>
       </div>

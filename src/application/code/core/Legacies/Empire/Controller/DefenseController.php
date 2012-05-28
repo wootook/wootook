@@ -13,10 +13,6 @@ class Legacies_Empire_Controller_DefenseController
     {
         parent::preDispatch();
 
-        if ($this->getResponse()->isDispatched()) {
-            return;
-        }
-
         $planet = $this->getCurrentPlanet();
 
         if ($planet->getElement(Legacies_Empire::ID_BUILDING_SHIPYARD) < 1) {

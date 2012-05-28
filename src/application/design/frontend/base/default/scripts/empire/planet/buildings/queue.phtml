@@ -1,6 +1,6 @@
 <?php if (!$this->isEmpty()):?>
 <div class="building queue">
 <h1><?php echo $this->__('Work in progress')?></h1>
-<?php echo $this->getPartial('item-list')->render() ?>
+<?php echo $this->renderPartial('item-list') ?>
 </div>
 <?php endif?>

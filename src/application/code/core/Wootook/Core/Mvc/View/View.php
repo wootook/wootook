@@ -90,6 +90,17 @@ class Wootook_Core_Mvc_View_View
         }
     }
 
+    public function renderDateTime($dateTime, $format = null)
+    {
+        if ($format === null) {
+            $format = 'H:i:s';
+        }
+        if (!$dateTime instanceof Wootook_Core_DateTime) {
+            $dateTime = new Wootook_Core_DateTime($dateTime);
+        }
+        return $dateTime->toString($format);
+    }
+
     public function escape($unescaped)
     {
         return htmlspecialchars($unescaped, ENT_QUOTES, 'UTF-8');

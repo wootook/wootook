@@ -74,8 +74,9 @@ class Wootook_Core_Database_Sql_Delete
     public function renderFrom()
     {
         if ($this->_parts[self::FROM]['schema'] !== null) {
-            return "DELETE FROM {$this->getConnection()->quoteIdentifier($this->_parts[self::FROM]['schema'])}.{$this->getConnection()->quoteIdentifier($this->_parts[self::FROM]['schema'])}";
+            return "DELETE FROM {$this->getConnection()->quoteIdentifier($this->_parts[self::FROM]['schema'])}.{$this->getConnection()->quoteIdentifier($this->_parts[self::FROM]['table'])}";
         }
+        return "DELETE FROM {$this->getConnection()->quoteIdentifier($this->_parts[self::FROM]['table'])}";
     }
 
     public function render()

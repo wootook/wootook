@@ -1,21 +1,39 @@
-<?php $fleet = $this->getData('fleet')?>
-<?php $user = $this->getData('user')?>
-<tr class="<?php echo $this->getData('class')?>">
-	<?php echo $this->getData('fleet_javai')?>
-	<td>
-		<div class="z">-</div>
-		<font color="lime"><?php echo $fleet->getArrivalTime()?></font>
-	</td>
-	<td colspan="3">
-		<?php if (!$fleet->isOwnedBy($user) || $fleet->isMission(Legacies_Empire::ID_MISSION_TRANSPORT) || $fleet->isMission(Legacies_Empire::ID_MISSION_STATION) || $fleet->isMission(Legacies_Empire::ID_MISSION_STATION_ALLY)):?>
-		<span class="<?php echo $fleet->getRowClass($user)?>"><?php echo $this->__('An hostile fleet sent by %1$s, coming from %2$s, reaches your planet %3$d. It has been sent with the mission: %4$d', $fleet->getOwner()->getUsername(), $fleet->getOriginPlanet()->getName(), $fleet->getDestinationPlanet()->getName(), $fleet->getMissionLabel())?></span>
-		<?php elseif ($fleet->isOwnedBy($user) || $fleet->isMission(Legacies_Empire::ID_MISSION_ATTACK) || $fleet->isMission(Legacies_Empire::ID_MISSION_GROUP_ATTACK) || $fleet->isMission(Legacies_Empire::ID_MISSION_DESTROY) || $fleet->isMission(Legacies_Empire::ID_MISSION_MISSILES) || $fleet->isMission(Legacies_Empire::ID_MISSION_SPY)):?>
-		<span class="<?php echo $fleet->getRowClass($user)?>"><?php echo $this->__('Your hostile fleet, sent from %1$s, reaches %2$d\'s planet %3$d. It has been sent with the mission: %4$d', $fleet->getOriginPlanet()->getName(), $fleet->getDestinationPlanet()->getUser()->getUsername(), $fleet->getDestinationPlanet()->getName(), $fleet->getMissionLabel())?></span>
-		<?php elseif ($fleet->isOwnedBy($user)):?>
-		<span class="<?php echo $fleet->getRowClass($user)?>"><?php echo $this->__('Your peaceful fleet, sent from %2$s, reaches the planet %3$d. It has been sent with the mission: %4$d', $fleet->getOwner()->getUsername(), $fleet->getOriginPlanet()->getName(), $fleet->getDestinationPlanet()->getName(), $fleet->getMissionLabel())?></span>
-		<?php else:?>
-		<span class="<?php echo $fleet->getRowClass($user)?>"><?php echo $this->__('A peaceful fleet sent by %1$s, coming from %2$s, reaches your planet %3$d. It has been sent with the mission: %4$d', $fleet->getOwner()->getUsername(), $fleet->getOriginPlanet()->getName(), $fleet->getDestinationPlanet()->getName(), $fleet->getMissionLabel())?></span>
-		<?php endif?>
-	</td>
-	<?php echo $this->getData('fleet_javas')?>
-</tr>
+<div class="fleet">
+  <span class="start-time"><?php echo $this->renderDateTime($this->getStartTime())?></span>
+  <span class="start-time"><?php echo $this->renderDateTime($this->getActionTime())?></span>
+  <span class="arrival-time"><?php echo $this->renderDateTime($this->getArrivalTime())?></span>
+  <div class="fleet-message">
+    <?php $player = $this->getPlayer() ?>
+    <?php if (!$this->isOwner() && ($this->isMission(Legacies_Empire::ID_MISSION_TRANSPORT) || $this->isMission(Legacies_Empire::ID_MISSION_STATION) || $this->isMission(Legacies_Empire::ID_MISSION_STATION_ALLY))):?>
+    <span class="<?php echo $this->getRowClass()?>">
+        <?php echo $this->__('An hostile fleet sent by %1$s, coming from %2$s[%3$s], reaches your planet %4$s[%5$s]. It has been sent with the mission: %6$s',
+            implode(', ', $this->getFleetOwnerUsernames()),
+            $this->getOriginPlanetName(), $this->getOriginPlanetCoords(),
+            $this->getDestinationPlanetName(), $this->getDestinationPlanetCoords(),
+            $this->getMissionLabel())?>
+    </span>
+    <?php elseif ($this->isOwner() && ($this->isMission(Legacies_Empire::ID_MISSION_ATTACK) || $this->isMission(Legacies_Empire::ID_MISSION_GROUP_ATTACK) || $this->isMission(Legacies_Empire::ID_MISSION_DESTROY) || $this->isMission(Legacies_Empire::ID_MISSION_MISSILES) || $this->isMission(Legacies_Empire::ID_MISSION_SPY))):?>
+    <span class="<?php echo $this->getRowClass()?>">
+        <?php echo $this->__('Your hostile fleet sent from %1$s[%2$s], reaches %3$s\'s planet %4$s[%5$s]. It has been sent with the mission: %6$s',
+            $this->getOriginPlanetName(), $this->getOriginPlanetCoords(),
+            implode(', ', $this->getFleetOwnerUsernames()),
+            $this->getDestinationPlanetName(), $this->getDestinationPlanetCoords(),
+            $this->getMissionLabel())?>
+    </span>
+    <?php elseif ($this->isOwner()):?>
+    <span class="<?php echo $this->getRowClass()?>">
+        <?php echo $this->__('Your peaceful fleet sent from %1$s[%2$s], reaches the planet %3$s[%4$s]. It has been sent with the mission: %5$s',
+            $this->getOriginPlanetName(), $this->getOriginPlanetCoords(),
+            $this->getDestinationPlanetName(), $this->getDestinationPlanetCoords(),
+            $this->getMissionLabel())?>
+    </span>
+    <?php else:?>
+    <span class="<?php echo $this->getRowClass()?>">
+        <?php echo $this->__('A peaceful fleet sent by %1$s, coming from %2$s[%3$s], reaches the planet %4$s[%5$s]. It has been sent with the mission: %6$s',
+            implode(', ', $this->getFleetOwnerUsernames()),
+            $this->getOriginPlanetName(), $this->getOriginPlanetCoords(),
+            $this->getDestinationPlanetName(), $this->getDestinationPlanetCoords(),
+            $this->getMissionLabel())?>
+    <?php endif?>
+  </div>
+</div>

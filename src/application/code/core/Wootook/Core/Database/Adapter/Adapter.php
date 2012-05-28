@@ -11,6 +11,11 @@ abstract class Wootook_Core_Database_Adapter_Adapter
         return $this->_handler;
     }
 
+    public function getDataMapper()
+    {
+        return new Wootook_Core_Database_Orm_DataMapper();
+    }
+
     /**
      *
      * @param string $prefix

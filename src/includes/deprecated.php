@@ -529,7 +529,7 @@ function display($page, $title = '', $topnav = true, $metatags = '', $adminPage 
     // TODO: implement extra meta tags
     $layout = Deprecated::getLayout($adminPage);
     if ($adminPage === false) {
-        $layout->load('empire');
+        $layout->load('deprecated');
     } else {
         $layout->setDomain(Wootook_Core_Model_Layout::DOMAIN_BACKEND);
         $layout->load('admin');
@@ -714,4 +714,109 @@ function AdminMessage($message, $title = 'Error', $dest = null, $time = '3', $co
 
     echo $layout->render();
     exit(0);
+}
+
+/**
+ *
+ * @deprecated
+ * @param Wootook_Empire_Model_Planet $planet
+ */
+function flyingFleetListener($event)
+{
+    // defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
+
+    $planet = $event->getData('planet');
+
+    FlyingFleetHandler($planet);
+}
+
+/**
+ *
+ * @deprecated
+ * @param Wootook_Empire_Model_Planet $planet
+ */
+function FlyingFleetHandler($planet)
+{
+    // defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
+
+    foreach ($planet->getFleetCollection()->load() as $fleet) {
+        try {
+            $fleet->getWriteConnection()->beginTransaction();
+
+            switch ($fleet["fleet_mission"]) {
+                case Legacies_Empire::ID_MISSION_ATTACK:
+                    // Attaquer
+                    MissionCaseAttack($fleet);
+                    break;
+
+                case Legacies_Empire::ID_MISSION_TRANSPORT:
+                    // Transporter
+                    MissionCaseTransport($fleet);
+                    break;
+
+                case Legacies_Empire::ID_MISSION_STATION:
+                    // Stationner
+                    MissionCaseStay($fleet);
+                    break;
+
+                case Legacies_Empire::ID_MISSION_STATION_ALLY:
+                    // Stationner chez un Allié
+                    MissionCaseStayAlly($fleet);
+                    break;
+
+                case Legacies_Empire::ID_MISSION_SPY:
+                    // Flotte d'espionnage
+                    MissionCaseSpy($fleet);
+                    break;
+
+                case Legacies_Empire::ID_MISSION_SETTLE_COLONY:
+                    // Coloniser
+                    MissionCaseColonisation($fleet);
+                    break;
+
+                case Legacies_Empire::ID_MISSION_RECYCLE:
+                    // Recyclage
+                    MissionCaseRecycling($fleet);
+                    break;
+
+                case Legacies_Empire::ID_MISSION_DESTROY:
+                    // Detruire ??? dans le code ogame c'est 9 !!
+                    MissionCaseDestruction($fleet);
+                    break;
+
+                case Legacies_Empire::ID_MISSION_EXPEDITION:
+                    // Expeditions
+                    MissionCaseExpedition($fleet);
+                    break;
+
+                case Legacies_Empire::ID_MISSION_ORE_MINING:
+                    // Exploitation
+                    MissionCaseExploit($fleet);
+                    break;
+
+                case Legacies_Empire::ID_MISSION_GROUP_ATTACK: // TODO: implement mission type
+                case Legacies_Empire::ID_MISSION_MISSILES:     // TODO: implement mission type
+                default:
+                    $fleet->delete();
+                    break;
+            }
+
+            $fleet->getWriteConnection()->commit();
+        } catch (Wootook_Core_Exception_Exception $e) {
+            $fleet->getWriteConnection()->rollback();
+            Wootook_Core_ErrorProfiler::getSingleton()->addException($e);
+        }
+    }
+}
+
+/**
+ *
+ * @deprecated
+ * @param unknown_type $String
+ */
+function CheckInputStrings($string)
+{
+    defined('DEPRECATION') || Wootook_Core_ErrorProfiler::getSingleton()->addException(new Wootook_Core_Exception_Deprecated(sprintf('Function "%s" is deprecated', __FUNCTION__)));
+
+    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }

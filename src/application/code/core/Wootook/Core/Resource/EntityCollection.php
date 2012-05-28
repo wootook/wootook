@@ -21,7 +21,7 @@ abstract class Wootook_Core_Resource_EntityCollection
 
     protected $_items = array();
 
-    public function __construct(Wootook_Core_Database_Adapter_Pdo_Mysql $connection = null)
+    public function __construct(Wootook_Core_Database_Adapter_Adapter $connection = null)
     {
         $this->setReadConnection($connection);
 
@@ -153,17 +153,28 @@ abstract class Wootook_Core_Resource_EntityCollection
         return $this;
     }
 
-    public function getSize()
+    public function getSize($maintainGrouping = array())
     {
         $clone = clone $this->_select;
-        $clone->_fields = array();
-        $clone->column('1');
+        $clone->reset(Wootook_Core_Database_Sql_Select::COLUMNS);
+        if (empty($maintainGrouping)) {
+            $clone->reset(Wootook_Core_Database_Sql_Select::GROUP);
+        } else {
+            $groupingFields = $clone->getPart(Wootook_Core_Database_Sql_Select::GROUP);
+            $clone->reset(Wootook_Core_Database_Sql_Select::GROUP);
+            foreach ($groupingFields as $field) {
+                if (in_array($field, $maintainGrouping)) {
+                    $clone->group($field);
+                }
+            }
+        }
+        $clone->column(new Wootook_Core_Database_Sql_Placeholder_Expression('COUNT(*)'));
 
         $database = $this->getReadConnection();
         $statement = $database->prepare($clone);
 
         $statement->execute();
-        $count = $statement->rowCount();
+        $count = $statement->fetchColumn();
         $statement->closeCursor();
 
         return $count;

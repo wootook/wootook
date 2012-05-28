@@ -31,111 +31,106 @@
 /**
  *
  * @deprecated
- * @param unknown_type $GalaxyRow
- * @param unknown_type $GalaxyRowPlanet
- * @param unknown_type $GalaxyRowUser
- * @param unknown_type $Galaxy
- * @param unknown_type $System
- * @param unknown_type $Planet
- * @param unknown_type $PlanetType
+ * @param Wootook_Empire_Model_Planet $currentPlanet
+ * @param Wootook_Player_Model_Entity $currentPlayer
  */
-function GalaxyRowUser ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $Galaxy, $System, $Planet, $PlanetType ) {
-	global $lang, $user;
+function GalaxyRowUser($currentPlanet, $currentPlayer) {
+    global $user;
 
-	// Joueur
-	$Result  = "<th width=150>";
-	if ($GalaxyRowUser && $GalaxyRowPlanet["destruyed"] == 0) {
-		$NoobProt      = doquery("SELECT * FROM {{table}} WHERE `config_name` = 'noobprotection';", 'config', true);
-		$NoobTime      = doquery("SELECT * FROM {{table}} WHERE `config_name` = 'noobprotectiontime';", 'config', true);
-		$NoobMulti     = doquery("SELECT * FROM {{table}} WHERE `config_name` = 'noobprotectionmulti';", 'config', true);
-		$UserPoints    = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $user['id'] ."';", 'statpoints', true);
-		$User2Points   = doquery("SELECT * FROM {{table}} WHERE `stat_type` = '1' AND `stat_code` = '1' AND `id_owner` = '". $GalaxyRowUser['id'] ."';", 'statpoints', true);
-		$CurrentPoints = $UserPoints['total_points'];
-		$RowUserPoints = $User2Points['total_points'];
-		$CurrentLevel  = $CurrentPoints * $NoobMulti['config_value'];
-		$RowUserLevel  = $RowUserPoints * $NoobMulti['config_value'];
-		if       ($GalaxyRowUser['bana'] == 1 AND
-				  $GalaxyRowUser['urlaubs_modus'] == 1) {
-			$Systemtatus2 = $lang['vacation_shortcut']." <a href=\"banned.php\"><span class=\"banned\">".$lang['banned_shortcut']."</span></a>";
-			$Systemtatus  = "<span class=\"vacation\">";
-		} elseif ($GalaxyRowUser['bana'] == 1) {
-			$Systemtatus2 = "<a href=\"banned.php\"><span class=\"banned\">".$lang['banned_shortcut']."</span></a>";
-			$Systemtatus  = "";
-		} elseif ($GalaxyRowUser['urlaubs_modus'] == 1) {
-			$Systemtatus2 = "<span class=\"vacation\">".$lang['vacation_shortcut']."</span>";
-			$Systemtatus  = "<span class=\"vacation\">";
-		} elseif ($GalaxyRowUser['onlinetime'] < (time()-60 * 60 * 24 * 7) AND
-				  $GalaxyRowUser['onlinetime'] > (time()-60 * 60 * 24 * 28)) {
-			$Systemtatus2 = "<span class=\"inactive\">".$lang['inactif_7_shortcut']."</span>";
-			$Systemtatus  = "<span class=\"inactive\">";
-		} elseif ($GalaxyRowUser['onlinetime'] < (time()-60 * 60 * 24 * 28)) {
-			$Systemtatus2 = "<span class=\"inactive\">".$lang['inactif_7_shortcut']."</span><span class=\"longinactive\"> ".$lang['inactif_28_shortcut']."</span>";
-			$Systemtatus  = "<span class=\"longinactive\">";
-		} elseif ($RowUserLevel < $CurrentPoints AND
-				  $NoobProt['config_value'] == 1 AND
-				  $NoobTime['config_value'] * 1000 > $RowUserPoints) {
-			$Systemtatus2 = "<span class=\"noob\">".$lang['weak_player_shortcut']."</span>";
-			$Systemtatus  = "<span class=\"noob\">";
-		} elseif ($RowUserPoints > $CurrentLevel AND
-				  $NoobProt['config_value'] == 1 AND
-				  $NoobTime['config_value'] * 1000 > $CurrentPoints) {
-			$Systemtatus2 = $lang['strong_player_shortcut'];
-			$Systemtatus  = "<span class=\"strong\">";
-		} else {
-			$Systemtatus2 = "";
-			$Systemtatus  = "";
-		}
-		$Systemtatus4 = $User2Points['total_rank'];
-		if ($Systemtatus2 != '') {
-			$Systemtatus6 = "<font color=\"white\">(</font>";
-			$Systemtatus7 = "<font color=\"white\">)</font>";
-		}
-		if ($Systemtatus2 == '') {
-			$Systemtatus6 = "";
-			$Systemtatus7 = "";
-		}
-		$admin = "";
-		if ($GalaxyRowUser['authlevel'] == LEVEL_ADMIN) {
-			$admin = "<font color=\"red\"><blink>A</blink></font>";
-		} else if ($GalaxyRowUser['authlevel'] == LEVEL_OPERATOR) {
-			$admin = "<font color=\"lime\"><blink>O</blink></font>";
-		} else if ($GalaxyRowUser['authlevel'] == LEVEL_MODERATOR) {
-			$admin = "<font color=\"skyblue\"><blink>M</blink></font>";
-		}
-		$Systemtart = $User2Points['total_rank'];
-		if (strlen($Systemtart) < 3) {
-			$Systemtart = 1;
-		} else {
-			$Systemtart = (floor( $User2Points['total_rank'] / 100 ) * 100) + 1;
-		}
-		$Result .= "<a style=\"cursor: pointer;\"";
-		$Result .= " onmouseover='return overlib(\"";
-		$Result .= "<table width=190>";
-		$Result .= "<tr>";
-		$Result .= "<td class=c colspan=2>".$lang['Player']." ".$GalaxyRowUser['username']." ".$lang['Place']." ".$Systemtatus4."</td>";
-		$Result .= "</tr><tr>";
-		if ($GalaxyRowUser['id'] != $user['id']) {
-			$Result .= "<td><a href=messages.php?mode=write&id=".$GalaxyRowUser['id'].">".$lang['gl_sendmess']."</a></td>";
-			$Result .= "</tr><tr>";
-			$Result .= "<td><a href=buddy.php?a=2&u=".$GalaxyRowUser['id'].">".$lang['gl_buddyreq']."</a></td>";
-			$Result .= "</tr><tr>";
-		}
-		$Result .= "<td><a href=stat.php?who=player&start=".$Systemtart.">".$lang['gl_stats']."</a></td>";
-		$Result .= "</tr>";
-		$Result .= "</table>\"";
-		$Result .= ", STICKY, MOUSEOFF, DELAY, 750, CENTER, OFFSETX, -40, OFFSETY, -40 );'";
-		$Result .= " onmouseout='return nd();'>";
-		$Result .= $Systemtatus;
-		$Result .= $GalaxyRowUser["username"]."</span>";
-		$Result .= $Systemtatus6;
-		$Result .= $Systemtatus;
-		$Result .= $Systemtatus2;
-		$Result .= $Systemtatus7." ".$admin;
-		$Result .= "</span></a>";
-	}
-	$Result .= "</th>";
+    if (is_array($currentPlayer)) {
+        $currentPlayer = new Wootook_Player_Model_Entity($currentPlayer);
+    }
+    if (is_array($currentPlanet)) {
+        $currentPlanet = new Wootook_Empire_Model_Planet($currentPlanet);
+        $currentPlanet->setData('last_update', new Wootook_Core_DateTime($currentPlanet->getData('last_update')));
+    }
+    if (!$currentPlayer || !$currentPlayer->getId() || !$currentPlanet || $currentPlanet->isDestroyed()) {
+        return '<td width="150"></td>';
+    }
 
-	return $Result;
+    $activeNoobProtection = Wootook::getGameConfig('game/noob-protection/active');
+    $noobProtectionMultiplier = Wootook::getGameConfig('game/noob-protection/multiplier');
+    $noobProtectionPointsLimit = Wootook::getGameConfig('game/noob-protection/points-cap');
+
+    $readAdapter = Wootook_Core_Database_ConnectionManager::getSingleton()->getConnection('core_read');
+
+    $statement = $readAdapter->select()
+        ->column('total_points')
+        ->column('total_rank')
+        ->from(array('stats' => $readAdapter->getTable('statpoints')))
+        ->where('id_owner', new Wootook_Core_Database_Sql_Placeholder_Variable('player_id'))
+        ->where('stat_code', 1)
+        ->where('stat_type', 1)
+        ->prepare()
+    ;
+
+    $statement->execute(array('player_id' => $user->getId()));
+    $playerPoints = $statement->fetchColumn(0);
+
+    $statement->execute(array('player_id' => $currentPlayer->getId()));
+    $currentPlayerPoints = $statement->fetchColumn(0);
+    $currentPlayerRank = $statement->fetchColumn(1);
+
+    $classes = array();
+    if ($currentPlayer->isBanned()) {
+        $classes['banned'] = 'B';
+    }
+    if ($currentPlayer->isVacation()) {
+        $classes['vacation'] = 'V';
+    }
+    $pastDate = new Wootook_Core_DateTime();
+    $pastDate->sub(8, Wootook_Core_DateTime::DAY);
+    if ($pastDate->isLater($currentPlayer->getLastLoginDate())) {
+        $classes['inactive'] = 'i';
+    }
+
+    $pastDate->sub(22, Wootook_Core_DateTime::DAY);
+    if ($pastDate->isLater($currentPlayer->getLastLoginDate())) {
+        $classes['long-inactive'] = 'I';
+    }
+    if ($currentPlayer->isAuthorized(LEVEL_ADMIN)) {
+        $classes['admin'] = 'A';
+    } else if ($currentPlayer->isAuthorized(LEVEL_OPERATOR)) {
+        $classes['operator'] = 'O';
+    } else if ($currentPlayer->isAuthorized(LEVEL_MODERATOR)) {
+        $classes['moderator'] = 'M';
+    }
+
+    if ($activeNoobProtection) {
+        if ($playerPoints <= $noobProtectionPointsLimit && ($playerPoints * $noobProtectionMultiplier) < $currentPlayerPoints) {
+            $classes['strong'] = 'F';
+        } else if ($currentPlayerPoints <= $noobProtectionPointsLimit && ($currentPlayerPoints * $noobProtectionMultiplier) < $playerPoints) {
+            $classes['strong'] = 'F';
+        }
+    }
+
+    $output  = '<td width="150">';
+    if (count($classes) > 0) {
+        $output .= '<span class="' . implode(' ', array_keys($classes)) . '">' . $currentPlayer->getUsername() . '</span>';
+        foreach ($classes as $class => $identifier) {
+            $output .= '<span class="' . $class . '">' . $identifier . '</span>';
+        }
+    } else {
+        $output .= '<span class="active">' . $currentPlayer->getUsername() . '</span>';
+    }
+
+    if (true || $currentPlayer->getId() !== $user->getId()) {
+        $translator = Wootook::getTranslator();
+        $messageUrl = Wootook::getStaticUrl('messages.php', array('mode' => 'write', 'id' => $currentPlayer->getId()));
+        $buddyUrl = Wootook::getStaticUrl('buddy.php', array('a' => '2', 'u' => $currentPlayer->getId()));
+        $statsUrl = Wootook::getStaticUrl('stat.php', array('who' => 'player', 'start' => 100 * floor($currentPlayerRank / 100)));
+
+        $output .=<<<HTML_EOF
+<div class="details player">
+    <p class="username">{$translator->translate('Player: %s', $currentPlayer->getUsername())}</p>
+    <p class="stats">{$translator->translate('Rank: %d', $currentPlayerRank)}</p>
+    <p class="send-message"><a href="{$messageUrl}">{$translator->translate('Send a message')}</a></p>
+    <p class="buddy"><a href="{$buddyUrl}">{$translator->translate('Add to buddy list')}</a></p>
+    <p class="stats"><a href="{$statsUrl}">{$translator->translate('Statistics')}</a></p>
+</div>
+HTML_EOF;
+    }
+
+    $output .= '</td>';
+    return $output;
 }
-
-?>

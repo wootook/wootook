@@ -126,7 +126,8 @@ if (!defined('DISABLE_IDENTITY_CHECK')) {
         exit(0);
     }
 
-    if (!Wootook::getGameConfig('game/general/active') && !in_array($user->getData('authlevel'), array(LEVEL_ADMIN, LEVEL_MODERATOR, LEVEL_OPERATOR))) {
+    //var_dump(Wootook::getGameConfig('game/general/active'));
+    if (!Wootook::getGameConfig('game/general/active')/* && !in_array($user->getData('authlevel'), array(LEVEL_ADMIN, LEVEL_MODERATOR, LEVEL_OPERATOR))*/) {
         $layout = new Wootook_Core_Model_Layout(Wootook_Core_Model_Layout::DOMAIN_FRONTEND);
         $layout->load('message');
 

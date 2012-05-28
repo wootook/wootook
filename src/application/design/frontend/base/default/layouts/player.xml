@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <layout version="1.0">
     <handle name="player.login">
+        <update name="1column" />
         <update name="public" />
 
         <reference name="root">
@@ -24,6 +25,7 @@
     </handle>
 
     <handle name="player.registration">
+        <update name="1column" />
         <update name="public" />
 
         <reference name="root">
@@ -47,6 +49,7 @@
     </handle>
 
     <handle name="player.lost-password">
+        <update name="1column" />
         <update name="public" />
 
         <reference name="root">
@@ -66,23 +69,6 @@
 
         <reference name="content">
             <block name="registration" type="core/template" template="player/lost-password.phtml" />
-        </reference>
-    </handle>
-
-    <handle name="player.overview">
-        <update name="default" />
-
-        <reference name="content">
-            <block name="overview" type="player/overview" template="player/overview.phtml">
-                <block type="core/concat" name="overview.left" />
-                <block type="core/concat" name="overview.center" />
-            </block>
-        </reference>
-
-        <reference name="head">
-            <action method="setTitle">
-                <param name="title">Overview</param>
-            </action>
         </reference>
     </handle>
 </layout>

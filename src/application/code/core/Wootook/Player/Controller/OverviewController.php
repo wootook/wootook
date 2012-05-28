@@ -6,10 +6,7 @@ class Wootook_Player_Controller_OverviewController
     public function indexAction()
     {
         $this->loadLayout('player.overview');
+        $this->_prepareLayoutMessages(Wootook_Player_Model_Entity::SESSION_KEY);
         $this->renderLayout();
-        /*
-        $this->getResponse()
-            ->setRedirect(Wootook::getStaticUrl('overview.php'), Wootook_Core_Mvc_Controller_Response_Http::REDIRECT_TEMPORARY);
-        */
     }
 }

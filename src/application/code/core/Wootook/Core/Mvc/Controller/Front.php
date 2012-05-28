@@ -197,6 +197,7 @@ class Wootook_Core_Mvc_Controller_Front
 
             $this->_response->setIsDispatched();
 
+            $this->preDispatch();
             $controller->preDispatch();
             if (!$this->_response->isDispatched()) {
                 continue;
@@ -212,6 +213,7 @@ class Wootook_Core_Mvc_Controller_Front
             }
 
             $controller->postDispatch();
+            $this->postDispatch();
 
             if ($this->_response->isDispatched() || $this->_response->isRedirect()) {
                 break;
@@ -243,6 +245,26 @@ class Wootook_Core_Mvc_Controller_Front
             'controller' => $controller,
             'action'     => $action
             );
+
+        return $this;
+    }
+
+    public function preDispatch()
+    {
+        Wootook::dispatchEvent('core.mvc.controller.front.pre-dispatch', array(
+            'request'  => $this->_request,
+            'response' => $this->_response
+            ));
+
+        return $this;
+    }
+
+    public function postDispatch()
+    {
+        Wootook::dispatchEvent('core.mvc.controller.front.post-dispatch', array(
+            'request'  => $this->_request,
+            'response' => $this->_response
+        ));
 
         return $this;
     }

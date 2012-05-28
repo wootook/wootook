@@ -160,14 +160,13 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('fleets')} (
     `fleet_end_system`          SMALLINT UNSIGNED   NOT NULL,
     `fleet_end_planet`          TINYINT UNSIGNED    NOT NULL,
     `fleet_end_type`            TINYINT UNSIGNED    NOT NULL,
-    `fleet_taget_owner`         BIGINT UNSIGNED     NOT NULL,
+    `fleet_target_owner`        BIGINT UNSIGNED     NOT NULL,
     `fleet_resource_metal`      DECIMAL(65,0)       NOT NULL    DEFAULT 0,
     `fleet_resource_crystal`    DECIMAL(65,0)       NOT NULL    DEFAULT 0,
     `fleet_resource_deuterium`  DECIMAL(65,0)       NOT NULL    DEFAULT 0,
-    `fleet_target_owner`        BIGINT UNSIGNED     NOT NULL,
     `fleet_group`               BIGINT UNSIGNED     NOT NULL,
     `fleet_mess`                BIGINT UNSIGNED     NOT NULL,
-    `start_time` INT,
+    `start_time`                TIMESTAMP           NOT NULL,
     PRIMARY KEY (`fleet_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL_EOF;
@@ -286,7 +285,7 @@ CREATE TABLE IF NOT EXISTS {$this->getTableName('planets')} (
     `planet`                        TINYINT UNSIGNED        NOT NULL,
     `last_update`                   DATETIME                NOT NULL,
     `planet_type`                   TINYINT UNSIGNED        NOT NULL,
-    `destruyed`                     BOOL                    NOT NULL    DEFAULT FALSE,
+    `destruyed`                     INT UNSIGNED            NOT NULL    DEFAULT FALSE,
     `b_building`                    DATETIME                NOT NULL,
     `b_building_id`                 TEXT                    NOT NULL,
     `b_tech`                        DATETIME                NOT NULL,

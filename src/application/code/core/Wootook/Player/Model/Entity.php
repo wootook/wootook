@@ -88,6 +88,21 @@ class Wootook_Player_Model_Entity
         return $this->getData('username');
     }
 
+    public function getEmail()
+    {
+        return $this->getData('email');
+    }
+
+    public function loadByEmail($email)
+    {
+        return $this->load($email, 'email');
+    }
+
+    public function setPassword($newPassword)
+    {
+        return $this->setData('password', $this->hash($newPassword));
+    }
+
     public static function hash($password, $salt = null)
     {
         if ($salt === null) {
@@ -222,12 +237,10 @@ class Wootook_Player_Model_Entity
     public function createNewPlanet($galaxy, $system, $position, $type, $name, $size = null)
     {
         if ($size === null) {
-            $baseSize = Wootook::getGameConfig('planet/initial/fields');
-
-            $factor = $position * 10 / (1 + log($position * 10));
-            $fuzz = 2 * $factor * pow(sin($factor), 2) / 2 + $factor / 4;
-
-            $size = mt_rand(floor($factor / 10), ceil($factor * 5 / 4)) + mt_rand(0, $fuzz);
+            $size = Wootook::getGameConfig('planet/initial/fields');
+        }
+        if ($size === null) {
+            $size = 200;
         }
 
         $now = new Wootook_Core_DateTime();
@@ -464,6 +477,11 @@ class Wootook_Player_Model_Entity
         return $this;
     }
 
+    /**
+     * Returns all the flying fleets owned by the player
+     *
+     * @return Wootook_Empire_Resource_Fleet_Collection
+     */
     public function getFleets()
     {
         $collection = new Wootook_Empire_Resource_Fleet_Collection($this->getReadConnection());
@@ -473,15 +491,22 @@ class Wootook_Player_Model_Entity
         return $collection;
     }
 
+    /**
+     * Counts all the flying fleets owned by the player
+     *
+     * @return mixed
+     */
     public function getFleetCount()
     {
-        $collection = new Wootook_Empire_Resource_Fleet_Collection($this->getReadConnection());
-
-        $this->_prepareFleetCollection($collection);
-
-        return $collection->getSize();
+        return $this->getFleets()->getSize();
     }
 
+    /**
+     * Returns all the visible fleets
+     *
+     * @param null $time
+     * @return Wootook_Empire_Resource_Fleet_Collection
+     */
     public function getVisibleFleets($time = null)
     {
         $collection = new Wootook_Empire_Resource_Fleet_Collection($this->getReadConnection());
@@ -492,6 +517,19 @@ class Wootook_Player_Model_Entity
         $collection->addIsVisibleToFilter($this, $time);
 
         return $collection;
+    }
+
+    /**
+     * Returns all the visible fleets
+     *
+     * @param null $time
+     * @return Wootook_Empire_Resource_Fleet_Collection
+     * @deprecated
+     * @alias getVisibleFleets
+     */
+    public function getFleetCollection($time = null)
+    {
+        return $this->getVisibleFleets($time);
     }
 
     public function getElement($elementId)
@@ -538,14 +576,6 @@ class Wootook_Player_Model_Entity
         return false;
     }
 
-    public function getFleetCollection($time = null)
-    {
-        $fleetCollection = new Wootook_Empire_Resource_Fleet_Collection($this->getReadConnection());
-        $fleetCollection->addIsVisibleToFilter($this, $time);
-
-        return $fleetCollection;
-    }
-
     public function getNewMessagesCount()
     {
         $messageCollection = new Wootook_Player_Resource_Message_Collection($this->getReadConnection());
@@ -582,6 +612,11 @@ class Wootook_Player_Model_Entity
         }
     }
 
+    public function isBanned()
+    {
+        return $this->getData('bana') ? true : false;
+    }
+
     public function isVacation()
     {
         return $this->getData('urlaubs_modus') ? true : false;
@@ -590,6 +625,11 @@ class Wootook_Player_Model_Entity
     public function getVacationEndDate()
     {
         return $this->getData('urlaubs_until');
+    }
+
+    public function getLastLoginDate()
+    {
+        return $this->getData('onlinetime');
     }
 
     public function setVacation($active = true)

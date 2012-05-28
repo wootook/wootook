@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<layout version="1.0">
+    <handle name="admin">
+        <update name="1column" />
+
+        <reference name="header">
+            <block name="navigation" type="core/html.navigation" template="page/html/navigation.phtml">
+                <action method="setNodeTitle">
+                    <param name="path">system</action>
+                    <param name="title">System</action>
+                </action>
+                <action method="setNodeTitle">
+                    <param name="path">players</action>
+                    <param name="title">Player Accounts</action>
+                </action>
+            </block>
+        </reference>
+    </handle>
+</layout>

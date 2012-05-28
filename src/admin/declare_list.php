@@ -36,7 +36,11 @@ require_once dirname(dirname(__FILE__)) .'/application/bootstrap.php';
     if (in_array($user['authlevel'], array(LEVEL_ADMIN, LEVEL_OPERATOR))) {
 		includeLang('admin');
 		if ($_GET['cmd'] == 'dele') {
-			DeleteSelectedUser ( $_GET['user'] );
+            $player = new Wootook_Player_Model_Entity();
+            $player->load(intval($_GET['user']));
+            if ($player->getId()) {
+                $player->delete();
+            }
 		}
 		if ($_GET['cmd'] == 'sort') {
 			$TypeSort = $_GET['type'];

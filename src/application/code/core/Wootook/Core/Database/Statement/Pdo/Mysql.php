@@ -3,6 +3,9 @@
 class Wootook_Core_Database_Statement_Pdo_Mysql
     extends Wootook_Core_Database_Statement_Statement
 {
+    /**
+     * @var PDOStatement
+     */
     protected $_handler = null;
 
     protected $_query = null;
@@ -114,8 +117,20 @@ class Wootook_Core_Database_Statement_Pdo_Mysql
      */
     public function fetchAll($style = null, $col = null)
     {
-        throw new Wootook_Core_Exception_Database_StatementError($this, 'Unimplemented', null, $e);
-        return array();
+        try {
+            if ($style !== null) {
+                if ($col !== null) {
+                    $result = $this->_handler->fetchAll($style, $col);
+                } else {
+                    $result = $this->_handler->fetchAll($style);
+                }
+            } else {
+                $result = $this->_handler->fetchAll($style);
+            }
+        } catch (PDOException $e) {
+            throw new Wootook_Core_Exception_Database_StatementError($this, $e->getMessage(), null, $e);
+        }
+        return $result;
     }
 
     /**

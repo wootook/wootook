@@ -22,7 +22,7 @@ class Legacies_Stats_Block_View
         return $this->_statData;
     }
 
-    public function getPlayerStatData($type)
+    public function getPlayerStatData()
     {
         if (empty($this->_statData)) {
             $playerId = Wootook_Player_Model_Session::getSingleton()->getPlayerId();
@@ -31,7 +31,6 @@ class Legacies_Stats_Block_View
 
             $statement = $readAdapter->select()
                 ->from($readAdapter->getTable('statpoints'))
-                ->where('stat_type', $type)
                 ->where('id_owner', $playerId)
                 ->prepare()
             ;

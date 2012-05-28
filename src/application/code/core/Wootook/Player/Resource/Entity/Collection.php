@@ -23,9 +23,12 @@ class Wootook_Player_Resource_Entity_Collection
     {
         $onlineTime = (int) $onlineTime;
 
+        $date = new Wootook_Core_DateTime();
+        $date->sub($onlineTime, Wootook_Core_DateTime::TIMESTAMP);
+
         if ($onlineTime > 0) {
             $this->addFieldToFilter('onlinetime', array(array(
-                'gt' => new Wootook_Core_Database_Sql_Placeholder_Expression('UNIX_TIMESTAMP() - :online_time))', array('online_time' => $onlineTime))
+                Wootook_Core_Database_Sql_Select::OPERATOR_DATE => array('from' => $date)
                 )));
         }
 

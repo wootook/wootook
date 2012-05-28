@@ -59,11 +59,12 @@ abstract class Wootook_Core_Mvc_Model_Entity
         if (!is_array($datas) || empty($datas)) {
             throw new Wootook_Core_Exception_DataAccessException('Could not load data: this id could not be found.');
         }
+        $realId = $datas[$this->getIdFieldName()];
         unset($datas[$this->getIdFieldName()]);
 
         $this->_data = array();
         $this->getDataMapper()->decode($this, $datas);
-        $this->setId($id);
+        $this->setId($realId);
 
         return $this;
     }

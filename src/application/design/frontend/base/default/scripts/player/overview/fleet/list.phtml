@@ -1,0 +1,9 @@
+<div class="fleet item-container">
+  <h2><?php echo $this->__('Fleets') ?></h2>
+  <?php $collection = $this->getFleetCollection()?>
+  <?php if ($collection->getSize() > 0): ?>
+    <?php echo $this->renderPartial('item-list')?>
+  <?php else:?>
+  <p><?php echo $this->__('There are currently no fleets.')?></p>
+  <?php endif?>
+</div>

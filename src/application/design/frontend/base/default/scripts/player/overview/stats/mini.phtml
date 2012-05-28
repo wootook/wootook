@@ -1,7 +1,8 @@
 <div id="overview:stats" class="item-container">
-  <h2><?php echo $this->escape($this->getPlanetName())?></h2>
-  <h3><?php echo $this->escape($this->getPlanetCoords())?></h3>
-  <p class="image">
-    <img src="<?php echo $this->getSkinUrl($this->getPlanetImage())?>" />
-  </p>
+  <h2><?php echo $this->__('Your statistics')?></h2>
+  <ul class="stats">
+      <?php foreach ($this->getPlayerStatData() as $stat): ?>
+      <li></li>
+      <?php endforeach ?>
+  </ul>
 </div>

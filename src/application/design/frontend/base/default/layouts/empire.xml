@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <layout version="1.0">
     <handle name="empire">
-        <update name="1column" />
-
         <reference name="header">
             <block name="navigation" type="core/html.navigation" template="page/html/navigation.phtml">
                 <action method="setNodeTitle">
@@ -186,23 +184,44 @@
         </reference>
     </handle>
 
+    <handle name="deprecated">
+        <update name="1column" />
+        <update name="empire" />
+    </handle>
+
     <handle name="message">
+        <update name="1column" />
         <update name="empire" />
     </handle>
 
     <handle name="player.overview">
+        <update name="2columns-left" />
         <update name="empire" />
 
-        <reference name="overview.left">
+        <reference name="root">
+            <action method="addBodyClass">
+                <param name="class">overview</param>
+            </action>
+        </reference>
+        <reference name="left">
             <block type="empire/planet.overview" name="overview.planet.mini" template="player/overview/planet/mini.phtml" />
             <block type="legacies-stats/view" name="overview.player.stats" template="player/overview/stats/mini.phtml" />
         </reference>
-        <reference name="center">
+        <reference name="content">
+            <block type="empire/overview.fleet.list" name="overview.fleet.list" template="player/overview/fleet/list.phtml">
+                <action method="setItemTemplate">
+                    <param name="template">player/overview/fleet/item.phtml</param>
+                </action>
+                <action method="setItemBlockType">
+                    <param name="blockType">empire/overview.fleet.list.item</param>
+                </action>
+            </block>
         </reference>
     </handle>
 
     <handle name="overview.rename-planet">
-        <update name="player.overview" />
+        <update name="1column" />
+        <update name="empire" />
 
         <reference name="overview.center">
             <block name="rename-planet" type="empire/overview.rename-planet" template="player/overview/form/rename-planet.phtml" />
@@ -210,7 +229,8 @@
     </handle>
 
     <handle name="overview.destroy-planet">
-        <update name="player.overview" />
+        <update name="1column" />
+        <update name="empire" />
 
         <reference name="overview.center">
             <block name="rename-planet" type="empire/overview.destroy-planet" template="player/overview/form/destroy-planet.phtml" />
@@ -218,6 +238,7 @@
     </handle>
 
     <handle name="planet.buildings">
+        <update name="1column" />
         <update name="empire" />
 
         <reference name="content">
@@ -242,6 +263,7 @@
     </handle>
 
     <handle name="planet.shipyard">
+        <update name="1column" />
         <update name="empire" />
 
         <reference name="content">
@@ -276,6 +298,7 @@
     </handle>
 
     <handle name="planet.research-lab">
+        <update name="1column" />
         <update name="empire" />
 
         <reference name="content">

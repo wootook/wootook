@@ -106,14 +106,17 @@ input[type=submit],input[type=button] {height:2em;border:#58939f 0 solid;border-
  * Overview
  */
 
-.global .content .overview {width:740px;padding:10px 30px;margin:10px auto 0;background:#FFF;color:#000;border:10px solid #58939f;border-radius:10px;border-top-left-radius:30px;border-top-right-radius:30px;}
-.global .content .overview h1 {border-bottom:10px solid #58939f;height:30px;margin:10px 10px 30px;font-size:2.3em;}
-.global .content .overview .clear {clear:left;height:50px;}
+.overview .global .container {width:740px;padding:10px 30px;margin:10px auto 0;background:#FFF;color:#000;border:10px solid #58939f;border-radius:10px;border-top-left-radius:30px;border-top-right-radius:30px;}
+.overview .global .container h1 {border-bottom:10px solid #58939f;height:30px;margin:10px 10px 30px;font-size:2.3em;}
+.overview .global .container .clear {clear:left;height:50px;}
+.overview .global .container .item-container h2 {text-decoration:none;margin-bottom:0;font-size:1.3em;}
+.overview .global .container .item-container h3 {text-decoration:none;margin-top:0;font-size:1em;color:#58939f;font-weight:bold;}
+.overview .global .container .item-container {padding:10px;margin:10px;border:3px solid #58939f;background-color:#EFEFEF;border-radius:15px 3px 15px 3px;}
 
-.global .content .overview .left {width:250px;float:left;}
-.global .content .overview .left h2 {text-decoration:none;margin-bottom:0;font-size:1.3em;}
-.global .content .overview .left h3 {text-decoration:none;margin-top:0;font-size:1em;color:#58939f;font-weight:bold;}
-.global .content .overview .left .item-container {width:200px;padding:10px;margin:10px;height:250px;border:3px solid #58939f;background-color:#EFEFEF;}
+.overview .global .container .left {width:250px;float:left;}
+.overview .global .container .content {margin-left:250px;width:490px;}
+.overview .global .container .left .item-container {width:200px;}
+.overview .global .container .content .item-container {width:440px;}
 
 /**
  * Public pages

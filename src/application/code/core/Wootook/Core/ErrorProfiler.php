@@ -68,7 +68,10 @@ class Wootook_Core_ErrorProfiler
             return;
         }
 
+        $trace = debug_backtrace();
+
         switch ($errno) {
+        case E_RECOVERABLE_ERROR:
         case E_USER_ERROR:
         case E_ERROR:
             $this->_errors[] = array(
@@ -77,7 +80,8 @@ class Wootook_Core_ErrorProfiler
                 'message' => $errstr,
                 'file'    => $errfile,
                 'line'    => $errline,
-                'context' => $errcontext
+                'context' => $errcontext,
+                'trace'   => $trace
                 );
                 break;
 
@@ -89,7 +93,8 @@ class Wootook_Core_ErrorProfiler
                 'message' => $errstr,
                 'file'    => $errfile,
                 'line'    => $errline,
-                'context' => $errcontext
+                'context' => $errcontext,
+                'trace'   => $trace
                 );
                 break;
 
@@ -101,7 +106,8 @@ class Wootook_Core_ErrorProfiler
                 'message' => $errstr,
                 'file'    => $errfile,
                 'line'    => $errline,
-                'context' => $errcontext
+                'context' => $errcontext,
+                'trace'   => $trace
                 );
                 break;
 
@@ -116,7 +122,8 @@ class Wootook_Core_ErrorProfiler
                 'message' => $errstr,
                 'file'    => $errfile,
                 'line'    => $errline,
-                'context' => $errcontext
+                'context' => $errcontext,
+                'trace'   => $trace
                 );
                 break;
         }
@@ -172,8 +179,85 @@ Type: {$code}
 Message: {$error['message']}
 File: {$error['file']}
 Line: {$error['line']}
-\n
+
+{$this->_renderBacktrace($error['trace'])}
+
 ERROR_EOF;
+    }
+
+    protected function _renderBacktrace(Array $traces)
+    {
+        $output = '<pre>';
+        foreach (array_slice($traces, 1) as $key => $trace) {
+            if (preg_match('#^(include|require)(_once)?$#', $trace['function'])) {
+                $output .= sprintf("#%d %s(%s) called at [%s:%s]\n",
+                    $key, $trace['function'], $trace['args'][0], $trace['file'], $trace['line']);
+            } else if (!isset($trace['file']) || !isset($trace['line'])) {
+                if (isset($trace['class'])) {
+                    $output .= sprintf("#%d Internal function <code>%s%s%s(%s)</code>\n",
+                        $key, $trace['class'], $trace['type'], $trace['function'], implode(', ', $this->_formatArgs($trace['args'])));
+                } else {
+                    $output .= sprintf("#%d Internal function <code>%s(%s)</code>\n",
+                        $key, $trace['function'], implode(', ', $this->_formatArgs($trace['args'])));
+                }
+            } else {
+                if (isset($trace['class'])) {
+                    $output .= sprintf("#%d <code>%s%s%s(%s)</code> called at [%s:%s]\n",
+                        $key, $trace['class'], $trace['type'], $trace['function'], implode(', ', $this->_formatArgs($trace['args'])), $trace['file'], $trace['line']);
+                } else {
+                    $output .= sprintf("#%d <code>%s(%s)</code> called at [%s:%s]\n",
+                        $key, $trace['function'], implode(', ', $this->_formatArgs($trace['args'])), $trace['file'], $trace['line']);
+                }
+            }
+        }
+        return $output . '</pre>';
+    }
+
+    private function _formatArgs($args)
+    {
+        $argumentList = array();
+        foreach ($args as $argument) {
+            if (is_object($argument)) {
+                $argumentList[] = get_class($argument);
+            } else if (is_array($argument)) {
+                $keys = array_keys($argument);
+                $values = $this->_formatArgs($argument);
+
+                $length = count($values);
+                $output = array();
+                for ($index = 0; $index < $length; $index++) {
+                    $output[] = sprintf('[%s] => %s', $keys[$index], $values[$index]);
+                }
+
+                $argumentList[] = '[' . implode(', ', $output) . ']';
+            } else {
+                $argumentList[] = var_export($argument, true);
+            }
+        }
+
+        return $argumentList;
+    }
+
+    protected function _renderConfig(Wootook_Core_Config_Node $config, $level = 0)
+    {
+        $output = '<ul style="list-style:none;padding:5px;margin:5px 10px;border:1px solid gray">';
+        foreach ($config as $key => $value) {
+            $output .= sprintf('<li style="">', $level);
+            $output .= sprintf('<span style="text-decoration:underline;padding-right:10px;font-family:monospace;color:darkred;font-weight:bold;font-size:12px;">%s</span>', $key);
+            if ($value instanceof Wootook_Core_Config_Node) {
+                if (count($value) > 0) {
+                    $output .= $this->_renderConfig($value, $level + 1);
+                } else {
+                    $output .= '<em>Empty node</em>';
+                }
+            } else {
+                $output .= '<code style="font-family:monospace;font-size:12px;">' . htmlspecialchars(var_export($value, true), ENT_QUOTES, 'UTF-8') . '</code>';
+            }
+            $output .= '</li>';
+        }
+        $output .= '</ul>';
+
+        return $output;
     }
 
     public function shutdownManager()
@@ -185,66 +269,140 @@ ERROR_EOF;
         $index = 0;
         echo '<div style="background:#FFF;border:5px solid #933;border-top-width:15px;border-radius:5px;color:#000;padding:0;margin:20px;text-align:left;margin:50px auto;width:800px;">';
         echo '<h1 style="margin:0;padding:0 10px;text-decoration:none;border-bottom:3px solid #933;">Debug profiler</h1>';
-        if (count($this->_errors) <= 0 && count($this->_warnings) <= 0 &&
-            count($this->_notices) <= 0 && count($this->_otherErrors) <= 0 &&
-            count($this->_exceptions) <= 0) {
-            echo '<p style="color:#666;font-style:italic;margin:20px 10px 10px;">Error profiler was empty.</p>';
-        } else {
-            echo '<div style="margin:0;overflow:auto;">';
-            foreach ($this->_errors as $error) {
-                ++$index;
-                echo '<h2 style="font-size:1.2em;text-decoration:none;margin:0 5px;">Message #' . $index . '</h2>';
-                echo '<pre style="margin:0 5px;">';
-                echo $this->_renderError($index, $error);
-                echo '</pre>';
-            }
-            foreach ($this->_warnings as $error) {
+        echo '<div style="margin:0;overflow:auto;">';
+        echo '</div>';
+        echo '<h2 style="font-size:1.5em;text-decoration:none;margin:0;padding:15px 10px 5px;border-color:#000;border-style:solid;border-width:0 0 1px;background-color:#EEE" rel="errors" class="error-profiler-link">Errors (' . count($this->_errors) . ')</h2>';
+        echo '<div class="error-profiler errors">';
+        foreach ($this->_errors as $error) {
+            ++$index;
+            echo '<h2 style="font-size:1.2em;text-decoration:none;margin:0 5px;">Message #' . $index . '</h2>';
+            echo '<pre style="margin:0 5px;">';
+            echo $this->_renderError($index, $error);
+            echo '</pre>';
+        }
+        echo '</div>';
+        echo '<h2 style="font-size:1.5em;text-decoration:none;margin:0;padding:15px 10px 5px;border-color:#000;border-style:solid;border-width:0 0 1px;background-color:#EEE" rel="warnings" class="error-profiler-link">Warnings (' . count($this->_warnings) . ')</h2>';
+        echo '<div class="error-profiler warnings">';
+        foreach ($this->_warnings as $error) {
+            ++$index;
+            echo '<h2 style="font-size:1.2em;text-decoration:none;margin:10px 5px 0;">Message #' . $index . '</h2>';
+            echo '<pre style="margin:0 5px;">';
+            echo $this->_renderError($index, $error);
+            echo '</pre>';
+        }
+        echo '</div>';
+        echo '<h2 style="font-size:1.5em;text-decoration:none;margin:0;padding:15px 10px 5px;border-color:#000;border-style:solid;border-width:0 0 1px;background-color:#EEE" rel="notices" class="error-profiler-link">Notices (' . count($this->_notices) . ')</h2>';
+        echo '<div class="error-profiler notices">';
+        foreach ($this->_notices as $error) {
+            ++$index;
+            echo '<h2 style="font-size:1.2em;text-decoration:none;margin:10px 5px 0;">Message #' . $index . '</h2>';
+            echo '<pre style="margin:0 5px;">';
+            echo $this->_renderError($index, $error);
+            echo '</pre>';
+        }
+        echo '</div>';
+        foreach ($this->_otherErrors as $errno => $errorList) {
+            echo '<h2 style="font-size:1.5em;text-decoration:none;margin:0;padding:15px 10px 5px;border-color:#000;border-style:solid;border-width:0 0 1px;background-color:#EEE" rel="other' . $errno . '" class="error-profiler-link">Other error errno#' . $errno . ' (' . count($errorList) . ')</h2>';
+            echo '<div class="error-profiler other' . $errno . '">';
+            foreach ($errorList as $error) {
                 ++$index;
                 echo '<h2 style="font-size:1.2em;text-decoration:none;margin:10px 5px 0;">Message #' . $index . '</h2>';
                 echo '<pre style="margin:0 5px;">';
                 echo $this->_renderError($index, $error);
                 echo '</pre>';
             }
-            foreach ($this->_notices as $error) {
-                ++$index;
-                echo '<h2 style="font-size:1.2em;text-decoration:none;margin:10px 5px 0;">Message #' . $index . '</h2>';
-                echo '<pre style="margin:0 5px;">';
-                echo $this->_renderError($index, $error);
-                echo '</pre>';
-            }
-            foreach ($this->_otherErrors as $errorList) {
-                foreach ($errorList as $error) {
-                    ++$index;
-                    echo '<h2 style="font-size:1.2em;text-decoration:none;margin:10px 5px 0;">Message #' . $index . '</h2>';
-                    echo '<pre style="margin:0 5px;">';
-                    echo $this->_renderError($index, $error);
-                    echo '</pre>';
-                }
-            }
-            foreach ($this->_exceptions as $exception) {
-                ++$index;
-                echo '<h2 style="font-size:1.2em;text-decoration:none;margin:10px 5px 0;">Message #' . $index . '</h2>';
-                echo '<pre style="margin:0 5px;">';
-                echo $exception->getMessage() . PHP_EOL;
-                echo $exception->getTraceAsString() . PHP_EOL;
-                echo '</pre>';
+            echo '</div>';
+        }
+        echo '<h2 style="font-size:1.5em;text-decoration:none;margin:0;padding:15px 10px 5px;border-color:#000;border-style:solid;border-width:0 0 1px;background-color:#EEE" rel="exceptions" class="error-profiler-link">Exceptions (' . count($this->_exceptions) . ')</h2>';
+        echo '<div class="error-profiler exceptions">';
+        foreach ($this->_exceptions as $exception) {
+            ++$index;
+            echo '<h2 style="font-size:1.2em;text-decoration:none;margin:10px 5px 0;">Message #' . $index . '</h2>';
+            echo '<pre style="margin:0 5px;">';
+            echo $exception->getMessage() . PHP_EOL;
+            echo $exception->getTraceAsString() . PHP_EOL;
+            echo '</pre>';
 
-                $child = 0;
-                $current = $exception;
-                while (($current = $current->getPrevious()) !== null) {
-                    $child++;
-                    echo '<h3 style="font-size:1em;text-decoration:none;margin:10px 30px 0;">Message #' . $index . ', child level #' . $child . '</h3>';
-                    echo '<pre style="margin:0 30px;">';
-                    echo $current->getMessage() . PHP_EOL;
-                    echo $current->getTraceAsString() . PHP_EOL;
-                    echo PHP_EOL;
-                    echo '</pre>';
-                }
+            $child = 0;
+            $current = $exception;
+            while (($current = $current->getPrevious()) !== null) {
+                $child++;
+                echo '<h3 style="font-size:1em;text-decoration:none;margin:10px 30px 0;">Message #' . $index . ', child level #' . $child . '</h3>';
+                echo '<pre style="margin:0 30px;">';
+                echo $current->getMessage() . PHP_EOL;
+                echo $current->getTraceAsString() . PHP_EOL;
                 echo PHP_EOL;
+                echo '</pre>';
             }
             echo '</div>';
         }
         echo '</div>';
+        echo <<<JS_EOF
+<script>
+(function(){
+var sections = jQuery('.error-profiler');
+sections.each(function(){
+    var element = jQuery(this);
+    element.hide();
+    });
+
+jQuery('.error-profiler-link').click(function(e){
+    var rel = jQuery(this).attr('rel');
+    sections.each(function(){
+        var element = jQuery(this);
+        if (element.hasClass(rel) && !element.hasClass('opened')) {
+            element.slideDown(500, function(){element.addClass('opened');});
+        } else {
+            element.slideUp(500, function(){element.removeClass('opened');});
+        }
+        });
+    });
+})();
+</script>
+JS_EOF;
+        echo '<h1 style="margin:0;padding:0 10px;text-decoration:none;border-bottom:3px solid #933;">Configuration profiler</h1>';
+        echo '<h2 style="font-size:1.5em;text-decoration:none;margin:0;padding:15px 10px 5px;border-color:#000;border-style:solid;border-width:0 0 1px;background-color:#EEE" rel="global" class="config-profiler-link">Global configuration</h2>';
+        echo '<div class="config-profiler global">';
+        $config = clone Wootook::getConfig();
+        foreach ($config->getConfig('resource/database') as $node) {
+            if ($node->params) {
+                $node->params->reset();
+            }
+        }
+        echo $this->_renderConfig(Wootook::getConfig(), 0);
+        echo '</div>';
+        echo '<h2 style="font-size:1.5em;text-decoration:none;margin:0;padding:15px 10px 5px;border-color:#000;border-style:solid;border-width:0 0 1px;background-color:#EEE" rel="website" class="config-profiler-link">Website configuration</h2>';
+        echo '<div class="config-profiler website">';
+        echo $this->_renderConfig(Wootook::getWebsiteConfig());
+        echo '</div>';
+        echo '<h2 style="font-size:1.5em;text-decoration:none;margin:0;padding:15px 10px 5px;border-color:#000;border-style:solid;border-width:0 0 1px;background-color:#EEE" rel="game" class="config-profiler-link">Game configuration</h2>';
+        echo '<div class="config-profiler game">';
+        echo $this->_renderConfig(Wootook::getGameConfig());
+        echo '</div>';
+        echo '</div>';
+        echo <<<JS_EOF
+<script>
+(function(){
+var sections = jQuery('.config-profiler');
+sections.each(function(){
+    var element = jQuery(this);
+    element.hide();
+    });
+
+jQuery('.config-profiler-link').click(function(e){
+    var rel = jQuery(this).attr('rel');
+    sections.each(function(){
+        var element = jQuery(this);
+        if (element.hasClass(rel) && !element.hasClass('opened')) {
+            element.slideDown(500, function(){element.addClass('opened');});
+        } else {
+            element.slideUp(500, function(){element.removeClass('opened');});
+        }
+        });
+    });
+})();
+</script>
+JS_EOF;
     }
 
     public static function register()

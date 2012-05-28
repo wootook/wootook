@@ -32,7 +32,12 @@ class Wootook_Core_Mvc_Controller_Request_Http
 
         $params = '';
         if (($offset = strpos($this->getServer('REQUEST_URI'), $baseUri)) !== false) {
-            $path = substr($this->getServer('REQUEST_URI'), $offset + strlen($baseUri));
+            $queryParamsOffset = strpos($this->getServer('REQUEST_URI'), '?');
+            if ($queryParamsOffset !== false) {
+                $path = substr($this->getServer('REQUEST_URI'), $offset + strlen($baseUri), $queryParamsOffset - $offset - 1);
+            } else {
+                $path = substr($this->getServer('REQUEST_URI'), $offset + strlen($baseUri));
+            }
 
             $moduleOffset = strpos($path, '/');
             if ($moduleOffset !== false) {

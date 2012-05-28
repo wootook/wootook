@@ -34,7 +34,6 @@ require_once ROOT_PATH . 'includes/deprecated.php';
  * @deprecated
  * {{{
  */
-include(ROOT_PATH . 'includes/functions/FlyingFleetHandler.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/MissionCaseAttack.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/MissionCaseStay.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/MissionCaseStayAlly.'.PHPEXT);
@@ -47,36 +46,29 @@ include(ROOT_PATH . 'includes/functions/MissionCaseExpedition.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/SendSimpleMessage.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/SpyTarget.'.PHPEXT);
 include(ROOT_PATH . 'includes/functions/RestoreFleetToPlanet.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/StoreGoodsToPlanet.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/InsertJavaScriptChronoApplet.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/IsTechnologieAccessible.'.PHPEXT); // <- TODO: delete
-include(ROOT_PATH . 'includes/functions/GetRestPrice.'.PHPEXT); // <- TODO: delete
-include(ROOT_PATH . 'includes/functions/InsertGalaxyScripts.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/GalaxyCheckFunctions.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/ShowGalaxyRows.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/GetPhalanxRange.'.PHPEXT); // <- TODO: delete
-include(ROOT_PATH . 'includes/functions/GetMissileRange.'.PHPEXT); // <- TODO: delete
-include(ROOT_PATH . 'includes/functions/GalaxyRowPos.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/GalaxyRowPlanet.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/GalaxyRowPlanetName.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/GalaxyRowMoon.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/GalaxyRowDebris.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/GalaxyRowUser.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/GalaxyRowAlly.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/GalaxyRowActions.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/ShowGalaxySelector.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/ShowGalaxyMISelector.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/ShowGalaxyTitles.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/GalaxyLegendPopup.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/ShowGalaxyFooter.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/MessageForm.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/SendNewPassword.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/IsOfficierAccessible.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/CheckInputStrings.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/MipCombatEngine.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/DeleteSelectedUser.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/SortUserPlanets.'.PHPEXT);
-include(ROOT_PATH . 'includes/functions/BuildFleetEventTable.'.PHPEXT);
+include(ROOT_PATH . 'includes/functions/StoreGoodsToPlanet.'.PHPEXT);           // includes/functions/StoreGoodsToPlanet.php
+include(ROOT_PATH . 'includes/functions/InsertJavaScriptChronoApplet.'.PHPEXT); // infos.php, includes/functions/BuildFleetEventTable.php
+include(ROOT_PATH . 'includes/functions/InsertGalaxyScripts.'.PHPEXT);          // galaxy.php
+include(ROOT_PATH . 'includes/functions/GalaxyCheckFunctions.'.PHPEXT);         // galaxy.php
+include(ROOT_PATH . 'includes/functions/ShowGalaxyRows.'.PHPEXT);               // galaxy.php
+include(ROOT_PATH . 'includes/functions/GetPhalanxRange.'.PHPEXT);              // <- TODO: delete
+include(ROOT_PATH . 'includes/functions/GetMissileRange.'.PHPEXT);              // <- TODO: delete
+include(ROOT_PATH . 'includes/functions/GalaxyRowPos.'.PHPEXT);                 // galaxy.php
+include(ROOT_PATH . 'includes/functions/GalaxyRowPlanet.'.PHPEXT);              // galaxy.php
+include(ROOT_PATH . 'includes/functions/GalaxyRowPlanetName.'.PHPEXT);          // galaxy.php
+include(ROOT_PATH . 'includes/functions/GalaxyRowMoon.'.PHPEXT);                // galaxy.php
+include(ROOT_PATH . 'includes/functions/GalaxyRowDebris.'.PHPEXT);              // galaxy.php
+include(ROOT_PATH . 'includes/functions/GalaxyRowUser.'.PHPEXT);                // galaxy.php
+include(ROOT_PATH . 'includes/functions/GalaxyRowAlly.'.PHPEXT);                // galaxy.php
+include(ROOT_PATH . 'includes/functions/GalaxyRowActions.'.PHPEXT);             // galaxy.php
+include(ROOT_PATH . 'includes/functions/ShowGalaxySelector.'.PHPEXT);           // galaxy.php
+include(ROOT_PATH . 'includes/functions/ShowGalaxyMISelector.'.PHPEXT);         // galaxy.php
+include(ROOT_PATH . 'includes/functions/ShowGalaxyTitles.'.PHPEXT);             // galaxy.php
+include(ROOT_PATH . 'includes/functions/GalaxyLegendPopup.'.PHPEXT);            // galaxy.php
+include(ROOT_PATH . 'includes/functions/ShowGalaxyFooter.'.PHPEXT);             // galaxy.php
+include(ROOT_PATH . 'includes/functions/MessageForm.'.PHPEXT);                  // alliance.php
+include(ROOT_PATH . 'includes/functions/MipCombatEngine.'.PHPEXT);              // mipattack.php
+include(ROOT_PATH . 'includes/functions/BuildFleetEventTable.'.PHPEXT);         // phalanx.php
 /**
  * }}}
  */

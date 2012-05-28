@@ -189,6 +189,11 @@ class Wootook
         return Wootook_Core_Model_Session::factory($namespace);
     }
 
+    /**
+     * @static
+     * @param string|null $locale
+     * @return Wootook_Core_Model_Translator
+     */
     public static function getTranslator($locale = null)
     {
         if ($locale === null) {
@@ -381,7 +386,7 @@ class Wootook
         }
 
         try {
-        $adapter = Wootook_Core_Database_ConnectionManager::getSingleton()
+            $adapter = Wootook_Core_Database_ConnectionManager::getSingleton()
                 ->getConnection('core_read');
         } catch (Wootook_Core_Exception_Database_AdapterError $e) {
             self::$isInstalled = false;
@@ -394,23 +399,20 @@ class Wootook
         switch ($type) {
         case 'website':
             $select->where(new Wootook_Core_Database_Sql_Placeholder_Expression('website_id = :website_id', array('website_id' => $model->getId())));
-            $statement = $adapter->prepare($select);
-            $statement->execute();
             break;
 
         case 'game':
             $select->where(new Wootook_Core_Database_Sql_Placeholder_Expression('game_id = :game_id', array('game_id' => $model->getId())));
-            $statement = $adapter->prepare($select);
-            $statement->execute();
             break;
 
         default:
             $select->where('website_id', 0);
             $select->where('game_id', 0);
-            $statement = $adapter->prepare($select);
-            $statement->execute();
             break;
         }
+
+        $statement = $select->prepare();
+        $statement->execute();
 
         foreach ($statement as $row) {
             $config->setConfig($row['config_path'], $row['config_value']);
@@ -598,6 +600,7 @@ class Wootook
         if (self::$_config === null) {
             self::loadConfig();
         }
+
         if (!self::$isInstalled) {
             if (isset(self::$_config['default'])) {
                 self::$_gameConfigs[Wootook_Core_Model_Game::DEFAULT_CODE] = clone self::$_config['default'];
@@ -781,6 +784,7 @@ class Wootook
         $queryParams = array();
         if (isset($params['_query'])) {
             $queryParams = $params['_query'];
+            unset($params['_query']);
         }
 
         $serializedParams = array();

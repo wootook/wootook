@@ -112,43 +112,43 @@ class Wootook_Core_App
         return $this->_newInstance($className, $constructorParams);
     }
 
-    public function getModel($module, $class)
+    public function getModel($module, $class, Array $constructorParams = array())
     {
         $className = $this->_resolveClassType($this->_globalConfig->models, $module, $class);
 
         return $this->_newInstance($className, $constructorParams);
     }
 
-    public function getResource($module, $class)
+    public function getResource($module, $class, Array $constructorParams = array())
     {
         $className = $this->_resolveClassType($this->_globalConfig->resources, $module, $class);
 
         return $this->_newInstance($className, $constructorParams);
     }
 
-    public function getHelper($module, $class)
+    public function getHelper($module, $class, Array $constructorParams = array())
     {
         $className = $this->_resolveClassType($this->_globalConfig->helpers, $module, $class);
 
         return $this->_newInstance($className, $constructorParams);
     }
 
-    public function getBlockSingleton($module, $class)
+    public function getBlockSingleton($module, $class, Array $constructorParams = array())
     {
 
     }
 
-    public function getModelSingleton($module, $class)
+    public function getModelSingleton($module, $class, Array $constructorParams = array())
     {
 
     }
 
-    public function getResourceSingleton($module, $class)
+    public function getResourceSingleton($module, $class, Array $constructorParams = array())
     {
 
     }
 
-    public function getHelperSingleton($module, $class)
+    public function getHelperSingleton($module, $class, Array $constructorParams = array())
     {
 
     }

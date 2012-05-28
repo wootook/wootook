@@ -31,85 +31,108 @@
 /**
  *
  * @deprecated
- * @param unknown_type $FleetRow
+ * @param Wootook_Empire_Model_Fleet|array $fleet
  */
-function MissionCaseColonisation ( $FleetRow ) {
-	global $lang, $resource;
+function MissionCaseColonisation($fleet)
+{
+    $readConnection = Wootook_Core_Database_ConnectionManager::getSingleton()->getConnection('core_read');
 
-	$statement = doquery ("SELECT count(*) FROM {{table}} WHERE `id_owner` = '". $FleetRow['fleet_owner'] ."' AND `planet_type` = '1'", 'planets');
-	$iPlanetCount = $statement->fetch(PDO::FETCH_ASSOC);
-	if ($FleetRow['fleet_mess'] == 0) {
-		// Déjà, sommes nous a l'aller ??
-		$statement2 = doquery ("SELECT count(*) FROM {{table}} WHERE `galaxy` = '". $FleetRow['fleet_end_galaxy']."' AND `system` = '". $FleetRow['fleet_end_system']."' AND `planet` = '". $FleetRow['fleet_end_planet']."';", 'galaxy');
-		$iGalaxyPlace = $statement2->fetch(PDO::FETCH_ASSOC);
-		$TargetAdress = sprintf ($lang['sys_adress_planet'], $FleetRow['fleet_end_galaxy'], $FleetRow['fleet_end_system'], $FleetRow['fleet_end_planet']);
-		if ($iGalaxyPlace == 0) {
-			// Y a personne qui s'y est mis avant que je ne debarque !
-			if ($iPlanetCount >= MAX_PLAYER_PLANETS && $user['authlevel'] != LEVEL_ADMIN) {
-				$TheMessage = $lang['sys_colo_arrival'] . $TargetAdress . $lang['sys_colo_maxcolo'] . MAX_PLAYER_PLANETS . $lang['sys_colo_planet'];
-				SendSimpleMessage ( $FleetRow['fleet_owner'], '', $FleetRow['fleet_start_time'], 0, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
-				doquery("UPDATE {{table}} SET `fleet_mess` = '1' WHERE `fleet_id` = ". $FleetRow["fleet_id"], 'fleets');
-			} else {
-			    $user = Wootook_Player_Model_Entity::factory($FleetRow['fleet_owner']);
-			    $user->createNewPlanet(
-			        intval($FleetRow['fleet_end_galaxy']),
-			        intval($FleetRow['fleet_end_system']),
-			        intval($FleetRow['fleet_end_planet']),
-			        Wootook_Empire_Model_Planet::TYPE_PLANET,
-			        Wootook::__('Colony')
-			        );
+    $player = new Wootook_Player_Model_Entity();
+    $player->load($fleet->getData('fleet_owner'));
+    if (!$player->getId()) {
+        $fleet->delete();
+        return;
+    }
 
-				if ( $NewOwnerPlanet == true ) {
-					$TheMessage = $lang['sys_colo_arrival'] . $TargetAdress . $lang['sys_colo_allisok'];
-					SendSimpleMessage ( $FleetRow['fleet_owner'], '', $FleetRow['fleet_start_time'], 0, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
-					// Verifier ce que contient fleet_array (et le cas et cheant retirer un element '208'
-					if ($FleetRow['fleet_amount'] == 1) {
-						doquery("DELETE FROM {{table}} WHERE fleet_id=" . $FleetRow["fleet_id"], 'fleets');
-					} else {
-						$CurrentFleet = explode(";", $FleetRow['fleet_array']);
-						$NewFleet     = "";
-						foreach ($CurrentFleet as $Item => $Group) {
-							if ($Group != '') {
-								$Class = explode (",", $Group);
-								if ($Class[0] == 208) {
-									if ($Class[1] > 1) {
-										$NewFleet  .= $Class[0].",".($Class[1] - 1).";";
-									}
-								} else {
-									if ($Class[1] <> 0) {
-									$NewFleet  .= $Class[0].",".$Class[1].";";
-									}
-								}
-							}
-						}
-						$QryUpdateFleet  = "UPDATE {{table}} SET ";
-						$QryUpdateFleet .= "`fleet_array` = '". $NewFleet ."', ";
-						$QryUpdateFleet .= "`fleet_amount` = `fleet_amount` - 1, ";
-						$QryUpdateFleet .= "`fleet_mess` = '1' ";
-						$QryUpdateFleet .= "WHERE `fleet_id` = '". $FleetRow["fleet_id"] ."';";
-						doquery( $QryUpdateFleet, 'fleets');
-					}
-				} else {
-					$TheMessage = $lang['sys_colo_arrival'] . $TargetAdress . $lang['sys_colo_badpos'];
-					SendSimpleMessage ( $FleetRow['fleet_owner'], '', $FleetRow['fleet_start_time'], 0, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
-					doquery("UPDATE {{table}} SET `fleet_mess` = '1' WHERE `fleet_id` = ". $FleetRow["fleet_id"], 'fleets');
-				}
-			}
-		} else {
-			// Pas de bol coiffé sur le poteau !
-			$TheMessage = $lang['sys_colo_arrival'] . $TargetAdress . $lang['sys_colo_notfree'];
-			SendSimpleMessage ( $FleetRow['fleet_owner'], '', $FleetRow['fleet_end_time'], 0, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
-			// Mettre a jour la flotte pour qu'effectivement elle revienne !
-			doquery("UPDATE {{table}} SET `fleet_mess` = '1' WHERE `fleet_id` = ". $FleetRow["fleet_id"], 'fleets');
+    $event = Wootook::dispatchEvent('fleet.mission.colonize.max-allowed-planets', array(
+         'base_count' => MAX_PLAYER_PLANETS,
+         'count'      => MAX_PLAYER_PLANETS,
+         'player'     => $player,
+         'fleet'      => $fleet
+         ));
 
-		}
-	} else {
-		if ($FleetRow['fleet_end_time'] <= time()) {
-		// Retour de flotte
-		RestoreFleetToPlanet ( $FleetRow, true );
-		doquery("DELETE FROM {{table}} WHERE fleet_id=" . $FleetRow["fleet_id"], 'fleets');
-		}
-	}
+    $maxAllowedPlanetCount = $event->getData('count');
+
+    /* first trip */
+    if ($fleet->getData('fleet_mess') == 0) {
+        if ($fleet->getActionTime()->isEarlier()) {
+            return;
+        }
+        if ($player->getPlanetCollection()->getSize() >= $maxAllowedPlanetCount && !$player->isAuthorized(array(LEVEL_ADMIN))) {
+            /* no more planets to colonize */
+
+            $coords = sprintf('%d:%d:%d', $fleet->getData('fleet_end_galaxy'), $fleet->getData('fleet_end_system'), $fleet->getData('fleet_end_planet'));
+            SendSimpleMessage($player->getId(), null, $fleet['fleet_end_time'], 0,
+                Wootook::__('Colonization'), Wootook::__('Colonization report'),
+                Wootook::__("The fleet has arrived at the coordinates [%1\$s], but unfortunatly colonization cannot happen : you can't have more than %2\$d colonies.", $coords, $maxAllowedPlanetCount));
+
+            $fleet->goBack();
+            return;
+        }
+
+        $statement = $readConnection->select()
+            ->column(new Wootook_Core_Database_Sql_Placeholder_Expression('COUNT(*)'))
+            ->from($readConnection->getTable('planets'))
+            ->where('galaxy', $fleet->getData('fleet_end_galaxy'))
+            ->where('system', $fleet->getData('fleet_end_system'))
+            ->where('planet', $fleet->getData('fleet_end_planet'))
+            ->prepare()
+        ;
+
+        $statement->execute();
+        if ($statement->fetchColumn() > 0) {
+            $coords = sprintf('%d:%d:%d', $fleet->getData('fleet_end_galaxy'), $fleet->getData('fleet_end_system'), $fleet->getData('fleet_end_planet'));
+            SendSimpleMessage($player->getId(), null, $fleet['fleet_end_time'], 0,
+                Wootook::__('Colonization'), Wootook::__('Colonization report'),
+                Wootook::__("The fleet has arrived at the coordinates [%1\$s], but unfortunatly colonization cannot happen : the planet is already colonized.", $coords));
+
+            $fleet->goBack();
+            return;
+        }
+
+        if (mt_rand(0, 100) >= 75) {
+            $baseSize = Wootook::getGameConfig('planet/initial/fields');
+            $factor = 2 * $position / (1 + log($position));
+            $fuzz = 2 * $factor * pow(sin($factor), 2) / 2 + $factor / 4;
+            $size = ($baseSize * mt_rand(floor($factor / 10), ceil($factor * 5 / 4))) + mt_rand(0, $fuzz);
+
+            $player->createNewPlanet(
+                $fleet->getData('fleet_end_galaxy'),
+                $fleet->getData('fleet_end_system'),
+                $fleet->getData('fleet_end_planet'),
+                Wootook_Empire_Model_Planet::TYPE_PLANET,
+                Wootook::__('Colony'),
+                $size
+            );
+
+            $coords = sprintf('%d:%d:%d', $fleet->getData('fleet_end_galaxy'), $fleet->getData('fleet_end_system'), $fleet->getData('fleet_end_planet'));
+            SendSimpleMessage($player->getId(), null, $fleet['fleet_end_time'], 0,
+                Wootook::__('Colonization'), Wootook::__('Colonization report'),
+                Wootook::__("The fleet has arrived at the coordinates [%1\$s], the settlers succeeded creating your new colony.", $coords));
+
+            $fleet->delete();
+            return;
+        } else {
+            $coords = sprintf('%d:%d:%d', $fleet->getData('fleet_end_galaxy'), $fleet->getData('fleet_end_system'), $fleet->getData('fleet_end_planet'));
+            SendSimpleMessage($player->getId(), null, $fleet['fleet_end_time'], 0,
+                Wootook::__('Colonization'), Wootook::__('Colonization report'),
+                Wootook::__("The fleet has arrived at the coordinates [%1\$s], the settlers failed creating your new colony, no planet was there.", $coords));
+
+            $fleet->goBack();
+            return;
+        }
+    }
+
+    /* back trip */
+    if ($fleet->getArrivalTime()->isEarlier()) {
+        return;
+    }
+
+    $fleet->dock($fleet->getOriginPlanet());
+
+    $coords = sprintf('%d:%d:%d', $fleet->getData('fleet_end_galaxy'), $fleet->getData('fleet_end_system'), $fleet->getData('fleet_end_planet'));
+    SendSimpleMessage($player->getId(), null, $fleet['fleet_end_time'], 0,
+        Wootook::__('Colonization'), Wootook::__('Colonization report'),
+        Wootook::__("The fleet went back from the coordinates [%1\$s], the settlers failed creating your new colony.", $coords));
+    return;
 }
-
-?>

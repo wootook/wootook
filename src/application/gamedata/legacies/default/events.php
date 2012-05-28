@@ -9,13 +9,14 @@
     'register.before' => array(),
     'register.failure' => array(),
     'register.success' => array(),
-    'planet.update' => array(
-        array('Wootook_Empire_Model_Planet', 'planetUpdateListener'),
-        array('Legacies_Empire_Model_Planet_Building_Shipyard', 'planetUpdateListener')
-        ),
     'user.init' => array(),
     'planet.init' => array(
         array('Wootook_Empire_Model_Galaxy_Position', 'initPlanetListerner')
+        ),
+    'planet.update' => array(
+        array('Wootook_Empire_Model_Planet', 'planetUpdateListener'),
+        array('Legacies_Empire_Model_Planet_Building_Shipyard', 'planetUpdateListener'),
+        'flyingFleetListener'
         ),
     'planet.shipyard.check-availability' => array(),
     'planet.shipyard.update-queue.before' => array(),
@@ -34,5 +35,8 @@
         ),
     'planet.research-lab.technology.speed-enhancement' => array(
         array('Legacies_Empire_Model_Player_Technology_IntergalacticResearchNetwork', 'researchTechnologyEnhancementListener')
+        ),
+    'core.mvc.controller.front.pre-dispatch' => array(
+        array('Wootook_Empire_Model_Planet', 'planetChangeListener')
         )
     );

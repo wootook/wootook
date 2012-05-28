@@ -1,7 +1,7 @@
 <?php
 
 class Wootook_Core_Config_Node
-    implements ArrayAccess
+    implements ArrayAccess, Iterator, Countable
 {
     protected $_children = array();
 
@@ -213,5 +213,35 @@ class Wootook_Core_Config_Node
         if ($this->offsetExists($offset)) {
             unset($this->_children[$offset]);
         }
+    }
+
+    public function valid()
+    {
+        return key($this->_children);
+    }
+
+    public function next()
+    {
+        next($this->_children);
+    }
+
+    public function current()
+    {
+        return current($this->_children);
+    }
+
+    public function rewind()
+    {
+        reset($this->_children);
+    }
+
+    public function key()
+    {
+        return key($this->_children);
+    }
+
+    public function count()
+    {
+        return count($this->_children);
     }
 }
