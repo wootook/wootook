@@ -389,6 +389,7 @@ class Wootook
             $adapter = Wootook_Core_Database_ConnectionManager::getSingleton()
                 ->getConnection('core_read');
         } catch (Wootook_Core_Exception_Database_AdapterError $e) {
+            // This may also occur when the pdo_sqlite driver isn't loaded
             self::$isInstalled = false;
             Wootook_Core_ErrorProfiler::getSingleton()->addException($e);
             return $config;

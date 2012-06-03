@@ -165,11 +165,6 @@ class Wootook_Core_Database_ConnectionManager
             $options = array();
         }
 
-        $hostname = $params->hostname;
-        $username = $params->username;
-        $password = $params->password;
-        $database = $params->database;
-
         if (empty($params->hostname) || empty($params->username) || empty($params->database)) {
             return null;
         }
@@ -181,14 +176,10 @@ class Wootook_Core_Database_ConnectionManager
 
         $options = $event->getData('options');
 
-        try {
-            $connection = $this->load($engine, false, array($params, $options));
-        } catch (Wootook_Core_Exception_Database_AdapterError $e) {
-            //Wootook_Core_ErrorProfiler::getSingleton()->addException($e);
-            return null;
-        }
+        $connection = $this->load($engine, false, array($params, $options));
+
         if (!$connection) {
-            throw new Wootook_Core_Exception_DataAccessException('Could not find data connection handler.');
+            throw new Wootook_Core_Exception_Database_AdapterError('Could not find data connection handler.');
         }
 
         if (($prefix = Wootook::getConfig("resource/database/{$connectionName}/table_prefix")) !== null) {

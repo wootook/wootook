@@ -48,7 +48,7 @@ class Wootook_Core_ErrorProfiler
 
     private $_listen = true;
 
-    private $_mute = false;
+    private $_mute = true;
 
     /**
      *
@@ -410,7 +410,9 @@ JS_EOF;
         set_error_handler(array(self::getSingleton(), 'errorManager'));
         set_exception_handler(array(self::getSingleton(), 'exceptionManager'));
 
-        self::getSingleton()->_mute = false;
+        if (defined('DEBUG')) {
+            self::getSingleton()->_mute = false;
+        }
 
         if (self::$_isTraceRegistered === false && defined('DEBUG')) {
             self::$_isTraceRegistered = true;

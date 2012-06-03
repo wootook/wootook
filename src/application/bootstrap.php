@@ -28,9 +28,6 @@
  *
  */
 
-define('DEBUG', true);
-define('DEPRECATION', true);
-
 if (!defined('PHP_VERSION_ID')) {
     $version = explode('.',PHP_VERSION);
     define('PHP_VERSION_ID', (((int)$version[0]) * 10000 + ((int)$version[1]) * 100 + ((int)$version[2])));
@@ -95,7 +92,9 @@ if (defined('IN_ADMIN')) {
 
 include ROOT_PATH . 'includes/constants.php';
 
-Wootook_Core_ErrorProfiler::register();
+if (defined('DEBUG')) {
+    Wootook_Core_ErrorProfiler::register();
+}
 Wootook_Core_Helper_Config_Events::registerEvents();
 
 if (!Wootook::$isInstalled) {
