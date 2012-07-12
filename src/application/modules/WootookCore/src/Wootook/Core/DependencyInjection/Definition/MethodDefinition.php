@@ -108,13 +108,13 @@ class MethodDefinition
             if (is_object($argumentVariable)) {
                 $this->_arguments[$argumentPosition] = $argumentVariable;
             } else {
-                $this->_arguments[$argumentPosition] = &$argumentVariable;
+                $this->_arguments[$argumentPosition] =& $argumentVariable;
             }
         } else if (is_string($argumentPosition) && isset($this->_argumentIndex[$argumentPosition])) {
             if (is_object($argumentVariable)) {
                 $this->_arguments[$this->_argumentIndex[$argumentPosition]] = $argumentVariable;
             } else {
-                $this->_arguments[$this->_argumentIndex[$argumentPosition]] = &$argumentVariable;
+                $this->_arguments[$this->_argumentIndex[$argumentPosition]] =& $argumentVariable;
             }
         } else {
             throw new CoreException\DependencyInjection\InvalidArgumentException('No such argument');
