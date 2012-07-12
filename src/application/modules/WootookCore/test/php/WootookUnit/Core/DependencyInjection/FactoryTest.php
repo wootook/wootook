@@ -32,19 +32,11 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
     {
         $this->_app = $this->getMock('Wootook\\Core\\App\\App', array('__construct'), array(''));
         $this->_registry = new \Wootook\Core\DependencyInjection\Registry($this->_app);
-        $this->_config = new \Wootook\Core\Config\Node(array(
-            'Test\\Foo' => array(
-                'app'       => array('instance' => $this->_app),
-                'std-class' => array('registry' => 'registry-stored-instance')
-                ),
-            'Test\\Bar' => null,
-            'Test\\Baz' => null
-            ));
     }
 
     public function testGetRegistryWhilePassedToConstructor()
     {
-        $object = new \Wootook\Core\DependencyInjection\Factory($this->_app, $this->_config, $this->_registry);
+        $object = new \Wootook\Core\DependencyInjection\Factory($this->_app, $this->_registry);
 
         $this->assertAttributeSame($this->_registry, '_registry', $object);
         $this->assertSame($object->getRegistry(), $this->_registry);
@@ -52,7 +44,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetRegistryWhileNonePassedToConstructor()
     {
-        $object = new \Wootook\Core\DependencyInjection\Factory($this->_app, $this->_config);
+        $object = new \Wootook\Core\DependencyInjection\Factory($this->_app);
 
         $this->assertInstanceOf('Wootook\\Core\\DependencyInjection\\Registry', $object->getRegistry());
         $this->assertAttributeNotEmpty('_registry', $object);
@@ -66,8 +58,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testGetDefinition()
     {
-        $object = new \Wootook\Core\DependencyInjection\Factory($this->_app, $this->_config, $this->_registry);
+        $object = new \Wootook\Core\DependencyInjection\Factory($this->_app, $this->_registry);
 
-        $this->assertInstanceOf('Wootook\\Core\\DependencyInjection\\Definition', $object->getDefinition('Test\\Foo'));
+        $this->assertInstanceOf('Wootook\\Core\\DependencyInjection\\Definition\\ClassDefinition', $object->getClassDefinition('stdClass'));
     }
 }
