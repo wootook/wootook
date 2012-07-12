@@ -2,7 +2,7 @@
 spl_autoload_register(function ($class) {
     static $map;
     if (!$map) {
-        $map = include dirname(dirname(dirname(__DIR__))) . '/autoload_classmap.php';
+        $map = include dirname(__DIR__) . '/autoload_classmap.php';
     }
 
     if (!isset($map[$class])) {
@@ -11,4 +11,4 @@ spl_autoload_register(function ($class) {
     return require $map[$class];
 });
 
-require dirname(dirname(dirname(dirname(dirname(__DIR__))))) . '/code/core/Wootook.php';
+require dirname(dirname(dirname(__DIR__))) . '/code/core/Wootook.php';
