@@ -30,7 +30,7 @@
 
 define('INSIDE' , true);
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/application/bootstrap.php';
+require_once dirname(__FILE__) .'/application/bc.php';
 $labels = Wootook_Empire_Helper_Config_Labels::getSingleton();
 
 //Compteur de flotte en expéditions et nombre d'expédition maximum

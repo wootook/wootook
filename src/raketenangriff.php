@@ -30,7 +30,7 @@
 
 define('INSIDE' , true);
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/application/bootstrap.php';
+require_once dirname(__FILE__) .'/application/bc.php';
 $planet    = doquery("SELECT * FROM {{table}} WHERE `id` = '".$user['current_planet']."';", 'planets', true);
 $iraks = $planet['interplanetary_misil'];
 

@@ -68,7 +68,7 @@ class Legacies_Empire_Block_Planet_Shipyard_Item
 
         $resourceConfig = array();
         foreach ($resources as $resourceId => $resourceValue) {
-            $resourceConfig[$resourceId] = new Wootook_Object(array(
+            $resourceConfig[$resourceId] = new Wootook\Core\BaseObject(array(
                 'resource_id'  => $resourceId,
                 'value'        => $resourceValue
                 ));

@@ -5,7 +5,7 @@
             'header' => array(
                 'children' => array(
                     'navigation' => array(
-                        'type' => 'core/html.navigation',
+                        'type' => 'core/html.navigation.menu',
                         'template' => 'page/html/navigation.phtml',
                         'actions' => array(
                             array(

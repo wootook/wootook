@@ -28,14 +28,19 @@
  *
  */
 
+namespace Wootook\Empire\Block\Planet\Buildings\Queue;
+
+use Wootook\Core,
+Wootook\Empire\Block\Planet\Builder\Queue;
+
 /**
  *
  * Enter description here ...
  * @author Greg
  *
  */
-class Wootook_Empire_Block_Planet_Buildings_Queue_Item
-    extends Wootook_Empire_Block_Planet_Builder_Queue_ItemAbstract
+class Item
+    extends Queue\ItemAbstract
 {
     protected $_itemIdField = 'building_id';
 
@@ -78,7 +83,7 @@ class Wootook_Empire_Block_Planet_Buildings_Queue_Item
 
         $resourceConfig = array();
         foreach ($resources as $resourceId => $resourceValue) {
-            $resourceConfig[$resourceId] = new Wootook_Object(array(
+            $resourceConfig[$resourceId] = new Core\BaseObject($this->app(), array(
                 'resource_id'  => $resourceId,
                 'value'        => $resourceValue
                 ));

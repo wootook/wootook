@@ -31,7 +31,7 @@
 define('INSIDE' , true);
 define('INSTALL' , false);
 define('IN_ADMIN', true);
-require_once dirname(dirname(__FILE__)) .'/application/bootstrap.php';
+require_once dirname(dirname(__FILE__)) .'/application/bc.php';
 
 	if (in_array($user['authlevel'], array(LEVEL_ADMIN))) {
 		includeLang('admin/Queries');

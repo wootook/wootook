@@ -54,7 +54,7 @@ class Legacies_Empire_Model_Planet_Building_ResearchLab_Builder
     {
         $this->_unserializeQueue($this->_currentPlanet->getData(self::FIELD_SERIALIZED));
 
-        $this->_maxLength = Wootook::getGameConfig('engine/core/lab_queue_size');
+        $this->_maxLength = Wootook::app()->getDefaultGame()->getConfig('engine/core/lab_queue_size');
     }
 
     /**
@@ -144,7 +144,7 @@ class Legacies_Empire_Model_Planet_Building_ResearchLab_Builder
         $partialLevelTime = Math::mul($firstLevelTime, Math::pow($prices[$technologyId][Legacies_Empire::RESOURCE_MULTIPLIER], $level));
         $levelTime = Math::sub($partialLevelTime, $firstLevelTime);
 
-        $speedFactor = Wootook::getGameConfig('game/speed/general');
+        $speedFactor = Wootook::app()->getDefaultGame()->getConfig('game/speed/general');
         if ($speedFactor == null) {
             $speedFactor = 1;
         }

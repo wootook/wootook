@@ -62,14 +62,9 @@ function GalaxyRowPlanetName ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $Ga
 		$EndColor  = "";
 	}
 
-    $updateTimeLimit = new Wootook_Core_DateTime();
-    $updateTimeLimit->sub(3600);
-	if ($updateTimeLimit->isLater($GalaxyRowPlanet['last_update']) && $GalaxyRowUser['id'] != $user['id']) {
-        if ($GalaxyRowPlanet['last_update'] instanceof Wootook_Core_DateTime) {
-            $Inactivity = pretty_time_hour(time() - $GalaxyRowPlanet['last_update']->getTimestamp());
-        } else {
-            $Inactivity = pretty_time_hour(0);
-        }
+	if ($GalaxyRowPlanet['last_update'] > (time()-59 * 60) AND
+		$GalaxyRowUser['id'] != $user['id']) {
+		$Inactivity = pretty_time_hour(time() - $GalaxyRowPlanet['last_update']);
 	}
 	if ($GalaxyRow && $GalaxyRowPlanet["destruyed"] == 0) {
 		if ($HavePhalanx <> 0) {
@@ -90,21 +85,18 @@ function GalaxyRowPlanetName ( $GalaxyRow, $GalaxyRowPlanet, $GalaxyRowUser, $Ga
 
 		$Result .= $TextColor . $PhalanxTypeLink . $EndColor;
 
-        if ($GalaxyRowUser->getId() && $updateTimeLimit->isLater($GalaxyRowPlanet['last_update']) &&
-            $GalaxyRowUser['id'] != $user['id']) {
-
-            $updateTimeLimit = new Wootook_Core_DateTime();
-            $updateTimeLimit->sub(600);
-            if ($GalaxyRowUser->getId() && $updateTimeLimit->isLater($GalaxyRowPlanet['last_update']) &&
-                $GalaxyRowUser['id']            != $user['id']) {
-                $Result .= "(*)";
-            } else {
-                $Result .= " (".$Inactivity.")";
-            }
-        }
-    } elseif ($GalaxyRowPlanet["destruyed"] != 0) {
-        $Result .= $lang['gl_destroyedplanet'];
-    }
+		if ($GalaxyRowPlanet['last_update']  > (time()-59 * 60) AND
+			$GalaxyRowUser['id']            != $user['id']) {
+			if ($GalaxyRowPlanet['last_update']  > (time()-10 * 60) AND
+				$GalaxyRowUser['id']            != $user['id']) {
+				$Result .= "(*)";
+			} else {
+				$Result .= " (".$Inactivity.")";
+			}
+		}
+	} elseif ($GalaxyRowPlanet["destruyed"] != 0) {
+		$Result .= $lang['gl_destroyedplanet'];
+	}
 
 	$Result .= "</th>";
 

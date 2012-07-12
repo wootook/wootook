@@ -18,7 +18,7 @@ input[type=submit],input[type=button] {height:2em;border:#58939f 0 solid;border-
 
 .global {}
 
-.global .header .navigation-container {width:100%;margin:0;height:60px;background-color:#58939f;background-image:linear-gradient(center top, #58939F 0, #78B3BF 55px);background-image:-moz-linear-gradient(center top, #58939F 0, #78B3BF 55px);background-image:-o-linear-gradient(center top, #58939F 0, #78B3BF 55px);background-image:-webkit-linear-gradient(center top, #58939F 0, #78B3BF 55px);background-image:-ie-linear-gradient(center top, #58939F 0, #78B3BF 55px);}
+.global .header .navigation-container {width:100%;margin:0;height:60px;background-color:#58939f;background-image:-moz-linear-gradient(center top, #58939F 0, #78B3BF 55px);background-image:-o-linear-gradient(center top, #58939F 0, #78B3BF 55px);background-image:-webkit-linear-gradient(center top, #58939F 0, #78B3BF 55px);background-image:-ie-linear-gradient(center top, #58939F 0, #78B3BF 55px);background-image:linear-gradient(center top, #58939F 0, #78B3BF 55px);}
 .global .header .navigation {margin:0 auto;width:600px;height:60px;display:block;padding:0 30px;position:relative;}
 .global .header .navigation .last {float:left;width:100%;}
 .global .header .navigation .navigation-node {margin:0 0 5px;height:30px;width:120px;color:#FFF;float:left;border-radius:15px;}
@@ -30,7 +30,7 @@ input[type=submit],input[type=button] {height:2em;border:#58939f 0 solid;border-
 .global .header .navigation .navigation-link a:hover {color:#000;background:#FFF;}
 
 .global .header .planet-carrousel {width:100%;height:110px;border:none;padding:0;color:#000;font-weight:bold;background:#FFF;}
-.global .header .planet-carrousel .end {height:9px;border-bottom:1px solid #000;background-color:#58939F;background-image:linear-gradient(center top, #78B3BF 0, #58939F 5px);background-image:-moz-linear-gradient(center top, #78B3BF 0, #58939F 5px);background-image:-o-linear-gradient(center top, #78B3BF 0, #58939F 5px);background-image:-webkit-linear-gradient(center top, #78B3BF 0, #58939F 5px);background-image:-ie-linear-gradient(center top, #78B3BF 0, #58939F 5px);}
+.global .header .planet-carrousel .end {height:9px;border-bottom:1px solid #000;background-color:#58939F;background-image:-moz-linear-gradient(center top, #78B3BF 0, #58939F 5px);background-image:-o-linear-gradient(center top, #78B3BF 0, #58939F 5px);background-image:-webkit-linear-gradient(center top, #78B3BF 0, #58939F 5px);background-image:-ie-linear-gradient(center top, #78B3BF 0, #58939F 5px);background-image:linear-gradient(center top, #78B3BF 0, #58939F 5px);}
 .global .header .planet-carrousel .items {width:900px;height:100px;overflow:hidden;margin:0 auto;}
 .global .header .planet-carrousel div.planet {color:#000;height:100px;width:100px;float:left;}
 .global .header .planet-carrousel .selected {background-color:#58939f;}
@@ -118,29 +118,31 @@ input[type=submit],input[type=button] {height:2em;border:#58939f 0 solid;border-
 .overview .global .container .left .item-container {width:200px;}
 .overview .global .container .content .item-container {width:440px;}
 
+.galaxy .details {padding:5px 10px;border-radius:5px;width:300px;background:#FFF;z-index:999;display:none;position:relative;left:-30px;top:-10px;border:3px solid #58939f;border-left-width:15px;}
+
 /**
  * Public pages
  */
 body.public-form {width:100%;height:100%;}
-body.public-form .main-form {display:block;margin:0 auto;padding:0;width:300px;border-radius:5px;background:rgba(255,255,255,.8);border:5px solid #58939f;background-image:-moz-linear-gradient(top,#AAA 0,#FFF 100%);background-image:linear-gradient(top,#AAA 0,#FFF 100%);}
+body.public-form .main-form {display:block;margin:0 auto;padding:0;width:300px;border-radius:5px;background:rgba(255,255,255,.8);border:5px solid #58939f;background-image:-moz-linear-gradient(top,#AAA 0,#FFF 100%);background-image:-o-linear-gradient(top,#AAA 0,#FFF 100%);background-image:-webkit-linear-gradient(top,#AAA 0,#FFF 100%);background-image:-ie-linear-gradient(top,#AAA 0,#FFF 100%);background-image:linear-gradient(top,#AAA 0,#FFF 100%);}
 body.public-form #login-form {height:230px;}
 body.public-form #lost-password-form {height:170px;}
-body.public-form #register-form {height:390px;}
+body.public-form #register-form {height:350px;}
 body.public-form .main-form fieldset {border:none;margin:0;padding:0;}
 body.public-form #login-form fieldset legend,
 body.public-form #lost-password-form fieldset legend {display:block;width:280px;height:30px;background:#58939f;color:#FFF;font-weight:bold;font-size:2em;padding:0 10px;margin-bottom:10px;}
 body.public-form #register-form h1 {display:block;width:280px;height:30px;background:#58939f;color:#FFF;font-weight:bold;font-size:2em;padding:0 10px;margin:0 0 10px;}
-body.public-form #register-form fieldset legend {display:block;width:280px;height:15px;font-weight:bold;font-size:1.5em;padding:0 10px;margin:10px 0 5px;}
+body.public-form #register-form fieldset legend {display:block;width:280px;height:15px;font-weight:bold;font-size:1.5em;padding:0 10px;}
 body.public-form .main-form input[type="button"],
 body.public-form .main-form input[type="text"],
 body.public-form .main-form input[type="password"] {border-width:1px;}
-body.public-form .main-form p.form {margin:0;padding:0;height:30px;width:300px;float:left;}
+body.public-form .main-form p.form {margin:10px 0 0;padding:0;height:20px;width:300px;float:left;}
 body.public-form .main-form p.lost-password {margin:0;padding:0;height:30px;width:300px;float:left;text-align:center;}
 body.public-form .main-form p.form label {margin:0;padding:0 10px;text-align:right;width:150px;height:30px;float:left;display:block;}
 body.public-form .main-form p.form input {margin:0;padding:0;width:120px;}
 body.public-form .main-form p.checkbox input {margin:0;padding:0;width:20px;}
 body.public-form .main-form p.submit input {margin:0 100px;padding:0;text-align:center;}
-body.public-form #lost-password-form p.submit input {margin:0 75px;}
+body.public-form #lost-password-form p.submit input {margin:0 15px;width:270px;}
 
 body.public .content .public-topbar {background:#FFF;border-bottom:5px solid #000;margin:0;height:30px;padding:0 10px;width:100%;background:rgba(0,0,0,.1);}
 body.public .content .public-topbar .container {margin:0 auto;width:780px;}

@@ -30,7 +30,7 @@
 
 define('INSIDE' , true);
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/application/bootstrap.php';
+require_once dirname(__FILE__) .'/application/bc.php';
 
 $cacheFile = ROOT_PATH . '/cache/' . basename(__FILE__) . '.cache';
 $timeDelay = 21600; // 21600s = 6h

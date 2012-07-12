@@ -28,10 +28,12 @@
  *
  */
 
+namespace Wootook;
+
 /**
  *
  * Enter description here ...
  * @author Greg
  *
  */
-interface Wootook_Exception {}
+interface Exception {}

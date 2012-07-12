@@ -1,8 +1,36 @@
 <?php
+/**
+ * This file is part of Wootook
+ *
+ * @license http://www.gnu.org/licenses/agpl-3.0.txt
+ * @see http://wootook.org/
+ *
+ * Copyright (c) 2011-Present, Grégory PLANCHAT <g.planchat@gmail.com>
+ * All rights reserved.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *                                --> NOTICE <--
+ *  This file is part of the core development branch, changing its contents will
+ * make you unable to use the automatic updates manager. Please refer to the
+ * documentation for further information about customizing Wootook.
+ *
+ */
 
 /**
  *
- * @uses Wootook_Object
+ * @uses Wootook\Core\BaseObject
  * @uses Legacies_Empire
  * @uses Wootook_Player_Model_Entity
  */
@@ -164,7 +192,7 @@ class Wootook_Empire_Model_Planet
             break;
         }
 
-        throw new Wootook_Core_Exception_RuntimeException(Wootook::__('Undefined method %s::%s.', get_class($this), $method));
+        throw new Wootook_Core_Exception_RuntimeException(\Wootook::__('Undefined method %s::%s.', get_class($this), $method));
     }
 
     /**
@@ -220,7 +248,7 @@ class Wootook_Empire_Model_Planet
 
             $storageSize = Math::add(BASE_STORAGE_SIZE, $storageEnhancement);
 
-            $event = Wootook::dispatchEvent($this->_eventPrefix . 'update-storage.resource', array(
+            $event = \Wootook::dispatchEvent($this->_eventPrefix . 'update-storage.resource', array(
                 'resource_id'     => $resource,
                 'resource_data'   => $resourceData,
                 'default_size'    => $storageSize,
@@ -269,7 +297,7 @@ class Wootook_Empire_Model_Planet
         }
 
         if ($this->getPlayer()->isVacation()) {
-            $resourceConfig = Wootook::getGameConfig('resource/base-income');
+            $resourceConfig = \Wootook::app()->getDefaultGame()->getConfig('resource/base-income');
             foreach ($resources->getAllDatas() as $resource => $resourceData) {
                 $this->setData($resourceData['production_field'], $resourceConfig[$resource]);
             }
@@ -362,7 +390,7 @@ class Wootook_Empire_Model_Planet
         }
 
         // Dispatch 'planet.update-production.before' event
-        Wootook::dispatchEvent($this->_eventPrefix . '.update-production.before', array(
+        \Wootook::dispatchEvent($this->_eventPrefix . '.update-production.before', array(
             $this->_eventObject => $this,
             'player'            => $this->getPlayer(),
             'productions'       => $actualProduction
@@ -378,7 +406,7 @@ class Wootook_Empire_Model_Planet
         }
 
         // Dispatch 'planet.update-production.after' event
-        Wootook::dispatchEvent($this->_eventPrefix . '.update-production.after', array(
+        \Wootook::dispatchEvent($this->_eventPrefix . '.update-production.after', array(
             $this->_eventObject => $this,
             'player'            => $this->getPlayer()
             ));
@@ -616,16 +644,16 @@ class Wootook_Empire_Model_Planet
         }
 
         if ($this->isDestroyed()) {
-            throw new Wootook_Empire_Exception_Planet(Wootook::__('Planet is already destroyed.'));
+            throw new Wootook_Empire_Exception_Planet(\Wootook::__('Planet is already destroyed.'));
         }
 
         if ($this->getFleetCollection()->count() > 0) {
-            throw new Wootook_Empire_Exception_Planet(Wootook::__("Could not delete planet until fleets aten't retuned."));
+            throw new Wootook_Empire_Exception_Planet(\Wootook::__("Could not delete planet until fleets aten't retuned."));
         }
 
         $player = $this->getPlayer();
         if ($player->getHomePlanet()->getId() == $this->getId()) {
-            throw new Wootook_Empire_Exception_Planet(Wootook::__("You can't destroy your home planet."));
+            throw new Wootook_Empire_Exception_Planet(\Wootook::__("You can't destroy your home planet."));
         }
 
         if ($player->getCurrentPlanet()->getId() == $this->getId()) {
@@ -695,7 +723,7 @@ class Wootook_Empire_Model_Planet
         }
 
         // Dispatch 'planet.building.append-queue.before' event
-        Wootook::dispatchEvent($this->_eventPrefix . '.building.append-queue.before', array(
+        \Wootook::dispatchEvent($this->_eventPrefix . '.building.append-queue.before', array(
             'bulding_id'        => $buildingId,
             'level'             => $this->getElement($buildingId),
             $this->_eventObject => $this,
@@ -712,7 +740,7 @@ class Wootook_Empire_Model_Planet
         $this->getBuildingQueue()->appendQueue($buildingId, $level, $time);
 
         // Dispatch 'planet.shipyard.append-queue.after' event
-        Wootook::dispatchEvent($this->_eventPrefix . '.building.append-queue.after', array(
+        \Wootook::dispatchEvent($this->_eventPrefix . '.building.append-queue.after', array(
             'bulding_id'        => $buildingId,
             'level'             => $this->getElement($buildingId),
             $this->_eventObject => $this,
@@ -730,7 +758,7 @@ class Wootook_Empire_Model_Planet
         }
 
         // Dispatch event
-        Wootook::dispatchEvent($this->_eventPrefix . '.update-queue.before', array(
+        \Wootook::dispatchEvent($this->_eventPrefix . '.update-queue.before', array(
             'time'              => &$time,
             $this->_eventObject => $this,
             'player'            => $this->getPlayer()
@@ -739,7 +767,7 @@ class Wootook_Empire_Model_Planet
         $this->getBuildingQueue()->updateQueue($time);
 
         // Dispatch event
-        Wootook::dispatchEvent($this->_eventPrefix . '.update-queue.after', array(
+        \Wootook::dispatchEvent($this->_eventPrefix . '.update-queue.after', array(
             'time'              => $time,
             $this->_eventObject => $this,
             'player'            => $this->getPlayer()
@@ -815,7 +843,7 @@ class Wootook_Empire_Model_Planet
 
         try {
             // Dispatch event. Throw an exception to break the avaliability.
-            Wootook::dispatchEvent($this->_eventPrefix . '.check-availability', array(
+            \Wootook::dispatchEvent($this->_eventPrefix . '.check-availability', array(
                 'ship_id'           => $buildingId,
                 'shipyard'          => $this,
                 $this->_eventObject => $this,
@@ -865,8 +893,8 @@ class Wootook_Empire_Model_Planet
             ->group('galaxy.system')
         ;
 
-        if ($galaxyList === null && Wootook::getGameConfig('user/registration/galaxy_list')) {
-            $galaxyList = explode(',', Wootook::getGameConfig('user/registration/galaxy_list'));
+        if ($galaxyList === null && \Wootook::app()->getDefaultGame()->getConfig('user/registration/galaxy_list')) {
+            $galaxyList = explode(',', \Wootook::app()->getDefaultGame()->getConfig('user/registration/galaxy_list'));
         }
 
         if ($galaxyList !== null) {
@@ -874,8 +902,8 @@ class Wootook_Empire_Model_Planet
             $select->where('galaxy', array(array(Wootook_Core_Database_Sql_Select::OPERATOR_IN => $galaxyList)));
         }
 
-        if ($systemList === null && Wootook::getGameConfig('user/registration/system_list')) {
-            $systemList = explode(',', Wootook::getGameConfig('user/registration/system_list'));
+        if ($systemList === null && \Wootook::app()->getDefaultGame()->getConfig('user/registration/system_list')) {
+            $systemList = explode(',', \Wootook::app()->getDefaultGame()->getConfig('user/registration/system_list'));
         }
 
         if ($systemList !== null) {
@@ -884,15 +912,15 @@ class Wootook_Empire_Model_Planet
         }
 
         $orders = array(
-            "COUNT(*) / {$adapter->quote(Wootook::getGameConfig('engine/universe/positions'))}",
-            "1 + ABS(galaxy.galaxy - CEIL({$adapter->quote(Wootook::getGameConfig('engine/universe/galaxies'))} / 2))",
-            "1 + 2 * ABS(galaxy.system - CEIL({$adapter->quote(Wootook::getGameConfig('engine/universe/systems'))} / 2))",
+            "COUNT(*) / {$adapter->quote(\Wootook::app()->getDefaultGame()->getConfig('engine/universe/positions'))}",
+            "1 + ABS(galaxy.galaxy - CEIL({$adapter->quote(\\Wootook::app()->getDefaultGame()->getConfig('engine/universe/galaxies'))} / 2))",
+            "1 + 2 * ABS(galaxy.system - CEIL({$adapter->quote(\\Wootook::app()->getDefaultGame()->getConfig('engine/universe/systems'))} / 2))",
             "RAND() / 1000",
             );
         $select
             ->order(new Wootook_Core_Database_Sql_Placeholder_Expression('((' . implode(') * (', $orders) . '))'), 'ASC')
-            //->order("ABS(galaxy.system - CEIL({$collection->quote(Wootook::getGameConfig('engine/universe/systems'))} / 2))", 'ASC')
-            //->order("ABS(galaxy.galaxy - CEIL({$collection->quote(Wootook::getGameConfig('engine/universe/galaxies'))} / 2))", 'ASC')
+            //->order("ABS(galaxy.system - CEIL({$collection->quote(\\Wootook::app()->getDefaultGame()->getConfig('engine/universe/systems'))} / 2))", 'ASC')
+            //->order("ABS(galaxy.galaxy - CEIL({$collection->quote(\\Wootook::app()->getDefaultGame()->getConfig('engine/universe/galaxies'))} / 2))", 'ASC')
             //->order("1.5 / COUNT(*)", 'ASC')
             ->order('RAND()', 'ASC');
 

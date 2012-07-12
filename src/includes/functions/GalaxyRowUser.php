@@ -80,12 +80,12 @@ function GalaxyRowUser($currentPlanet, $currentPlayer) {
     }
     $pastDate = new Wootook_Core_DateTime();
     $pastDate->sub(8, Wootook_Core_DateTime::DAY);
-    if ($pastDate->isLater($currentPlayer->getLastLoginDate())) {
+    if ($currentPlayer->getData('onlinetime')->isEarlier($pastDate)) {
         $classes['inactive'] = 'i';
     }
 
     $pastDate->sub(22, Wootook_Core_DateTime::DAY);
-    if ($pastDate->isLater($currentPlayer->getLastLoginDate())) {
+    if ($currentPlayer->getData('onlinetime')->isEarlier($pastDate)) {
         $classes['long-inactive'] = 'I';
     }
     if ($currentPlayer->isAuthorized(LEVEL_ADMIN)) {

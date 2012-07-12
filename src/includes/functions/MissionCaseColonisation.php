@@ -91,6 +91,8 @@ function MissionCaseColonisation($fleet)
         }
 
         if (mt_rand(0, 100) >= 75) {
+            $position = $fleet->getData('fleet_end_planet');
+
             $baseSize = Wootook::getGameConfig('planet/initial/fields');
             $factor = 2 * $position / (1 + log($position));
             $fuzz = 2 * $factor * pow(sin($factor), 2) / 2 + $factor / 4;

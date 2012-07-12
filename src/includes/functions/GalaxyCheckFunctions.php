@@ -31,27 +31,29 @@
 /**
  *
  * @deprecated
- * @param unknown_type $lunarow
+ * @param Wootook_Empire_Model_Planet $moon
  */
-function CheckAbandonMoonState ($lunarow) {
-	if (($lunarow['destruyed'] + 172800) <= time() && $lunarow['destruyed'] != 0) {
-		$query = doquery("DELETE FROM {{table}} WHERE id = '" . $lunarow['id'] . "'", "lunas");
-	}
+function CheckAbandonMoonState($moon)
+{
+    if ($moon->isErasable()) {
+        $moon->getGalaxyData()->setData('id_luna', 0)->save();
+        $moon->delete();
+    }
 }
 
 /**
- * Suppression complete d'une planete
+ * Suppression complete d'une planète
  *
+ * @param Wootook_Empire_Model_Planet
  * @deprecated
  */
-function CheckAbandonPlanetState (&$planet) {
-    trigger_error(sprintf('%s is deprecated', __FUNCTION__), E_USER_DEPRECATED);
-	if ($planet['destruyed'] <= time()) {
-		$id = $planet['id'];
-		doquery("DELETE FROM {{table}} WHERE id={$id}", 'planets');
-		doquery("DELETE FROM {{table}} WHERE id_planet={$id}", 'galaxy');
-	}
+function CheckAbandonPlanetState(Wootook_Empire_Model_Planet $planet)
+{
+    if ($planet->isErasable()) {
+        $planet->getGalaxyData()->delete();
+        if ($moon = $planet->getMoon()) {
+            $moon->delete();
+        }
+        $planet->delete();
+    }
 }
-
-
-?>

@@ -40,7 +40,7 @@
  *
  */
 define('DISABLE_IDENTITY_CHECK', true);
-require_once dirname(dirname(__FILE__)) . '/application/bootstrap.php';
+require_once dirname(dirname(__FILE__)) . '/application/bc.php';
 
 define('FONT_FILE', dirname(__FILE__) . '/resources/fonts/visitor/visitor.ttf');
 define('BACKGROUND_FILE', dirname(__FILE__) . '/resources/backgrounds/default.png');

@@ -32,7 +32,7 @@ define('INSIDE' , true);
 define('INSTALL' , false);
 define('IN_ADMIN', true);
 
-require_once dirname(dirname(__FILE__)) .'/application/bootstrap.php';
+require_once dirname(dirname(__FILE__)) .'/application/bc.php';
 
 $user = Wootook_Player_Model_Session::getSingleton()->getPlayer();
 

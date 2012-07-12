@@ -30,7 +30,7 @@
 
 define('INSIDE' , true);
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/application/bootstrap.php';
+require_once dirname(__FILE__) .'/application/bc.php';
 	$HeadTpl = gettemplate('techtree_head');
 	$RowTpl  = gettemplate('techtree_row');
 	foreach($lang['tech'] as $Element => $ElementName) {

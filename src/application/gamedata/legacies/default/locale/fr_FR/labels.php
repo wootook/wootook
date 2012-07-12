@@ -22,13 +22,13 @@
 
     Legacies_Empire::ID_BUILDING_SOLAR_PLANT => array(
         'name'        => 'Centrale électrique solaire',
-        'description' => "<p>La <strong>centrale électrique solaire</strong> est la source d'énergie la plus abordable.</p><p></p>",
+        'description' => "<p>La <strong>centrale électrique solaire</strong> est la source d'énergie la plus abordable.</p><p>Elle puise sa source des étoiles les plus proches de la planète sur laquelle elle est implantée. De ce fait, les planètes les plus proches du centre du système solaires produiront une plus grande quantité d'énergie que les planètes les plus éloignées.</p>",
         'image'       => 'medias/klore/images/building/solar-plant.jpg'
         ),
 
     Legacies_Empire::ID_BUILDING_FUSION_REACTOR => array(
         'name'        => 'Réacteur à fusion nucléaire',
-        'description' => "<p>Fruit de longues décénnies de recherche, le <strong>réacteur à fusion nucléaire</strong> est désormais une source d'énergie rentable.</p><p>Nourrie par l'énergie engendrée par la fusion des isotopes d'hydrogène, cette centrale génère plus d'énergie que toutes les autres sources d'énergie. La contrepartie à cette surgénération d'énergie, est son côut en deutérium.</p>",
+        'description' => "<p>Fruit de longues décénnies de recherche, le <strong>réacteur à fusion nucléaire</strong> est désormais une source d'énergie rentable.</p><p>Nourrie par l'énergie engendrée par la fusion des isotopes d'hydrogène, cette centrale génère plus d'énergie que toutes les autres sources d'énergie disponibles aujourd'hui. La contrepartie à cette surgénération d'énergie est son côut en deutérium.</p>",
         'image'       => 'medias/klore/images/building/fusion-reactor.jpg'
         ),
 

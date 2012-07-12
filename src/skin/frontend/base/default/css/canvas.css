@@ -1,0 +1,120 @@
+
+.transform-h-x {
+    -webkit-transform: matrix(1.42,0,0,0.71,0,0) rotate(45deg);
+    -moz-transform: matrix(1.42,0,0,0.71,0,0) rotate(45deg);
+    transform: matrix(1.42,0,0,0.71,0,0) rotate(45deg);
+}
+.transform-v-z {
+    -webkit-transform: matrix(1,-0.5,0,1,0,0);
+    -moz-transform: matrix(1,-0.5,0,1,0,0);
+    transform: matrix(1,-0.5,0,1,0,0);
+}
+.transform-v-x {
+    -webkit-transform: matrix(1,0.5,0,1,0,0);
+    -moz-transform: matrix(1,0.5,0,1,0,0);
+    transform: matrix(1,0.5,0,1,0,0);
+}
+.block {
+    background: url("../testing/test/futurb.png");
+    width: 16px;
+    height: 16px;
+    position: fixed;
+}
+
+.background-far {
+    background: url("../testing/floor-pattern/background.jpg");
+    width: 1024px;
+    height: 1024px;
+    position: fixed;
+    overflow: hidden;
+}
+.background-near {
+    background: url("../testing/floor-pattern/texture-cloud.png");
+    width: 1024px;
+    height: 1024px;
+    position: fixed;
+    overflow: hidden;
+}
+.block-techno-purple-north-west {
+    background-position: -96px -144px;
+}
+.block-techno-purple-north {
+    background-position: -112px -144px;
+}
+.block-techno-purple-north-east {
+    background-position: -128px -144px;
+}
+.block-techno-purple-west {
+    background-position: -96px -160px;
+}
+.block-techno-purple-center {
+    background-position: -112px -160px;
+}
+.block-techno-purple-east {
+    background-position: -128px -160px;
+}
+.block-techno-purple-south-west {
+    background-position: -96px -176px;
+}
+.block-techno-purple-south {
+    background-position: -112px -176px;
+}
+.block-techno-purple-south-east {
+    background-position: -128px -176px;
+}
+
+.block-techno-gray-north-west {
+    background-position: -144px -144px;
+}
+.block-techno-gray-north {
+    background-position: -160px -144px;
+}
+.block-techno-gray-north-east {
+    background-position: -176px -144px;
+}
+.block-techno-gray-west {
+    background-position: -144px -160px;
+}
+.block-techno-gray-center {
+    background-position: -160px -160px;
+}
+.block-techno-gray-east {
+    background-position: -176px -160px;
+}
+.block-techno-gray-south-west {
+    background-position: -144px -176px;
+}
+.block-techno-gray-south {
+    background-position: -160px -176px;
+}
+.block-techno-gray-south-east {
+    background-position: -176px -176px;
+}
+
+.block-grass-north-west {
+    background-position: -0px -80px;
+}
+.block-grass-north {
+    background-position: -48px -80px;
+}
+.block-grass-north-east {
+    background-position: -96px -80px;
+}
+.block-grass-west {
+    background-position: -0px -144px;
+}
+.block-grass-center {
+    background-position: -48px -144px;
+}
+.block-grass-east {
+    background-position: -96px -144px;
+}
+.block-grass-south-west {
+    background-position: -0px -268px;
+}
+.block-grass-south {
+    background-position: -48px -268px;
+}
+.block-grass-south-east {
+    background-position: -96px -268px;
+}

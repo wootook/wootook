@@ -31,7 +31,7 @@
 define('INSIDE' , true);
 define('INSTALL' , false);
 define('DISABLE_IDENTITY_CHECK', true);
-require_once dirname(__FILE__) .'/application/bootstrap.php';
+require_once dirname(__FILE__) .'/application/bc.php';
 
 	includeLang('contact');
 

@@ -16,3 +16,6 @@ SetEnv DEPRECATION On
     RewriteCond %{REQUEST_FILENAME} !-l
     RewriteRule .* index.php [L]
 </IfModule>
+
+# OVH.com
+SetEnv PHP_VER 5_4

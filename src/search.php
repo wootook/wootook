@@ -30,7 +30,7 @@
 
 define('INSIDE' , true);
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/application/bootstrap.php';
+require_once dirname(__FILE__) .'/application/bc.php';
 
 $searchtext = mysql_escape_string($_POST['searchtext']);
 $type = $_POST['type'];

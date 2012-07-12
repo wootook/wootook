@@ -28,6 +28,9 @@
  *
  */
 
+define('DEBUG', true);
+define('DEPRECATION', true);
+
 if (!defined('PHP_VERSION_ID')) {
     $version = explode('.',PHP_VERSION);
     define('PHP_VERSION_ID', (((int)$version[0]) * 10000 + ((int)$version[1]) * 100 + ((int)$version[2])));
@@ -67,97 +70,12 @@ defined('PHPEXT') || define('PHPEXT', 'php');
 defined('VERSION') || define('VERSION', '1.5.0-beta2');
 
 set_include_path(implode(PATH_SEPARATOR, array(
-    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'libraries',
-    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'local',
-    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'community',
-    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'code' . DIRECTORY_SEPARATOR . 'core',
+    APPLICATION_PATH . DIRECTORY_SEPARATOR . 'modules',
     get_include_path()
     )));
 
-function __autoload($class) {
-    include_once str_replace('_', '/', $class) . '.php';
-}
+include APPLICATION_PATH . 'code' . DIRECTORY_SEPARATOR . 'core' . DIRECTORY_SEPARATOR . 'Wootook.php';
+include 'WootookCore' . DIRECTORY_SEPARATOR . 'autoload_register.php';
 
-if (defined('IN_ADMIN')) {
-    $website = new Wootook_Core_Model_Website();
-    $website->setId(0)->setData('code', 'admin');
-    Wootook::addWebsite($website);
-    Wootook::setDefaultWebsite($website);
-
-    $game = new Wootook_Core_Model_Game();
-    $game->setId(0)->setData('code', 'admin')->setData('website_id', $website->getId());
-    Wootook::addGame($game);
-    Wootook::setDefaultGame($game);
-}
-
-include ROOT_PATH . 'includes/constants.php';
-
-if (defined('DEBUG')) {
-    Wootook_Core_ErrorProfiler::register();
-}
-Wootook_Core_Helper_Config_Events::registerEvents();
-
-if (!Wootook::$isInstalled) {
-    Wootook::getResponse()
-        ->setRedirect(Wootook::getStaticUrl('install/'), Wootook_Core_Mvc_Controller_Response_Http::REDIRECT_TEMPORARY)
-        ->sendHeaders();
-    exit(0);
-}
-
-$lang = array();
-
-define('DEFAULT_LANG', 'fr');
-
-include(ROOT_PATH . 'includes/functions.' . PHPEXT);
-include(ROOT_PATH . 'includes/unlocalised.' . PHPEXT);
-include(ROOT_PATH . 'includes/todofleetcontrol.' . PHPEXT);
-include(ROOT_PATH . 'language/' . DEFAULT_LANG . '/lang_info.cfg');
-include(ROOT_PATH . 'includes/vars.' . PHPEXT);
-include(ROOT_PATH . 'includes/strings.' . PHPEXT);
-
-$user = Wootook_Player_Model_Session::getSingleton()->getPlayer();
-
-if (!defined('DISABLE_IDENTITY_CHECK')) {
-    if ($user === null || !$user->getId()) {
-        Wootook::getResponse()
-            ->setRedirect(Wootook::getUrl('player/account/login'))
-            ->sendHeaders();
-        exit(0);
-    }
-
-    //var_dump(Wootook::getGameConfig('game/general/active'));
-    if (!Wootook::getGameConfig('game/general/active')/* && !in_array($user->getData('authlevel'), array(LEVEL_ADMIN, LEVEL_MODERATOR, LEVEL_OPERATOR))*/) {
-        $layout = new Wootook_Core_Model_Layout(Wootook_Core_Model_Layout::DOMAIN_FRONTEND);
-        $layout->load('message');
-
-        $block = $layout->getBlock('message');
-        $block['title'] = Wootook::__('Game is disabled.');
-        $block['message'] = Wootook::getGameConfig('game/general/closing-message');
-
-        echo $layout->render();
-        exit(0);
-    }
-}
-
-includeLang('system');
-includeLang('tech');
-
-if (($user !== null && $user->getId())) {
-    if (isset($_GET['cp']) && !empty($_GET['cp'])) {
-        $user->updateCurrentPlanet((int) $_GET['cp']);
-    }
-
-    $planet = $user->getCurrentPlanet();
-
-    foreach ($user->getPlanetCollection() as $userPlanet) {
-        FlyingFleetHandler($userPlanet); // TODO: implement logic into a refactored model
-    }
-
-    /*
-     * Update planet resources and constructions
-     */
-    Wootook::dispatchEvent('planet.update', array(
-        'planet' => $planet
-        ));
-    $planet->save();
-}
+Wootook\Core\Profiler\ErrorProfiler::register();
+Wootook\Core\Helper\Config\Events::registerEvents();

@@ -30,7 +30,7 @@
 
 define('INSIDE' , true);
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/application/bootstrap.php';
+require_once dirname(__FILE__) .'/application/bc.php';
 // Recup des variables
 $Attaquant = $_GET['current'];
 $NbreMip   = $_POST['SendMI'];

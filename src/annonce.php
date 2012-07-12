@@ -30,7 +30,7 @@
 
 define('INSIDE' , true);
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/application/bootstrap.php';
+require_once dirname(__FILE__) .'/application/bc.php';
 
 $readAdapter = Wootook_Core_Database_ConnectionManager::getSingleton()->getConnection('core_read');
 $writeAdapter = Wootook_Core_Database_ConnectionManager::getSingleton()->getConnection('core_write');

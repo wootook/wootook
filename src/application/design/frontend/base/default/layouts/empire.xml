@@ -2,7 +2,7 @@
 <layout version="1.0">
     <handle name="empire">
         <reference name="header">
-            <block name="navigation" type="core/html.navigation" template="page/html/navigation.phtml">
+            <block name="navigation" type="core/html.navigation.menu" template="page/html/navigation.phtml">
                 <action method="setNodeTitle">
                     <param name="path">planet</param>
                     <param name="title">Planet</param>

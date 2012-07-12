@@ -30,7 +30,7 @@
 
 define('INSIDE' , true);
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/application/bootstrap.php';
+require_once dirname(__FILE__) .'/application/bc.php';
 
 includeLang('galaxy');
 
@@ -140,7 +140,7 @@ if ($mode == 2) {
     $page .= ShowGalaxyMISelector($galaxy, $system, $planet, $CurrentPlanet['id'], $CurrentMIP);
 }
 
-$page .= "<table width=569><tbody>";
+$page .= '<table width="569" class="galaxy"><tbody>';
 
 $page .= ShowGalaxyTitles($galaxy, $system);
 $page .= ShowGalaxyRows($galaxy, $system);

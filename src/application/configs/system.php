@@ -52,7 +52,7 @@
                 ),
             'home' => array(
                 'title' => 'Welcome on Wootook!',
-                'formated-welcome-text' => '<p><strong>Wootook</strong> make you an emperor.</p><p>Conquer outer space and master other players on <strong>Wootook</strong>.</p>'
+                'formatted-welcome-text' => '<p><strong>Wootook</strong> make you an emperor.</p><p>Conquer outer space and master other players on <strong>Wootook</strong>.</p>'
                 )
             )
         ),

@@ -10,9 +10,7 @@
     'register.failure' => array(),
     'register.success' => array(),
     'user.init' => array(),
-    'planet.init' => array(
-        array('Wootook_Empire_Model_Galaxy_Position', 'initPlanetListerner')
-        ),
+    'planet.init' => array(),
     'planet.update' => array(
         array('Wootook_Empire_Model_Planet', 'planetUpdateListener'),
         array('Legacies_Empire_Model_Planet_Building_Shipyard', 'planetUpdateListener'),

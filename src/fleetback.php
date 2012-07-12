@@ -13,7 +13,7 @@ Last revision: 13/07/11
 
 define('INSIDE' , true);
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/application/bootstrap.php';
+require_once dirname(__FILE__) .'/application/bc.php';
 includeLang('fleet');
 
 $BoxTitle   = $lang['fl_error'];

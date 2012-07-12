@@ -30,7 +30,7 @@
 
 define('INSIDE' , true);
 define('INSTALL' , false);
-require_once dirname(__FILE__) .'/application/bootstrap.php';
+require_once dirname(__FILE__) .'/application/bc.php';
 
 // ----------------------------------------------------------------------------------------------------------
 // Creation de la Liste de flotte disponible sur la lune

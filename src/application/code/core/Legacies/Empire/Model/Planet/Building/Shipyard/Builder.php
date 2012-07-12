@@ -207,7 +207,7 @@ class Legacies_Empire_Model_Planet_Building_Shipyard_Builder
         Math::setPrecision(50);
         $buildingTime = Math::mul($prices[$shipId][Legacies_Empire::BASE_BUILDING_TIME], intval($qty));
 
-        $speedFactor = Wootook::getGameConfig('game/speed/general') / 1000;
+        $speedFactor = Wootook::app()->getDefaultGame()->getConfig('game/speed/general') / 1000;
         $baseTime = Math::mul(Math::div($buildingTime, 5000), Math::mul($speedFactor, $this->getSpeedEnhancement()));
         Math::setPrecision();
 
