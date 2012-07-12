@@ -12,26 +12,14 @@ class Factory
 
     protected $_registry = null;
 
-    protected $_definitions = array();
+    protected $_classDefinitions = array();
 
-    protected function _construct(Config\Node $config, Registry $registry = null)
+    protected $_classDefinitionClassName = 'Wootook\\Core\\DependencyInjection\\Definition\\ClassDefinition';
+
+    protected function _construct(Registry $registry = null)
     {
         if ($registry !== null) {
             $this->setRegistry($registry);
-        }
-
-        foreach ($config as $className => $constructorArguments) {
-            $definition = $this->getDefinition($className);
-
-            if ($constructorArguments === null) {
-                continue;
-            }
-
-            foreach ($constructorArguments as $argumentId => $argumentConfig) {
-                $argumentType = key($argumentConfig);
-                $argumentValue = key($argumentConfig);
-                $definition->addConstructorArgument($argumentId, $argumentType, $argumentValue);
-            }
         }
     }
 
@@ -51,41 +39,51 @@ class Factory
         return $this->_registry;
     }
 
-    public function getDefinition($className)
+    public function getClassDefinition($className)
     {
-        if (!isset($this->_definitions[$className])) {
-            $this->_definitions[$className] = new Definition\ClassDefinition($className);
+        if (isset($this->_classDefinitions[$className])) {
+            return $this->_classDefinitions[$className];
         }
 
-        return $this->_definitions[$className];
+        return $this->initClassDefinition($className);
     }
 
-    public function get($className, Array $additionalArguments = array())
+    public function initClassDefinition($className)
     {
-        $definition = $this->getDefinition($className);
+        $class = $this->getClassDefinitionClassName();
+        return new $class($className);
+    }
 
-        try {
-            $reflectionClass = new \ReflectionClass($className);
-        } catch (\ReflectionException $e) {
-            throw new CoreException\RuntimeException(sprintf('Class "%s" not found', $className), null, $e);
-        }
+    public function registerClassDefinition($className, Definition\ClassDefinition $classDefinition)
+    {
+        $this->_classDefinitions[$className] = $classDefinition;
 
-        if (!$reflectionClass->hasMethod('__construct')) {
-            return $reflectionClass->newInstance();
-        }
+        return $this;
+    }
 
-        try {
-            $reflectionMethod = $reflectionClass->getMethod('__construct');
-        } catch (\ReflectionException $e) {
-            throw new CoreException\RuntimeException(sprintf('Class "%s" has no contructor', $className), null, $e);
-        }
+    public function addClassDefinition($className)
+    {
+        $this->registerClassDefinition($className, $this->initClassDefinition($className));
 
-        $constructorArguments = $definition->prepareArguments($reflectionMethod, $this->getRegistry(), $additionalArguments);
+        return $this;
+    }
 
-        try {
-            return $reflectionClass->newInstanceArgs($constructorArguments);
-        } catch (\ReflectionException $e) {
-            throw new CoreException\RuntimeException(sprintf('Class "%s" could not be instanciated', $className), null, $e);
-        }
+    public function setClassDefinitionClassName($className)
+    {
+        $this->_classDefinitionClassName = $className;
+
+        return $this;
+    }
+
+    public function getClassDefinitionClassName()
+    {
+        return $this->_classDefinitionClassName;
+    }
+
+    public function __invoke($className, Array $additionalArguments = array())
+    {
+        $definition = $this->getClassDefinition($className);
+
+        return $definition->newInstance($additionalArguments);
     }
 }
