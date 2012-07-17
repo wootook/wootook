@@ -21,7 +21,7 @@
         </testsuite>
         -->
     </testsuites>
-
+    <!--
     <filter>
         <whitelist>
             <directory suffix=".php">../src/Wootook/Core</directory>
@@ -31,5 +31,5 @@
     <logging>
         <log type="coverage-html" target="./coverage/unit/html" charset="UTF-8" yui="true" highlight="false" lowUpperBound="40" highLowerBound="80"/>
     </logging>
-
+    -->
 </phpunit>
