@@ -27,7 +27,7 @@ class MethodDefinition
     /**
      * @var array
      */
-    protected $_arguments = array();
+    protected $_argumentDefinitions = array();
 
     /**
      * @var array
@@ -44,7 +44,7 @@ class MethodDefinition
      */
     protected $_registry = null;
 
-    protected $_argumentDefinitionHandlerClass = null;
+    protected $_argumentDefinitionClassName = 'Wootook\\Core\\DependencyInjection\\Definition\\ArgumentDefinition';
 
     /**
      * @param ClassDefinition $classDefinition
@@ -64,21 +64,10 @@ class MethodDefinition
         }
 
         if (is_string($argumentDefinitionHandlerClass)) {
-            $this->_argumentDefinitionHandlerClass = $argumentDefinitionHandlerClass;
-        } else {
-            $this->_argumentDefinitionHandlerClass = __NAMESPACE__ . '\\ArgumentDefinition';
+            $this->setArgumentDefinitionClassName($argumentDefinitionHandlerClass);
         }
 
         $this->_registry = $registry;
-    }
-
-    /**
-     * @param $argumentPosition
-     * @return \Wootook\Core\DependencyInjection\Definition\ArgumentDefinition
-     */
-    protected function _getArgumentDefinitionInstance($argumentPosition)
-    {
-        return new $this->_argumentDefinitionHandlerClass($this, $argumentPosition);
     }
 
     /**
@@ -101,6 +90,98 @@ class MethodDefinition
     }
 
     /**
+     * @param int|string $argumentPosition
+     * @return \Wootook\Core\DependencyInjection\Definition\ArgumentDefinition
+     * @throws \Wootook\Core\Exception\DependencyInjection\InvalidArgumentException
+     */
+    public function getArgumentDefinition($argumentPosition, $registerInstanceIfNew = false)
+    {
+        if (is_string($argumentPosition) && isset($this->_argumentIndex[$argumentPosition])) {
+            $argumentPosition = $this->_argumentIndex[$argumentPosition];
+        }
+
+        if (!is_int($argumentPosition)) {
+            throw new CoreException\DependencyInjection\InvalidArgumentException('Argument could only be found by position or by name.');
+        }
+
+        if (isset($this->_argumentDefinitions[$argumentPosition])) {
+            return $this->_argumentDefinitions[$argumentPosition];
+        }
+
+        $definition = $this->initArgumentDefinition($argumentPosition);
+        if ($registerInstanceIfNew === true) {
+            $this->registerArgumentDefinition($argumentPosition, $definition);
+        }
+        return $definition;
+    }
+
+    public function initArgumentDefinition($argumentPosition)
+    {
+        if (is_string($argumentPosition) && isset($this->_argumentIndex[$argumentPosition])) {
+            $argumentPosition = $this->_argumentIndex[$argumentPosition];
+        }
+
+        if (!is_int($argumentPosition)) {
+            throw new CoreException\DependencyInjection\InvalidArgumentException('Argument could only be found by position or by name.');
+        }
+
+        $class = $this->getArgumentDefinitionClassName();
+
+        return new $class($this, $argumentPosition, $this->getRegistry());
+    }
+
+    public function registerArgumentDefinition($argumentPosition, ArgumentDefinition $argumentDefinition)
+    {
+        if (is_string($argumentPosition) && isset($this->_argumentIndex[$argumentPosition])) {
+            $argumentPosition = $this->_argumentIndex[$argumentPosition];
+        }
+
+        if (!is_int($argumentPosition)) {
+            throw new CoreException\DependencyInjection\InvalidArgumentException('Argument could only be found by position or by name.');
+        }
+
+        $this->_argumentDefinitions[$argumentPosition] = $argumentDefinition;
+
+        return $this;
+    }
+
+    public function addArgumentDefinition($argumentPosition)
+    {
+        $this->registerArgumentDefinition($argumentPosition, $this->initArgumentDefinition($argumentPosition));
+
+        return $this;
+    }
+
+    public function setArgumentDefinition($argumentPosition, ArgumentDefinition $definition)
+    {
+        if (is_string($argumentPosition) && isset($this->_argumentIndex[$argumentPosition])) {
+            $argumentPosition = $this->_argumentIndex[$argumentPosition];
+        }
+
+        if (!is_int($argumentPosition)) {
+            throw new CoreException\DependencyInjection\InvalidArgumentException('Argument could only be found by position or by name.');
+        }
+
+        $this->_argumentDefinitions[$argumentPosition] = $definition;
+
+        return $this;
+    }
+
+    public function setArgumentDefinitionClassName($argumentDefinitionClassName)
+    {
+        if (!is_string($argumentDefinitionClassName)) {
+            throw new CoreException\DependencyInjection\InvalidArgumentException('Class names only accept string.');
+        }
+
+        return $this->_argumentDefinitionClassName;
+    }
+
+    public function getArgumentDefinitionClassName()
+    {
+        return $this->_argumentDefinitionClassName;
+    }
+
+    /**
      * @param string|int $argumentPosition
      * @param mixed $argumentValue
      * @return MethodDefinition
@@ -108,7 +189,7 @@ class MethodDefinition
      */
     public function bindArgumentValue($argumentPosition, $argumentValue)
     {
-        $this->getArgumentDefinition($argumentPosition)->bindValue($argumentValue);
+        $this->getArgumentDefinition($argumentPosition, true)->bindValue($argumentValue);
 
         return $this;
     }
@@ -121,7 +202,7 @@ class MethodDefinition
      */
     public function bindArgumentVariable($argumentPosition, &$argumentVariable)
     {
-        $this->getArgumentDefinition($argumentPosition)->bindVariable($argumentVariable);
+        $this->getArgumentDefinition($argumentPosition, true)->bindVariable($argumentVariable);
 
         return $this;
     }
@@ -139,31 +220,9 @@ class MethodDefinition
             throw new CoreException\DependencyInjection\RuntimeException('No registry available');
         }
 
-        $this->getArgumentDefinition($argumentPosition)->bindRegistryEntry($registryKey);
+        $this->getArgumentDefinition($argumentPosition, true)->bindRegistryEntry($registryKey);
 
         return $this;
-    }
-
-    /**
-     * @param int|string $argumentPosition
-     * @return \Wootook\Core\DependencyInjection\Definition\ArgumentDefinition
-     * @throws \Wootook\Core\Exception\DependencyInjection\InvalidArgumentException
-     */
-    public function getArgumentDefinition($argumentPosition)
-    {
-        if (is_string($argumentPosition) && isset($this->_argumentIndex[$argumentPosition])) {
-            $argumentPosition = $this->_argumentIndex[$argumentPosition];
-        }
-
-        if (!is_int($argumentPosition)) {
-            throw new CoreException\DependencyInjection\InvalidArgumentException('Argument not found.');
-        }
-
-        if (!isset($this->_arguments[$argumentPosition])) {
-            $this->_arguments[$argumentPosition] = $this->_getArgumentDefinitionInstance($argumentPosition);
-        }
-
-        return $this->_arguments[$argumentPosition];
     }
 
     /**
@@ -171,7 +230,7 @@ class MethodDefinition
      */
     public function getAllArgumentDefinitions()
     {
-        return $this->_arguments;
+        return $this->_argumentDefinitions;
     }
 
     /**

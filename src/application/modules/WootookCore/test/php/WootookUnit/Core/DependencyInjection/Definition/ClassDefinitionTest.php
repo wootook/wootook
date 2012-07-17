@@ -18,7 +18,7 @@ class ClassDefinitionTest extends \PHPUnit_Framework_TestCase
         $methodDefinitionClassName = \uniqid('WootookUnit_Core_DependencyInjection_Mock_MethodDefinition_TestNewInstance_');
         $this->getMock('Wootook\\Core\\DependencyInjection\\Definition\\MethodDefinition', array(), array(), $methodDefinitionClassName, false);
 
-        $definition = new Definition\ClassDefinition(__CLASS__, $methodDefinitionClassName);
+        $definition = new Definition\ClassDefinition(__CLASS__, null, $methodDefinitionClassName);
 
         $this->assertInstanceOf($methodDefinitionClassName, $definition->getMethodDefinition(__FUNCTION__));
     }

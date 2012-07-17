@@ -11,15 +11,17 @@ class ClassDefinition
 {
     protected $_className = null;
     protected $_reflector = null;
-    protected $_methods = array();
+    protected $_methodDefinitions = array();
 
-    protected $_methodDefinitionHandlerClass = null;
+    protected $_registry = null;
+
+    protected $_methodDefinitionClassName = 'Wootook\\Core\\DependencyInjection\\Definition\\MethodDefinition';
 
     /**
      * @param string $className
      * @param null|string $methodDefinitionHandlerClass
      */
-    public function __construct($className, $methodDefinitionHandlerClass = null)
+    public function __construct($className, DependencyInjection\Registry $registry = null, $methodDefinitionHandlerClass = null)
     {
         $this->_className = $className;
         try {
@@ -35,13 +37,16 @@ class ClassDefinition
         }
     }
 
-    /**
-     * @param string $methodName
-     * @return \Wootook\Core\DependencyInjection\Definition\MethodDefinition
-     */
-    protected function _getMethodDefinitionInstance($methodName)
+    public function setRegistry(DependencyInjection\Registry $registry)
     {
-        return new $this->_methodDefinitionHandlerClass($this, $methodName);
+        $this->_registry = $registry;
+
+        return $this;
+    }
+
+    public function getRegistry()
+    {
+        return $this->_registry;
     }
 
     /**
@@ -49,17 +54,50 @@ class ClassDefinition
      * @return \Wootook\Core\DependencyInjection\Definition\MethodDefinition
      * @throws \Wootook\Core\Exception\DependencyInjection\InvalidArgumentException
      */
-    public function getMethodDefinition($methodName)
+    public function getMethodDefinition($methodName, $registerInstanceIfNew = false)
     {
         if (!is_string($methodName)) {
             throw new CoreException\DependencyInjection\InvalidArgumentException('Method names only accept string.');
         }
 
-        if (!isset($this->_methods[$methodName])) {
-            $this->_methods[$methodName] = $this->_getMethodDefinitionInstance($methodName);
+        if (isset($this->_methodDefinitions[$methodName])) {
+            return $this->_methodDefinitions[$methodName];
         }
 
-        return $this->_methods[$methodName];
+        $definition = $this->initMethodDefinition($methodName);
+        if ($registerInstanceIfNew === true) {
+            $this->registerMethodDefinition($methodName, $definition);
+        }
+        return $definition;
+    }
+
+    /**
+     * @param string $methodName
+     * @return \Wootook\Core\DependencyInjection\Definition\MethodDefinition
+     */
+    public function initMethodDefinition($methodName)
+    {
+        $class = $this->getMethodDefinitionClassName();
+
+        return new $class($this, $methodName, $this->getRegistry());
+    }
+
+    public function registerMethodDefinition($methodName, MethodDefinition $methodDefinition)
+    {
+        if (!is_string($methodName)) {
+            throw new CoreException\DependencyInjection\InvalidArgumentException('Method names only accept string.');
+        }
+
+        $this->_methodDefinitions[$methodName] = $methodDefinition;
+
+        return $this;
+    }
+
+    public function addMethodDefinition($methodName)
+    {
+        $this->registerMethodDefinition($methodName, $this->initMethodDefinition($methodName));
+
+        return $this;
     }
 
     public function setMethodDefinition($methodName, MethodDefinition $definition)
@@ -68,17 +106,31 @@ class ClassDefinition
             throw new CoreException\DependencyInjection\InvalidArgumentException('Method names only accept string.');
         }
 
-        $this->_methods[$methodName] = $definition;
+        $this->_methodDefinitions[$methodName] = $definition;
 
         return $this;
     }
 
-    public function getAllMethodDefinitions()
+    public function setMethodDefinitionClassName($methodDefinitionClassName)
     {
-        return $this->_methods;
+        if (!is_string($methodDefinitionClassName)) {
+            throw new CoreException\DependencyInjection\InvalidArgumentException('Class names only accept string.');
+        }
+
+        return $this->_methodDefinitionClassName;
     }
 
-    public function newInstance(Array $args = array(), $withoutConstructorCall = false)
+    public function getMethodDefinitionClassName()
+    {
+        return $this->_methodDefinitionClassName;
+    }
+
+    public function getAllMethodDefinitions()
+    {
+        return $this->_methodDefinitions;
+    }
+
+    public function newInstance(Array $args = array())
     {
         try {
             if ($this->getReflector()->hasMethod('__construct')) {
@@ -104,7 +156,7 @@ class ClassDefinition
 
     public function reset()
     {
-        return $this->_methods = array();
+        return $this->_methodDefinitions = array();
     }
 
     public function getReflector()
