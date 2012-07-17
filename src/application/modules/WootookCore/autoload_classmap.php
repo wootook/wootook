@@ -4,6 +4,7 @@
     'Wootook\\Core\\Base\\DataContainer'                                      => __DIR__ . '/src/Wootook/Core/Base/DataContainer.php',
     'Wootook\\Core\\Base\\Service\\App'                                       => __DIR__ . '/src/Wootook/Core/Base/Service/App.php',
     'Wootook\\Core\\Base\\Singleton'                                          => __DIR__ . '/src/Wootook/Core/Base/Singleton.php',
+    'Wootook\\Core\\Base\\Util\FileSystem'                                    => __DIR__ . '/src/Wootook/Core/Base/Util/FileSystem.php',
     'Wootook\\Core\\Block\\Concat'                                            => __DIR__ . '/src/Wootook/Core/Block/Concat.php',
     'Wootook\\Core\\Block\\Deprecated'                                        => __DIR__ . '/src/Wootook/Core/Block/Deprecated.php',
     'Wootook\\Core\\Block\\Html\\Form'                                        => __DIR__ . '/src/Wootook/Core/Block/Html/Form.php',

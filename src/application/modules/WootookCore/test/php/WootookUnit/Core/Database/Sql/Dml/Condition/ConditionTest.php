@@ -123,9 +123,9 @@ class ConditionTest
         $conditionMock = $this->buildMock();
         $placeholderMock = $this->getMockForAbstractClass('Wootook\\Core\\Database\\Sql\\Placeholder\\Placeholder');
 
-        $this->callNonPublicMethod($conditionMock, '_addPlaceholder', array($placeholderMock));
+        $conditionMock->addPlaceholder($placeholderMock);
 
-        $result = $this->callNonPublicMethod($conditionMock, '_getAllPlaceholders');
+        $result = $conditionMock->getAllPlaceholders();
         $this->assertArrayHasKey(0, $result);
         $this->assertSame($placeholderMock, $result[0]);
     }
@@ -135,25 +135,27 @@ class ConditionTest
         $conditionMock = $this->buildMock();
         $placeholderMock = $this->getMockForAbstractClass('Wootook\\Core\\Database\\Sql\\Placeholder\\Placeholder');
 
-        $this->callNonPublicMethod($conditionMock, '_addPlaceholder', array($placeholderMock));
-        $this->callNonPublicMethod($conditionMock, '_addPlaceholder', array($placeholderMock));
-        $this->callNonPublicMethod($conditionMock, '_clearPlaceholders');
+        $conditionMock->addPlaceholder($placeholderMock);
+        $conditionMock->addPlaceholder($placeholderMock);
+        $conditionMock->clearPlaceholders();
 
         $expected = array();
-        $this->assertEquals($expected, $this->callNonPublicMethod($conditionMock, '_getAllPlaceholders'));
+        $this->assertEquals($expected, $conditionMock->getAllPlaceholders());
     }
 
     public function testPlaceholderCallTrigger_beforePrepare()
     {
+        /** @var \Wootook\Core\Database\Sql\Dml\Condition\Condition $conditionMock */
         $conditionMock = $this->buildMock();
-        $placeholderMock = $this->getMockForAbstractClass('Wootook\\Core\\Database\\Sql\\Placeholder\\Placeholder');
+        $placeholderMock = $this->getMockForAbstractClass('Wootook\\Core\\Database\\Sql\\Placeholder\\Placeholder',
+            array(), '', true, true, true, array('beforePrepare'));
 
-        $placeholderMock->expects($this->any())
+        $placeholderMock->expects($this->once())
             ->method('beforePrepare')
             ->with($this->_statementMock)
         ;
 
-        $this->callNonPublicMethod($conditionMock, '_addPlaceholder', array($placeholderMock));
+        $conditionMock->addPlaceholder($placeholderMock);
 
         $conditionMock->beforePrepare($this->_statementMock);
     }
@@ -161,14 +163,15 @@ class ConditionTest
     public function testPlaceholderCallTrigger_afterPrepare()
     {
         $conditionMock = $this->buildMock();
-        $placeholderMock = $this->getMockForAbstractClass('Wootook\\Core\\Database\\Sql\\Placeholder\\Placeholder');
+        $placeholderMock = $this->getMockForAbstractClass('Wootook\\Core\\Database\\Sql\\Placeholder\\Placeholder',
+            array(), '', true, true, true, array('afterPrepare'));
 
-        $placeholderMock->expects($this->any())
+        $placeholderMock->expects($this->once())
             ->method('afterPrepare')
             ->with($this->_statementMock)
         ;
 
-        $this->callNonPublicMethod($conditionMock, '_addPlaceholder', array($placeholderMock));
+        $conditionMock->addPlaceholder($placeholderMock);
 
         $conditionMock->afterPrepare($this->_statementMock);
     }
@@ -176,14 +179,15 @@ class ConditionTest
     public function testPlaceholderCallTrigger_beforeExecute()
     {
         $conditionMock = $this->buildMock();
-        $placeholderMock = $this->getMockForAbstractClass('Wootook\\Core\\Database\\Sql\\Placeholder\\Placeholder');
+        $placeholderMock = $this->getMockForAbstractClass('Wootook\\Core\\Database\\Sql\\Placeholder\\Placeholder',
+            array(), '', true, true, true, array('beforeExecute'));
 
-        $placeholderMock->expects($this->any())
+        $placeholderMock->expects($this->once())
             ->method('beforeExecute')
             ->with($this->_statementMock)
         ;
 
-        $this->callNonPublicMethod($conditionMock, '_addPlaceholder', array($placeholderMock));
+        $conditionMock->addPlaceholder($placeholderMock);
 
         $conditionMock->beforeExecute($this->_statementMock);
     }
@@ -191,14 +195,15 @@ class ConditionTest
     public function testPlaceholderCallTrigger_afterExecute()
     {
         $conditionMock = $this->buildMock();
-        $placeholderMock = $this->getMockForAbstractClass('Wootook\\Core\\Database\\Sql\\Placeholder\\Placeholder');
+        $placeholderMock = $this->getMockForAbstractClass('Wootook\\Core\\Database\\Sql\\Placeholder\\Placeholder',
+            array(), '', true, true, true, array('afterExecute'));
 
-        $placeholderMock->expects($this->any())
+        $placeholderMock->expects($this->once())
             ->method('afterExecute')
             ->with($this->_statementMock)
         ;
 
-        $this->callNonPublicMethod($conditionMock, '_addPlaceholder', array($placeholderMock));
+        $conditionMock->addPlaceholder($placeholderMock);
 
         $conditionMock->afterExecute($this->_statementMock);
     }

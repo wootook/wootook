@@ -37,24 +37,6 @@ use Wootook\Core,
 
 trait Where
 {
-    const WHERE   = 'WHERE';
-
-    const OPERATOR_AND             = 'AND';
-    const OPERATOR_OR              = 'OR';
-    const OPERATOR_XOR             = 'XOR';
-    const OPERATOR_EQUALS          = 'EQ';
-    const OPERATOR_NOT_EQUALS      = 'NEQ';
-    const OPERATOR_LOWER           = 'LT';
-    const OPERATOR_GREATER         = 'GT';
-    const OPERATOR_LOWER_EQUALS    = 'LTEQ';
-    const OPERATOR_GREATER_EQUALS  = 'GTEQ';
-    const OPERATOR_IS_NULL         = 'NULL';
-    const OPERATOR_IN              = 'IN';
-    const OPERATOR_NOT_IN          = 'NIN';
-    const OPERATOR_FIND_IN_SET     = 'FINSET';
-    const OPERATOR_NOT_FIND_IN_SET = 'NFINSET';
-    const OPERATOR_DATE            = 'DATE';
-
     public function where($condition, $value = null)
     {
         if ($condition instanceof Placeholder\Placeholder) {

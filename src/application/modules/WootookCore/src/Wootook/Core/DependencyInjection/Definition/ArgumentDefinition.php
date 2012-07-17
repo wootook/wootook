@@ -51,13 +51,9 @@ class ArgumentDefinition
     public function __construct(MethodDefinition $methodDefinition, $argumentName, DependencyInjection\Registry $registry = null)
     {
         $this->_methodDefinition = $methodDefinition;
-
         $this->_argumentName = $argumentName;
-        try {
-            $this->setReflector($methodDefinition->getArgumentReflector($argumentName));
-        } catch (\ReflectionException $e) {
-            throw new CoreException\DependencyInjection\BadMethodCallException($e->getMessage(), $e->getCode(), $e);
-        }
+
+        $this->setReflector($methodDefinition->getArgumentReflector($argumentName));
 
         $this->_registry = $registry;
     }
@@ -96,6 +92,16 @@ class ArgumentDefinition
         $this->_type = self::TYPE_REGISTRY;
 
         return $this;
+    }
+
+    public function getType()
+    {
+        return $this->_type;
+    }
+
+    public function getValue()
+    {
+        return $this->_value;
     }
 
     public function getReflector()

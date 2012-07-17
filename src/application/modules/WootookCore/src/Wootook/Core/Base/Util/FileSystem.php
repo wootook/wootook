@@ -28,45 +28,41 @@
  *
  */
 
-namespace Wootook\Core\Config\Adapter;
+namespace Wootook\Core\Base\Util;
 
-use Wootook\Core\Base\Util,
-    Wootook\Core\Exception as CoreException;
+use Wootook\Core\Profiler;
 
-class PhpArray
-    extends Adapter
+class FileSystem
 {
-    protected $_ioHelper = null;
-
-    public function __construct($filename = null)
+    public function fileExists($fileName)
     {
-        if ($filename !== null) {
-            $this->load($filename);
+        if ($fileName === null || empty($fileName)) {
+            return false;
         }
 
-        $this->_ioHelper = new Util\FileSystem();
+        if (($fp = @fopen($fileName, 'r', true)) === false) {
+            return false;
+        }
+        fclose($fp);
+
+        return true;
     }
 
-    public function load($filename)
+    public function directoryExists($directoryName)
     {
-        if (!$this->_ioHelper->fileExists($filename)) {
-            throw new CoreException\DataAccessException(sprintf('Could not load config file "%s"', $filename));
-        }
-        $data = $this->_ioHelper->includeFile($filename);
-
-        if (!is_array($data)) {
-            throw new CoreException\DataAccessException('Configuration file could not be loaded.');
+        if ($directoryName === null || empty($directoryName)) {
+            return false;
         }
 
-        $this->_init($data);
-
-        return $this;
+        return is_dir($directoryName);
     }
 
-    public function save($filename)
+    public function includeFile($fileName)
     {
-        file_put_contents($filename, '<' . '?p' . 'hp return ' . var_export($this->toArray(), true) . ';');
+        if ($fileName === null || empty($fileName)) {
+            return null;
+        }
 
-        return $this;
+        return include $fileName;
     }
 }

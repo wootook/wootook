@@ -34,6 +34,6 @@ namespace Wootook\Core\DateTime;
  * Date formatter and parser
  */
 class Formatter
-    extends \IntlDateFormatter
+//    extends \IntlDateFormatter
 {
 }

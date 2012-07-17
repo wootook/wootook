@@ -32,7 +32,6 @@ namespace Wootook\Core\Database\Statement;
 
 use Wootook\Core\Database,
     Wootook\Core\Database\Adapter,
-    Wootook\Core\Database\Statement,
     Wootook\Core\Database\Sql,
     Wootook\Core\Exception as CoreException;
 

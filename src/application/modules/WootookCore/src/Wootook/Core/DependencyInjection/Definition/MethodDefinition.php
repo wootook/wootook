@@ -72,11 +72,19 @@ class MethodDefinition
         $this->_registry = $registry;
     }
 
+    /**
+     * @param $argumentPosition
+     * @return \Wootook\Core\DependencyInjection\Definition\ArgumentDefinition
+     */
     protected function _getArgumentDefinitionInstance($argumentPosition)
     {
         return new $this->_argumentDefinitionHandlerClass($this, $argumentPosition);
     }
 
+    /**
+     * @param \Wootook\Core\DependencyInjection\Registry $registry
+     * @return MethodDefinition
+     */
     public function setRegistry(DependencyInjection\Registry $registry)
     {
         $this->_registry = $registry;
@@ -84,91 +92,100 @@ class MethodDefinition
         return $this;
     }
 
+    /**
+     * @return null|\Wootook\Core\DependencyInjection\Registry
+     */
     public function getRegistry()
     {
         return $this->_registry;
     }
 
+    /**
+     * @param string|int $argumentPosition
+     * @param mixed $argumentValue
+     * @return MethodDefinition
+     * @throws \Wootook\Core\Exception\DependencyInjection\InvalidArgumentException
+     */
     public function bindArgumentValue($argumentPosition, $argumentValue)
     {
-        if (is_numeric($argumentPosition)) {
-            $this->_arguments[$argumentPosition] = $argumentValue;
-        } else if (is_string($argumentPosition) && isset($this->_argumentIndex[$argumentPosition])) {
-            $this->_arguments[$this->_argumentIndex[$argumentPosition]] = $argumentValue;
-        } else {
-            throw new CoreException\DependencyInjection\InvalidArgumentException('No such argument');
-        }
+        $this->getArgumentDefinition($argumentPosition)->bindValue($argumentValue);
 
         return $this;
     }
 
+    /**
+     * @param string|int $argumentPosition
+     * @param mixed $argumentVariable
+     * @return MethodDefinition
+     * @throws \Wootook\Core\Exception\DependencyInjection\InvalidArgumentException
+     */
     public function bindArgumentVariable($argumentPosition, &$argumentVariable)
     {
-        if (is_numeric($argumentPosition)) {
-            if (is_object($argumentVariable)) {
-                $this->_arguments[$argumentPosition] = $argumentVariable;
-            } else {
-                $this->_arguments[$argumentPosition] =& $argumentVariable;
-            }
-        } else if (is_string($argumentPosition) && isset($this->_argumentIndex[$argumentPosition])) {
-            if (is_object($argumentVariable)) {
-                $this->_arguments[$this->_argumentIndex[$argumentPosition]] = $argumentVariable;
-            } else {
-                $this->_arguments[$this->_argumentIndex[$argumentPosition]] =& $argumentVariable;
-            }
-        } else {
-            throw new CoreException\DependencyInjection\InvalidArgumentException('No such argument');
-        }
+        $this->getArgumentDefinition($argumentPosition)->bindVariable($argumentVariable);
 
         return $this;
     }
 
-    public function bindArgumentRegistry($argumentPosition, $argumentKey)
+    /**
+     * @param string|int $argumentPosition
+     * @param string $registryKey
+     * @return MethodDefinition
+     * @throws \Wootook\Core\Exception\DependencyInjection\RuntimeException
+     * @throws \Wootook\Core\Exception\DependencyInjection\InvalidArgumentException
+     */
+    public function bindArgumentRegistryEntry($argumentPosition, $registryKey)
     {
         if (($registry = $this->getRegistry()) === null) {
             throw new CoreException\DependencyInjection\RuntimeException('No registry available');
         }
 
-        if (is_numeric($argumentPosition)) {
-            $this->_arguments[$argumentPosition] = $argumentVariable;
-        } else if (is_string($argumentPosition) && isset($this->_argumentIndex[$argumentPosition])) {
-            $this->_arguments[$this->_argumentIndex[$argumentPosition]] = $argumentVariable;
-        } else {
-            throw new CoreException\DependencyInjection\InvalidArgumentException('No such argument');
-        }
+        $this->getArgumentDefinition($argumentPosition)->bindRegistryEntry($registryKey);
 
         return $this;
     }
 
+    /**
+     * @param int|string $argumentPosition
+     * @return \Wootook\Core\DependencyInjection\Definition\ArgumentDefinition
+     * @throws \Wootook\Core\Exception\DependencyInjection\InvalidArgumentException
+     */
     public function getArgumentDefinition($argumentPosition)
     {
-        if (is_numeric($argumentPosition)) {
-            if (!isset($this->_arguments[$argumentPosition])) {
-                $this->_arguments[$argumentPosition] = $this->_getArgumentDefinitionInstance($argumentPosition);
-            }
-
-            return $this->_arguments[$argumentPosition];
-        } else if (is_string($argumentPosition) && isset($this->_argumentIndex[$argumentPosition])) {
-            if (!isset($this->_arguments[$this->_argumentIndex[$argumentPosition]])) {
-                $this->_arguments[$this->_argumentIndex[$argumentPosition]] = $this->_getArgumentDefinitionInstance($this->_argumentIndex[$argumentPosition]);
-            }
-
-            return $this->_arguments[$this->_argumentIndex[$argumentPosition]];
-        } else {
-            throw new CoreException\InvalidArgumentException('Argument not found.');
+        if (is_string($argumentPosition) && isset($this->_argumentIndex[$argumentPosition])) {
+            $argumentPosition = $this->_argumentIndex[$argumentPosition];
         }
+
+        if (!is_int($argumentPosition)) {
+            throw new CoreException\DependencyInjection\InvalidArgumentException('Argument not found.');
+        }
+
+        if (!isset($this->_arguments[$argumentPosition])) {
+            $this->_arguments[$argumentPosition] = $this->_getArgumentDefinitionInstance($argumentPosition);
+        }
+
+        return $this->_arguments[$argumentPosition];
     }
 
+    /**
+     * @return array
+     */
     public function getAllArgumentDefinitions()
     {
         return $this->_arguments;
     }
 
+    /**
+     * @return \ReflectionMethod
+     */
     public function getReflector()
     {
         return $this->_reflector;
     }
 
+    /**
+     * @param \ReflectionMethod $reflector
+     * @return MethodDefinition
+     */
     public function setReflector(\ReflectionMethod $reflector)
     {
         $this->_reflector = $reflector;
@@ -184,14 +201,21 @@ class MethodDefinition
         return $this;
     }
 
+    /**
+     * @param $argumentPosition
+     * @return \ReflectionParameter
+     * @throws \Wootook\Core\Exception\DependencyInjection\InvalidArgumentException
+     */
     public function getArgumentReflector($argumentPosition)
     {
-        if (is_numeric($argumentPosition)) {
-            return $this->_argumentReflectors[$argumentPosition];
-        } else if (is_string($argumentPosition) && isset($this->_argumentIndex[$argumentPosition])) {
-            return $this->_argumentReflectors[$this->_argumentIndex[$argumentPosition]];
-        } else {
-            throw new CoreException\DependencyInjection\InvalidArgumentException('No such argument');
+        if (is_string($argumentPosition) && isset($this->_argumentIndex[$argumentPosition])) {
+            $argumentPosition = $this->_argumentIndex[$argumentPosition];
         }
+
+        if (!is_int($argumentPosition) || !isset($this->_argumentReflectors[$argumentPosition])) {
+            throw new CoreException\DependencyInjection\InvalidArgumentException('Argument not found.');
+        }
+
+        return $this->_argumentReflectors[$argumentPosition];
     }
 }

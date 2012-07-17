@@ -28,10 +28,10 @@
  *
  */
 
-namespace Wootook\Core\Database\Sql;
+namespace Wootook\Core\Database\Sql\Dml;
 
 class Delete
-    extends DmlFilterableQuery
+    extends DmlQuery
 {
     const FROM = 'FROM';
 

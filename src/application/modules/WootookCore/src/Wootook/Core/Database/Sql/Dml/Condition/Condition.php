@@ -61,28 +61,28 @@ abstract class Condition
         return $this->_query;
     }
 
-    protected function _addPlaceholder(Placeholder\Placeholder $placeholder)
+    public function addPlaceholder(Placeholder\Placeholder $placeholder)
     {
         $this->_placeholders[] = $placeholder;
 
         return $this;
     }
 
-    protected function _clearPlaceholders()
+    public function clearPlaceholders()
     {
         $this->_placeholders = array();
 
         return $this;
     }
 
-    protected function _getAllPlaceholders()
+    public function getAllPlaceholders()
     {
         return $this->_placeholders;
     }
 
     public function beforePrepare(Statement\Statement $statement)
     {
-        foreach ($this->_getAllPlaceholders() as $placeholder) {
+        foreach ($this->getAllPlaceholders() as $placeholder) {
             /** @var \Wootook\Core\Database\Sql\Placeholder\Placeholder $placeholder */
             $placeholder->beforePrepare($statement);
         }
@@ -92,7 +92,7 @@ abstract class Condition
 
     public function afterPrepare(Statement\Statement $statement)
     {
-        foreach ($this->_getAllPlaceholders() as $placeholder) {
+        foreach ($this->getAllPlaceholders() as $placeholder) {
             /** @var \Wootook\Core\Database\Sql\Placeholder\Placeholder $placeholder */
             $placeholder->afterPrepare($statement);
         }
@@ -102,7 +102,7 @@ abstract class Condition
 
     public function beforeExecute(Statement\Statement $statement)
     {
-        foreach ($this->_getAllPlaceholders() as $placeholder) {
+        foreach ($this->getAllPlaceholders() as $placeholder) {
             /** @var \Wootook\Core\Database\Sql\Placeholder\Placeholder $placeholder */
             $placeholder->beforeExecute($statement);
         }
@@ -112,7 +112,7 @@ abstract class Condition
 
     public function afterExecute(Statement\Statement $statement)
     {
-        foreach ($this->_getAllPlaceholders() as $placeholder) {
+        foreach ($this->getAllPlaceholders() as $placeholder) {
             /** @var \Wootook\Core\Database\Sql\Placeholder\Placeholder $placeholder */
             $placeholder->afterExecute($statement);
         }

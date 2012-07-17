@@ -11,4 +11,3 @@ spl_autoload_register(function ($class) {
     return require $map[$class];
 });
 
-require dirname(dirname(dirname(__DIR__))) . '/code/core/Wootook.php';

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <phpunit backupGlobals="false"
          backupStaticAttributes="false"
-         colors="true"
+         colors="false"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
@@ -13,7 +13,7 @@
 
     <testsuites>
         <testsuite name="Wootook Core module - Unit tests">
-            <directory>./php/WootookTest/Core</directory>
+            <directory>./php/WootookUnit/Core</directory>
         </testsuite>
         <!--
         <testsuite name="Wootook Core module - Integration tests">
@@ -21,4 +21,15 @@
         </testsuite>
         -->
     </testsuites>
+
+    <filter>
+        <whitelist>
+            <directory suffix=".php">../src/Wootook/Core</directory>
+        </whitelist>
+    </filter>
+
+    <logging>
+        <log type="coverage-html" target="./coverage/unit/html" charset="UTF-8" yui="true" highlight="false" lowUpperBound="40" highLowerBound="80"/>
+    </logging>
+
 </phpunit>

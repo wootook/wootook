@@ -28,7 +28,7 @@
  *
  */
 
-namespace Wootook\Core\Database\Sql;
+namespace Wootook\Core\Database\Sql\Dml;
 
 use Wootook\Core\Database\Sql\Dml\Section,
     Wootook\Core\Database\Sql\Placeholder;
