@@ -55,7 +55,9 @@ class ArgumentDefinition
 
         $this->setReflector($methodDefinition->getArgumentReflector($argumentName));
 
-        $this->_registry = $registry;
+        if ($registry !== null) {
+            $this->setRegistry($registry);
+        }
     }
 
     public function setRegistry(DependencyInjection\Registry $registry)

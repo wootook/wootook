@@ -51,7 +51,7 @@ class MethodDefinition
      * @param $methodName
      * @param null|\Wootook\Core\DependencyInjection\Registry $registry
      */
-    public function __construct(ClassDefinition $classDefinition, $methodName, DependencyInjection\Registry $registry = null, $argumentDefinitionHandlerClass = null)
+    public function __construct(ClassDefinition $classDefinition, $methodName, DependencyInjection\Registry $registry = null, $argumentDefinitionClassName = null)
     {
         $this->_classDefinition = $classDefinition;
 
@@ -63,11 +63,13 @@ class MethodDefinition
             throw new CoreException\DependencyInjection\BadMethodCallException($e->getMessage(), $e->getCode(), $e);
         }
 
-        if (is_string($argumentDefinitionHandlerClass)) {
-            $this->setArgumentDefinitionClassName($argumentDefinitionHandlerClass);
+        if ($argumentDefinitionClassName !== null) {
+            $this->setArgumentDefinitionClassName($argumentDefinitionClassName);
         }
 
-        $this->_registry = $registry;
+        if ($registry !== null) {
+            $this->setRegistry($registry);
+        }
     }
 
     /**
@@ -133,7 +135,12 @@ class MethodDefinition
     public function registerArgumentDefinition($argumentPosition, ArgumentDefinition $argumentDefinition)
     {
         if (is_string($argumentPosition) && isset($this->_argumentIndex[$argumentPosition])) {
+            $argumentName = $argumentPosition;
             $argumentPosition = $this->_argumentIndex[$argumentPosition];
+        } else if (($reflector = $argumentDefinition->getReflector()) instanceof \ReflectionParameter) {
+            $argumentName = $reflector->getName();
+        } else {
+            $argumentName = null;
         }
 
         if (!is_int($argumentPosition)) {
@@ -141,6 +148,9 @@ class MethodDefinition
         }
 
         $this->_argumentDefinitions[$argumentPosition] = $argumentDefinition;
+        if ($argumentName !== null) {
+            $this->_argumentIndex[$argumentName] = $argumentPosition;
+        }
 
         return $this;
     }
@@ -167,13 +177,33 @@ class MethodDefinition
         return $this;
     }
 
+    /**
+     * @return array
+     */
+    public function getAllArgumentDefinitions()
+    {
+        return $this->_argumentDefinitions;
+    }
+
+    /**
+     * @return array
+     */
+    public function reset()
+    {
+        $this->_argumentDefinitions = array();
+
+        return $this;
+    }
+
     public function setArgumentDefinitionClassName($argumentDefinitionClassName)
     {
         if (!is_string($argumentDefinitionClassName)) {
             throw new CoreException\DependencyInjection\InvalidArgumentException('Class names only accept string.');
         }
 
-        return $this->_argumentDefinitionClassName;
+        $this->_argumentDefinitionClassName = $argumentDefinitionClassName;
+
+        return $this;
     }
 
     public function getArgumentDefinitionClassName()
@@ -216,21 +246,9 @@ class MethodDefinition
      */
     public function bindArgumentRegistryEntry($argumentPosition, $registryKey)
     {
-        if (($registry = $this->getRegistry()) === null) {
-            throw new CoreException\DependencyInjection\RuntimeException('No registry available');
-        }
-
         $this->getArgumentDefinition($argumentPosition, true)->bindRegistryEntry($registryKey);
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getAllArgumentDefinitions()
-    {
-        return $this->_argumentDefinitions;
     }
 
     /**
@@ -272,7 +290,7 @@ class MethodDefinition
         }
 
         if (!is_int($argumentPosition) || !isset($this->_argumentReflectors[$argumentPosition])) {
-            throw new CoreException\DependencyInjection\InvalidArgumentException('Argument not found.');
+            throw new CoreException\DependencyInjection\BadMethodCallException('Argument does not exist.');
         }
 
         return $this->_argumentReflectors[$argumentPosition];
