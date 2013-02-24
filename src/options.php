@@ -250,7 +250,7 @@ $mode = isset($_GET['mode']) ? $_GET['mode'] : null;
        $parse['opt_modev_data'] = ($user['urlaubs_modus'] == 1)?" checked='checked'/":'';
        $parse['opt_modev_exit'] = ($user['urlaubs_modus'] == 0)?" checked='1'/":'';
        $parse['Vaccation_mode'] = $lang['Vaccation_mode'];
-       $parse['vacation_until'] = date("d.m.Y G:i:s",$user['urlaubs_until']);
+       $parse['vacation_until'] = date("d.m.Y G:i:s",$user['urlaubs_until']->getTimestamp());
        $parse['user_settings_rep'] = ($user['settings_rep'] == 1) ? " checked='checked'/":'';
        $parse['user_settings_esp'] = ($user['settings_esp'] == 1) ? " checked='checked'/":'';
        $parse['user_settings_wri'] = ($user['settings_wri'] == 1) ? " checked='checked'/":'';
