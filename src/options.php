@@ -49,15 +49,15 @@ $mode = isset($_GET['mode']) ? $_GET['mode'] : null;
            message($lang['You_cant_exit_vmode'], $lan['Error'] ,"options.php",1);
        }
     }
+	
+    $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
 
     if ($_POST && $mode == "change") { // Array ( [db_character]
-       $iduser = $user["id"];
-       $avatar = $_POST["avatar"];
+        $iduser = $user["id"];
+        $avatar = $_POST["avatar"];
 
-	   if ($_POST["dpath"] != "")
-			$dpath = $_POST["dpath"];
-		else
-			$dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
+    if ($_POST["dpath"] != "")
+        $dpath = $_POST["dpath"];
 
        // Gestion des options speciales pour les admins
        if ($user['authlevel'] != LEVEL_PLAYER) {
