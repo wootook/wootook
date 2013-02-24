@@ -61,7 +61,7 @@ $mode = isset($_GET['mode']) ? $_GET['mode'] : null;
 
        // Gestion des options speciales pour les admins
        if ($user['authlevel'] != LEVEL_PLAYER) {
-          if ($_POST['adm_pl_prot'] == 'on') {
+          if (isset($_POST['adm_pl_prot']) && $_POST['adm_pl_prot'] == 'on') {
              doquery ("UPDATE {{table}} SET `id_level` = '".$user['authlevel']."' WHERE `id_owner` = '".$user['id']."';", 'planets');
           } else {
              doquery ("UPDATE {{table}} SET `id_level` = '0' WHERE `id_owner` = '".$user['id']."';", 'planets');
@@ -191,10 +191,7 @@ $mode = isset($_GET['mode']) ? $_GET['mode'] : null;
        `settings_bud` = '$settings_bud',
        `settings_mis` = '$settings_mis',
        `settings_rep` = '$settings_rep',
-       `db_deaktjava` = '$db_deaktjava',
-       `kolorminus` = '$kolorminus',
-       `kolorplus` = '$kolorplus',
-       `kolorpoziom` = '$kolorpoziom'
+       `db_deaktjava` = '$db_deaktjava'
        WHERE `id` = '$iduser' LIMIT 1", "users");
 
        if (isset($_POST["db_password"]) && md5($_POST["db_password"]) == $user["password"]) {
