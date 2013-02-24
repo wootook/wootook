@@ -40,11 +40,11 @@ if(!isset($user['authlevel'])) {
 includeLang('messages');
 
 
-$OwnerID       = $_GET['id'];
-$MessCategory  = $_GET['messcat'];
-$MessPageMode  = (string) $_GET['mode'];
-$DeleteWhat    = $_POST['deletemessages'];
-if (isset ($DeleteWhat)) {
+$OwnerID       = isset($_GET['id']) ? $_GET['id'] : null;
+$MessCategory  = isset($_GET['messcat']) ? $_GET['messcat'] : null;
+$MessPageMode  = isset($_GET['mode']) ? (string) $_GET['mode'] : null;
+$DeleteWhat    = isset($_POST['deletemessages']) ? $_POST['deletemessages'] : null;
+if (!empty($DeleteWhat)) {
 	$MessPageMode = "delete";
 }
 
@@ -54,6 +54,9 @@ $UnRead        = doquery("SELECT * FROM {{table}} WHERE `id` = '". strval($user[
 $MessageType   = array (0, 1, 2, 3, 4, 5, 15, 99, 100 );
 $TitleColor    = array (0 => '#FFFF00', 1 => '#FF6699', 2 => '#FF3300', 3 => '#FF9900', 4 => '#773399', 5 => '#009933', 15 => '#030070', 99 => '#007070', 100 => '#ABABAB');
 $BackGndColor  = array (0 => '#663366', 1 => '#336666', 2 => '#000099', 3 => '#666666', 4 => '#999999', 5 => '#999999', 15 => '#999999', 99 => '#999999', 100 => '#999999');
+
+$page = null;
+$text = null;
 
 for ($MessType = 0; $MessType < 101; $MessType++) {
 	if (in_array($MessType, $MessageType) ) {
@@ -230,7 +233,7 @@ $Message = trim ( nl2br ( strip_tags ( $_POST['text'], '<br>' ) ) ); }
 					$page .= "<th>". stripslashes( $CurMess['message_subject'] ) ." ";
 					if ($CurMess['message_type'] == 1) {
 						$page .= "<a href=\"messages.php?mode=write&amp;id=". $CurMess['message_sender'] ."&amp;subject=".$lang['mess_answer_prefix'] . htmlspecialchars( $CurMess['message_subject']) ."\">";
-						$page .= "<img src=\"". $dpath ."img/m.gif\" alt=\"".$lang['mess_answer']."\" border=\"0\"></a></th>";
+						$page .= "<img src=\"". $user['dpath'] ."img/m.gif\" alt=\"".$lang['mess_answer']."\" border=\"0\"></a></th>";
 					} else {
 						$page .= "</th>";
 					}
@@ -254,12 +257,12 @@ $Message = trim ( nl2br ( strip_tags ( $_POST['text'], '<br>' ) ) ); }
 						$page .= "\n<tr>";
 						$page .= "<input name=\"showmes". $CurMess['message_id'] . "\" type=\"hidden\" value=\"1\">";
 						$page .= "<th><input name=\"delmes". $CurMess['message_id'] ."\" type=\"checkbox\"></th>";
-						$page .= "<th>". date("m-d H:i:s O", $CurMess['message_time']) ."</th>";
+						$page .= "<th>". date("d-m-Y H:i:s", strtotime($CurMess['message_time'])) ."</th>";
 						$page .= "<th>". stripslashes( $CurMess['message_from'] ) ."</th>";
 						$page .= "<th>". stripslashes( $CurMess['message_subject'] ) ." ";
 						if ($CurMess['message_type'] == 1) {
 							$page .= "<a href=\"messages.php?mode=write&amp;id=". $CurMess['message_sender'] ."&amp;subject=".$lang['mess_answer_prefix'] . htmlspecialchars( $CurMess['message_subject']) ."\">";
-							$page .= "<img src=\"". $dpath ."img/m.gif\" alt=\"".$lang['mess_answer']."\" border=\"0\"></a></th>";
+							$page .= "<img src=\"". $user['dpath'] ."img/m.gif\" alt=\"".$lang['mess_answer']."\" border=\"0\"></a></th>";
 						} else {
 							$page .= "</th>";
 						}

@@ -32,15 +32,15 @@ define('INSIDE' , true);
 define('INSTALL' , false);
 require_once dirname(__FILE__) .'/application/bootstrap.php';
 
-$searchtext = mysql_escape_string($_POST['searchtext']);
-$type = $_POST['type'];
+$searchtext = isset($_POST['searchtext']) ? mysql_escape_string($_POST['searchtext']) : null;
+$type = isset($_POST['type']) ? $_POST['type'] : null;
 
-$dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
+$dpath = (empty($user["dpath"])) ? DEFAULT_SKINPATH : $user["dpath"];
 
 includeLang('search');
+$search_results = null;
+$result_list = null;
 $i = 0;
-//creamos la query
-$searchtext = mysql_escape_string($_POST["searchtext"]);
 switch($type){
 	case "playername":
 		$table = gettemplate('search_user_table');
@@ -89,7 +89,7 @@ if(isset($searchtext) && isset($type)){
 			}else{
 			$pquery = doquery("SELECT name FROM {{table}} WHERE id = {$s['id_planet']}","planets",true);
 			$s['planet_name'] = $pquery['name'];
-			$s['ally_name'] = ($aquery['ally_name']!='')?"<a href=\"alliance.php?mode=ainfo&tag={$aquery['ally_name']}\">{$aquery['ally_name']}</a>":'';
+			$s['ally_name'] = (!empty($aquery['ally_name']))?"<a href=\"alliance.php?mode=ainfo&tag={$aquery['ally_name']}\">{$aquery['ally_name']}</a>":'';
 			}
 			//ahora la alianza
 			if($s['ally_id']!=0&&$s['ally_request']==0){
@@ -99,8 +99,9 @@ if(isset($searchtext) && isset($type)){
 			}
 
 
-
-			$s['position'] = "<a href=\"stat.php?start=".$s['rank']."\">".$s['rank']."</a>";
+            if (!empty($s['rank'])) {
+                $s['position'] = "<a href=\"stat.php?start=".$s['rank']."\">".$s['rank']."</a>";
+            }
 			$s['dpath'] = $dpath;
 			$s['coordinated'] = "{$s['galaxy']}:{$s['system']}:{$s['planet']}";
 			$s['buddy_request'] = $lang['buddy_request'];
@@ -122,10 +123,10 @@ if(isset($searchtext) && isset($type)){
 }
 
 //el resto...
-$lang['type_playername'] = ($_POST["type"] == "playername") ? " SELECTED" : "";
-$lang['type_planetname'] = ($_POST["type"] == "planetname") ? " SELECTED" : "";
-$lang['type_allytag'] = ($_POST["type"] == "allytag") ? " SELECTED" : "";
-$lang['type_allyname'] = ($_POST["type"] == "allyname") ? " SELECTED" : "";
+$lang['type_playername'] = (isset($_POST["type"]) && $_POST["type"] == "playername") ? " SELECTED" : "";
+$lang['type_planetname'] = (isset($_POST["type"]) && $_POST["type"] == "planetname") ? " SELECTED" : "";
+$lang['type_allytag'] = (isset($_POST["type"]) && $_POST["type"] == "allytag") ? " SELECTED" : "";
+$lang['type_allyname'] = (isset($_POST["type"]) && $_POST["type"] == "allyname") ? " SELECTED" : "";
 $lang['searchtext'] = $searchtext;
 $lang['search_results'] = $search_results;
 //esto es algo repetitivo ... w
