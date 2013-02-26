@@ -252,7 +252,7 @@ $user = Wootook_Player_Model_Session::getSingleton()->getPlayer();
 $planet = $user->getCurrentPlanet();
 
 $Page = BuildRessourcePage($user, $planet);
-display($Page, $lang['Resources']);
+display($Page, 'Resources', false);
 
 // -----------------------------------------------------------------------------------------------------------
 // History version

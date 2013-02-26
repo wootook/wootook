@@ -39,13 +39,13 @@ function ModuleMarchand ( $CurrentUser, &$CurrentPlanet ) {
 
 	$parse   = $lang;
 
-	if ($_POST['ress'] != '') {
+	if (isset($_POST['ress']) && $_POST['ress'] != '') {
 		$PageTPL   = gettemplate('message_body');
 		$Error     = false;
 		$CheatTry  = false;
-		$Metal     = $_POST['metal'];
-		$Crystal   = $_POST['cristal'];
-		$Deuterium = $_POST['deut'];
+		$Metal     = isset($_POST['metal']) ? $_POST['metal'] : 0;
+		$Crystal   = isset($_POST['cristal']) ? $_POST['cristal'] : 0;
+		$Deuterium = isset($_POST['deut']) ? $_POST['deut'] : 0;
 		if ($Metal < 0) {
 			$Metal     *= -1;
 			$CheatTry   = true;
@@ -72,8 +72,8 @@ function ModuleMarchand ( $CurrentUser, &$CurrentPlanet ) {
 
 				case 'cristal':
 					$Necessaire   = (( $Metal * 0.5) + ( $Deuterium * 2));
-					if ($CurrentPlanet['crystal'] > $Necessaire) {
-						$CurrentPlanet['crystal'] -= $Necessaire;
+					if ($CurrentPlanet['cristal'] > $Necessaire) {
+						$CurrentPlanet['cristal'] -= $Necessaire;
 					} else {
 						$Message = $lang['mod_ma_noten'] ." ". $lang['Crystal'] ."! ";
 						$Error   = true;
@@ -94,17 +94,17 @@ function ModuleMarchand ( $CurrentUser, &$CurrentPlanet ) {
 		if ($Error == false) {
 			if ($CheatTry == true) {
 				$CurrentPlanet['metal']      = 0;
-				$CurrentPlanet['crystal']    = 0;
+				$CurrentPlanet['cristal']    = 0;
 				$CurrentPlanet['deuterium']  = 0;
 			} else {
 				$CurrentPlanet['metal']     += $Metal;
-				$CurrentPlanet['crystal']   += $Crystal;
+				$CurrentPlanet['cristal']   += $Crystal;
 				$CurrentPlanet['deuterium'] += $Deuterium;
 			}
 
 			$QryUpdatePlanet  = "UPDATE {{table}} SET ";
 			$QryUpdatePlanet .= "`metal` = '".     $CurrentPlanet['metal']     ."', ";
-			$QryUpdatePlanet .= "`crystal` = '".   $CurrentPlanet['crystal']   ."', ";
+			$QryUpdatePlanet .= "`cristal` = '".   $CurrentPlanet['cristal']   ."', ";
 			$QryUpdatePlanet .= "`deuterium` = '". $CurrentPlanet['deuterium'] ."' ";
 			$QryUpdatePlanet .= "WHERE ";
 			$QryUpdatePlanet .= "`id` = '".        $CurrentPlanet['id']        ."';";
@@ -118,7 +118,7 @@ function ModuleMarchand ( $CurrentUser, &$CurrentPlanet ) {
 		}
 		$parse['mes']   = $Message;
 	} else {
-		if ($_POST['action'] != 2) {
+		if (!isset($_POST['action']) || $_POST['action'] != 2) {
 			$PageTPL = gettemplate('marchand_main');
 		} else {
 			$parse['mod_ma_res']   = "1";
@@ -145,8 +145,7 @@ function ModuleMarchand ( $CurrentUser, &$CurrentPlanet ) {
 	$Page    = parsetemplate ( $PageTPL, $parse );
 	return  $Page;
 }
-
-	$Page = ModuleMarchand ( $user, $planetrow );
+	$Page = ModuleMarchand ( $user, $planet );
 	display ( $Page, $lang['mod_marchand'], true, '', false );
 
 // -----------------------------------------------------------------------------------------------------------

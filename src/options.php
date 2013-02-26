@@ -49,19 +49,19 @@ $mode = isset($_GET['mode']) ? $_GET['mode'] : null;
            message($lang['You_cant_exit_vmode'], $lan['Error'] ,"options.php",1);
        }
     }
+	
+    $dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
 
     if ($_POST && $mode == "change") { // Array ( [db_character]
-       $iduser = $user["id"];
-       $avatar = $_POST["avatar"];
+        $iduser = $user["id"];
+        $avatar = $_POST["avatar"];
 
-	   if ($_POST["dpath"] != "")
-			$dpath = $_POST["dpath"];
-		else
-			$dpath = (!$user["dpath"]) ? DEFAULT_SKINPATH : $user["dpath"];
+    if ($_POST["dpath"] != "")
+        $dpath = $_POST["dpath"];
 
        // Gestion des options speciales pour les admins
        if ($user['authlevel'] != LEVEL_PLAYER) {
-          if ($_POST['adm_pl_prot'] == 'on') {
+          if (isset($_POST['adm_pl_prot']) && $_POST['adm_pl_prot'] == 'on') {
              doquery ("UPDATE {{table}} SET `id_level` = '".$user['authlevel']."' WHERE `id_owner` = '".$user['id']."';", 'planets');
           } else {
              doquery ("UPDATE {{table}} SET `id_level` = '0' WHERE `id_owner` = '".$user['id']."';", 'planets');
@@ -191,10 +191,7 @@ $mode = isset($_GET['mode']) ? $_GET['mode'] : null;
        `settings_bud` = '$settings_bud',
        `settings_mis` = '$settings_mis',
        `settings_rep` = '$settings_rep',
-       `db_deaktjava` = '$db_deaktjava',
-       `kolorminus` = '$kolorminus',
-       `kolorplus` = '$kolorplus',
-       `kolorpoziom` = '$kolorpoziom'
+       `db_deaktjava` = '$db_deaktjava'
        WHERE `id` = '$iduser' LIMIT 1", "users");
 
        if (isset($_POST["db_password"]) && md5($_POST["db_password"]) == $user["password"]) {
@@ -250,7 +247,7 @@ $mode = isset($_GET['mode']) ? $_GET['mode'] : null;
        $parse['opt_modev_data'] = ($user['urlaubs_modus'] == 1)?" checked='checked'/":'';
        $parse['opt_modev_exit'] = ($user['urlaubs_modus'] == 0)?" checked='1'/":'';
        $parse['Vaccation_mode'] = $lang['Vaccation_mode'];
-       $parse['vacation_until'] = date("d.m.Y G:i:s",$user['urlaubs_until']);
+       $parse['vacation_until'] = date("d.m.Y G:i:s",$user['urlaubs_until']->getTimestamp());
        $parse['user_settings_rep'] = ($user['settings_rep'] == 1) ? " checked='checked'/":'';
        $parse['user_settings_esp'] = ($user['settings_esp'] == 1) ? " checked='checked'/":'';
        $parse['user_settings_wri'] = ($user['settings_wri'] == 1) ? " checked='checked'/":'';

@@ -35,19 +35,20 @@ require_once dirname(__FILE__) .'/application/bootstrap.php';
 includeLang('stat');
 
 $parse = $lang;
-$who   = (isset($_POST['who']))   ? $_POST['who']   : $_GET['who'];
+$who   = (isset($_POST['who']))   ? $_POST['who']   : isset($_GET['who']) ? $_GET['who'] : null;
 if (!isset($who)) {
 	$who   = 1;
 }
-$type  = (isset($_POST['type']))  ? $_POST['type']  : $_GET['type'];
+$type  = (isset($_POST['type']))  ? $_POST['type']  : isset($_GET['type']) ? $_GET['type'] : null;
 if (!isset($type)) {
 	$type  = 1;
 }
-$range = (isset($_POST['range'])) ? $_POST['range'] : $_GET['range'];
+$range = (isset($_POST['range'])) ? $_POST['range'] : isset($_GET['range']) ? $_GET['range'] : null;
 if (!isset($range)) {
 	$range = 1;
 }
 
+$start = 0;
 $parse['who']    = "<option value=\"1\"". (($who == "1") ? " SELECTED" : "") .">". $lang['stat_player'] ."</option>";
 $parse['who']   .= "<option value=\"2\"". (($who == "2") ? " SELECTED" : "") .">". $lang['stat_allys']  ."</option>";
 
@@ -144,6 +145,7 @@ if ($who == 2) {
 	}
 } else {
 	$MaxUsers = doquery ("SELECT COUNT(*) AS `count` FROM {{table}} WHERE `db_deaktjava` = '0';", 'users', true);
+	$LastPage = 0;
 	if ($MaxUsers['count'] > 100) {
 		$LastPage = floor($MaxUsers['count'] / 100);
 	}

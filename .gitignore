@@ -5,3 +5,4 @@ config.php
 .idea/
 coverage/
 src/application/cache/*
+src/application/configs/local.php

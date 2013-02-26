@@ -49,7 +49,7 @@ function SendSimpleMessage ( $Owner, $Sender, $Time, $Type, $From, $Subject, $Me
 	$QryInsertMessage  = "INSERT INTO {{table}} SET ";
 	$QryInsertMessage .= "`message_owner` = '". $Owner ."', ";
 	$QryInsertMessage .= "`message_sender` = '". $Sender ."', ";
-	$QryInsertMessage .= "`message_time` = '" . $Time . "', ";
+// 	$QryInsertMessage .= "`message_time` = '" . $Time . "', ";
 	$QryInsertMessage .= "`message_type` = '". $Type ."', ";
 	$QryInsertMessage .= "`message_from` = '". addslashes( $From ) ."', ";
 	$QryInsertMessage .= "`message_subject` = '". addslashes( $Subject ) ."', ";
